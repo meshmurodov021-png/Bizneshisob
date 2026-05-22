@@ -4,7 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0c0e14">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="BiznesHisob">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Biznes daromad va xarajatlarini boshqarish — BiznesHisob">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <title>BiznesHisob — Daromad va xarajatlar</title>
   <style>
     :root {
@@ -811,9 +819,70 @@
       .app-main { padding-left: 1.5rem; padding-right: 1.5rem; }
       .bottom-nav { max-width: 720px; }
     }
+
+    .offline-banner {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      width: 100%;
+      max-width: 480px;
+      z-index: 300;
+      padding: max(0.55rem, env(safe-area-inset-top)) 1rem 0.55rem;
+      background: rgba(234, 179, 8, 0.95);
+      color: #1a1a1a;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      transition: transform 0.35s var(--ease);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .offline-banner.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .install-btn {
+      width: 100%;
+      min-height: 52px;
+      padding: 0.9rem;
+      margin-bottom: 0.75rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #4f46e5, var(--accent));
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 6px 24px rgba(99, 102, 241, 0.4);
+      transition: transform 0.2s var(--ease);
+    }
+
+    .install-btn:active { transform: scale(0.98); }
+
+    .ios-install-hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      padding: 0.85rem 1rem;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+    }
+
+    .ios-install-hint strong { color: var(--accent-hover); }
+
+    .sync-status.offline span:last-child { color: #eab308; }
+    .sync-status.online span:last-child { color: var(--income); }
   </style>
 </head>
 <body>
+  <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite">
+    📡 Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi
+  </div>
+
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
     <p class="loading-text">Yuklanmoqda...</p>
@@ -921,15 +990,19 @@
           <div class="profile-avatar">👤</div>
           <p class="profile-email" id="userEmail">—</p>
           <p class="profile-hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
+          <button type="button" class="install-btn hidden" id="installBtn">📲 Ilovani oʻrnatish</button>
+          <div class="ios-install-hint hidden" id="iosInstallHint">
+            <strong>iPhone/iPad:</strong> Safari brauzerida «Ulashish» → «Bosh ekranga qoʻshish» tugmasini bosing.
+          </div>
           <button type="button" class="logout-btn" id="logoutBtn">Chiqish</button>
         </div>
         <div class="info-row">
           <span>📊</span>
           <span>Operatsiyalar: <strong id="profileTxCount">0</strong> ta</span>
         </div>
-        <div class="info-row">
+        <div class="info-row sync-status online" id="syncStatusRow">
           <span>☁️</span>
-          <span>Holat: <span>Sinxron</span></span>
+          <span>Holat: <span id="syncStatusText">Onlayn</span></span>
         </div>
       </section>
     </main>
@@ -965,6 +1038,7 @@
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
     import {
       getFirestore,
+      enableIndexedDbPersistence,
       collection,
       addDoc,
       deleteDoc,
@@ -987,6 +1061,12 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    enableIndexedDbPersistence(db).catch(err => {
+      if (err.code !== "failed-precondition" && err.code !== "unimplemented") {
+        console.warn("Offline persistence:", err.code);
+      }
+    });
 
     let currentUser = null;
     let transactions = [];
@@ -1025,6 +1105,71 @@
     const tabPanels = document.querySelectorAll(".tab-panel");
     const navItems = document.querySelectorAll(".nav-item");
     const quickBtns = document.querySelectorAll("[data-goto-add]");
+    const offlineBanner = document.getElementById("offlineBanner");
+    const installBtn = document.getElementById("installBtn");
+    const iosInstallHint = document.getElementById("iosInstallHint");
+    const syncStatusRow = document.getElementById("syncStatusRow");
+    const syncStatusText = document.getElementById("syncStatusText");
+
+    let deferredInstallPrompt = null;
+
+    function updateOnlineStatus() {
+      const online = navigator.onLine;
+      offlineBanner.classList.toggle("visible", !online);
+      syncStatusRow.classList.toggle("online", online);
+      syncStatusRow.classList.toggle("offline", !online);
+      syncStatusText.textContent = online ? "Onlayn" : "Oflayn (kesh)";
+    }
+
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+    updateOnlineStatus();
+
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+    function isStandalone() {
+      return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+    }
+
+    function setupInstallUI() {
+      if (isStandalone()) {
+        installBtn.classList.add("hidden");
+        iosInstallHint.classList.add("hidden");
+        return;
+      }
+      if (isIOS()) {
+        iosInstallHint.classList.remove("hidden");
+        installBtn.classList.add("hidden");
+      }
+    }
+
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      if (!isIOS() && !isStandalone()) {
+        installBtn.classList.remove("hidden");
+      }
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installBtn.classList.add("hidden");
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(err => {
+          console.warn("Service worker:", err);
+        });
+      });
+    }
 
     function transactionsRef(uid) {
       return collection(db, "users", uid, "transactions");
@@ -1323,6 +1468,7 @@
         switchTab("home");
         render();
         subscribeTransactions(user.uid);
+        setupInstallUI();
         showView("app");
       } else {
         transactions = [];
@@ -1330,6 +1476,7 @@
       }
     });
 
+    setupInstallUI();
     showView("loading");
   </script>
 </body>
