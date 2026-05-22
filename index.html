@@ -49,6 +49,121 @@
       z-index: 0;
     }
 
+    .hidden { display: none !important; }
+
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      gap: 1rem;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .auth-screen {
+      position: relative;
+      z-index: 1;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 3rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .auth-tab.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+
+    .auth-error {
+      background: var(--expense-dim);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .auth-error.visible { display: block; }
+
+    .auth-btn {
+      width: 100%;
+      padding: 0.85rem;
+      margin-top: 0.25rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      background: linear-gradient(135deg, #4f46e5, var(--accent));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+      transition: transform 0.15s, opacity 0.2s;
+    }
+
+    .auth-btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
     .app {
       position: relative;
       z-index: 1;
@@ -57,10 +172,55 @@
       padding: 1.5rem 1.25rem 3rem;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-      padding-top: 0.5rem;
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .top-bar header {
+      text-align: left;
+      margin-bottom: 0;
+      padding-top: 0;
+      flex: 1;
+    }
+
+    .user-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .user-email {
+      font-size: 0.75rem;
+      color: var(--muted);
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .logout-btn {
+      padding: 0.45rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .logout-btn:hover {
+      color: var(--expense);
+      border-color: rgba(239, 68, 68, 0.4);
+      background: var(--expense-dim);
     }
 
     .logo {
@@ -229,7 +389,13 @@
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
-      transition: transform 0.15s, box-shadow 0.2s;
+      transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .submit-btn.income {
@@ -244,12 +410,8 @@
       box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
     }
 
-    .submit-btn:hover {
+    .submit-btn:hover:not(:disabled) {
       transform: translateY(-1px);
-    }
-
-    .submit-btn:active {
-      transform: translateY(0);
     }
 
     .transactions-header {
@@ -352,9 +514,14 @@
       flex-shrink: 0;
     }
 
-    .delete-btn:hover {
+    .delete-btn:hover:not(:disabled) {
       color: var(--expense);
       background: var(--expense-dim);
+    }
+
+    .delete-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .empty-state {
@@ -373,6 +540,12 @@
       font-size: 0.9rem;
     }
 
+    .sync-badge {
+      font-size: 0.7rem;
+      color: var(--income);
+      margin-top: 0.25rem;
+    }
+
     @media (max-width: 520px) {
       .summary {
         grid-template-columns: 1fr;
@@ -389,18 +562,69 @@
       .summary-card .label {
         margin-bottom: 0;
       }
+
+      .top-bar {
+        flex-direction: column;
+      }
+
+      .user-actions {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner"></div>
+    <p class="loading-text">Yuklanmoqda...</p>
+  </div>
+
+  <div class="auth-screen hidden" id="authScreen">
+    <div class="auth-header">
       <div class="logo">
         <div class="logo-icon">📊</div>
         <h1>BiznesHisob</h1>
       </div>
-      <p class="tagline">Biznes daromad va xarajatlarini boshqaring</p>
-    </header>
+      <p class="tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="login">Kirish</button>
+        <button type="button" class="auth-tab" data-mode="register">Roʻyxatdan oʻtish</button>
+      </div>
+      <div class="auth-error" id="authError"></div>
+      <form id="authForm">
+        <div class="form-row">
+          <label for="authEmail">Email</label>
+          <input type="email" id="authEmail" placeholder="email@misol.uz" required autocomplete="email">
+        </div>
+        <div class="form-row">
+          <label for="authPassword">Parol</label>
+          <input type="password" id="authPassword" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
+        </div>
+        <button type="submit" class="auth-btn" id="authSubmitBtn">Kirish</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app hidden" id="appScreen">
+    <div class="top-bar">
+      <header>
+        <div class="logo">
+          <div class="logo-icon">📊</div>
+          <h1>BiznesHisob</h1>
+        </div>
+        <p class="tagline">Biznes daromad va xarajatlarini boshqaring</p>
+        <p class="sync-badge">☁️ Bulutda saqlanadi (Firestore)</p>
+      </header>
+      <div class="user-actions">
+        <span class="user-email" id="userEmail"></span>
+        <button type="button" class="logout-btn" id="logoutBtn">Chiqish</button>
+      </div>
+    </div>
 
     <section class="summary">
       <div class="summary-card income">
@@ -449,11 +673,58 @@
     </section>
   </div>
 
-  <script>
-    const STORAGE_KEY = "bizneshisob_transactions";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      deleteDoc,
+      doc,
+      onSnapshot,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-    let transactions = loadTransactions();
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwn2AcEje5D0LelcocgYS12uHHh2OlZ4I",
+      authDomain: "bizneshisob-886ab.firebaseapp.com",
+      projectId: "bizneshisob-886ab",
+      storageBucket: "bizneshisob-886ab.firebasestorage.app",
+      messagingSenderId: "130443700",
+      appId: "1:130443700:web:65087838b6f0a717b4eae1",
+      measurementId: "G-8Q11YKEZ23"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let transactions = [];
     let currentType = "income";
+    let authMode = "login";
+    let unsubscribeTransactions = null;
+    let busy = false;
+
+    const loadingScreen = document.getElementById("loadingScreen");
+    const authScreen = document.getElementById("authScreen");
+    const appScreen = document.getElementById("appScreen");
+    const authForm = document.getElementById("authForm");
+    const authEmail = document.getElementById("authEmail");
+    const authPassword = document.getElementById("authPassword");
+    const authSubmitBtn = document.getElementById("authSubmitBtn");
+    const authError = document.getElementById("authError");
+    const authTabs = document.querySelectorAll(".auth-tab");
+    const userEmailEl = document.getElementById("userEmail");
+    const logoutBtn = document.getElementById("logoutBtn");
 
     const form = document.getElementById("transactionForm");
     const descriptionInput = document.getElementById("description");
@@ -468,17 +739,47 @@
     const profitCard = document.getElementById("profitCard");
     const txCountEl = document.getElementById("txCount");
 
-    function loadTransactions() {
-      try {
-        const data = localStorage.getItem(STORAGE_KEY);
-        return data ? JSON.parse(data) : [];
-      } catch {
-        return [];
-      }
+    function transactionsRef(uid) {
+      return collection(db, "users", uid, "transactions");
     }
 
-    function saveTransactions() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    function showView(view) {
+      loadingScreen.classList.toggle("hidden", view !== "loading");
+      authScreen.classList.toggle("hidden", view !== "auth");
+      appScreen.classList.toggle("hidden", view !== "app");
+    }
+
+    function setBusy(state) {
+      busy = state;
+      submitBtn.disabled = state;
+      authSubmitBtn.disabled = state;
+      document.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.disabled = state;
+      });
+    }
+
+    function showAuthError(message) {
+      authError.textContent = message;
+      authError.classList.add("visible");
+    }
+
+    function clearAuthError() {
+      authError.textContent = "";
+      authError.classList.remove("visible");
+    }
+
+    function authErrorMessage(code) {
+      const messages = {
+        "auth/email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
+        "auth/invalid-email": "Email notoʻgʻri.",
+        "auth/weak-password": "Parol juda zaif (kamida 6 belgi).",
+        "auth/user-not-found": "Foydalanuvchi topilmadi.",
+        "auth/wrong-password": "Parol notoʻgʻri.",
+        "auth/invalid-credential": "Email yoki parol notoʻgʻri.",
+        "auth/too-many-requests": "Juda koʻp urinish. Biroz kuting.",
+        "auth/network-request-failed": "Internet aloqasini tekshiring."
+      };
+      return messages[code] || "Xatolik yuz berdi. Qayta urinib koʻring.";
     }
 
     function formatUZS(amount) {
@@ -496,6 +797,86 @@
       });
     }
 
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      authTabs.forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.mode === mode);
+      });
+      authSubmitBtn.textContent = mode === "login" ? "Kirish" : "Roʻyxatdan oʻtish";
+      authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
+      clearAuthError();
+    }
+
+    authTabs.forEach(tab => {
+      tab.addEventListener("click", () => setAuthMode(tab.dataset.mode));
+    });
+
+    authForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      clearAuthError();
+      const email = authEmail.value.trim();
+      const password = authPassword.value;
+
+      if (!email || password.length < 6) {
+        showAuthError("Email va parol (kamida 6 belgi) kiriting.");
+        return;
+      }
+
+      setBusy(true);
+      try {
+        if (authMode === "register") {
+          await createUserWithEmailAndPassword(auth, email, password);
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+        authForm.reset();
+      } catch (err) {
+        showAuthError(authErrorMessage(err.code));
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      setBusy(true);
+      try {
+        await signOut(auth);
+      } catch (err) {
+        alert(authErrorMessage(err.code));
+      } finally {
+        setBusy(false);
+      }
+    });
+
+    function subscribeTransactions(uid) {
+      if (unsubscribeTransactions) {
+        unsubscribeTransactions();
+        unsubscribeTransactions = null;
+      }
+
+      const q = query(transactionsRef(uid), orderBy("date", "desc"));
+      unsubscribeTransactions = onSnapshot(
+        q,
+        snapshot => {
+          transactions = snapshot.docs.map(d => ({
+            id: d.id,
+            ...d.data()
+          }));
+          render();
+        },
+        err => {
+          console.error(err);
+          alert("Maʼlumotlarni yuklashda xatolik. Firestore qoidalarini tekshiring.");
+        }
+      );
+    }
+
     function setType(type) {
       currentType = type;
       typeButtons.forEach(btn => {
@@ -509,31 +890,43 @@
       btn.addEventListener("click", () => setType(btn.dataset.type));
     });
 
-    form.addEventListener("submit", e => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
+      if (!currentUser || busy) return;
+
       const description = descriptionInput.value.trim();
       const amount = parseInt(amountInput.value, 10);
-
       if (!description || !amount || amount <= 0) return;
 
-      transactions.unshift({
-        id: Date.now().toString(),
-        type: currentType,
-        description,
-        amount,
-        date: new Date().toISOString()
-      });
-
-      saveTransactions();
-      render();
-      form.reset();
-      descriptionInput.focus();
+      setBusy(true);
+      try {
+        await addDoc(transactionsRef(currentUser.uid), {
+          type: currentType,
+          description,
+          amount,
+          date: new Date().toISOString()
+        });
+        form.reset();
+        descriptionInput.focus();
+      } catch (err) {
+        console.error(err);
+        alert("Operatsiyani saqlashda xatolik yuz berdi.");
+      } finally {
+        setBusy(false);
+      }
     });
 
-    function deleteTransaction(id) {
-      transactions = transactions.filter(t => t.id !== id);
-      saveTransactions();
-      render();
+    async function deleteTransaction(id) {
+      if (!currentUser || busy) return;
+      setBusy(true);
+      try {
+        await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
+      } catch (err) {
+        console.error(err);
+        alert("Oʻchirishda xatolik yuz berdi.");
+      } finally {
+        setBusy(false);
+      }
     }
 
     function render() {
@@ -576,15 +969,35 @@
       transactionList.querySelectorAll(".delete-btn").forEach(btn => {
         btn.addEventListener("click", () => deleteTransaction(btn.dataset.id));
       });
+
+      if (busy) {
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+          btn.disabled = true;
+        });
+      }
     }
 
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
+    onAuthStateChanged(auth, user => {
+      if (unsubscribeTransactions) {
+        unsubscribeTransactions();
+        unsubscribeTransactions = null;
+      }
 
-    render();
+      currentUser = user;
+
+      if (user) {
+        userEmailEl.textContent = user.email || "";
+        transactions = [];
+        render();
+        subscribeTransactions(user.uid);
+        showView("app");
+      } else {
+        transactions = [];
+        showView("auth");
+      }
+    });
+
+    showView("loading");
   </script>
 </body>
 </html>
