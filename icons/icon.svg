@@ -1,11 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BiznesHisob">
-  <defs>
-    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#a855f7"/>
-    </linearGradient>
-  </defs>
-  <rect width="512" height="512" rx="112" fill="#0c0e14"/>
-  <rect x="64" y="64" width="384" height="384" rx="88" fill="url(#g)"/>
-  <text x="256" y="300" text-anchor="middle" font-family="system-ui,sans-serif" font-size="180" font-weight="700" fill="#fff">BH</text>
+  <rect width="512" height="512" rx="102" fill="#7C3AED"/>
+  <g fill="#fff">
+    <rect x="88" y="300" width="52" height="120" rx="6"/>
+    <rect x="156" y="260" width="52" height="160" rx="6"/>
+    <rect x="224" y="230" width="52" height="190" rx="6"/>
+    <rect x="292" y="190" width="52" height="230" rx="6"/>
+  </g>
+  <polyline
+    points="72,280 168,220 268,175 388,95"
+    fill="none"
+    stroke="#fff"
+    stroke-width="22"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+  <circle cx="72" cy="280" r="14" fill="#fff"/>
+  <circle cx="168" cy="220" r="14" fill="#fff"/>
+  <circle cx="268" cy="175" r="14" fill="#fff"/>
+  <circle cx="388" cy="95" r="14" fill="#fff"/>
 </svg>
