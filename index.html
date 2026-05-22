@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BiznesHisob — Daromad va xarajatlar</title>
+  <style>
+    :root {
+      --bg: #0c0e14;
+      --surface: #141820;
+      --surface-2: #1a1f2b;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e8eaef;
+      --muted: #8b92a5;
+      --income: #22c55e;
+      --income-dim: rgba(34, 197, 94, 0.15);
+      --expense: #ef4444;
+      --expense-dim: rgba(239, 68, 68, 0.15);
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --profit: #38bdf8;
+      --radius: 14px;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.18), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(34, 197, 94, 0.06), transparent),
+        radial-gradient(ellipse 50% 30% at 0% 80%, rgba(239, 68, 68, 0.05), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-top: 0.5rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, #fff 0%, #c7cad4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 0.85rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .summary-card .value {
+      font-size: 1rem;
+      font-weight: 700;
+      word-break: break-all;
+    }
+
+    .summary-card.income .value { color: var(--income); }
+    .summary-card.expense .value { color: var(--expense); }
+    .summary-card.profit .value { color: var(--profit); }
+    .summary-card.profit.negative .value { color: var(--expense); }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .type-toggle {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .type-btn {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .type-btn:hover {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .type-btn.active.income {
+      background: var(--income-dim);
+      border-color: var(--income);
+      color: var(--income);
+    }
+
+    .type-btn.active.expense {
+      background: var(--expense-dim);
+      border-color: var(--expense);
+      color: var(--expense);
+    }
+
+    .form-row {
+      margin-bottom: 0.85rem;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-row input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .form-row input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-row input::placeholder {
+      color: #5c6378;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 0.85rem;
+      margin-top: 0.25rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .submit-btn.income {
+      background: linear-gradient(135deg, #16a34a, var(--income));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);
+    }
+
+    .submit-btn.expense {
+      background: linear-gradient(135deg, #dc2626, var(--expense));
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .transactions-header h2 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+
+    .count-badge {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--surface-2);
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .transaction-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .transaction-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .transaction-list::-webkit-scrollbar-thumb {
+      background: var(--surface-2);
+      border-radius: 3px;
+    }
+
+    .transaction-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .transaction-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .transaction-desc {
+      font-weight: 500;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .transaction-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .transaction-amount {
+      font-weight: 700;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .transaction-amount.income { color: var(--income); }
+    .transaction-amount.expense { color: var(--expense); }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.35rem;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      line-height: 1;
+      transition: color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .delete-btn:hover {
+      color: var(--expense);
+      background: var(--expense-dim);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--muted);
+    }
+
+    .empty-state .icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 520px) {
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 0.85rem 1rem;
+      }
+
+      .summary-card .label {
+        margin-bottom: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">📊</div>
+        <h1>BiznesHisob</h1>
+      </div>
+      <p class="tagline">Biznes daromad va xarajatlarini boshqaring</p>
+    </header>
+
+    <section class="summary">
+      <div class="summary-card income">
+        <div class="label">Jami daromad</div>
+        <div class="value" id="totalIncome">0 soʻm</div>
+      </div>
+      <div class="summary-card expense">
+        <div class="label">Jami xarajat</div>
+        <div class="value" id="totalExpense">0 soʻm</div>
+      </div>
+      <div class="summary-card profit" id="profitCard">
+        <div class="label">Sof foyda</div>
+        <div class="value" id="netProfit">0 soʻm</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">Yangi operatsiya qoʻshish</div>
+      <div class="type-toggle">
+        <button type="button" class="type-btn income active" data-type="income">Daromad</button>
+        <button type="button" class="type-btn expense" data-type="expense">Xarajat</button>
+      </div>
+      <form id="transactionForm">
+        <div class="form-row">
+          <label for="description">Tavsif</label>
+          <input type="text" id="description" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
+        </div>
+        <div class="form-row">
+          <label for="amount">Summa (UZS)</label>
+          <input type="number" id="amount" placeholder="0" min="1" step="1" required>
+        </div>
+        <button type="submit" class="submit-btn income" id="submitBtn">Daromad qoʻshish</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="transactions-header">
+        <h2>Barcha operatsiyalar</h2>
+        <span class="count-badge" id="txCount">0 ta</span>
+      </div>
+      <ul class="transaction-list" id="transactionList"></ul>
+      <div class="empty-state" id="emptyState">
+        <div class="icon">📋</div>
+        <p>Hali operatsiyalar yoʻq.<br>Yuqoridan birinchi daromad yoki xarajatni qoʻshing.</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "bizneshisob_transactions";
+
+    let transactions = loadTransactions();
+    let currentType = "income";
+
+    const form = document.getElementById("transactionForm");
+    const descriptionInput = document.getElementById("description");
+    const amountInput = document.getElementById("amount");
+    const submitBtn = document.getElementById("submitBtn");
+    const typeButtons = document.querySelectorAll(".type-btn");
+    const transactionList = document.getElementById("transactionList");
+    const emptyState = document.getElementById("emptyState");
+    const totalIncomeEl = document.getElementById("totalIncome");
+    const totalExpenseEl = document.getElementById("totalExpense");
+    const netProfitEl = document.getElementById("netProfit");
+    const profitCard = document.getElementById("profitCard");
+    const txCountEl = document.getElementById("txCount");
+
+    function loadTransactions() {
+      try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveTransactions() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    function formatUZS(amount) {
+      return new Intl.NumberFormat("uz-UZ").format(amount) + " soʻm";
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleDateString("uz-UZ", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function setType(type) {
+      currentType = type;
+      typeButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.type === type);
+      });
+      submitBtn.className = "submit-btn " + type;
+      submitBtn.textContent = type === "income" ? "Daromad qoʻshish" : "Xarajat qoʻshish";
+    }
+
+    typeButtons.forEach(btn => {
+      btn.addEventListener("click", () => setType(btn.dataset.type));
+    });
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const description = descriptionInput.value.trim();
+      const amount = parseInt(amountInput.value, 10);
+
+      if (!description || !amount || amount <= 0) return;
+
+      transactions.unshift({
+        id: Date.now().toString(),
+        type: currentType,
+        description,
+        amount,
+        date: new Date().toISOString()
+      });
+
+      saveTransactions();
+      render();
+      form.reset();
+      descriptionInput.focus();
+    });
+
+    function deleteTransaction(id) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveTransactions();
+      render();
+    }
+
+    function render() {
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      transactions.forEach(t => {
+        if (t.type === "income") totalIncome += t.amount;
+        else totalExpense += t.amount;
+      });
+
+      const netProfit = totalIncome - totalExpense;
+
+      totalIncomeEl.textContent = formatUZS(totalIncome);
+      totalExpenseEl.textContent = formatUZS(totalExpense);
+      netProfitEl.textContent = formatUZS(netProfit);
+      profitCard.classList.toggle("negative", netProfit < 0);
+
+      txCountEl.textContent = transactions.length + " ta";
+      const hasItems = transactions.length > 0;
+      emptyState.style.display = hasItems ? "none" : "block";
+      transactionList.style.display = hasItems ? "flex" : "none";
+
+      transactionList.innerHTML = transactions.map(t => {
+        const isIncome = t.type === "income";
+        const typeLabel = isIncome ? "Daromad" : "Xarajat";
+        const sign = isIncome ? "+" : "−";
+        return `
+          <li class="transaction-item">
+            <div class="transaction-info">
+              <div class="transaction-desc">${escapeHtml(t.description)}</div>
+              <div class="transaction-meta">${typeLabel} · ${formatDate(t.date)}</div>
+            </div>
+            <span class="transaction-amount ${t.type}">${sign}${formatUZS(t.amount)}</span>
+            <button class="delete-btn" type="button" data-id="${t.id}" title="Oʻchirish" aria-label="Oʻchirish">×</button>
+          </li>
+        `;
+      }).join("");
+
+      transactionList.querySelectorAll(".delete-btn").forEach(btn => {
+        btn.addEventListener("click", () => deleteTransaction(btn.dataset.id));
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    render();
+  </script>
+</body>
+</html>
