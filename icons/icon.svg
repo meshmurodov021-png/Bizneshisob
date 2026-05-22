@@ -1,20 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BiznesHisob">
-  <rect width="512" height="512" rx="102" fill="#7C3AED"/>
-  <g fill="#fff">
-    <rect x="88" y="300" width="52" height="120" rx="6"/>
-    <rect x="156" y="260" width="52" height="160" rx="6"/>
-    <rect x="224" y="230" width="52" height="190" rx="6"/>
-    <rect x="292" y="190" width="52" height="230" rx="6"/>
-  </g>
-  <polyline
-    points="72,280 168,220 268,175 388,95"
-    fill="none"
-    stroke="#fff"
-    stroke-width="22"
-    stroke-linecap="round"
-    stroke-linejoin="round"/>
-  <circle cx="72" cy="280" r="14" fill="#fff"/>
-  <circle cx="168" cy="220" r="14" fill="#fff"/>
-  <circle cx="268" cy="175" r="14" fill="#fff"/>
-  <circle cx="388" cy="95" r="14" fill="#fff"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="80" fill="#7C3AED"/>
+  <rect x="120" y="320" width="60" height="120" rx="6" fill="#A78BFA"/>
+  <rect x="220" y="260" width="60" height="180" rx="6" fill="#C4B5FD"/>
+  <rect x="320" y="180" width="60" height="260" rx="6" fill="#EDE9FE"/>
+  <polyline points="140,260 240,190 340,130 390,100" fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="140" cy="260" r="12" fill="white"/>
+  <circle cx="240" cy="190" r="12" fill="white"/>
+  <circle cx="340" cy="130" r="12" fill="white"/>
+  <circle cx="390" cy="100" r="12" fill="white"/>
 </svg>

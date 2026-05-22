@@ -1,0 +1,11 @@
+{
+  "name": "bizneshisob",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "icons": "node generate-icons.js"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5"
+  }
+}
