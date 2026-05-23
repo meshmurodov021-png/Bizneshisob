@@ -531,6 +531,18 @@
 
     .form-row input::placeholder { color: #5c6378; }
 
+    .amount-hint {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent-hover);
+      min-height: 1.25em;
+    }
+
+    .amount-hint:empty {
+      display: none;
+    }
+
     .submit-btn {
       width: 100%;
       min-height: 56px;
@@ -1023,7 +1035,8 @@
             </div>
             <div class="form-row">
               <label for="amount">Summa (UZS)</label>
-              <input type="number" id="amount" placeholder="0" min="1" step="1" inputmode="numeric" required>
+              <input type="text" id="amount" placeholder="0" inputmode="numeric" autocomplete="off" required>
+              <p class="amount-hint" id="amountHint" aria-live="polite"></p>
             </div>
             <button type="submit" class="submit-btn income" id="submitBtn">Daromad qoʻshish</button>
           </form>
@@ -1155,6 +1168,7 @@
     const form = document.getElementById("transactionForm");
     const descriptionInput = document.getElementById("description");
     const amountInput = document.getElementById("amount");
+    const amountHint = document.getElementById("amountHint");
     const submitBtn = document.getElementById("submitBtn");
     const typeButtons = document.querySelectorAll(".type-btn");
     const transactionList = document.getElementById("transactionList");
@@ -1313,6 +1327,59 @@
       return new Intl.NumberFormat("uz-UZ").format(amount) + " soʻm";
     }
 
+    const MAX_AMOUNT_DIGITS = 15;
+
+    function parseAmountDigits(value) {
+      const digits = String(value).replace(/\D/g, "");
+      if (!digits) return 0;
+      return parseInt(digits, 10);
+    }
+
+    function formatAmountSpaces(digits) {
+      return digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function updateAmountHint(amount) {
+      amountHint.textContent = amount > 0 ? formatUZS(amount) : "";
+    }
+
+    function formatAmountInputField() {
+      const raw = amountInput.value;
+      const cursor = amountInput.selectionStart ?? raw.length;
+      const digitsBeforeCursor = raw.slice(0, cursor).replace(/\D/g, "").length;
+
+      let digits = raw.replace(/\D/g, "");
+      if (digits.length > MAX_AMOUNT_DIGITS) {
+        digits = digits.slice(0, MAX_AMOUNT_DIGITS);
+      }
+
+      const formatted = digits ? formatAmountSpaces(digits) : "";
+      amountInput.value = formatted;
+      updateAmountHint(parseAmountDigits(digits));
+
+      let newCursor = 0;
+      let seen = 0;
+      for (let i = 0; i < formatted.length; i++) {
+        if (/\d/.test(formatted[i])) seen++;
+        if (seen >= digitsBeforeCursor) {
+          newCursor = i + 1;
+          break;
+        }
+      }
+      if (digitsBeforeCursor === 0) newCursor = 0;
+      else if (seen < digitsBeforeCursor) newCursor = formatted.length;
+
+      amountInput.setSelectionRange(newCursor, newCursor);
+    }
+
+    amountInput.addEventListener("input", formatAmountInputField);
+
+    amountInput.addEventListener("keydown", (e) => {
+      if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-" || e.key === ".") {
+        e.preventDefault();
+      }
+    });
+
     function formatUZSShort(amount) {
       if (amount >= 1e9) return (amount / 1e9).toFixed(1) + " mlrd";
       if (amount >= 1e6) return (amount / 1e6).toFixed(1) + " mln";
@@ -1428,7 +1495,7 @@
       if (!currentUser || busy) return;
 
       const description = descriptionInput.value.trim();
-      const amount = parseInt(amountInput.value, 10);
+      const amount = parseAmountDigits(amountInput.value);
       if (!description || !amount || amount <= 0) return;
 
       setBusy(true);
@@ -1440,6 +1507,7 @@
           date: new Date().toISOString()
         });
         form.reset();
+        amountHint.textContent = "";
         switchTab("list");
       } catch (err) {
         console.error(err);
