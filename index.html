@@ -717,7 +717,24 @@
       font-size: 0.95rem;
       font-weight: 600;
       word-break: break-all;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-website-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent-hover);
+      text-decoration: none;
+      transition: color 0.2s var(--ease), opacity 0.2s;
+    }
+
+    .profile-website-link:active {
+      opacity: 0.7;
     }
 
     .profile-hint {
@@ -1031,6 +1048,10 @@
         <div class="card profile-card">
           <div class="profile-avatar">👤</div>
           <p class="profile-email" id="userEmail">—</p>
+          <a href="https://bizneshisob.vercel.app" class="profile-website-link" target="_blank" rel="noopener noreferrer">
+            <span aria-hidden="true">🌐</span>
+            bizneshisob.vercel.app
+          </a>
           <p class="profile-hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
           <button type="button" class="install-btn hidden" id="installBtn">📲 Ilovani oʻrnatish</button>
           <div class="ios-install-hint hidden" id="iosInstallHint">
