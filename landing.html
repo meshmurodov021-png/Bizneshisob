@@ -6,6 +6,9 @@
   <meta name="description" content="BiznesHisob — biznes daromad va xarajatlarini boshqarish ilovasi">
   <meta name="theme-color" content="#7C3AED">
   <link rel="icon" type="image/png" href="/icons/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -352,6 +355,60 @@
       gap: 1rem;
       animation: fadeUp 0.8s var(--ease) 0.3s both;
     }
+
+    .cta-actions {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .ios-install-hint {
+      position: relative;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      line-height: 1.55;
+      border-radius: 12px;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-cta + .ios-install-hint {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .hero-cta + .ios-install-hint strong {
+      color: var(--purple-500);
+    }
+
+    .cta-box .ios-install-hint {
+      color: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .cta-box .ios-install-hint strong {
+      color: #fff;
+    }
+
+    .cta-box .btn-ios {
+      background: transparent;
+      color: #fff;
+      border: 2px solid rgba(255, 255, 255, 0.85);
+      box-shadow: none;
+    }
+
+    .cta-box .btn-ios:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .hidden { display: none !important; }
 
     .hero-visual {
       position: relative;
@@ -917,11 +974,11 @@
             Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.
           </p>
           <div class="hero-cta">
-            <a href="https://bizneshisob.vercel.app" class="btn btn-primary" target="_blank" rel="noopener" data-i18n="hero.cta">
-              Ilovani ochish →
-            </a>
+            <button type="button" class="btn btn-primary" id="heroInstallBtn" data-i18n="hero.cta">Yuklab olish</button>
+            <button type="button" class="btn btn-outline hidden" id="heroIosBtn" data-i18n="hero.ios">iPhone uchun</button>
             <a href="#features" class="btn btn-outline" data-i18n="hero.learn">Batafsil</a>
           </div>
+          <p class="ios-install-hint hidden" id="heroIosHint" data-i18n="install.iosHint"></p>
         </div>
         <div class="hero-visual" data-parallax="-0.05">
           <div class="float-card float-card-1">📈 +24% oylik</div>
@@ -1097,9 +1154,11 @@
         <div class="cta-box reveal">
           <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
           <p data-i18n="cta.desc">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
-          <a href="https://bizneshisob.vercel.app" class="btn" target="_blank" rel="noopener" data-i18n="cta.btn">
-            Ilovani yuklab olish →
-          </a>
+          <div class="cta-actions">
+            <button type="button" class="btn" id="ctaInstallBtn" data-i18n="cta.btn">Yuklab olish</button>
+            <button type="button" class="btn btn-ios hidden" id="ctaIosBtn" data-i18n="hero.ios">iPhone uchun</button>
+          </div>
+          <p class="ios-install-hint hidden" id="ctaIosHint" data-i18n="install.iosHint"></p>
         </div>
       </div>
     </section>
@@ -1162,8 +1221,10 @@
         "hero.title1": "Biznesingiz moliyasini",
         "hero.title2": "oson boshqaring",
         "hero.desc": "Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.",
-        "hero.cta": "Ilovani ochish →",
+        "hero.cta": "Yuklab olish",
+        "hero.ios": "iPhone uchun",
         "hero.learn": "Batafsil",
+        "install.iosHint": "Safarida «Ulashish» tugmasini bosing, soʻng «Bosh ekranga qoʻshish» ni tanlang.",
         "stats.users": "Faol foydalanuvchilar",
         "stats.transactions": "Operatsiyalar",
         "stats.satisfaction": "Mamnunlik",
@@ -1203,7 +1264,7 @@
         "reviews.t3.role": "Kafe egasi, Toshkent",
         "cta.title": "Bugun boshlang — bepul!",
         "cta.desc": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
-        "cta.btn": "Ilovani yuklab olish →",
+        "cta.btn": "Yuklab olish",
         "footer.desc": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
         "footer.product": "Mahsulot",
         "footer.company": "Kompaniya",
@@ -1223,8 +1284,10 @@
         "hero.title1": "Управляйте финансами",
         "hero.title2": "вашего бизнеса легко",
         "hero.desc": "Отслеживайте доходы и расходы в одном месте. BiznesHisob — современный, быстрый и безопасный помощник для малого бизнеса.",
-        "hero.cta": "Открыть приложение →",
+        "hero.cta": "Скачать",
+        "hero.ios": "Для iPhone",
         "hero.learn": "Подробнее",
+        "install.iosHint": "В Safari нажмите «Поделиться», затем «На экран Домой».",
         "stats.users": "Активных пользователей",
         "stats.transactions": "Операций",
         "stats.satisfaction": "Удовлетворённость",
@@ -1264,7 +1327,7 @@
         "reviews.t3.role": "Владелец кафе, Ташкент",
         "cta.title": "Начните сегодня — бесплатно!",
         "cta.desc": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
-        "cta.btn": "Скачать приложение →",
+        "cta.btn": "Скачать",
         "footer.desc": "Современное мобильное приложение для учёта доходов и расходов бизнеса.",
         "footer.product": "Продукт",
         "footer.company": "Компания",
@@ -1284,8 +1347,10 @@
         "hero.title1": "Manage your business",
         "hero.title2": "finances with ease",
         "hero.desc": "Track income and expenses in one place. BiznesHisob is a modern, fast, and secure accounting assistant for small business owners.",
-        "hero.cta": "Open the app →",
+        "hero.cta": "Download",
+        "hero.ios": "For iPhone",
         "hero.learn": "Learn more",
+        "install.iosHint": "In Safari, tap Share, then Add to Home Screen.",
         "stats.users": "Active users",
         "stats.transactions": "Transactions",
         "stats.satisfaction": "Satisfaction",
@@ -1325,7 +1390,7 @@
         "reviews.t3.role": "Café owner, Tashkent",
         "cta.title": "Start today — it's free!",
         "cta.desc": "Open BiznesHisob now or install it on your phone. Sign up takes one minute.",
-        "cta.btn": "Download the app →",
+        "cta.btn": "Download",
         "footer.desc": "A modern mobile app for managing business income and expenses.",
         "footer.product": "Product",
         "footer.company": "Company",
@@ -1501,6 +1566,92 @@
     });
 
     setLang(currentLang);
+
+    const APP_URL = "https://bizneshisob.vercel.app/";
+    let deferredInstallPrompt = null;
+
+    const heroInstallBtn = document.getElementById("heroInstallBtn");
+    const ctaInstallBtn = document.getElementById("ctaInstallBtn");
+    const heroIosBtn = document.getElementById("heroIosBtn");
+    const ctaIosBtn = document.getElementById("ctaIosBtn");
+    const heroIosHint = document.getElementById("heroIosHint");
+    const ctaIosHint = document.getElementById("ctaIosHint");
+
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+    function isStandalone() {
+      return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+    }
+
+    function openApp() {
+      window.location.href = APP_URL;
+    }
+
+    async function triggerInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        return;
+      }
+      openApp();
+    }
+
+    function toggleIosHint(show) {
+      heroIosHint.classList.toggle("hidden", !show);
+      ctaIosHint.classList.toggle("hidden", !show);
+    }
+
+    function setupInstallUI() {
+      if (isStandalone()) {
+        const openLabel = { uz: "Ilovani ochish", ru: "Открыть приложение", en: "Open app" };
+        const label = openLabel[currentLang] || openLabel.uz;
+        heroInstallBtn.textContent = label;
+        ctaInstallBtn.textContent = label;
+        heroIosBtn.classList.add("hidden");
+        ctaIosBtn.classList.add("hidden");
+        toggleIosHint(false);
+        return;
+      }
+      if (isIOS()) {
+        heroIosBtn.classList.remove("hidden");
+        ctaIosBtn.classList.remove("hidden");
+      }
+    }
+
+    [heroInstallBtn, ctaInstallBtn].forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (isStandalone()) openApp();
+        else triggerInstall();
+      });
+    });
+
+    function handleIosInstall() {
+      toggleIosHint(true);
+      if (!/Safari/i.test(navigator.userAgent) && !isStandalone()) {
+        openApp();
+      }
+    }
+
+    heroIosBtn.addEventListener("click", handleIosInstall);
+    ctaIosBtn.addEventListener("click", handleIosInstall);
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js").catch(() => {});
+      });
+    }
+
+    setupInstallUI();
   </script>
 </body>
 </html>
