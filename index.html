@@ -114,27 +114,63 @@
       position: relative;
       z-index: 1;
       min-height: 100dvh;
-      padding: max(1.25rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+      padding: max(2.75rem, calc(env(safe-area-inset-top) + 1.5rem)) 1.25rem max(2rem, env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      align-items: center;
+      justify-content: flex-start;
       max-width: 440px;
       margin: 0 auto;
       animation: fadeIn 0.4s var(--ease);
     }
 
     .auth-header {
+      width: 100%;
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      flex-shrink: 0;
+    }
+
+    .auth-header .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+      margin: 0 auto 1rem;
+    }
+
+    .auth-header .logo-icon {
+      width: 72px;
+      height: 72px;
+      font-size: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.45);
+    }
+
+    .auth-header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .auth-header .tagline {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 260px;
+      margin: 0 auto;
     }
 
     .auth-card {
+      width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.5rem 1.25rem;
       box-shadow: var(--shadow);
-      animation: slideUp 0.45s var(--ease);
+      animation: slideUp 0.45s var(--ease) 0.08s both;
     }
 
     .auth-tabs {
