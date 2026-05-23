@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BiznesHisob — biznes daromad va xarajatlarini boshqarish ilovasi">
+  <meta name="theme-color" content="#7C3AED">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png">
+  <title>BiznesHisob — Biznes moliyasini boshqaring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple-400: #a78bfa;
+      --purple-500: #8b5cf6;
+      --purple-600: #7c3aed;
+      --purple-700: #6d28d9;
+      --purple-900: #4c1d95;
+      --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #6366f1 100%);
+      --gradient-soft: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(99, 102, 241, 0.08));
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --nav-h: 72px;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0a0f;
+      --bg-elevated: #12121a;
+      --surface: #16161f;
+      --surface-2: #1e1e2a;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f4f4f8;
+      --muted: #9494a8;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      --particle: rgba(167, 139, 250, 0.5);
+      --hero-glow: rgba(124, 58, 237, 0.35);
+      --card-bg: rgba(22, 22, 31, 0.8);
+    }
+
+    [data-theme="light"] {
+      --bg: #f8f7fc;
+      --bg-elevated: #ffffff;
+      --surface: #ffffff;
+      --surface-2: #f0edf8;
+      --border: rgba(124, 58, 237, 0.12);
+      --text: #1a1a2e;
+      --muted: #64648a;
+      --shadow: 0 24px 80px rgba(124, 58, 237, 0.12);
+      --particle: rgba(124, 58, 237, 0.35);
+      --hero-glow: rgba(124, 58, 237, 0.2);
+      --card-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background 0.4s var(--ease), color 0.4s var(--ease);
+    }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .gradient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, var(--hero-glow), transparent),
+        radial-gradient(ellipse 40% 30% at 90% 50%, rgba(99, 102, 241, 0.12), transparent),
+        radial-gradient(ellipse 35% 25% at 5% 80%, rgba(168, 85, 247, 0.1), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 0;
+      transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+
+    .header.scrolled {
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: var(--purple-500); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .lang-switcher {
+      display: flex;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 0.35rem 0.55rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+
+    .lang-btn.active {
+      background: var(--gradient);
+      color: #fff;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: transform 0.2s var(--ease), border-color 0.25s;
+    }
+
+    .icon-btn:hover { border-color: var(--purple-500); }
+    .icon-btn:active { transform: scale(0.95); }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+      .menu-toggle { display: none; }
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      transform: translateY(-120%);
+      opacity: 0;
+      transition: transform 0.35s var(--ease), opacity 0.35s;
+      z-index: 99;
+    }
+
+    .mobile-nav.open {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-nav a {
+      display: block;
+      padding: 0.75rem;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+    }
+
+    .mobile-nav a:hover { background: var(--surface-2); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--purple-500);
+      color: var(--purple-500);
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: calc(var(--nav-h) + 3rem) 0 5rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 1fr; gap: 4rem; }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--gradient-soft);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--purple-500);
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.8s var(--ease) both;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      animation: fadeUp 0.8s var(--ease) 0.1s both;
+    }
+
+    .hero h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin-bottom: 2rem;
+      animation: fadeUp 0.8s var(--ease) 0.2s both;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      animation: fadeUp 0.8s var(--ease) 0.3s both;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      animation: fadeUp 1s var(--ease) 0.4s both;
+    }
+
+    .phone-mockup {
+      position: relative;
+      width: min(300px, 85vw);
+      aspect-ratio: 9/19;
+      background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+      border-radius: 36px;
+      border: 3px solid var(--border);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(124, 58, 237, 0.1);
+      overflow: hidden;
+      transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+      transition: transform 0.6s var(--ease);
+    }
+
+    .phone-mockup:hover {
+      transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 24px;
+      background: var(--bg);
+      border-radius: 20px;
+      z-index: 2;
+    }
+
+    .phone-screen {
+      position: absolute;
+      inset: 12px;
+      border-radius: 28px;
+      background: var(--bg-elevated);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mock-header {
+      padding: 2.5rem 1rem 1rem;
+      background: var(--gradient);
+      color: #fff;
+    }
+
+    .mock-header h3 { font-size: 0.9rem; font-weight: 700; opacity: 0.9; }
+    .mock-header .balance { font-size: 1.75rem; font-weight: 800; margin-top: 0.25rem; }
+
+    .mock-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+
+    .mock-stat {
+      padding: 0.75rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+    }
+
+    .mock-stat.income { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .mock-stat.expense { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .mock-stat span { display: block; font-weight: 800; font-size: 1rem; margin-top: 0.2rem; }
+
+    .mock-list {
+      flex: 1;
+      padding: 0 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .mock-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.75rem;
+      background: var(--surface-2);
+      border-radius: 10px;
+      font-size: 0.75rem;
+    }
+
+    .mock-item .amount.income { color: #22c55e; font-weight: 700; }
+    .mock-item .amount.expense { color: #ef4444; font-weight: 700; }
+
+    .mock-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 1.1rem;
+    }
+
+    .float-card {
+      position: absolute;
+      padding: 0.75rem 1rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .float-card-1 { top: 10%; right: -5%; animation-delay: 0s; }
+    .float-card-2 { bottom: 20%; left: -8%; animation-delay: 1.5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* Stats */
+    .stats-bar {
+      position: relative;
+      z-index: 1;
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--gradient-soft);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-value {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      font-weight: 500;
+    }
+
+    /* Sections */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--purple-500);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .section-header p { color: var(--muted); font-size: 1.05rem; }
+
+    /* Features */
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 600px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .feature-card {
+      padding: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124, 58, 237, 0.35);
+      box-shadow: 0 20px 60px rgba(124, 58, 237, 0.15);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--gradient-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* How it works */
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      position: relative;
+    }
+
+    @media (min-width: 768px) {
+      .steps { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+    }
+
+    .step-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+
+    .step-card.visible { opacity: 1; transform: translateY(0); }
+
+    .step-num {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
+    }
+
+    .step-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step-card p { color: var(--muted); font-size: 0.95rem; }
+
+    /* Testimonials */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .testimonial-card {
+      padding: 2rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.4s var(--ease);
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
+    .testimonial-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .testimonial-card:hover { transform: translateY(-4px); }
+
+    .stars { color: #fbbf24; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 2px; }
+
+    .testimonial-text {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .author-info strong { display: block; font-size: 0.95rem; }
+    .author-info span { font-size: 0.8rem; color: var(--muted); }
+
+    /* CTA */
+    .cta-section {
+      padding: 5rem 0;
+    }
+
+    .cta-box {
+      position: relative;
+      padding: 4rem 2rem;
+      border-radius: 28px;
+      background: var(--gradient);
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .cta-box h2 {
+      position: relative;
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+      position: relative;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      font-size: 1.05rem;
+    }
+
+    .cta-box .btn {
+      position: relative;
+      background: #fff;
+      color: var(--purple-700);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-box .btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 4rem 0 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    }
+
+    .footer-brand p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      max-width: 280px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      color: var(--muted);
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.5rem; }
+
+    .footer-col a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: color 0.25s, opacity 0.25s;
+    }
+
+    .footer-col a:hover { color: var(--purple-500); opacity: 1; }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .social-links { display: flex; gap: 0.75rem; }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .social-links a:hover {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-parallax] {
+      will-change: transform;
+      transition: transform 0.1s linear;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .reveal, .feature-card, .step-card, .testimonial-card {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="gradient-bg" aria-hidden="true"></div>
+
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">📊</div>
+        <span>BiznesHisob</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
+          <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
+          <li><a href="#reviews" data-i18n="nav.reviews">Sharhlar</a></li>
+          <li><a href="#download" data-i18n="nav.download">Yuklab olish</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <div class="lang-switcher" role="group" aria-label="Language">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        <button type="button" class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
+    <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
+    <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
+    <a href="#download" data-i18n="nav.download">Yuklab olish</a>
+  </nav>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-content" data-parallax="0.03">
+          <div class="hero-badge">
+            <span>✨</span>
+            <span data-i18n="hero.badge">#1 biznes moliya ilovasi</span>
+          </div>
+          <h1>
+            <span data-i18n="hero.title1">Biznesingiz moliyasini</span><br>
+            <span class="gradient-text" data-i18n="hero.title2">oson boshqaring</span>
+          </h1>
+          <p class="hero-desc" data-i18n="hero.desc">
+            Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.
+          </p>
+          <div class="hero-cta">
+            <a href="https://bizneshisob.vercel.app" class="btn btn-primary" target="_blank" rel="noopener" data-i18n="hero.cta">
+              Ilovani ochish →
+            </a>
+            <a href="#features" class="btn btn-outline" data-i18n="hero.learn">Batafsil</a>
+          </div>
+        </div>
+        <div class="hero-visual" data-parallax="-0.05">
+          <div class="float-card float-card-1">📈 +24% oylik</div>
+          <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="mock-header">
+                <h3>BiznesHisob</h3>
+                <div class="balance">12 450 000 ₸</div>
+              </div>
+              <div class="mock-stats">
+                <div class="mock-stat income">
+                  Daromad
+                  <span>+8.2M</span>
+                </div>
+                <div class="mock-stat expense">
+                  Xarajat
+                  <span>-3.1M</span>
+                </div>
+              </div>
+              <div class="mock-list">
+                <div class="mock-item"><span>Sotuv</span><span class="amount income">+450K</span></div>
+                <div class="mock-item"><span>Ofis</span><span class="amount expense">-120K</span></div>
+                <div class="mock-item"><span>Xizmat</span><span class="amount income">+890K</span></div>
+              </div>
+              <div class="mock-nav">🏠 ➕ 📋 👤</div>
+            </div>
+          </div>
+          <div class="float-card float-card-2">🔒 Xavfsiz</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats-bar">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item reveal">
+            <div class="stat-value" data-count="12500" data-suffix="+">0</div>
+            <div class="stat-label" data-i18n="stats.users">Faol foydalanuvchilar</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-value" data-count="2400000" data-suffix="+">0</div>
+            <div class="stat-label" data-i18n="stats.transactions">Operatsiyalar</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-value" data-count="98" data-suffix="%">0</div>
+            <div class="stat-label" data-i18n="stats.satisfaction">Mamnunlik</div>
+          </div>
+          <div class="stat-item reveal">
+            <div class="stat-value" data-count="24" data-suffix="/7">0</div>
+            <div class="stat-label" data-i18n="stats.support">Qo'llab-quvvatlash</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag" data-i18n="features.tag">Imkoniyatlar</span>
+          <h2 data-i18n="features.title">Nima uchun BiznesHisob?</h2>
+          <p data-i18n="features.subtitle">Biznesingiz uchun kerakli barcha moliyaviy vositalar bitta ilovada</p>
+        </div>
+        <div class="features-grid">
+          <article class="feature-card" data-delay="0">
+            <div class="feature-icon">💰</div>
+            <h3 data-i18n="features.f1.title">Daromad va xarajat</h3>
+            <p data-i18n="features.f1.desc">Har bir operatsiyani soniyalar ichida qo'shing va real vaqtda balansni kuzating.</p>
+          </article>
+          <article class="feature-card" data-delay="100">
+            <div class="feature-icon">📊</div>
+            <h3 data-i18n="features.f2.title">Vizual hisobotlar</h3>
+            <p data-i18n="features.f2.desc">Daromad va xarajatlar bo'yicha aniq statistika va grafiklar.</p>
+          </article>
+          <article class="feature-card" data-delay="200">
+            <div class="feature-icon">📱</div>
+            <h3 data-i18n="features.f3.title">Mobil va PWA</h3>
+            <p data-i18n="features.f3.desc">Telefoningizga o'rnating — ilova kabi ishlaydi, internet bo'lmasa ham.</p>
+          </article>
+          <article class="feature-card" data-delay="300">
+            <div class="feature-icon">🔒</div>
+            <h3 data-i18n="features.f4.title">Xavfsizlik</h3>
+            <p data-i18n="features.f4.desc">Ma'lumotlaringiz shifrlangan va faqat sizga tegishli hisobda saqlanadi.</p>
+          </article>
+          <article class="feature-card" data-delay="400">
+            <div class="feature-icon">⚡</div>
+            <h3 data-i18n="features.f5.title">Tezkor qo'shish</h3>
+            <p data-i18n="features.f5.desc">Bir bosish bilan daromad yoki xarajat qo'shing — vaqt tejang.</p>
+          </article>
+          <article class="feature-card" data-delay="500">
+            <div class="feature-icon">🌐</div>
+            <h3 data-i18n="features.f6.title">Ko'p tilli</h3>
+            <p data-i18n="features.f6.desc">O'zbek, rus va ingliz tillarida qulay interfeys.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag" data-i18n="how.tag">Jarayon</span>
+          <h2 data-i18n="how.title">Qanday ishlaydi?</h2>
+          <p data-i18n="how.subtitle">Uch oddiy qadam — va moliyangiz nazorat ostida</p>
+        </div>
+        <div class="steps">
+          <div class="step-card" data-delay="0">
+            <div class="step-num">1</div>
+            <h3 data-i18n="how.s1.title">Ro'yxatdan o'ting</h3>
+            <p data-i18n="how.s1.desc">Email va parol bilan tez va bepul hisob yarating.</p>
+          </div>
+          <div class="step-card" data-delay="150">
+            <div class="step-num">2</div>
+            <h3 data-i18n="how.s2.title">Operatsiya qo'shing</h3>
+            <p data-i18n="how.s2.desc">Daromad va xarajatlarni kategoriyalar bilan belgilang.</p>
+          </div>
+          <div class="step-card" data-delay="300">
+            <div class="step-num">3</div>
+            <h3 data-i18n="how.s3.title">Tahlil qiling</h3>
+            <p data-i18n="how.s3.desc">Statistikani ko'ring va biznesingizni rivojlantiring.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-tag" data-i18n="reviews.tag">Sharhlar</span>
+          <h2 data-i18n="reviews.title">Foydalanuvchilar nima deydi</h2>
+          <p data-i18n="reviews.subtitle">Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda</p>
+        </div>
+        <div class="testimonials-grid">
+          <article class="testimonial-card" data-delay="0">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text" data-i18n="reviews.t1.text">"Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson!"</p>
+            <div class="testimonial-author">
+              <div class="avatar">AK</div>
+              <div class="author-info">
+                <strong>Aziza Karimova</strong>
+                <span data-i18n="reviews.t1.role">Do'kon egasi, Toshkent</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial-card" data-delay="100">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text" data-i18n="reviews.t2.text">"Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Tavsiya qilaman!"</p>
+            <div class="testimonial-author">
+              <div class="avatar">DR</div>
+              <div class="author-info">
+                <strong>Dmitriy Rakhimov</strong>
+                <span data-i18n="reviews.t2.role">IT xizmatlar, Samarqand</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial-card" data-delay="200">
+            <div class="stars">★★★★★</div>
+            <p class="testimonial-text" data-i18n="reviews.t3.text">"Perfect for my café business. Offline mode is a game changer. Beautiful and simple UI."</p>
+            <div class="testimonial-author">
+              <div class="avatar">JM</div>
+              <div class="author-info">
+                <strong>James Mitchell</strong>
+                <span data-i18n="reviews.t3.role">Café owner, Tashkent</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="download">
+      <div class="container">
+        <div class="cta-box reveal">
+          <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
+          <p data-i18n="cta.desc">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
+          <a href="https://bizneshisob.vercel.app" class="btn" target="_blank" rel="noopener" data-i18n="cta.btn">
+            Ilovani yuklab olish →
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">📊</div>
+            <span>BiznesHisob</span>
+          </a>
+          <p data-i18n="footer.desc">Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.product">Mahsulot</h4>
+          <ul>
+            <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
+            <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
+            <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener" data-i18n="nav.download">Yuklab olish</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.company">Kompaniya</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.about">Biz haqimizda</a></li>
+            <li><a href="#" data-i18n="footer.contact">Aloqa</a></li>
+            <li><a href="#" data-i18n="footer.privacy">Maxfiylik</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.support">Yordam</h4>
+          <ul>
+            <li><a href="#" data-i18n="footer.faq">FAQ</a></li>
+            <li><a href="mailto:support@bizneshisob.uz">support@bizneshisob.uz</a></li>
+            <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener">bizneshisob.vercel.app</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 BiznesHisob. <span data-i18n="footer.rights">Barcha huquqlar himoyalangan.</span></span>
+        <div class="social-links">
+          <a href="#" aria-label="Telegram">✈</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="Facebook">f</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const i18n = {
+      uz: {
+        "nav.features": "Imkoniyatlar",
+        "nav.how": "Qanday ishlaydi",
+        "nav.reviews": "Sharhlar",
+        "nav.download": "Yuklab olish",
+        "hero.badge": "#1 biznes moliya ilovasi",
+        "hero.title1": "Biznesingiz moliyasini",
+        "hero.title2": "oson boshqaring",
+        "hero.desc": "Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.",
+        "hero.cta": "Ilovani ochish →",
+        "hero.learn": "Batafsil",
+        "stats.users": "Faol foydalanuvchilar",
+        "stats.transactions": "Operatsiyalar",
+        "stats.satisfaction": "Mamnunlik",
+        "stats.support": "Qo'llab-quvvatlash",
+        "features.tag": "Imkoniyatlar",
+        "features.title": "Nima uchun BiznesHisob?",
+        "features.subtitle": "Biznesingiz uchun kerakli barcha moliyaviy vositalar bitta ilovada",
+        "features.f1.title": "Daromad va xarajat",
+        "features.f1.desc": "Har bir operatsiyani soniyalar ichida qo'shing va real vaqtda balansni kuzating.",
+        "features.f2.title": "Vizual hisobotlar",
+        "features.f2.desc": "Daromad va xarajatlar bo'yicha aniq statistika va grafiklar.",
+        "features.f3.title": "Mobil va PWA",
+        "features.f3.desc": "Telefoningizga o'rnating — ilova kabi ishlaydi, internet bo'lmasa ham.",
+        "features.f4.title": "Xavfsizlik",
+        "features.f4.desc": "Ma'lumotlaringiz shifrlangan va faqat sizga tegishli hisobda saqlanadi.",
+        "features.f5.title": "Tezkor qo'shish",
+        "features.f5.desc": "Bir bosish bilan daromad yoki xarajat qo'shing — vaqt tejang.",
+        "features.f6.title": "Ko'p tilli",
+        "features.f6.desc": "O'zbek, rus va ingliz tillarida qulay interfeys.",
+        "how.tag": "Jarayon",
+        "how.title": "Qanday ishlaydi?",
+        "how.subtitle": "Uch oddiy qadam — va moliyangiz nazorat ostida",
+        "how.s1.title": "Ro'yxatdan o'ting",
+        "how.s1.desc": "Email va parol bilan tez va bepul hisob yarating.",
+        "how.s2.title": "Operatsiya qo'shing",
+        "how.s2.desc": "Daromad va xarajatlarni kategoriyalar bilan belgilang.",
+        "how.s3.title": "Tahlil qiling",
+        "how.s3.desc": "Statistikani ko'ring va biznesingizni rivojlantiring.",
+        "reviews.tag": "Sharhlar",
+        "reviews.title": "Foydalanuvchilar nima deydi",
+        "reviews.subtitle": "Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda",
+        "reviews.t1.text": "\"Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson!\"",
+        "reviews.t1.role": "Do'kon egasi, Toshkent",
+        "reviews.t2.text": "\"Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Tavsiya qilaman!\"",
+        "reviews.t2.role": "IT xizmatlar, Samarqand",
+        "reviews.t3.text": "\"Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys.\"",
+        "reviews.t3.role": "Kafe egasi, Toshkent",
+        "cta.title": "Bugun boshlang — bepul!",
+        "cta.desc": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
+        "cta.btn": "Ilovani yuklab olish →",
+        "footer.desc": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
+        "footer.product": "Mahsulot",
+        "footer.company": "Kompaniya",
+        "footer.support": "Yordam",
+        "footer.about": "Biz haqimizda",
+        "footer.contact": "Aloqa",
+        "footer.privacy": "Maxfiylik",
+        "footer.faq": "FAQ",
+        "footer.rights": "Barcha huquqlar himoyalangan."
+      },
+      ru: {
+        "nav.features": "Возможности",
+        "nav.how": "Как это работает",
+        "nav.reviews": "Отзывы",
+        "nav.download": "Скачать",
+        "hero.badge": "#1 приложение для бизнес-финансов",
+        "hero.title1": "Управляйте финансами",
+        "hero.title2": "вашего бизнеса легко",
+        "hero.desc": "Отслеживайте доходы и расходы в одном месте. BiznesHisob — современный, быстрый и безопасный помощник для малого бизнеса.",
+        "hero.cta": "Открыть приложение →",
+        "hero.learn": "Подробнее",
+        "stats.users": "Активных пользователей",
+        "stats.transactions": "Операций",
+        "stats.satisfaction": "Удовлетворённость",
+        "stats.support": "Поддержка",
+        "features.tag": "Возможности",
+        "features.title": "Почему BiznesHisob?",
+        "features.subtitle": "Все финансовые инструменты для вашего бизнеса в одном приложении",
+        "features.f1.title": "Доходы и расходы",
+        "features.f1.desc": "Добавляйте операции за секунды и следите за балансом в реальном времени.",
+        "features.f2.title": "Визуальные отчёты",
+        "features.f2.desc": "Чёткая статистика и графики по доходам и расходам.",
+        "features.f3.title": "Мобильное и PWA",
+        "features.f3.desc": "Установите на телефон — работает как приложение, даже без интернета.",
+        "features.f4.title": "Безопасность",
+        "features.f4.desc": "Ваши данные зашифрованы и хранятся только в вашем аккаунте.",
+        "features.f5.title": "Быстрое добавление",
+        "features.f5.desc": "Добавляйте доход или расход одним нажатием — экономьте время.",
+        "features.f6.title": "Многоязычность",
+        "features.f6.desc": "Удобный интерфейс на узбекском, русском и английском.",
+        "how.tag": "Процесс",
+        "how.title": "Как это работает?",
+        "how.subtitle": "Три простых шага — и ваши финансы под контролем",
+        "how.s1.title": "Зарегистрируйтесь",
+        "how.s1.desc": "Создайте бесплатный аккаунт по email и паролю за минуту.",
+        "how.s2.title": "Добавьте операции",
+        "how.s2.desc": "Отмечайте доходы и расходы с категориями.",
+        "how.s3.title": "Анализируйте",
+        "how.s3.desc": "Смотрите статистику и развивайте свой бизнес.",
+        "reviews.tag": "Отзывы",
+        "reviews.title": "Что говорят пользователи",
+        "reviews.subtitle": "Тысячи предпринимателей уже используют BiznesHisob",
+        "reviews.t1.text": "\"Отличное приложение для моего магазина. Каждый день слежу за доходами и расходами с телефона. Очень просто!\"",
+        "reviews.t1.role": "Владелец магазина, Ташкент",
+        "reviews.t2.text": "\"Раньше вёл учёт в Excel. Теперь всё в одном месте — быстрее и удобнее. Рекомендую!\"",
+        "reviews.t2.role": "IT-услуги, Самарканд",
+        "reviews.t3.text": "\"Идеально для моего кафе. Офлайн-режим — находка. Красивый и простой интерфейс.\"",
+        "reviews.t3.role": "Владелец кафе, Ташкент",
+        "cta.title": "Начните сегодня — бесплатно!",
+        "cta.desc": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
+        "cta.btn": "Скачать приложение →",
+        "footer.desc": "Современное мобильное приложение для учёта доходов и расходов бизнеса.",
+        "footer.product": "Продукт",
+        "footer.company": "Компания",
+        "footer.support": "Поддержка",
+        "footer.about": "О нас",
+        "footer.contact": "Контакты",
+        "footer.privacy": "Конфиденциальность",
+        "footer.faq": "FAQ",
+        "footer.rights": "Все права защищены."
+      },
+      en: {
+        "nav.features": "Features",
+        "nav.how": "How it works",
+        "nav.reviews": "Reviews",
+        "nav.download": "Download",
+        "hero.badge": "#1 business finance app",
+        "hero.title1": "Manage your business",
+        "hero.title2": "finances with ease",
+        "hero.desc": "Track income and expenses in one place. BiznesHisob is a modern, fast, and secure accounting assistant for small business owners.",
+        "hero.cta": "Open the app →",
+        "hero.learn": "Learn more",
+        "stats.users": "Active users",
+        "stats.transactions": "Transactions",
+        "stats.satisfaction": "Satisfaction",
+        "stats.support": "Support",
+        "features.tag": "Features",
+        "features.title": "Why BiznesHisob?",
+        "features.subtitle": "All the financial tools your business needs in one app",
+        "features.f1.title": "Income & expenses",
+        "features.f1.desc": "Add transactions in seconds and monitor your balance in real time.",
+        "features.f2.title": "Visual reports",
+        "features.f2.desc": "Clear statistics and charts for income and expenses.",
+        "features.f3.title": "Mobile & PWA",
+        "features.f3.desc": "Install on your phone — works like a native app, even offline.",
+        "features.f4.title": "Security",
+        "features.f4.desc": "Your data is encrypted and stored only in your account.",
+        "features.f5.title": "Quick add",
+        "features.f5.desc": "Add income or expense with one tap — save time.",
+        "features.f6.title": "Multilingual",
+        "features.f6.desc": "Comfortable interface in Uzbek, Russian, and English.",
+        "how.tag": "Process",
+        "how.title": "How it works?",
+        "how.subtitle": "Three simple steps — and your finances are under control",
+        "how.s1.title": "Sign up",
+        "how.s1.desc": "Create a free account with email and password in a minute.",
+        "how.s2.title": "Add transactions",
+        "how.s2.desc": "Label income and expenses with categories.",
+        "how.s3.title": "Analyze",
+        "how.s3.desc": "View statistics and grow your business.",
+        "reviews.tag": "Reviews",
+        "reviews.title": "What users say",
+        "reviews.subtitle": "Thousands of entrepreneurs already use BiznesHisob",
+        "reviews.t1.text": "\"Great app for my small shop. I track income and expenses from my phone every day. So easy!\"",
+        "reviews.t1.role": "Shop owner, Tashkent",
+        "reviews.t2.text": "\"I used to track everything in Excel. Now it's all in one place — faster and more convenient. Highly recommend!\"",
+        "reviews.t2.role": "IT services, Samarkand",
+        "reviews.t3.text": "\"Perfect for my café business. Offline mode is a game changer. Beautiful and simple UI.\"",
+        "reviews.t3.role": "Café owner, Tashkent",
+        "cta.title": "Start today — it's free!",
+        "cta.desc": "Open BiznesHisob now or install it on your phone. Sign up takes one minute.",
+        "cta.btn": "Download the app →",
+        "footer.desc": "A modern mobile app for managing business income and expenses.",
+        "footer.product": "Product",
+        "footer.company": "Company",
+        "footer.support": "Support",
+        "footer.about": "About us",
+        "footer.contact": "Contact",
+        "footer.privacy": "Privacy",
+        "footer.faq": "FAQ",
+        "footer.rights": "All rights reserved."
+      }
+    };
+
+    let currentLang = localStorage.getItem("bh-landing-lang") || "uz";
+
+    function setLang(lang) {
+      currentLang = lang;
+      localStorage.setItem("bh-landing-lang", lang);
+      document.documentElement.lang = lang;
+      document.querySelectorAll(".lang-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.lang === lang);
+      });
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.dataset.i18n;
+        if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+    }
+
+    document.querySelectorAll(".lang-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+
+    const themeToggle = document.getElementById("themeToggle");
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem("bh-landing-theme") || "dark";
+
+    function setTheme(theme) {
+      html.dataset.theme = theme;
+      localStorage.setItem("bh-landing-theme", theme);
+      themeToggle.textContent = theme === "dark" ? "🌙" : "☀️";
+    }
+
+    setTheme(savedTheme);
+    themeToggle.addEventListener("click", () => {
+      setTheme(html.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    const header = document.getElementById("header");
+    window.addEventListener("scroll", () => {
+      header.classList.toggle("scrolled", window.scrollY > 40);
+    }, { passive: true });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const mobileNav = document.getElementById("mobileNav");
+    menuToggle.addEventListener("click", () => {
+      mobileNav.classList.toggle("open");
+      mobileNav.setAttribute("aria-hidden", !mobileNav.classList.contains("open"));
+    });
+    mobileNav.querySelectorAll("a").forEach((a) => {
+      a.addEventListener("click", () => mobileNav.classList.remove("open"));
+    });
+
+    function formatCount(n) {
+      if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+      if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "K";
+      return String(n);
+    }
+
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || "";
+      const duration = 2000;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 4);
+        const val = Math.floor(target * eased);
+        el.textContent = formatCount(val) + (t >= 1 ? suffix : "");
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("visible");
+          if (entry.target.classList.contains("stat-value") && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = "1";
+            animateCounter(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    document.querySelectorAll(".reveal, .feature-card, .step-card, .testimonial-card, .stat-value").forEach((el) => {
+      const delay = el.dataset.delay;
+      if (delay) el.style.transitionDelay = delay + "ms";
+      observer.observe(el);
+    });
+
+    document.querySelectorAll("[data-parallax]").forEach((el) => {
+      const speed = parseFloat(el.dataset.parallax) || 0.05;
+      window.addEventListener("scroll", () => {
+        const y = window.scrollY * speed;
+        el.style.transform = `translateY(${y}px)`;
+      }, { passive: true });
+    });
+
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    let w, h;
+
+    function resizeCanvas() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+
+    function initParticles() {
+      const count = Math.min(80, Math.floor((w * h) / 15000));
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        opacity: Math.random() * 0.5 + 0.2
+      }));
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, w, h);
+      const color = getComputedStyle(document.documentElement).getPropertyValue("--particle").trim() || "rgba(167,139,250,0.5)";
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.globalAlpha = p.opacity;
+        ctx.fill();
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x;
+          const dy = p.y - q.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = color;
+            ctx.globalAlpha = (1 - dist / 120) * 0.15;
+            ctx.stroke();
+          }
+        }
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawParticles);
+    }
+
+    resizeCanvas();
+    initParticles();
+    drawParticles();
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      initParticles();
+    });
+
+    setLang(currentLang);
+  </script>
+</body>
+</html>
