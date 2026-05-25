@@ -38,7 +38,24 @@
       --header-h: 56px;
       --touch: 48px;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --icon-nav: 24px;
+      --icon-list: 20px;
+      --icon-input: 18px;
+      --icon-inactive: #6b7280;
+      --icon-active: #7C3AED;
     }
+
+    /* Lucide icons */
+    [data-lucide],
+    .lucide {
+      stroke-width: 1.5;
+      flex-shrink: 0;
+    }
+
+    .icon-nav { width: var(--icon-nav); height: var(--icon-nav); }
+    .icon-list { width: var(--icon-list); height: var(--icon-list); }
+    .icon-input { width: var(--icon-input); height: var(--icon-input); }
+    .icon-lg { width: 48px; height: 48px; opacity: 0.45; }
 
     * {
       margin: 0;
@@ -284,8 +301,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
       box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+    }
+
+    .logo-icon [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
     }
 
     h1 {
@@ -296,12 +318,21 @@
     }
 
     .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
       font-size: 0.7rem;
       color: var(--income);
       background: var(--income-dim);
       padding: 0.2rem 0.5rem;
       border-radius: 20px;
       border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .header-badge [data-lucide] {
+      width: 16px;
+      height: 16px;
+      stroke: var(--income);
     }
 
     .app-main {
@@ -626,12 +657,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
       flex-shrink: 0;
     }
 
     .tx-icon.income { background: var(--income-dim); }
+    .tx-icon.income [data-lucide] { stroke: var(--income); }
     .tx-icon.expense { background: var(--expense-dim); }
+    .tx-icon.expense [data-lucide] { stroke: var(--expense); }
 
     .transaction-info {
       flex: 1;
@@ -670,9 +702,13 @@
     .transaction-amount.expense { color: var(--expense); }
 
     .delete-btn {
-      min-width: var(--touch);
+      min-width: 36px;
       min-height: 36px;
       padding: 0 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--muted);
@@ -682,6 +718,12 @@
       font-weight: 600;
       font-family: inherit;
       transition: all 0.2s var(--ease);
+    }
+
+    .delete-btn [data-lucide] {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
     }
 
     .delete-btn:active:not(:disabled) {
@@ -700,9 +742,9 @@
     }
 
     .empty-state .icon {
-      font-size: 3rem;
+      display: flex;
+      justify-content: center;
       margin-bottom: 0.75rem;
-      opacity: 0.45;
     }
 
     .empty-state p { font-size: 0.95rem; line-height: 1.6; }
@@ -722,16 +764,40 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
       box-shadow: 0 8px 28px rgba(99, 102, 241, 0.4);
     }
 
+    .profile-avatar [data-lucide] {
+      width: 32px;
+      height: 32px;
+      stroke: #fff;
+    }
+
     .profile-email {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
       font-size: 0.95rem;
       font-weight: 600;
       word-break: break-all;
       margin-bottom: 0.5rem;
     }
+
+    .profile-email [data-lucide] {
+      width: 18px;
+      height: 18px;
+      stroke: var(--icon-inactive);
+      flex-shrink: 0;
+    }
+
+    .plan-badge [data-lucide] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .plan-badge.premium [data-lucide] { stroke: #4ade80; }
 
     .profile-website-link {
       display: inline-flex;
@@ -756,10 +822,28 @@
       margin-bottom: 1.25rem;
     }
 
+    .profile-pin-btn,
+    .profile-bio-btn,
+    .install-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+
+    .profile-pin-btn [data-lucide],
+    .profile-bio-btn [data-lucide],
+    .install-btn [data-lucide] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
     .logout-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 0.4rem;
       width: auto;
       min-height: auto;
       padding: 0.4rem 0.9rem;
@@ -796,7 +880,63 @@
       color: var(--muted);
     }
 
+    .info-row > [data-lucide]:first-child {
+      width: 20px;
+      height: 20px;
+      stroke: var(--icon-inactive);
+      flex-shrink: 0;
+    }
+
     .info-row span:last-child { color: var(--income); font-weight: 600; }
+
+    .form-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .form-row label [data-lucide] {
+      width: var(--icon-input);
+      height: var(--icon-input);
+      stroke: var(--icon-inactive);
+    }
+
+    .type-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .type-btn [data-lucide] {
+      width: 18px;
+      height: 18px;
+    }
+
+    .quick-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .quick-btn [data-lucide] {
+      width: 20px;
+      height: 20px;
+    }
+
+    .offline-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .offline-banner [data-lucide] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
 
     /* Bottom navigation */
     .bottom-nav {
@@ -840,38 +980,54 @@
     }
 
     .nav-item .nav-icon {
-      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       line-height: 1;
       transition: transform 0.25s var(--ease);
     }
 
+    .nav-item .nav-icon [data-lucide] {
+      width: var(--icon-nav);
+      height: var(--icon-nav);
+      stroke: var(--icon-inactive);
+      transition: stroke 0.25s var(--ease), filter 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
     .nav-item.active {
-      color: var(--accent-hover);
+      color: var(--icon-active);
     }
 
-    .nav-item.active .nav-icon {
-      transform: scale(1.15);
+    .nav-item.active .nav-icon [data-lucide] {
+      stroke: var(--icon-active);
+      filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.55));
+      transform: scale(1.08);
     }
 
-    .nav-item.active::before {
+    .nav-item.active::after {
       content: "";
       position: absolute;
-      top: 0;
+      bottom: calc(6px + env(safe-area-inset-bottom, 0px));
       left: 50%;
       transform: translateX(-50%);
-      width: 32px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 0 0 4px 4px;
-      animation: navIndicator 0.3s var(--ease);
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--icon-active);
+      box-shadow: 0 0 8px rgba(124, 58, 237, 0.7);
+      animation: navDotIn 0.3s var(--ease);
     }
 
-    @keyframes navIndicator {
-      from { width: 0; opacity: 0; }
-      to { width: 32px; opacity: 1; }
+    @keyframes navDotIn {
+      from { opacity: 0; transform: translateX(-50%) scale(0); }
+      to { opacity: 1; transform: translateX(-50%) scale(1); }
     }
 
-    .nav-item:active { transform: scale(0.92); }
+    .nav-item:active .nav-icon [data-lucide] {
+      transform: scale(1.1);
+    }
+
+    .nav-item:active { transform: scale(0.96); }
 
     .tagline {
       font-size: 0.875rem;
@@ -947,12 +1103,785 @@
     .ios-install-hint strong { color: var(--accent-hover); }
 
     .sync-status.offline span:last-child { color: #eab308; }
+
+    /* Profile plan badges */
+    .profile-plan-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .plan-badge.premium {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+    }
+
+    .plan-badge.free-wrap {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      gap: 0.5rem;
+    }
+
+    .upgrade-btn {
+      padding: 0.2rem 0.55rem;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .upgrade-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+    }
+
+    /* Premium modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s var(--ease), visibility 0.35s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .premium-modal {
+      width: 100%;
+      max-width: 400px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      padding: 1.75rem 1.5rem 1.5rem;
+      background: rgba(18, 18, 28, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      border-radius: 20px;
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(124, 58, 237, 0.2);
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.4s var(--ease);
+      position: relative;
+    }
+
+    .modal-overlay.open .premium-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+      border-color: rgba(124, 58, 237, 0.4);
+      background: rgba(124, 58, 237, 0.12);
+    }
+
+    .premium-limit-alert {
+      padding: 0.65rem 0.85rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.35);
+      color: #fb923c;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .premium-modal h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      padding-right: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .premium-modal .premium-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .premium-price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, #7C3AED, #4F46E5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.15rem;
+    }
+
+    .premium-features {
+      list-style: none;
+      margin-bottom: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .premium-features li {
+      font-size: 0.88rem;
+      color: #d4d4e0;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+
+    .premium-features .feat-check {
+      color: #4ade80;
+      flex-shrink: 0;
+    }
+
+    .payment-checking {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: #c4b5fd;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      animation: checkingPulse 1.5s ease infinite;
+    }
+
+    @keyframes checkingPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+
+    .payment-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .btn-payme {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 12px;
+      background: #00AEEF;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .btn-payme:active {
+      transform: scale(0.98);
+      box-shadow: 0 6px 20px rgba(0, 174, 239, 0.4);
+    }
+
+    .btn-click {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 12px;
+      background: #63CD56;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .btn-click:active {
+      transform: scale(0.98);
+      box-shadow: 0 6px 20px rgba(99, 205, 86, 0.4);
+    }
     .sync-status.online span:last-child { color: var(--income); }
+
+    /* PIN / security screen */
+    .pin-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: #0a0a0f;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease), visibility 0.4s;
+    }
+
+    .pin-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124, 58, 237, 0.2), transparent 55%);
+      pointer-events: none;
+    }
+
+    .pin-screen.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .pin-panel {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      animation: pinFadeIn 0.45s var(--ease);
+    }
+
+    @keyframes pinFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .pin-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .pin-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(124, 58, 237, 0.45);
+    }
+
+    .pin-logo-icon [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
+    }
+
+    .pin-bio-btn [data-lucide] {
+      width: 26px;
+      height: 26px;
+      stroke: #c4b5fd;
+    }
+
+    .pin-key.back [data-lucide] {
+      width: 22px;
+      height: 22px;
+    }
+
+    .premium-modal-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .premium-modal-title [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: #a78bfa;
+      flex-shrink: 0;
+    }
+
+    .premium-features .feat-check {
+      display: flex;
+      align-items: center;
+      color: #4ade80;
+    }
+
+    .premium-features .feat-check [data-lucide] {
+      width: 16px;
+      height: 16px;
+      stroke: #4ade80;
+    }
+
+    .btn-payme,
+    .btn-click {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-payme [data-lucide],
+    .btn-click [data-lucide] {
+      width: 20px;
+      height: 20px;
+    }
+
+    .pin-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .pin-sub {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .pin-dots {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pin-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(124, 58, 237, 0.35);
+      background: rgba(255, 255, 255, 0.04);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .pin-dot.filled {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      border-color: #7C3AED;
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(124, 58, 237, 0.5);
+    }
+
+    .pin-dot.shake {
+      animation: pinShake 0.4s ease;
+    }
+
+    @keyframes pinShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .pin-msg {
+      min-height: 1.25rem;
+      font-size: 0.82rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .pin-msg.error { color: #f87171; }
+    .pin-msg.lockout { color: #fb923c; font-weight: 600; }
+
+    .pin-bio-btn {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      border: 1px solid rgba(124, 58, 237, 0.4);
+      background: rgba(124, 58, 237, 0.12);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .pin-bio-btn:active {
+      transform: scale(0.94);
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
+    }
+
+    .pin-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .pin-key {
+      aspect-ratio: 1.15;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(22, 22, 31, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text);
+      font-size: 1.35rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+    }
+
+    .pin-key:active:not(:disabled) {
+      transform: scale(0.92);
+      background: rgba(124, 58, 237, 0.2);
+      border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    .pin-key:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .pin-key.empty { visibility: hidden; pointer-events: none; }
+    .pin-key.back { font-size: 1.1rem; }
+
+    .pin-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .pin-forgot {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0.35rem;
+    }
+
+    .pin-forgot:hover { color: #c4b5fd; }
+
+    .pin-enable-bio {
+      width: 100%;
+      max-width: 280px;
+      min-height: 48px;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      color: #fff;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .pin-skip-bio {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .profile-pin-btn {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 0.65rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: var(--radius-sm);
+      background: rgba(124, 58, 237, 0.1);
+      color: #c4b5fd;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .profile-pin-btn:active {
+      transform: scale(0.98);
+      background: rgba(124, 58, 237, 0.2);
+    }
+
+    .profile-bio-btn {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 0.65rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .profile-bio-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* PIN recovery (SMS) */
+    .pin-view {
+      transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+    }
+
+    .pin-view.hidden-view {
+      display: none;
+    }
+
+    .pin-recovery-form {
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .pin-phone-input {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(22, 22, 31, 0.72);
+      backdrop-filter: blur(12px);
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 600;
+      font-family: inherit;
+      letter-spacing: 0.04em;
+      text-align: center;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .pin-phone-input:focus {
+      outline: none;
+      border-color: rgba(124, 58, 237, 0.55);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+    }
+
+    .pin-recovery-btn {
+      width: 100%;
+      margin-top: 1rem;
+      min-height: 48px;
+      padding: 0.85rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .pin-recovery-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pin-recovery-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .pin-recovery-btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    .pin-recovery-error {
+      min-height: 1.2rem;
+      margin-top: 0.65rem;
+      font-size: 0.82rem;
+      color: #f87171;
+      text-align: center;
+    }
+
+    .otp-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.45rem;
+      margin: 1.25rem 0 0.75rem;
+    }
+
+    .otp-box {
+      width: 42px;
+      height: 48px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(22, 22, 31, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .otp-box:focus {
+      outline: none;
+      border-color: rgba(124, 58, 237, 0.6);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+    }
+
+    .otp-resend {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin: 0.5rem 0 0.75rem;
+    }
+
+    .otp-resend button {
+      background: none;
+      border: none;
+      color: #a78bfa;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    .otp-resend button:disabled {
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    #recaptcha-container {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+      opacity: 0;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
+  <div id="recaptcha-container"></div>
+
+  <div class="pin-screen" id="pinScreen" aria-hidden="true">
+    <div class="pin-panel">
+      <div class="pin-logo">
+        <div class="pin-logo-icon"><i data-lucide="bar-chart-2"></i></div>
+        <span>BiznesHisob</span>
+      </div>
+
+      <div class="pin-view" id="pinMainView">
+        <h2 class="pin-title" id="pinTitle">PIN kodni kiriting</h2>
+        <p class="pin-sub" id="pinSub"></p>
+        <div class="pin-dots" id="pinDots" aria-hidden="true">
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+          <span class="pin-dot"></span>
+        </div>
+        <p class="pin-msg" id="pinMsg"></p>
+        <button type="button" class="pin-bio-btn hidden" id="pinBioBtn" aria-label="Biometrik"><i data-lucide="fingerprint"></i></button>
+        <div class="pin-keypad" id="pinKeypad">
+          <button type="button" class="pin-key" data-key="1">1</button>
+          <button type="button" class="pin-key" data-key="2">2</button>
+          <button type="button" class="pin-key" data-key="3">3</button>
+          <button type="button" class="pin-key" data-key="4">4</button>
+          <button type="button" class="pin-key" data-key="5">5</button>
+          <button type="button" class="pin-key" data-key="6">6</button>
+          <button type="button" class="pin-key" data-key="7">7</button>
+          <button type="button" class="pin-key" data-key="8">8</button>
+          <button type="button" class="pin-key" data-key="9">9</button>
+          <button type="button" class="pin-key empty" tabindex="-1" aria-hidden="true"></button>
+          <button type="button" class="pin-key" data-key="0">0</button>
+          <button type="button" class="pin-key back" data-key="back" aria-label="Oʻchirish"><i data-lucide="delete"></i></button>
+        </div>
+        <div class="pin-actions" id="pinActions">
+          <button type="button" class="pin-enable-bio hidden" id="pinEnableBio">Biometrikni yoqish</button>
+          <button type="button" class="pin-skip-bio hidden" id="pinSkipBio">Keyinroq</button>
+          <button type="button" class="pin-forgot hidden" id="pinForgot">PIN kodini unutdim?</button>
+        </div>
+      </div>
+
+      <div class="pin-view hidden-view" id="pinPhoneView">
+        <h2 class="pin-title">Telefon raqamingizni kiriting</h2>
+        <p class="pin-sub">SMS orqali tasdiqlash kodi yuboriladi</p>
+        <div class="pin-recovery-form">
+          <input type="tel" class="pin-phone-input" id="pinPhoneInput" placeholder="+998 XX XXX XX XX" inputmode="numeric" autocomplete="tel">
+          <p class="pin-recovery-error" id="pinPhoneError"></p>
+          <button type="button" class="pin-recovery-btn" id="pinSendSmsBtn">SMS kod yuborish</button>
+          <button type="button" class="pin-recovery-btn secondary" id="pinPhoneBackBtn">Orqaga</button>
+        </div>
+      </div>
+
+      <div class="pin-view hidden-view" id="pinOtpView">
+        <h2 class="pin-title">SMS kod kiriting</h2>
+        <p class="pin-sub" id="pinOtpPhoneHint"></p>
+        <div class="otp-row" id="otpRow">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="0" aria-label="Raqam 1">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="1" aria-label="Raqam 2">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="2" aria-label="Raqam 3">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="3" aria-label="Raqam 4">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="4" aria-label="Raqam 5">
+          <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="5" aria-label="Raqam 6">
+        </div>
+        <p class="pin-recovery-error" id="pinOtpError"></p>
+        <p class="otp-resend" id="pinResendWrap">
+          <button type="button" id="pinResendBtn" disabled>Qayta yuborish (60s)</button>
+        </p>
+        <button type="button" class="pin-recovery-btn" id="pinConfirmOtpBtn">Tasdiqlash</button>
+        <button type="button" class="pin-recovery-btn secondary" id="pinOtpBackBtn">Orqaga</button>
+      </div>
+    </div>
+  </div>
+
   <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite">
-    📡 Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi
+    <i data-lucide="wifi-off"></i>
+    <span>Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi</span>
   </div>
 
   <div class="loading-screen" id="loadingScreen">
@@ -963,7 +1892,7 @@
   <div class="auth-screen hidden" id="authScreen">
     <div class="auth-header">
       <div class="logo">
-        <div class="logo-icon">📊</div>
+        <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
         <h1>BiznesHisob</h1>
       </div>
       <p class="tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
@@ -991,10 +1920,10 @@
   <div class="app-shell hidden" id="appScreen">
     <header class="app-header">
       <div class="logo">
-        <div class="logo-icon">📊</div>
+        <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
         <h1>BiznesHisob</h1>
       </div>
-      <span class="header-badge">☁️ Bulut</span>
+      <span class="header-badge"><i data-lucide="cloud"></i> Bulut</span>
     </header>
 
     <main class="app-main">
@@ -1016,8 +1945,8 @@
         </div>
         <p class="section-title">Tezkor qoʻshish</p>
         <div class="quick-actions">
-          <button type="button" class="quick-btn income" data-goto-add="income">+ Daromad</button>
-          <button type="button" class="quick-btn expense" data-goto-add="expense">− Xarajat</button>
+          <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> Daromad</button>
+          <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> Xarajat</button>
         </div>
       </section>
 
@@ -1026,16 +1955,16 @@
         <div class="card">
           <div class="panel-title">Yangi operatsiya</div>
           <div class="type-toggle">
-            <button type="button" class="type-btn income active" data-type="income">Daromad</button>
-            <button type="button" class="type-btn expense" data-type="expense">Xarajat</button>
+            <button type="button" class="type-btn income active" data-type="income"><i data-lucide="plus-circle"></i> Daromad</button>
+            <button type="button" class="type-btn expense" data-type="expense"><i data-lucide="minus-circle"></i> Xarajat</button>
           </div>
           <form id="transactionForm">
             <div class="form-row">
-              <label for="description">Tavsif</label>
+              <label for="description"><i data-lucide="file-text"></i> Tavsif</label>
               <input type="text" id="description" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
             </div>
             <div class="form-row">
-              <label for="amount">Summa (UZS)</label>
+              <label for="amount"><i data-lucide="banknote"></i> Summa (UZS)</label>
               <input type="text" id="amount" placeholder="0" inputmode="numeric" autocomplete="off" required>
               <p class="amount-hint" id="amountHint" aria-live="polite"></p>
             </div>
@@ -1052,7 +1981,7 @@
         </div>
         <ul class="transaction-list" id="transactionList"></ul>
         <div class="empty-state" id="emptyState">
-          <div class="icon">📋</div>
+          <div class="icon"><i data-lucide="list" class="icon-lg"></i></div>
           <p>Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.</p>
         </div>
       </section>
@@ -1060,25 +1989,38 @@
       <!-- Profil -->
       <section class="tab-panel" id="tabProfile" data-tab="profile">
         <div class="card profile-card">
-          <div class="profile-avatar">👤</div>
-          <p class="profile-email" id="userEmail">—</p>
+          <div class="profile-avatar"><i data-lucide="user"></i></div>
+          <p class="profile-email"><i data-lucide="mail"></i> <span id="userEmail">—</span></p>
+          <div class="profile-plan-row">
+            <span class="plan-badge premium hidden" id="premiumBadge"><i data-lucide="crown"></i> Premium</span>
+            <span class="plan-badge free-wrap hidden" id="freePlanBadge">
+              Bepul
+              <button type="button" class="upgrade-btn" id="upgradeBtn">Upgrade</button>
+            </span>
+          </div>
           <a href="https://bizneshisob.vercel.app/landing.html" class="profile-website-link" target="_blank" rel="noopener noreferrer">
-            <span aria-hidden="true">🌐</span>
+            <i data-lucide="globe"></i>
             BiznesHisob sayti
           </a>
           <p class="profile-hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
-          <button type="button" class="install-btn hidden" id="installBtn">📲 Ilovani oʻrnatish</button>
+          <button type="button" class="profile-pin-btn" id="changePinBtn"><i data-lucide="lock"></i> PIN kodni o'zgartirish</button>
+          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn"><i data-lucide="fingerprint"></i> Biometrikni yoqish</button>
+          <button type="button" class="install-btn hidden" id="installBtn"><i data-lucide="download"></i> Ilovani oʻrnatish</button>
           <div class="ios-install-hint hidden" id="iosInstallHint">
             <strong>iPhone/iPad:</strong> Safari brauzerida «Ulashish» → «Bosh ekranga qoʻshish» tugmasini bosing.
           </div>
-          <button type="button" class="logout-btn" id="logoutBtn">Chiqish</button>
+          <button type="button" class="logout-btn" id="logoutBtn"><i data-lucide="log-out"></i> Chiqish</button>
         </div>
         <div class="info-row">
-          <span>📊</span>
+          <i data-lucide="bar-chart-2"></i>
           <span>Operatsiyalar: <strong id="profileTxCount">0</strong> ta</span>
         </div>
+        <div class="info-row hidden" id="txLimitRow">
+          <i data-lucide="package"></i>
+          <span>Bepul limit: <strong id="txLimitText">0/50</strong></span>
+        </div>
         <div class="info-row sync-status online" id="syncStatusRow">
-          <span>☁️</span>
+          <i data-lucide="cloud"></i>
           <span>Holat: <span id="syncStatusText">Onlayn</span></span>
         </div>
       </section>
@@ -1086,24 +2028,46 @@
 
     <nav class="bottom-nav" aria-label="Asosiy menyu">
       <button type="button" class="nav-item active" data-tab="home" aria-label="Bosh sahifa">
-        <span class="nav-icon">🏠</span>
+        <span class="nav-icon"><i data-lucide="home"></i></span>
         <span>Bosh</span>
       </button>
       <button type="button" class="nav-item" data-tab="add" aria-label="Qoʻshish">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon"><i data-lucide="plus-circle"></i></span>
         <span>Qoʻshish</span>
       </button>
       <button type="button" class="nav-item" data-tab="list" aria-label="Roʻyxat">
-        <span class="nav-icon">📋</span>
+        <span class="nav-icon"><i data-lucide="list"></i></span>
         <span>Roʻyxat</span>
       </button>
       <button type="button" class="nav-item" data-tab="profile" aria-label="Profil">
-        <span class="nav-icon">👤</span>
+        <span class="nav-icon"><i data-lucide="user"></i></span>
         <span>Profil</span>
       </button>
     </nav>
   </div>
 
+  <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
+    <div class="premium-modal">
+      <button type="button" class="modal-close" id="premiumModalClose" aria-label="Yopish">×</button>
+      <div class="premium-limit-alert hidden" id="premiumLimitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
+      <div class="payment-checking hidden" id="paymentChecking">To'lov tekshirilmoqda...</div>
+      <h2 id="premiumModalTitle" class="premium-modal-title"><i data-lucide="crown"></i> Premium ga o'ting</h2>
+      <p class="premium-sub">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
+      <p class="premium-price">29 900 so'm / oy</p>
+      <ul class="premium-features">
+        <li><span class="feat-check"><i data-lucide="check"></i></span> Cheksiz operatsiyalar</li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> Kengaytirilgan grafiklar (tez kunda)</li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> Export PDF/Excel (tez kunda)</li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> Reklamasiz</li>
+      </ul>
+      <div class="payment-btns">
+        <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> Payme orqali to'lash</button>
+        <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> Click orqali to'lash</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import {
@@ -1111,7 +2075,9 @@
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
       signOut,
-      onAuthStateChanged
+      onAuthStateChanged,
+      RecaptchaVerifier,
+      linkWithPhoneNumber
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
     import {
       getFirestore,
@@ -1120,6 +2086,8 @@
       addDoc,
       deleteDoc,
       doc,
+      getDoc,
+      setDoc,
       onSnapshot,
       query,
       orderBy
@@ -1145,12 +2113,18 @@
       }
     });
 
+    const FREE_TX_LIMIT = 50;
+    const PAYME_URL = "https://payme.uz/checkout/bizneshisob";
+    const CLICK_URL = "https://my.click.uz/services/bizneshisob";
+
     let currentUser = null;
     let transactions = [];
+    let userProfile = { isPremium: false };
     let currentType = "income";
     let authMode = "login";
     let currentTab = "home";
     let unsubscribeTransactions = null;
+    let unsubscribeUser = null;
     let busy = false;
 
     const loadingScreen = document.getElementById("loadingScreen");
@@ -1165,6 +2139,17 @@
     const userEmailEl = document.getElementById("userEmail");
     const logoutBtn = document.getElementById("logoutBtn");
     const profileTxCount = document.getElementById("profileTxCount");
+    const premiumBadge = document.getElementById("premiumBadge");
+    const freePlanBadge = document.getElementById("freePlanBadge");
+    const upgradeBtn = document.getElementById("upgradeBtn");
+    const txLimitRow = document.getElementById("txLimitRow");
+    const txLimitText = document.getElementById("txLimitText");
+    const premiumModal = document.getElementById("premiumModal");
+    const premiumModalClose = document.getElementById("premiumModalClose");
+    const premiumLimitAlert = document.getElementById("premiumLimitAlert");
+    const paymentChecking = document.getElementById("paymentChecking");
+    const paymeBtn = document.getElementById("paymeBtn");
+    const clickBtn = document.getElementById("clickBtn");
 
     const form = document.getElementById("transactionForm");
     const descriptionInput = document.getElementById("description");
@@ -1190,6 +2175,773 @@
     const syncStatusText = document.getElementById("syncStatusText");
 
     let deferredInstallPrompt = null;
+
+    /* ——— PIN & biometric security ——— */
+    const PIN_KEY = "bzh_pin";
+    const PIN_UID_KEY = "bzh_pin_uid";
+    const BIO_ENABLED_KEY = "bzh_bio_enabled";
+    const BIO_CRED_KEY = "bzh_bio_cred";
+    const PIN_LEN = 4;
+    const MAX_PIN_ATTEMPTS = 3;
+    const LOCKOUT_SEC = 30;
+    const BG_LOCK_MS = 60000;
+
+    let appUnlocked = false;
+    let pinMode = "unlock";
+    let pinBuffer = "";
+    let pinSetupFirst = "";
+    let pinAttempts = 0;
+    let lockoutUntil = 0;
+    let lockoutTimer = null;
+    let backgroundHiddenAt = 0;
+    let bioOfferPending = false;
+
+    const pinScreen = document.getElementById("pinScreen");
+    const pinTitle = document.getElementById("pinTitle");
+    const pinSub = document.getElementById("pinSub");
+    const pinDots = document.querySelectorAll("#pinDots .pin-dot");
+    const pinMsg = document.getElementById("pinMsg");
+    const pinKeypad = document.getElementById("pinKeypad");
+    const pinBioBtn = document.getElementById("pinBioBtn");
+    const pinEnableBio = document.getElementById("pinEnableBio");
+    const pinSkipBio = document.getElementById("pinSkipBio");
+    const pinForgot = document.getElementById("pinForgot");
+    const pinMainView = document.getElementById("pinMainView");
+    const pinPhoneView = document.getElementById("pinPhoneView");
+    const pinOtpView = document.getElementById("pinOtpView");
+    const pinPhoneInput = document.getElementById("pinPhoneInput");
+    const pinPhoneError = document.getElementById("pinPhoneError");
+    const pinSendSmsBtn = document.getElementById("pinSendSmsBtn");
+    const pinPhoneBackBtn = document.getElementById("pinPhoneBackBtn");
+    const pinOtpPhoneHint = document.getElementById("pinOtpPhoneHint");
+    const pinOtpError = document.getElementById("pinOtpError");
+    const pinResendBtn = document.getElementById("pinResendBtn");
+    const pinConfirmOtpBtn = document.getElementById("pinConfirmOtpBtn");
+    const pinOtpBackBtn = document.getElementById("pinOtpBackBtn");
+    const otpInputs = document.querySelectorAll(".otp-box");
+    const changePinBtn = document.getElementById("changePinBtn");
+    const enableBioBtn = document.getElementById("enableBioBtn");
+
+    let recaptchaVerifier = null;
+    let phoneConfirmationResult = null;
+    let resendInterval = null;
+    let resendSecondsLeft = 0;
+
+    function getBioCredKey(uid) {
+      return `${BIO_CRED_KEY}_${uid}`;
+    }
+
+    async function hashPin(pin) {
+      const data = new TextEncoder().encode(`${pin}:bizneshisob`);
+      const buf = await crypto.subtle.digest("SHA-256", data);
+      return Array.from(new Uint8Array(buf))
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    function getStoredPinUid() {
+      return localStorage.getItem(PIN_UID_KEY);
+    }
+
+    function getStoredPinHash() {
+      return localStorage.getItem(PIN_KEY);
+    }
+
+    function hasPinForUser(uid) {
+      return getStoredPinHash() && getStoredPinUid() === uid;
+    }
+
+    async function savePin(pin, uid) {
+      const hash = await hashPin(pin);
+      localStorage.setItem(PIN_KEY, hash);
+      localStorage.setItem(PIN_UID_KEY, uid);
+    }
+
+    function clearPinStorage() {
+      localStorage.removeItem(PIN_KEY);
+      localStorage.removeItem(PIN_UID_KEY);
+    }
+
+    function isBioEnabled(uid) {
+      return (
+        localStorage.getItem(BIO_ENABLED_KEY) === "1" &&
+        !!localStorage.getItem(getBioCredKey(uid))
+      );
+    }
+
+    function setBioEnabled(uid, credIdBase64) {
+      localStorage.setItem(BIO_ENABLED_KEY, "1");
+      localStorage.setItem(getBioCredKey(uid), credIdBase64);
+    }
+
+    function clearBioStorage(uid) {
+      localStorage.removeItem(BIO_ENABLED_KEY);
+      if (uid) localStorage.removeItem(getBioCredKey(uid));
+    }
+
+    function bufferToBase64(buf) {
+      return btoa(String.fromCharCode(...new Uint8Array(buf)));
+    }
+
+    function base64ToBuffer(b64) {
+      const bin = atob(b64);
+      const buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      return buf;
+    }
+
+    function canUseWebAuthn() {
+      return !!(window.PublicKeyCredential && navigator.credentials);
+    }
+
+    function updateProfileSecurityUI() {
+      if (!currentUser) return;
+      const bioOn = isBioEnabled(currentUser.uid);
+      enableBioBtn.classList.toggle("hidden", bioOn || !canUseWebAuthn());
+      enableBioBtn.disabled = !hasPinForUser(currentUser.uid);
+    }
+
+    function resetPinBuffer() {
+      pinBuffer = "";
+      pinDots.forEach(d => d.classList.remove("filled", "shake"));
+    }
+
+    function updatePinDots() {
+      pinDots.forEach((d, i) => {
+        d.classList.toggle("filled", i < pinBuffer.length);
+      });
+    }
+
+    function setPinMsg(text, type = "") {
+      pinMsg.textContent = text;
+      pinMsg.className = "pin-msg" + (type ? ` ${type}` : "");
+    }
+
+    function setKeypadEnabled(on) {
+      pinKeypad.querySelectorAll(".pin-key").forEach(k => {
+        k.disabled = !on;
+      });
+    }
+
+    function isLockoutActive() {
+      return Date.now() < lockoutUntil;
+    }
+
+    function startLockout() {
+      lockoutUntil = Date.now() + LOCKOUT_SEC * 1000;
+      pinAttempts = 0;
+      setKeypadEnabled(false);
+      pinBioBtn.disabled = true;
+      const tick = () => {
+        const left = Math.ceil((lockoutUntil - Date.now()) / 1000);
+        if (left <= 0) {
+          clearInterval(lockoutTimer);
+          lockoutTimer = null;
+          lockoutUntil = 0;
+          setPinMsg("");
+          setKeypadEnabled(true);
+          pinBioBtn.disabled = false;
+          return;
+        }
+        setPinMsg(`${left} soniyadan keyin qayta urinib ko'ring`, "lockout");
+      };
+      tick();
+      lockoutTimer = setInterval(tick, 1000);
+    }
+
+    function shakeDots() {
+      pinDots.forEach(d => {
+        d.classList.add("shake");
+        setTimeout(() => d.classList.remove("shake"), 400);
+      });
+    }
+
+    function showPinSubview(view) {
+      pinMainView.classList.toggle("hidden-view", view !== "main");
+      pinPhoneView.classList.toggle("hidden-view", view !== "phone");
+      pinOtpView.classList.toggle("hidden-view", view !== "otp");
+    }
+
+    function setRecoveryError(el, msg) {
+      if (el) el.textContent = msg || "";
+    }
+
+    function formatPhoneUZDisplay(raw) {
+      let digits = String(raw).replace(/\D/g, "");
+      if (digits.startsWith("998")) digits = digits.slice(3);
+      digits = digits.slice(0, 9);
+      let out = "+998";
+      if (digits.length > 0) out += " " + digits.slice(0, 2);
+      if (digits.length > 2) out += " " + digits.slice(2, 5);
+      if (digits.length > 5) out += " " + digits.slice(5, 7);
+      if (digits.length > 7) out += " " + digits.slice(7, 9);
+      return out;
+    }
+
+    function getPhoneE164() {
+      let digits = pinPhoneInput.value.replace(/\D/g, "");
+      if (digits.startsWith("998")) digits = digits.slice(3);
+      digits = digits.slice(0, 9);
+      if (digits.length !== 9) return null;
+      return "+998" + digits;
+    }
+
+    function clearRecaptcha() {
+      if (recaptchaVerifier) {
+        try {
+          recaptchaVerifier.clear();
+        } catch (_) { /* ignore */ }
+        recaptchaVerifier = null;
+      }
+    }
+
+    async function getRecaptchaVerifier() {
+      clearRecaptcha();
+      recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "invisible",
+        callback: () => {},
+        "expired-callback": () => {
+          setRecoveryError(pinPhoneError, "reCAPTCHA muddati tugadi. Qayta urinib ko'ring.");
+        }
+      });
+      try {
+        await recaptchaVerifier.render();
+      } catch (_) {
+        /* render optional for some Firebase versions */
+      }
+      return recaptchaVerifier;
+    }
+
+    function phoneAuthErrorMessage(err) {
+      const code = err?.code || "";
+      const map = {
+        "auth/invalid-phone-number": "Telefon raqami noto'g'ri.",
+        "auth/missing-phone-number": "Telefon raqamini kiriting.",
+        "auth/too-many-requests": "Juda ko'p urinish. Biroz kuting.",
+        "auth/captcha-check-failed": "reCAPTCHA tasdiqlanmadi. Qayta urinib ko'ring.",
+        "auth/invalid-verification-code": "SMS kodi noto'g'ri.",
+        "auth/code-expired": "SMS kodi muddati tugagan. Qayta yuboring.",
+        "auth/credential-already-in-use": "Bu raqam boshqa hisobga bog'langan.",
+        "auth/network-request-failed": "Internet aloqasini tekshiring."
+      };
+      return map[code] || err?.message || "Xatolik yuz berdi. Qayta urinib ko'ring.";
+    }
+
+    function clearOtpInputs() {
+      otpInputs.forEach(inp => { inp.value = ""; });
+    }
+
+    function getOtpCode() {
+      return Array.from(otpInputs).map(inp => inp.value).join("");
+    }
+
+    function stopResendTimer() {
+      if (resendInterval) {
+        clearInterval(resendInterval);
+        resendInterval = null;
+      }
+    }
+
+    function startResendCountdown(seconds = 60) {
+      stopResendTimer();
+      resendSecondsLeft = seconds;
+      pinResendBtn.disabled = true;
+      const tick = () => {
+        pinResendBtn.textContent = `Qayta yuborish (${resendSecondsLeft}s)`;
+        if (resendSecondsLeft <= 0) {
+          stopResendTimer();
+          pinResendBtn.disabled = false;
+          pinResendBtn.textContent = "Qayta yuborish";
+          return;
+        }
+        resendSecondsLeft--;
+      };
+      tick();
+      resendInterval = setInterval(tick, 1000);
+    }
+
+    function showPhoneRecovery() {
+      setRecoveryError(pinPhoneError, "");
+      setRecoveryError(pinOtpError, "");
+      pinPhoneInput.value = "+998 ";
+      clearOtpInputs();
+      phoneConfirmationResult = null;
+      showPinSubview("phone");
+      pinScreen.classList.add("visible");
+      pinScreen.setAttribute("aria-hidden", "false");
+      setTimeout(() => pinPhoneInput.focus(), 300);
+      refreshIcons();
+    }
+
+    function showOtpRecovery(phone) {
+      setRecoveryError(pinOtpError, "");
+      clearOtpInputs();
+      pinOtpPhoneHint.textContent = phone ? `${phone} raqamiga yuborildi` : "";
+      showPinSubview("otp");
+      startResendCountdown(60);
+      setTimeout(() => otpInputs[0]?.focus(), 300);
+      refreshIcons();
+    }
+
+    async function sendPinRecoverySms() {
+      const phone = getPhoneE164();
+      if (!phone) {
+        setRecoveryError(pinPhoneError, "To'g'ri telefon raqamini kiriting (+998 XX XXX XX XX)");
+        return;
+      }
+      setRecoveryError(pinPhoneError, "");
+      if (!currentUser) {
+        setRecoveryError(pinPhoneError, "Avval tizimga kiring.");
+        return;
+      }
+      pinSendSmsBtn.disabled = true;
+      try {
+        const verifier = await getRecaptchaVerifier();
+        phoneConfirmationResult = await linkWithPhoneNumber(currentUser, phone, verifier);
+        showOtpRecovery(phone);
+      } catch (err) {
+        console.error("SMS yuborish:", err);
+        setRecoveryError(pinPhoneError, phoneAuthErrorMessage(err));
+        clearRecaptcha();
+      } finally {
+        pinSendSmsBtn.disabled = false;
+      }
+    }
+
+    async function confirmPinRecoveryOtp() {
+      const code = getOtpCode();
+      if (code.length !== 6) {
+        setRecoveryError(pinOtpError, "6 raqamli SMS kodini kiriting");
+        return;
+      }
+      if (!phoneConfirmationResult) {
+        setRecoveryError(pinOtpError, "Avval SMS kod yuboring");
+        return;
+      }
+      setRecoveryError(pinOtpError, "");
+      pinConfirmOtpBtn.disabled = true;
+      try {
+        await phoneConfirmationResult.confirm(code);
+        phoneConfirmationResult = null;
+        stopResendTimer();
+        clearRecaptcha();
+        if (currentUser?.uid) {
+          try {
+            await setDoc(userDocRef(currentUser.uid), { phone: getPhoneE164() }, { merge: true });
+          } catch (_) { /* ignore */ }
+        }
+        pinSetupFirst = "";
+        showPinSubview("main");
+        configurePinUI("reset-setup");
+        pinScreen.classList.add("visible");
+        pinScreen.setAttribute("aria-hidden", "false");
+        refreshIcons();
+      } catch (err) {
+        console.error("OTP tasdiqlash:", err);
+        setRecoveryError(pinOtpError, phoneAuthErrorMessage(err));
+        clearOtpInputs();
+        otpInputs[0]?.focus();
+      } finally {
+        pinConfirmOtpBtn.disabled = false;
+      }
+    }
+
+    function configurePinUI(mode) {
+      pinMode = mode;
+      showPinSubview("main");
+      resetPinBuffer();
+      setPinMsg("");
+      pinForgot.classList.toggle("hidden", mode !== "unlock");
+      pinEnableBio.classList.add("hidden");
+      pinSkipBio.classList.add("hidden");
+      pinBioBtn.classList.add("hidden");
+      pinKeypad.classList.remove("hidden");
+
+      const titles = {
+        unlock: "PIN kodni kiriting",
+        setup: "PIN kod o'rnating",
+        "setup-confirm": "PIN kodni tasdiqlang",
+        "reset-setup": "Yangi PIN o'rnating",
+        "reset-confirm": "Yangi PIN ni tasdiqlang",
+        "change-old": "Joriy PIN kod",
+        "change-new": "Yangi PIN kod",
+        "change-confirm": "Yangi PIN ni tasdiqlang",
+        "bio-offer": "Biometrik himoya"
+      };
+      pinTitle.textContent = titles[mode] || "PIN";
+
+      const subs = {
+        setup: "4 raqamli kod tanlang",
+        "setup-confirm": "Kodni qayta kiriting",
+        "reset-setup": "4 raqamli yangi kod tanlang",
+        "reset-confirm": "Kodni qayta kiriting",
+        "change-new": "4 raqamli yangi kod",
+        "change-confirm": "Yangi kodni qayta kiriting",
+        "bio-offer": "Face ID / Touch ID bilan tezroq kiring"
+      };
+      pinSub.textContent = subs[mode] || "";
+      pinSub.style.display = (subs[mode] || mode === "bio-offer") ? "block" : "none";
+
+      if (mode === "bio-offer") {
+        pinKeypad.classList.add("hidden");
+        pinEnableBio.classList.remove("hidden");
+        pinSkipBio.classList.remove("hidden");
+        pinDots.forEach(d => d.classList.remove("filled"));
+        return;
+      }
+
+      if (mode === "unlock" && currentUser && isBioEnabled(currentUser.uid) && canUseWebAuthn()) {
+        pinBioBtn.classList.remove("hidden");
+      }
+
+      setKeypadEnabled(!isLockoutActive());
+    }
+
+    function showPinScreen(mode) {
+      showPinSubview("main");
+      configurePinUI(mode);
+      pinScreen.classList.add("visible");
+      pinScreen.setAttribute("aria-hidden", "false");
+      refreshIcons();
+    }
+
+    function hidePinScreen() {
+      pinScreen.classList.remove("visible");
+      pinScreen.setAttribute("aria-hidden", "true");
+      showPinSubview("main");
+      stopResendTimer();
+      clearRecaptcha();
+      phoneConfirmationResult = null;
+      resetPinBuffer();
+      if (lockoutTimer) {
+        clearInterval(lockoutTimer);
+        lockoutTimer = null;
+      }
+    }
+
+    function lockApp() {
+      appUnlocked = false;
+      if (!currentUser || !hasPinForUser(currentUser.uid)) return;
+      showPinScreen("unlock");
+      setTimeout(() => tryBiometricUnlock(true), 400);
+    }
+
+    function unlockApp() {
+      appUnlocked = true;
+      hidePinScreen();
+      pinAttempts = 0;
+      updateProfileSecurityUI();
+    }
+
+    async function finishPinSetup(pin) {
+      await savePin(pin, currentUser.uid);
+      pinSetupFirst = "";
+      if (canUseWebAuthn() && !isBioEnabled(currentUser.uid)) {
+        bioOfferPending = true;
+        showPinScreen("bio-offer");
+      } else {
+        unlockApp();
+      }
+    }
+
+    async function verifyPinInput(pin) {
+      const hash = await hashPin(pin);
+      return hash === getStoredPinHash();
+    }
+
+    async function onPinComplete() {
+      if (isLockoutActive() || pinMode === "bio-offer") return;
+
+      if (pinMode === "setup") {
+        pinSetupFirst = pinBuffer;
+        resetPinBuffer();
+        configurePinUI("setup-confirm");
+        return;
+      }
+
+      if (pinMode === "setup-confirm") {
+        if (pinBuffer !== pinSetupFirst) {
+          setPinMsg("PIN mos kelmadi. Qayta urinib ko'ring.", "error");
+          shakeDots();
+          resetPinBuffer();
+          configurePinUI("setup");
+          pinSetupFirst = "";
+          return;
+        }
+        await finishPinSetup(pinBuffer);
+        resetPinBuffer();
+        return;
+      }
+
+      if (pinMode === "reset-setup") {
+        pinSetupFirst = pinBuffer;
+        resetPinBuffer();
+        configurePinUI("reset-confirm");
+        return;
+      }
+
+      if (pinMode === "reset-confirm") {
+        if (pinBuffer !== pinSetupFirst) {
+          setPinMsg("PIN mos kelmadi. Qayta urinib ko'ring.", "error");
+          shakeDots();
+          resetPinBuffer();
+          configurePinUI("reset-setup");
+          pinSetupFirst = "";
+          return;
+        }
+        await savePin(pinBuffer, currentUser.uid);
+        pinSetupFirst = "";
+        unlockApp();
+        resetPinBuffer();
+        return;
+      }
+
+      if (pinMode === "change-old") {
+        if (!(await verifyPinInput(pinBuffer))) {
+          setPinMsg("Noto'g'ri PIN", "error");
+          shakeDots();
+          resetPinBuffer();
+          return;
+        }
+        resetPinBuffer();
+        configurePinUI("change-new");
+        return;
+      }
+
+      if (pinMode === "change-new") {
+        pinSetupFirst = pinBuffer;
+        resetPinBuffer();
+        configurePinUI("change-confirm");
+        return;
+      }
+
+      if (pinMode === "change-confirm") {
+        if (pinBuffer !== pinSetupFirst) {
+          setPinMsg("PIN mos kelmadi", "error");
+          shakeDots();
+          resetPinBuffer();
+          configurePinUI("change-new");
+          pinSetupFirst = "";
+          return;
+        }
+        await savePin(pinBuffer, currentUser.uid);
+        pinSetupFirst = "";
+        setPinMsg("PIN yangilandi ✓");
+        setTimeout(() => {
+          if (appUnlocked) hidePinScreen();
+          else unlockApp();
+        }, 800);
+        return;
+      }
+
+      if (pinMode === "unlock") {
+        if (!(await verifyPinInput(pinBuffer))) {
+          pinAttempts++;
+          resetPinBuffer();
+          if (pinAttempts >= MAX_PIN_ATTEMPTS) {
+            startLockout();
+          } else {
+            setPinMsg(`Noto'g'ri PIN (${MAX_PIN_ATTEMPTS - pinAttempts} urinish qoldi)`, "error");
+            shakeDots();
+          }
+          return;
+        }
+        unlockApp();
+      }
+    }
+
+    function onPinKey(key) {
+      if (isLockoutActive() || pinMode === "bio-offer") return;
+      if (key === "back") {
+        pinBuffer = pinBuffer.slice(0, -1);
+        updatePinDots();
+        return;
+      }
+      if (pinBuffer.length >= PIN_LEN) return;
+      pinBuffer += key;
+      updatePinDots();
+      if (pinBuffer.length === PIN_LEN) {
+        setTimeout(() => onPinComplete(), 120);
+      }
+    }
+
+    pinKeypad.addEventListener("click", e => {
+      const btn = e.target.closest(".pin-key");
+      if (!btn || btn.disabled) return;
+      const key = btn.dataset.key;
+      if (key) onPinKey(key);
+    });
+
+    pinForgot.addEventListener("click", () => {
+      showPhoneRecovery();
+    });
+
+    pinPhoneInput.addEventListener("input", () => {
+      const formatted = formatPhoneUZDisplay(pinPhoneInput.value);
+      pinPhoneInput.value = formatted;
+      setRecoveryError(pinPhoneError, "");
+    });
+
+    pinSendSmsBtn.addEventListener("click", () => sendPinRecoverySms());
+    pinPhoneBackBtn.addEventListener("click", () => {
+      setRecoveryError(pinPhoneError, "");
+      clearRecaptcha();
+      configurePinUI("unlock");
+      pinScreen.classList.add("visible");
+    });
+
+    pinConfirmOtpBtn.addEventListener("click", () => confirmPinRecoveryOtp());
+    pinOtpBackBtn.addEventListener("click", () => {
+      setRecoveryError(pinOtpError, "");
+      stopResendTimer();
+      showPinSubview("phone");
+    });
+
+    pinResendBtn.addEventListener("click", () => {
+      if (!pinResendBtn.disabled) sendPinRecoverySms();
+    });
+
+    otpInputs.forEach((inp, idx) => {
+      inp.addEventListener("input", () => {
+        const v = inp.value.replace(/\D/g, "").slice(-1);
+        inp.value = v;
+        setRecoveryError(pinOtpError, "");
+        if (v && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+        if (getOtpCode().length === 6) confirmPinRecoveryOtp();
+      });
+      inp.addEventListener("keydown", e => {
+        if (e.key === "Backspace" && !inp.value && idx > 0) {
+          otpInputs[idx - 1].focus();
+        }
+      });
+      inp.addEventListener("paste", e => {
+        e.preventDefault();
+        const pasted = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+        pasted.split("").forEach((ch, i) => {
+          if (otpInputs[i]) otpInputs[i].value = ch;
+        });
+        if (pasted.length > 0) otpInputs[Math.min(pasted.length, 5)]?.focus();
+        if (pasted.length === 6) confirmPinRecoveryOtp();
+      });
+    });
+
+    async function registerBiometric() {
+      if (!currentUser || !canUseWebAuthn()) return false;
+      try {
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userId = new TextEncoder().encode(currentUser.uid);
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge,
+            rp: { name: "BiznesHisob", id: window.location.hostname },
+            user: {
+              id: userId,
+              name: currentUser.email || currentUser.uid,
+              displayName: "BiznesHisob"
+            },
+            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+            authenticatorSelection: {
+              authenticatorAttachment: "platform",
+              userVerification: "required",
+              residentKey: "preferred"
+            },
+            timeout: 60000
+          }
+        });
+        if (cred && cred.rawId) {
+          setBioEnabled(currentUser.uid, bufferToBase64(cred.rawId));
+          updateProfileSecurityUI();
+          return true;
+        }
+      } catch (err) {
+        console.warn("Biometric register:", err);
+      }
+      return false;
+    }
+
+    async function tryBiometricUnlock(auto = false) {
+      if (!currentUser || appUnlocked || pinMode !== "unlock") return;
+      if (!isBioEnabled(currentUser.uid) || !canUseWebAuthn()) return;
+      const credId = localStorage.getItem(getBioCredKey(currentUser.uid));
+      if (!credId) return;
+      try {
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge: crypto.getRandomValues(new Uint8Array(32)),
+            allowCredentials: [{
+              id: base64ToBuffer(credId),
+              type: "public-key",
+              transports: ["internal"]
+            }],
+            userVerification: "required",
+            timeout: 60000
+          }
+        });
+        if (assertion) {
+          unlockApp();
+          return true;
+        }
+      } catch (err) {
+        if (!auto) setPinMsg("Biometrik tasdiqlanmadi. PIN kiriting.", "error");
+      }
+      return false;
+    }
+
+    pinBioBtn.addEventListener("click", () => tryBiometricUnlock(false));
+
+    pinEnableBio.addEventListener("click", async () => {
+      const ok = await registerBiometric();
+      if (ok) {
+        bioOfferPending = false;
+        unlockApp();
+      } else {
+        setPinMsg("Biometrik yoqilmadi. Keyinroq profildan urinib ko'ring.", "error");
+      }
+    });
+
+    pinSkipBio.addEventListener("click", () => {
+      bioOfferPending = false;
+      unlockApp();
+    });
+
+    changePinBtn.addEventListener("click", () => {
+      if (!currentUser || !hasPinForUser(currentUser.uid)) {
+        showPinScreen("setup");
+        return;
+      }
+      pinSetupFirst = "";
+      showPinScreen("change-old");
+    });
+
+    enableBioBtn.addEventListener("click", async () => {
+      const ok = await registerBiometric();
+      alert(ok ? "Biometrik yoqildi ✓" : "Biometrik qo'llab-quvvatlanmaydi yoki rad etildi.");
+      updateProfileSecurityUI();
+    });
+
+    function initPinSecurity(uid) {
+      appUnlocked = false;
+      pinAttempts = 0;
+      if (!hasPinForUser(uid)) {
+        showPinScreen("setup");
+        return;
+      }
+      lockApp();
+    }
+
+    function handleVisibilityLock() {
+      if (!currentUser || !hasPinForUser(currentUser.uid)) return;
+
+      if (document.visibilityState === "hidden") {
+        backgroundHiddenAt = Date.now();
+        if (appUnlocked) lockApp();
+      } else if (document.visibilityState === "visible") {
+        const away = backgroundHiddenAt ? Date.now() - backgroundHiddenAt : 0;
+        if (appUnlocked && away >= BG_LOCK_MS) lockApp();
+        if (!appUnlocked) tryBiometricUnlock(true);
+        handlePaymentReturn();
+      }
+    }
 
     function updateOnlineStatus() {
       const online = navigator.onLine;
@@ -1249,9 +3001,149 @@
       });
     }
 
+    function userDocRef(uid) {
+      return doc(db, "users", uid);
+    }
+
     function transactionsRef(uid) {
       return collection(db, "users", uid, "transactions");
     }
+
+    function isPremiumUser() {
+      return !!userProfile.isPremium;
+    }
+
+    function canAddTransaction() {
+      return isPremiumUser() || transactions.length < FREE_TX_LIMIT;
+    }
+
+    async function ensureUserDocument(user) {
+      const ref = userDocRef(user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          email: user.email || "",
+          createdAt: new Date().toISOString(),
+          isPremium: false
+        });
+      } else {
+        const data = snap.data();
+        const patch = {};
+        if (!data.email && user.email) patch.email = user.email;
+        if (data.isPremium === undefined) patch.isPremium = false;
+        if (!data.createdAt) patch.createdAt = new Date().toISOString();
+        if (Object.keys(patch).length) {
+          await setDoc(ref, patch, { merge: true });
+        }
+      }
+    }
+
+    function subscribeUserProfile(uid) {
+      if (unsubscribeUser) {
+        unsubscribeUser();
+        unsubscribeUser = null;
+      }
+      unsubscribeUser = onSnapshot(
+        userDocRef(uid),
+        snap => {
+          if (snap.exists()) {
+            const data = snap.data();
+            userProfile = {
+              email: data.email || "",
+              createdAt: data.createdAt || null,
+              isPremium: !!data.isPremium
+            };
+          } else {
+            userProfile = { isPremium: false };
+          }
+          updatePremiumUI();
+        },
+        err => console.error("User profile:", err)
+      );
+    }
+
+    function updatePremiumUI() {
+      const premium = isPremiumUser();
+      premiumBadge.classList.toggle("hidden", !premium);
+      freePlanBadge.classList.toggle("hidden", premium);
+      txLimitRow.classList.toggle("hidden", premium);
+      if (!premium) {
+        const count = transactions.length;
+        txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
+        if (count >= FREE_TX_LIMIT) {
+          txLimitText.style.color = "#f87171";
+        } else if (count >= FREE_TX_LIMIT - 2) {
+          txLimitText.style.color = "#fb923c";
+        } else {
+          txLimitText.style.color = "";
+        }
+      }
+    }
+
+    function showPremiumModal(options = {}) {
+      premiumLimitAlert.classList.toggle("hidden", options.reason !== "limit");
+      paymentChecking.textContent = "To'lov tekshirilmoqda...";
+      paymentChecking.classList.add("hidden");
+      premiumModal.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closePremiumModal() {
+      premiumModal.classList.remove("open");
+      document.body.style.overflow = "";
+      premiumLimitAlert.classList.add("hidden");
+    }
+
+    function openPayment(url) {
+      sessionStorage.setItem("bh_payment_pending", "1");
+      window.open(url, "_blank", "noopener,noreferrer");
+      paymentChecking.classList.remove("hidden");
+    }
+
+    async function handlePaymentReturn() {
+      if (!sessionStorage.getItem("bh_payment_pending") || !currentUser) return;
+      sessionStorage.removeItem("bh_payment_pending");
+      paymentChecking.classList.remove("hidden");
+      premiumModal.classList.add("open");
+      document.body.style.overflow = "hidden";
+
+      try {
+        const snap = await getDoc(userDocRef(currentUser.uid));
+        if (snap.exists() && snap.data().isPremium) {
+          paymentChecking.textContent = "Premium faollashtirildi! 🎉";
+          setTimeout(() => {
+            paymentChecking.classList.add("hidden");
+            closePremiumModal();
+          }, 2500);
+        } else {
+          paymentChecking.textContent = "To'lov tekshirilmoqda...";
+          setTimeout(() => {
+            paymentChecking.textContent =
+              "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.";
+          }, 4000);
+        }
+      } catch (err) {
+        console.error(err);
+        paymentChecking.textContent = "Tekshirishda xatolik. Qayta urinib ko'ring.";
+      }
+    }
+
+    premiumModalClose.addEventListener("click", closePremiumModal);
+    premiumModal.addEventListener("click", e => {
+      if (e.target === premiumModal) closePremiumModal();
+    });
+    upgradeBtn.addEventListener("click", () => showPremiumModal());
+    paymeBtn.addEventListener("click", () => openPayment(PAYME_URL));
+    clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && premiumModal.classList.contains("open")) {
+        closePremiumModal();
+      }
+    });
+
+    window.addEventListener("focus", handlePaymentReturn);
+    document.addEventListener("visibilitychange", handleVisibilityLock);
 
     function switchTab(tabName) {
       currentTab = tabName;
@@ -1269,6 +3161,7 @@
       });
       appScreen.scrollTop = 0;
       document.querySelector(".app-main")?.scrollTo({ top: 0, behavior: "smooth" });
+      requestAnimationFrame(refreshIcons);
     }
 
     navItems.forEach(nav => {
@@ -1499,13 +3392,19 @@
       const amount = parseAmountDigits(amountInput.value);
       if (!description || !amount || amount <= 0) return;
 
+      if (!canAddTransaction()) {
+        showPremiumModal({ reason: "limit" });
+        return;
+      }
+
       setBusy(true);
       try {
         await addDoc(transactionsRef(currentUser.uid), {
           type: currentType,
           description,
           amount,
-          date: new Date().toISOString()
+          date: new Date().toISOString(),
+          userId: currentUser.uid
         });
         form.reset();
         amountHint.textContent = "";
@@ -1559,17 +3458,17 @@
         const isIncome = t.type === "income";
         const typeLabel = isIncome ? "Daromad" : "Xarajat";
         const sign = isIncome ? "+" : "−";
-        const icon = isIncome ? "📈" : "📉";
+        const iconName = isIncome ? "trending-up" : "trending-down";
         return `
           <li class="transaction-item">
-            <div class="tx-icon ${t.type}">${icon}</div>
+            <div class="tx-icon ${t.type}"><i data-lucide="${iconName}" class="icon-list"></i></div>
             <div class="transaction-info">
               <div class="transaction-desc">${escapeHtml(t.description)}</div>
               <div class="transaction-meta">${typeLabel} · ${formatDate(t.date)}</div>
             </div>
             <div class="transaction-right">
               <span class="transaction-amount ${t.type}">${sign}${formatUZS(t.amount)}</span>
-              <button class="delete-btn" type="button" data-id="${t.id}" aria-label="Oʻchirish">Oʻchirish</button>
+              <button class="delete-btn" type="button" data-id="${t.id}" aria-label="Oʻchirish"><i data-lucide="trash-2"></i></button>
             </div>
           </li>
         `;
@@ -1584,12 +3483,23 @@
           btn.disabled = true;
         });
       }
+
+      updatePremiumUI();
+      refreshIcons();
     }
 
-    onAuthStateChanged(auth, user => {
+    function refreshIcons() {
+      if (window.lucide) lucide.createIcons();
+    }
+
+    onAuthStateChanged(auth, async user => {
       if (unsubscribeTransactions) {
         unsubscribeTransactions();
         unsubscribeTransactions = null;
+      }
+      if (unsubscribeUser) {
+        unsubscribeUser();
+        unsubscribeUser = null;
       }
 
       currentUser = user;
@@ -1597,19 +3507,35 @@
       if (user) {
         userEmailEl.textContent = user.email || "";
         transactions = [];
+        userProfile = { isPremium: false };
+        try {
+          await ensureUserDocument(user);
+        } catch (err) {
+          console.error("User doc:", err);
+        }
+        subscribeUserProfile(user.uid);
         switchTab("home");
         render();
         subscribeTransactions(user.uid);
         setupInstallUI();
         showView("app");
+        initPinSecurity(user.uid);
+        handlePaymentReturn();
+        refreshIcons();
       } else {
         transactions = [];
+        userProfile = { isPremium: false };
+        appUnlocked = false;
+        hidePinScreen();
+        closePremiumModal();
         showView("auth");
       }
     });
 
     setupInstallUI();
     showView("loading");
+
+    window.addEventListener("load", refreshIcons);
   </script>
 </body>
 </html>

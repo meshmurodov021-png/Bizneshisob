@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="dark">
+<html lang="uz">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,58 +15,31 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --purple-400: #a78bfa;
-      --purple-500: #8b5cf6;
-      --purple-600: #7c3aed;
-      --purple-700: #6d28d9;
-      --purple-900: #4c1d95;
-      --gradient: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #6366f1 100%);
-      --gradient-soft: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(99, 102, 241, 0.08));
-      --ease: cubic-bezier(0.22, 1, 0.36, 1);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --nav-h: 72px;
-    }
-
-    [data-theme="dark"] {
       --bg: #0a0a0f;
-      --bg-elevated: #12121a;
-      --surface: #16161f;
-      --surface-2: #1e1e2a;
+      --bg-card: rgba(18, 18, 28, 0.72);
       --border: rgba(255, 255, 255, 0.08);
       --text: #f4f4f8;
-      --muted: #9494a8;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-      --particle: rgba(167, 139, 250, 0.5);
-      --hero-glow: rgba(124, 58, 237, 0.35);
-      --card-bg: rgba(22, 22, 31, 0.8);
-    }
-
-    [data-theme="light"] {
-      --bg: #f8f7fc;
-      --bg-elevated: #ffffff;
-      --surface: #ffffff;
-      --surface-2: #f0edf8;
-      --border: rgba(124, 58, 237, 0.12);
-      --text: #1a1a2e;
-      --muted: #64648a;
-      --shadow: 0 24px 80px rgba(124, 58, 237, 0.12);
-      --particle: rgba(124, 58, 237, 0.35);
-      --hero-glow: rgba(124, 58, 237, 0.2);
-      --card-bg: rgba(255, 255, 255, 0.9);
+      --muted: #8b8ba3;
+      --purple: #7C3AED;
+      --indigo: #4F46E5;
+      --gradient: linear-gradient(135deg, #7C3AED 0%, #5B21B6 45%, #4F46E5 100%);
+      --gradient-text: linear-gradient(135deg, #c4b5fd 0%, #7C3AED 50%, #4F46E5 100%);
+      --glow: rgba(124, 58, 237, 0.5);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --glass: blur(20px);
+      --nav-h: 76px;
+      --radius: 22px;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
       font-family: "Plus Jakarta Sans", system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.65;
       overflow-x: hidden;
-      transition: background 0.4s var(--ease), color 0.4s var(--ease);
     }
 
     #particles {
@@ -76,41 +49,56 @@
       pointer-events: none;
     }
 
-    .gradient-bg {
+    .ambient {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, var(--hero-glow), transparent),
-        radial-gradient(ellipse 40% 30% at 90% 50%, rgba(99, 102, 241, 0.12), transparent),
-        radial-gradient(ellipse 35% 25% at 5% 80%, rgba(168, 85, 247, 0.1), transparent);
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 58, 237, 0.22), transparent 55%),
+        radial-gradient(ellipse 40% 35% at 100% 30%, rgba(79, 70, 229, 0.12), transparent),
+        radial-gradient(ellipse 35% 30% at 0% 70%, rgba(124, 58, 237, 0.08), transparent);
     }
 
     .container {
       width: 100%;
-      max-width: 1200px;
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 0 1.25rem;
+      padding: 0 1.35rem;
     }
 
-    /* Header */
+    main { position: relative; z-index: 1; }
+
+    /* Glass */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass);
+      -webkit-backdrop-filter: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.4s;
+    }
+
+    .glass-hover:hover {
+      transform: translateY(-6px);
+      border-color: rgba(124, 58, 237, 0.35);
+      box-shadow: 0 24px 60px rgba(124, 58, 237, 0.18);
+    }
+
+    /* Header — always sticky blur */
     .header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      z-index: 100;
-      padding: 1rem 0;
-      transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
-    }
-
-    .header.scrolled {
-      background: var(--card-bg);
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.72);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      box-shadow: var(--shadow);
     }
 
     .header-inner {
@@ -118,105 +106,120 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      width: 100%;
     }
 
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
+      gap: 0.7rem;
       text-decoration: none;
       color: var(--text);
       font-weight: 800;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
     }
 
-    .logo-icon {
+    .logo-mark {
       width: 40px;
       height: 40px;
       border-radius: 12px;
       background: var(--gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 20px var(--glow);
     }
 
     .nav-links {
       display: none;
-      align-items: center;
-      gap: 2rem;
       list-style: none;
+      align-items: center;
+      gap: 1.85rem;
     }
 
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
+      font-size: 0.875rem;
       font-weight: 500;
-      font-size: 0.95rem;
       transition: color 0.25s;
     }
 
-    .nav-links a:hover { color: var(--purple-500); }
+    .nav-links a:hover { color: #c4b5fd; }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
-    .lang-switcher {
-      display: flex;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 2px;
-    }
-
-    .lang-btn {
-      padding: 0.35rem 0.55rem;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      font-size: 0.7rem;
-      font-weight: 700;
-      font-family: inherit;
-      border-radius: 7px;
-      cursor: pointer;
-      transition: all 0.25s var(--ease);
-    }
-
-    .lang-btn.active {
-      background: var(--gradient);
-      color: #fff;
-    }
-
-    .icon-btn {
-      width: 40px;
-      height: 40px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface-2);
-      color: var(--text);
-      cursor: pointer;
-      display: flex;
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      transition: transform 0.2s var(--ease), border-color 0.25s;
+      gap: 0.45rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s;
     }
 
-    .icon-btn:hover { border-color: var(--purple-500); }
-    .icon-btn:active { transform: scale(0.95); }
+    .btn-sm { padding: 0.55rem 1.1rem; font-size: 0.8rem; }
 
-    .menu-toggle {
-      display: flex;
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.45);
     }
 
-    @media (min-width: 900px) {
-      .nav-links { display: flex; }
-      .menu-toggle { display: none; }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(124, 58, 237, 0.5);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .btn-white {
+      background: #fff;
+      color: var(--purple);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #2AABEE, #229ED9);
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(34, 158, 217, 0.35);
+    }
+
+    .menu-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 1.2rem;
+      cursor: pointer;
     }
 
     .mobile-nav {
@@ -224,679 +227,80 @@
       top: var(--nav-h);
       left: 0;
       right: 0;
-      background: var(--card-bg);
+      z-index: 199;
+      padding: 1rem 1.35rem 1.5rem;
+      background: rgba(10, 10, 15, 0.96);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 1rem;
-      transform: translateY(-120%);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transform: translateY(-110%);
       opacity: 0;
+      pointer-events: none;
       transition: transform 0.35s var(--ease), opacity 0.35s;
-      z-index: 99;
     }
 
     .mobile-nav.open {
       transform: translateY(0);
       opacity: 1;
+      pointer-events: auto;
     }
 
     .mobile-nav a {
-      display: block;
-      padding: 0.75rem;
       color: var(--text);
       text-decoration: none;
-      font-weight: 500;
-      border-radius: var(--radius-sm);
-    }
-
-    .mobile-nav a:hover { background: var(--surface-2); }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.85rem 1.5rem;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      font-family: inherit;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.25s var(--ease), box-shadow 0.25s;
-    }
-
-    .btn-primary {
-      background: var(--gradient);
-      color: #fff;
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.45);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.55);
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--purple-500);
-      color: var(--purple-500);
-    }
-
-    /* Hero */
-    .hero {
-      position: relative;
-      z-index: 1;
-      padding: calc(var(--nav-h) + 3rem) 0 5rem;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-
-    @media (min-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr 1fr; gap: 4rem; }
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.4rem 1rem;
-      background: var(--gradient-soft);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      font-size: 0.8rem;
       font-weight: 600;
-      color: var(--purple-500);
-      margin-bottom: 1.25rem;
-      animation: fadeUp 0.8s var(--ease) both;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.25rem, 5vw, 3.5rem);
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.25rem;
-      animation: fadeUp 0.8s var(--ease) 0.1s both;
-    }
-
-    .hero h1 .gradient-text {
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-desc {
-      font-size: 1.1rem;
-      color: var(--muted);
-      max-width: 480px;
-      margin-bottom: 2rem;
-      animation: fadeUp 0.8s var(--ease) 0.2s both;
-    }
-
-    .hero-cta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      animation: fadeUp 0.8s var(--ease) 0.3s both;
-    }
-
-    .cta-actions {
-      position: relative;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.75rem;
-    }
-
-    .ios-install-hint {
-      position: relative;
-      margin-top: 1rem;
-      padding: 0.75rem 1rem;
-      font-size: 0.85rem;
-      line-height: 1.55;
-      border-radius: 12px;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .hero-cta + .ios-install-hint {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    .hero-cta + .ios-install-hint strong {
-      color: var(--purple-500);
-    }
-
-    .cta-box .ios-install-hint {
-      color: rgba(255, 255, 255, 0.92);
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-    }
-
-    .cta-box .ios-install-hint strong {
-      color: #fff;
-    }
-
-    .cta-box .btn-ios {
-      background: transparent;
-      color: #fff;
-      border: 2px solid rgba(255, 255, 255, 0.85);
-      box-shadow: none;
-    }
-
-    .cta-box .btn-ios:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateY(-2px);
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
     }
 
     .hidden { display: none !important; }
 
-    .hero-visual {
-      position: relative;
-      display: flex;
-      justify-content: center;
-      animation: fadeUp 1s var(--ease) 0.4s both;
-    }
-
-    .phone-mockup {
-      position: relative;
-      width: min(300px, 85vw);
-      aspect-ratio: 9/19;
-      background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
-      border-radius: 36px;
-      border: 3px solid var(--border);
-      box-shadow: var(--shadow), 0 0 0 1px rgba(124, 58, 237, 0.1);
-      overflow: hidden;
-      transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
-      transition: transform 0.6s var(--ease);
-    }
-
-    .phone-mockup:hover {
-      transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
-    }
-
-    .phone-notch {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90px;
-      height: 24px;
-      background: var(--bg);
-      border-radius: 20px;
-      z-index: 2;
-    }
-
-    .phone-screen {
-      position: absolute;
-      inset: 12px;
-      border-radius: 28px;
-      background: var(--bg-elevated);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .mock-header {
-      padding: 2.5rem 1rem 1rem;
-      background: var(--gradient);
-      color: #fff;
-    }
-
-    .mock-header h3 { font-size: 0.9rem; font-weight: 700; opacity: 0.9; }
-    .mock-header .balance { font-size: 1.75rem; font-weight: 800; margin-top: 0.25rem; }
-
-    .mock-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      padding: 1rem;
-    }
-
-    .mock-stat {
-      padding: 0.75rem;
-      border-radius: 12px;
-      font-size: 0.7rem;
-    }
-
-    .mock-stat.income { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-    .mock-stat.expense { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .mock-stat span { display: block; font-weight: 800; font-size: 1rem; margin-top: 0.2rem; }
-
-    .mock-list {
-      flex: 1;
-      padding: 0 1rem 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .mock-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.65rem 0.75rem;
-      background: var(--surface-2);
-      border-radius: 10px;
-      font-size: 0.75rem;
-    }
-
-    .mock-item .amount.income { color: #22c55e; font-weight: 700; }
-    .mock-item .amount.expense { color: #ef4444; font-weight: 700; }
-
-    .mock-nav {
-      display: flex;
-      justify-content: space-around;
-      padding: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 1.1rem;
-    }
-
-    .float-card {
-      position: absolute;
-      padding: 0.75rem 1rem;
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      box-shadow: var(--shadow);
-      animation: float 4s ease-in-out infinite;
-    }
-
-    .float-card-1 { top: 10%; right: -5%; animation-delay: 0s; }
-    .float-card-2 { bottom: 20%; left: -8%; animation-delay: 1.5s; }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    /* Stats */
-    .stats-bar {
-      position: relative;
-      z-index: 1;
-      padding: 3rem 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--gradient-soft);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-    }
-
-    @media (min-width: 768px) {
-      .stats-grid { grid-template-columns: repeat(4, 1fr); }
-    }
-
-    .stat-item { text-align: center; }
-
-    .stat-value {
-      font-size: clamp(2rem, 4vw, 2.75rem);
-      font-weight: 800;
-      background: var(--gradient);
+    .gradient-text {
+      background: var(--gradient-text);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
       background-clip: text;
-      line-height: 1.2;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin-top: 0.35rem;
-      font-weight: 500;
-    }
-
-    /* Sections */
-    section {
-      position: relative;
-      z-index: 1;
-      padding: 5rem 0;
-    }
-
-    .section-header {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 3.5rem;
+      -webkit-text-fill-color: transparent;
     }
 
     .section-tag {
       display: inline-block;
-      font-size: 0.8rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
       font-weight: 700;
-      text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--purple-500);
+      text-transform: uppercase;
+      color: #a78bfa;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.28);
+      margin-bottom: 0.85rem;
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.85rem, 4.5vw, 2.65rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
       margin-bottom: 0.75rem;
     }
 
-    .section-header h2 {
-      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-    }
+    .section-head p { color: var(--muted); font-size: 1.05rem; }
 
-    .section-header p { color: var(--muted); font-size: 1.05rem; }
+    section { padding: 5.5rem 0; }
 
-    /* Features */
-    .features-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 600px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 900px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
-
-    .feature-card {
-      padding: 2rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      transition: transform 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
-      opacity: 0;
-      transform: translateY(30px);
-    }
-
-    .feature-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .feature-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(124, 58, 237, 0.35);
-      box-shadow: 0 20px 60px rgba(124, 58, 237, 0.15);
-    }
-
-    .feature-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      background: var(--gradient-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .feature-card h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-card p { color: var(--muted); font-size: 0.95rem; }
-
-    /* How it works */
-    .steps {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      position: relative;
-    }
-
-    @media (min-width: 768px) {
-      .steps { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
-    }
-
-    .step-card {
-      text-align: center;
-      padding: 2rem 1.5rem;
-      position: relative;
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-    }
-
-    .step-card.visible { opacity: 1; transform: translateY(0); }
-
-    .step-num {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 1.5rem;
-      border-radius: 50%;
-      background: var(--gradient);
-      color: #fff;
-      font-size: 1.5rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
-    }
-
-    .step-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .step-card p { color: var(--muted); font-size: 0.95rem; }
-
-    /* Testimonials */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .testimonial-card {
-      padding: 2rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      transition: transform 0.4s var(--ease);
-      opacity: 0;
-      transform: scale(0.96);
-    }
-
-    .testimonial-card.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .testimonial-card:hover { transform: translateY(-4px); }
-
-    .stars { color: #fbbf24; font-size: 1rem; margin-bottom: 1rem; letter-spacing: 2px; }
-
-    .testimonial-text {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      font-style: italic;
-      line-height: 1.7;
-    }
-
-    .testimonial-author {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .author-info strong { display: block; font-size: 0.95rem; }
-    .author-info span { font-size: 0.8rem; color: var(--muted); }
-
-    /* CTA */
-    .cta-section {
-      padding: 5rem 0;
-    }
-
-    .cta-box {
-      position: relative;
-      padding: 4rem 2rem;
-      border-radius: 28px;
-      background: var(--gradient);
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .cta-box::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      opacity: 0.5;
-    }
-
-    .cta-box h2 {
-      position: relative;
-      font-size: clamp(1.75rem, 3vw, 2.25rem);
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 1rem;
-    }
-
-    .cta-box p {
-      position: relative;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 500px;
-      margin: 0 auto 2rem;
-      font-size: 1.05rem;
-    }
-
-    .cta-box .btn {
-      position: relative;
-      background: #fff;
-      color: var(--purple-700);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-
-    .cta-box .btn:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    /* Footer */
-    footer {
-      position: relative;
-      z-index: 1;
-      padding: 4rem 0 2rem;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      margin-bottom: 3rem;
-    }
-
-    @media (min-width: 768px) {
-      .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
-    }
-
-    .footer-brand p {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: 1rem;
-      max-width: 280px;
-    }
-
-    .footer-col h4 {
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 1rem;
-      color: var(--muted);
-    }
-
-    .footer-col ul { list-style: none; }
-    .footer-col li { margin-bottom: 0.5rem; }
-
-    .footer-col a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 0.9rem;
-      opacity: 0.8;
-      transition: color 0.25s, opacity 0.25s;
-    }
-
-    .footer-col a:hover { color: var(--purple-500); opacity: 1; }
-
-    .footer-bottom {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .social-links { display: flex; gap: 0.75rem; }
-
-    .social-links a {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-      text-decoration: none;
-      transition: all 0.25s;
-    }
-
-    .social-links a:hover {
-      background: var(--gradient);
-      border-color: transparent;
-      color: #fff;
-    }
-
-    /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    /* Reveal */
     .reveal {
       opacity: 0;
       transform: translateY(40px);
-      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+      transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
     }
 
     .reveal.visible {
@@ -904,244 +308,1407 @@
       transform: translateY(0);
     }
 
-    [data-parallax] {
-      will-change: transform;
-      transition: transform 0.1s linear;
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 2.5rem) 0 5rem;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #c4b5fd;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-eyebrow span:first-child {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 14px #22c55e;
+      animation: livePulse 2s ease infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.35rem, 6.5vw, 3.85rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .ios-hint {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 380px;
+    }
+
+    /* 3D Phone — iPhone 14 Pro */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .phone-tilt {
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
+      animation: phoneFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes phoneFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-14px); }
+    }
+
+    .phone-tilt-inner { position: relative; }
+
+    .phone-aura {
+      position: absolute;
+      inset: -20% -15%;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(124, 58, 237, 0.55), transparent 65%);
+      filter: blur(45px);
+      z-index: 0;
+    }
+
+    .phone-device {
+      position: relative;
+      z-index: 1;
+      width: min(280px, 78vw);
+      padding: 3px;
+      border-radius: 55px;
+      background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 50%, #151515 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.65),
+        0 0 60px rgba(124, 58, 237, 0.35),
+        0 0 120px rgba(79, 70, 229, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .phone-screen {
+      position: relative;
+      background: #0d0d1a;
+      border-radius: 52px;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mock-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 22px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .mock-status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mock-status-icons svg {
+      display: block;
+      height: 11px;
+      width: auto;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 28px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 10;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px 12px;
+    }
+
+    .app-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .app-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .app-body {
+      flex: 1;
+      padding: 0 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profit-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profit-card .mock-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8b8ba3;
+      margin-bottom: 6px;
+    }
+
+    .profit-amount {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #22d3ee;
+      line-height: 1.15;
+      text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
+    }
+
+    .stat-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-mini {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-mini.income {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .stat-mini.expense {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.22);
+    }
+
+    .stat-mini-label {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .stat-mini.income .stat-mini-label { color: #4ade80; }
+    .stat-mini.expense .stat-mini-label { color: #f87171; }
+
+    .stat-mini-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .quick-section-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #6b6b80;
+      margin-top: 4px;
+    }
+
+    .quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      padding: 11px 8px;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: default;
+      text-align: center;
+    }
+
+    .quick-btn.income {
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .quick-btn.expense {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .mock-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 6px 18px;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .mock-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.5rem;
+      font-weight: 600;
+      color: #6b6b80;
+    }
+
+    .mock-nav-item.active {
+      color: #a78bfa;
+    }
+
+    .mock-nav-item span:first-child {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .mock-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .chip {
+      position: absolute;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 100px;
+      background: rgba(18, 18, 28, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+      white-space: nowrap;
+      color: #e8e8f0;
+    }
+
+    .chip-1 { top: 4%; left: -14%; animation: chipBob 3s ease-in-out infinite; }
+    .chip-2 { bottom: 10%; right: -16%; animation: chipBob 3s 0.8s ease-in-out infinite; }
+
+    @keyframes chipBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      animation: scrollBounce 2s ease infinite;
+    }
+
+    .scroll-hint-icon {
+      width: 26px;
+      height: 40px;
+      border: 2px solid rgba(124, 58, 237, 0.4);
+      border-radius: 14px;
+      position: relative;
+    }
+
+    .scroll-hint-icon::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: var(--purple);
+      border-radius: 2px;
+      animation: scrollDot 2s ease infinite;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    @keyframes scrollDot {
+      0% { opacity: 1; top: 8px; }
+      100% { opacity: 0; top: 20px; }
+    }
+
+    /* BEFORE / AFTER */
+    .compare-wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: stretch;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .compare-card {
+      padding: 2rem 1.75rem;
+    }
+
+    .compare-bad {
+      background: rgba(127, 29, 29, 0.12);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .compare-good {
+      background: rgba(124, 58, 237, 0.1);
+      border-color: rgba(124, 58, 237, 0.45);
+      box-shadow: 0 0 80px rgba(124, 58, 237, 0.2), inset 0 1px 0 rgba(167, 139, 250, 0.15);
+    }
+
+    .compare-good::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: var(--gradient);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .compare-card { position: relative; }
+
+    .compare-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .compare-bad .compare-tag { color: #f87171; }
+    .compare-good .compare-tag { color: #a78bfa; }
+
+    .compare-card h3 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin-bottom: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .compare-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .compare-list li {
+      display: flex;
+      gap: 0.65rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+      align-items: flex-start;
+    }
+
+    .compare-good .compare-list li { color: #d8d8e8; }
+
+    .vs-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 0;
+    }
+
+    .vs-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+      box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5);
+      animation: vsPulse 2.5s ease infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes vsPulse {
+      0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.55); }
+      70% { box-shadow: 0 0 0 18px rgba(124, 58, 237, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+    }
+
+    /* FEATURES alternating */
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 5rem;
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+
+    .feature-row:last-child { margin-bottom: 0; }
+
+    .feature-row.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-row.reverse .feature-copy { order: 2; }
+    .feature-row.reverse .feature-visual { order: 1; }
+
+    .feature-copy h3 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .feature-copy p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 420px;
+    }
+
+    .feature-mock {
+      padding: 1.75rem;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .feature-mock-inner {
+      font-size: 0.85rem;
+    }
+
+    .fm-balance {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #4ade80;
+      margin: 0.5rem 0;
+    }
+
+    .fm-chart {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 48px;
+      margin-top: 1rem;
+    }
+
+    .fm-chart span {
+      flex: 1;
+      background: var(--gradient);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.85;
+    }
+
+    .fm-offline {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #4ade80;
+      font-size: 0.85rem;
+    }
+
+    .fm-shield {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .fm-tap {
+      display: grid;
+      place-items: center;
+      height: 100px;
+    }
+
+    .fm-tap-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      box-shadow: 0 8px 32px var(--glow);
+      animation: tapPulse 2s ease infinite;
+    }
+
+    @keyframes tapPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .fm-langs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .fm-lang {
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+    }
+
+    .fm-lang.active {
+      background: var(--gradient);
+      border-color: transparent;
+    }
+
+    /* HOW IT WORKS */
+    .steps-track {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .steps-line {
+      display: none;
+    }
+
+    .step-item {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .step-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step-num {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.25rem;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-size: 1.75rem;
+      font-weight: 800;
+      box-shadow: 0 10px 36px var(--glow);
+    }
+
+    .step-item h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .step-item p { color: var(--muted); font-size: 0.9rem; }
+
+    /* STATS */
+    .stats-section {
+      padding: 5rem 0;
+      background: var(--gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-box { text-align: center; }
+
+    .stat-value {
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-label {
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .testimonial {
+      padding: 1.85rem;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+    }
+
+    .testimonial.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stars {
+      color: #fbbf24;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    }
+
+    .testimonial q {
+      display: block;
+      font-size: 0.95rem;
+      color: #e2e2ec;
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 1.35rem;
+      quotes: none;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .t-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .t-author strong { display: block; font-size: 0.95rem; }
+    .t-author span { font-size: 0.8rem; color: var(--muted); }
+
+    /* PRICING */
+    .pricing-box {
+      max-width: 820px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pricing-table th,
+    .pricing-table td {
+      padding: 1rem 1.15rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .pricing-table th:first-child,
+    .pricing-table td:first-child {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .pricing-table thead th { padding-top: 1.75rem; padding-bottom: 1.5rem; vertical-align: bottom; }
+
+    .plan-title {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .plan-cost {
+      font-size: 1.45rem;
+      font-weight: 800;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .plan-cost small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      -webkit-text-fill-color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .col-premium {
+      background: rgba(124, 58, 237, 0.14);
+      box-shadow: inset 0 0 60px rgba(124, 58, 237, 0.08);
+    }
+
+    .badge-tavsiya {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      background: var(--gradient);
+      color: #fff;
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.04em;
+    }
+
+    .yes,
+    .no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+      vertical-align: middle;
+      transition: transform 0.25s var(--ease);
+    }
+
+    .yes { background: #22c55e; }
+    .no { background: #f97316; }
+
+    .yes:hover,
+    .no:hover {
+      transform: scale(1.12);
+    }
+
+    .pricing-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* CTA BANNER */
+    .cta-banner {
+      padding: 0;
+      margin: 0;
+    }
+
+    .cta-banner-inner {
+      padding: 4.5rem 2rem;
+      text-align: center;
+      background: var(--gradient);
+      border: none;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner-inner::after {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      top: -200px;
+      right: -100px;
+      pointer-events: none;
+    }
+
+    .cta-banner-inner h2 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.65rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-banner-inner p {
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-banner-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* CONTACT */
+    .contact-card {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 2.75rem 2rem;
+      text-align: center;
+    }
+
+    .contact-card h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-card > p {
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .contact-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .phone-ph {
+      padding: 0.85rem;
+      border-radius: 14px;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 3.5rem 0 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-brand p {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.45rem; }
+
+    .footer-col a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.25s;
+    }
+
+    .footer-col a:hover { color: #c4b5fd; }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+      .menu-btn { display: none; }
+      .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 2rem; }
+      .compare-wrap { grid-template-columns: 1fr auto 1fr; gap: 0; }
+      .compare-bad { border-radius: var(--radius) 0 0 var(--radius); }
+      .compare-good { border-radius: 0 var(--radius) var(--radius) 0; }
+      .vs-wrap { padding: 0; }
+      .feature-row { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+      .feature-row.reverse .feature-copy { order: 1; }
+      .feature-row.reverse .feature-visual { order: 2; }
+      .steps-track { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+      .steps-line {
+        display: block;
+        position: absolute;
+        top: 36px;
+        left: 18%;
+        right: 18%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), transparent);
+        z-index: 0;
+      }
+      .step-item { position: relative; z-index: 1; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+      .contact-btns { flex-direction: row; justify-content: center; }
+      .contact-btns .btn,
+      .contact-btns .phone-ph { flex: 1; max-width: 200px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-      .reveal, .feature-card, .step-card, .testimonial-card {
+      .reveal, .feature-row, .step-item, .testimonial {
         opacity: 1;
         transform: none;
+        transition: none;
       }
+      .phone-tilt { animation: none; }
+      .vs-badge { animation: none; }
     }
   </style>
 </head>
 <body>
   <canvas id="particles" aria-hidden="true"></canvas>
-  <div class="gradient-bg" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"></div>
 
   <header class="header" id="header">
     <div class="container header-inner">
       <a href="#" class="logo">
-        <div class="logo-icon">📊</div>
+        <div class="logo-mark">📊</div>
         <span>BiznesHisob</span>
       </a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
-          <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
-          <li><a href="#reviews" data-i18n="nav.reviews">Sharhlar</a></li>
-          <li><a href="#download" data-i18n="nav.download">Yuklab olish</a></li>
-        </ul>
-      </nav>
+      <ul class="nav-links">
+        <li><a href="#compare">Farq</a></li>
+        <li><a href="#features">Imkoniyatlar</a></li>
+        <li><a href="#how">Jarayon</a></li>
+        <li><a href="#pricing">Narxlar</a></li>
+        <li><a href="#contact">Aloqa</a></li>
+      </ul>
       <div class="header-actions">
-        <div class="lang-switcher" role="group" aria-label="Language">
-          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
-          <button type="button" class="lang-btn" data-lang="ru">RU</button>
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
-        </div>
-        <button type="button" class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
-        <button type="button" class="icon-btn menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+        <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn">Yuklab olish</button>
+        <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
       </div>
     </div>
   </header>
 
   <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
-    <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
-    <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
-    <a href="#download" data-i18n="nav.download">Yuklab olish</a>
+    <a href="#compare">Farq</a>
+    <a href="#features">Imkoniyatlar</a>
+    <a href="#how">Qanday ishlaydi</a>
+    <a href="#stats">Statistika</a>
+    <a href="#reviews">Sharhlar</a>
+    <a href="#pricing">Narxlar</a>
+    <a href="#cta-banner">Yuklab olish</a>
+    <a href="#contact">Aloqa</a>
   </nav>
 
   <main>
+    <!-- 1. HERO -->
     <section class="hero" id="hero">
       <div class="container hero-grid">
-        <div class="hero-content" data-parallax="0.03">
-          <div class="hero-badge">
-            <span>✨</span>
-            <span data-i18n="hero.badge">#1 biznes moliya ilovasi</span>
+        <div class="hero-text reveal">
+          <div class="hero-eyebrow">
+            <span></span>
+            <span>O'zbekiston tadbirkorlari uchun #1 moliya ilovasi</span>
           </div>
-          <h1>
-            <span data-i18n="hero.title1">Biznesingiz moliyasini</span><br>
-            <span class="gradient-text" data-i18n="hero.title2">oson boshqaring</span>
-          </h1>
-          <p class="hero-desc" data-i18n="hero.desc">
-            Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.
+          <h1>Biznes moliyasini <span class="gradient-text">bir qo'lda boshqaring</span></h1>
+          <p class="hero-sub">
+            Daromad, xarajat va balans — barchasi bitta joyda. BiznesHisob kichik biznes uchun tez, xavfsiz va zamonaviy moliyaviy yordamchi. Bepul boshlang, istalgan vaqtda Premiumga o'ting.
           </p>
           <div class="hero-cta">
-            <button type="button" class="btn btn-primary" id="heroInstallBtn" data-i18n="hero.cta">Yuklab olish</button>
-            <button type="button" class="btn btn-outline hidden" id="heroIosBtn" data-i18n="hero.ios">iPhone uchun</button>
-            <a href="#features" class="btn btn-outline" data-i18n="hero.learn">Batafsil</a>
+            <button type="button" class="btn btn-primary" id="heroInstallBtn">Yuklab olish</button>
+            <a href="#features" class="btn btn-outline">Batafsil</a>
+            <button type="button" class="btn btn-outline hidden" id="heroIosBtn">iPhone uchun</button>
           </div>
-          <p class="ios-install-hint hidden" id="heroIosHint" data-i18n="install.iosHint"></p>
+          <p class="ios-hint hidden" id="heroIosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
         </div>
-        <div class="hero-visual" data-parallax="-0.05">
-          <div class="float-card float-card-1">📈 +24% oylik</div>
-          <div class="phone-mockup">
-            <div class="phone-notch"></div>
-            <div class="phone-screen">
-              <div class="mock-header">
-                <h3>BiznesHisob</h3>
-                <div class="balance">12 450 000 ₸</div>
-              </div>
-              <div class="mock-stats">
-                <div class="mock-stat income">
-                  Daromad
-                  <span>+8.2M</span>
+        <div class="hero-visual reveal">
+          <div class="phone-tilt" id="phoneTilt">
+            <div class="phone-tilt-inner">
+              <div class="phone-aura"></div>
+              <span class="chip chip-1">✅ +24% oylik</span>
+              <div class="phone-device">
+                <div class="phone-screen">
+                  <div class="dynamic-island" aria-hidden="true"></div>
+                  <div class="mock-status">
+                    <span>9:41</span>
+                    <div class="mock-status-icons" aria-hidden="true">
+                      <svg viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="0.5" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.5" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#fff"/></svg>
+                      <svg viewBox="0 0 16 12" fill="none"><path d="M8 2.5C5.5 2.5 3.2 3.6 1.5 5.5L0 4C2.2 1.8 5 0.5 8 0.5s5.8 1.3 8 3.5l-1.5 1.5C12.8 3.6 10.5 2.5 8 2.5zm0 4c-1.5 0-2.9.6-3.9 1.7L2.5 6.2C3.9 4.8 5.9 4 8 4s4.1.8 5.5 2.2l-1.6 1.5C10.9 7.1 9.5 6.5 8 6.5zm0 3c-.8 0-1.5.3-2.1.9L5 9.4c.9-.9 2.1-1.4 3.4-1.4s2.5.5 3.4 1.4l-.9.9c-.6-.6-1.3-.9-2.1-.9z" fill="#fff"/><circle cx="8" cy="11" r="1.2" fill="#fff"/></svg>
+                      <svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#fff" stroke-opacity="0.35"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="#fff"/><path d="M22 4v4h3v-4h-3z" fill="#fff" fill-opacity="0.4"/></svg>
+                    </div>
+                  </div>
+                  <header class="app-header">
+                    <div class="app-logo">📊</div>
+                    <span class="app-title">BiznesHisob</span>
+                  </header>
+                  <div class="app-body">
+                    <div class="profit-card">
+                      <div class="mock-label">Sof foyda</div>
+                      <div class="profit-amount">2,394,111 so'm</div>
+                    </div>
+                    <div class="stat-pair">
+                      <div class="stat-mini income">
+                        <div class="stat-mini-label">DAROMAD</div>
+                        <div class="stat-mini-value">8.7 mln</div>
+                      </div>
+                      <div class="stat-mini expense">
+                        <div class="stat-mini-label">XARAJAT</div>
+                        <div class="stat-mini-value">6.3 mln</div>
+                      </div>
+                    </div>
+                    <div class="quick-section-label">TEZKOR QO'SHISH</div>
+                    <div class="quick-btns">
+                      <button type="button" class="quick-btn income">+ Daromad</button>
+                      <button type="button" class="quick-btn expense">− Xarajat</button>
+                    </div>
+                  </div>
+                  <nav class="mock-nav" aria-label="Ilova navigatsiyasi">
+                    <div class="mock-nav-item active"><span>🏠</span><span>Bosh</span></div>
+                    <div class="mock-nav-item"><span>➕</span><span>Qo'shish</span></div>
+                    <div class="mock-nav-item"><span>📋</span><span>Ro'yxat</span></div>
+                    <div class="mock-nav-item"><span>👤</span><span>Profil</span></div>
+                  </nav>
                 </div>
-                <div class="mock-stat expense">
-                  Xarajat
-                  <span>-3.1M</span>
-                </div>
               </div>
-              <div class="mock-list">
-                <div class="mock-item"><span>Sotuv</span><span class="amount income">+450K</span></div>
-                <div class="mock-item"><span>Ofis</span><span class="amount expense">-120K</span></div>
-                <div class="mock-item"><span>Xizmat</span><span class="amount income">+890K</span></div>
-              </div>
-              <div class="mock-nav">🏠 ➕ 📋 👤</div>
+              <span class="chip chip-2">🔒 Shifrlangan</span>
             </div>
           </div>
-          <div class="float-card float-card-2">🔒 Xavfsiz</div>
+        </div>
+      </div>
+      <a href="#compare" class="scroll-hint" aria-label="Pastga aylantiring">
+        <span class="scroll-hint-icon"></span>
+        <span>Pastga</span>
+      </a>
+    </section>
+
+    <!-- 2. BEFORE vs AFTER -->
+    <section id="compare">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag">Farq</span>
+          <h2>Murakkablikdan <span class="gradient-text">osonlikka</span></h2>
+          <p>BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba</p>
+        </div>
+        <div class="compare-wrap">
+          <article class="compare-card compare-bad glass glass-hover reveal">
+            <div class="compare-tag">BiznesHisobsiz</div>
+            <h3>murakkab</h3>
+            <ul class="compare-list">
+              <li><span>❌</span> Excel va qog'ozda chalkash hisoblar</li>
+              <li><span>❌</span> Balansni bilish uchun soatlab vaqt</li>
+              <li><span>❌</span> Xarajatlar nazoratdan chiqadi</li>
+              <li><span>❌</span> Hisobotlar yo'q — faqat taxmin</li>
+            </ul>
+          </article>
+          <div class="vs-wrap reveal">
+            <div class="vs-badge">VS</div>
+          </div>
+          <article class="compare-card compare-good glass glass-hover reveal">
+            <div class="compare-tag">BiznesHisob bilan</div>
+            <h3>oson</h3>
+            <ul class="compare-list">
+              <li><span>✅</span> Barcha operatsiyalar bitta ilovada</li>
+              <li><span>✅</span> Bir bosish — daromad yoki xarajat</li>
+              <li><span>✅</span> Real vaqtda balans va statistika</li>
+              <li><span>✅</span> Aniq grafiklar va tahlil</li>
+            </ul>
+          </article>
         </div>
       </div>
     </section>
 
-    <div class="stats-bar">
-      <div class="container">
-        <div class="stats-grid">
-          <div class="stat-item reveal">
-            <div class="stat-value" data-count="12500" data-suffix="+">0</div>
-            <div class="stat-label" data-i18n="stats.users">Faol foydalanuvchilar</div>
-          </div>
-          <div class="stat-item reveal">
-            <div class="stat-value" data-count="2400000" data-suffix="+">0</div>
-            <div class="stat-label" data-i18n="stats.transactions">Operatsiyalar</div>
-          </div>
-          <div class="stat-item reveal">
-            <div class="stat-value" data-count="98" data-suffix="%">0</div>
-            <div class="stat-label" data-i18n="stats.satisfaction">Mamnunlik</div>
-          </div>
-          <div class="stat-item reveal">
-            <div class="stat-value" data-count="24" data-suffix="/7">0</div>
-            <div class="stat-label" data-i18n="stats.support">Qo'llab-quvvatlash</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+    <!-- 3. FEATURES alternating -->
     <section id="features">
       <div class="container">
-        <div class="section-header reveal">
-          <span class="section-tag" data-i18n="features.tag">Imkoniyatlar</span>
-          <h2 data-i18n="features.title">Nima uchun BiznesHisob?</h2>
-          <p data-i18n="features.subtitle">Biznesingiz uchun kerakli barcha moliyaviy vositalar bitta ilovada</p>
+        <div class="section-head reveal">
+          <span class="section-tag">Imkoniyatlar</span>
+          <h2>Biznesingiz uchun <span class="gradient-text">barcha vositalar</span></h2>
+          <p>Har bir funksiya — real vazifalar uchun mo'ljallangan</p>
         </div>
-        <div class="features-grid">
-          <article class="feature-card" data-delay="0">
-            <div class="feature-icon">💰</div>
-            <h3 data-i18n="features.f1.title">Daromad va xarajat</h3>
-            <p data-i18n="features.f1.desc">Har bir operatsiyani soniyalar ichida qo'shing va real vaqtda balansni kuzating.</p>
-          </article>
-          <article class="feature-card" data-delay="100">
-            <div class="feature-icon">📊</div>
-            <h3 data-i18n="features.f2.title">Vizual hisobotlar</h3>
-            <p data-i18n="features.f2.desc">Daromad va xarajatlar bo'yicha aniq statistika va grafiklar.</p>
-          </article>
-          <article class="feature-card" data-delay="200">
-            <div class="feature-icon">📱</div>
-            <h3 data-i18n="features.f3.title">Mobil va PWA</h3>
-            <p data-i18n="features.f3.desc">Telefoningizga o'rnating — ilova kabi ishlaydi, internet bo'lmasa ham.</p>
-          </article>
-          <article class="feature-card" data-delay="300">
-            <div class="feature-icon">🔒</div>
-            <h3 data-i18n="features.f4.title">Xavfsizlik</h3>
-            <p data-i18n="features.f4.desc">Ma'lumotlaringiz shifrlangan va faqat sizga tegishli hisobda saqlanadi.</p>
-          </article>
-          <article class="feature-card" data-delay="400">
-            <div class="feature-icon">⚡</div>
-            <h3 data-i18n="features.f5.title">Tezkor qo'shish</h3>
-            <p data-i18n="features.f5.desc">Bir bosish bilan daromad yoki xarajat qo'shing — vaqt tejang.</p>
-          </article>
-          <article class="feature-card" data-delay="500">
-            <div class="feature-icon">🌐</div>
-            <h3 data-i18n="features.f6.title">Ko'p tilli</h3>
-            <p data-i18n="features.f6.desc">O'zbek, rus va ingliz tillarida qulay interfeys.</p>
-          </article>
+
+        <div class="feature-row reveal" data-delay="0">
+          <div class="feature-copy">
+            <h3>💰 Daromad va xarajat</h3>
+            <p>Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="feature-mock-inner">
+              <div class="mock-label">Joriy balans</div>
+              <div class="fm-balance">+8 240 000 so'm</div>
+              <div class="mock-row"><span>Bugungi daromad</span><span style="color:#4ade80">+1.2M</span></div>
+              <div class="mock-row"><span>Bugungi xarajat</span><span style="color:#f87171">-340K</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="80">
+          <div class="feature-copy">
+            <h3>📊 Vizual hisobotlar</h3>
+            <p>Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="feature-mock-inner">
+              <div class="mock-label">Oylik statistika</div>
+              <div class="fm-chart">
+                <span style="height:45%"></span><span style="height:70%"></span><span style="height:55%"></span>
+                <span style="height:85%"></span><span style="height:60%"></span><span style="height:95%"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reveal" data-delay="160">
+          <div class="feature-copy">
+            <h3>📱 Mobil va PWA</h3>
+            <p>Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="fm-offline">📶 Oflayn rejim — faol</div>
+            <p style="color:var(--muted);font-size:0.85rem;margin-top:0.75rem">PWA — brauzerdan to'liq ilovaga</p>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="240">
+          <div class="feature-copy">
+            <h3>🔒 Xavfsizlik</h3>
+            <p>Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="fm-shield">🛡️</div>
+            <p style="text-align:center;color:var(--muted);font-size:0.85rem">256-bit shifrlash • Xavfsiz serverlar</p>
+          </div>
+        </div>
+
+        <div class="feature-row reveal" data-delay="320">
+          <div class="feature-copy">
+            <h3>⚡ Tezkor qo'shish</h3>
+            <p>Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="fm-tap">
+              <div class="fm-tap-btn">+</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="400">
+          <div class="feature-copy">
+            <h3>🌐 Ko'p tilli</h3>
+            <p>O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-mock">
+            <div class="fm-langs">
+              <span class="fm-lang active">UZ</span>
+              <span class="fm-lang">RU</span>
+              <span class="fm-lang">EN</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- 4. HOW IT WORKS -->
     <section id="how">
       <div class="container">
-        <div class="section-header reveal">
-          <span class="section-tag" data-i18n="how.tag">Jarayon</span>
-          <h2 data-i18n="how.title">Qanday ishlaydi?</h2>
-          <p data-i18n="how.subtitle">Uch oddiy qadam — va moliyangiz nazorat ostida</p>
+        <div class="section-head reveal">
+          <span class="section-tag">Jarayon</span>
+          <h2>Qanday <span class="gradient-text">ishlaydi?</span></h2>
+          <p>Uch oddiy qadam — va moliyangiz to'liq nazorat ostida</p>
         </div>
-        <div class="steps">
-          <div class="step-card" data-delay="0">
+        <div class="steps-track">
+          <div class="steps-line" aria-hidden="true"></div>
+          <div class="step-item glass glass-hover" data-delay="0">
             <div class="step-num">1</div>
-            <h3 data-i18n="how.s1.title">Ro'yxatdan o'ting</h3>
-            <p data-i18n="how.s1.desc">Email va parol bilan tez va bepul hisob yarating.</p>
+            <h3>Ro'yxatdan o'ting</h3>
+            <p>Email va parol bilan bepul hisob yarating. Bir daqiqadan kam vaqt ketadi.</p>
           </div>
-          <div class="step-card" data-delay="150">
+          <div class="step-item glass glass-hover" data-delay="120">
             <div class="step-num">2</div>
-            <h3 data-i18n="how.s2.title">Operatsiya qo'shing</h3>
-            <p data-i18n="how.s2.desc">Daromad va xarajatlarni kategoriyalar bilan belgilang.</p>
+            <h3>Operatsiya qo'shing</h3>
+            <p>Daromad va xarajatlarni kategoriyalar bilan belgilang. Tez va tartibli.</p>
           </div>
-          <div class="step-card" data-delay="300">
+          <div class="step-item glass glass-hover" data-delay="240">
             <div class="step-num">3</div>
-            <h3 data-i18n="how.s3.title">Tahlil qiling</h3>
-            <p data-i18n="how.s3.desc">Statistikani ko'ring va biznesingizni rivojlantiring.</p>
+            <h3>Tahlil qiling</h3>
+            <p>Statistika va grafiklarni ko'ring. Biznesingizni ma'lumot asosida rivojlantiring.</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- 5. STATISTICS -->
+    <section class="stats-section" id="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="1000" data-suffix="K+">0</div>
+            <div class="stat-label">Faol foydalanuvchilar</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="50000" data-suffix="K+">0</div>
+            <div class="stat-label">Operatsiyalar</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="98" data-suffix="%">0</div>
+            <div class="stat-label">Mamnunlik</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="24" data-suffix="/7">0</div>
+            <div class="stat-label">Qo'llab-quvvatlash</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. TESTIMONIALS -->
     <section id="reviews">
       <div class="container">
-        <div class="section-header reveal">
-          <span class="section-tag" data-i18n="reviews.tag">Sharhlar</span>
-          <h2 data-i18n="reviews.title">Foydalanuvchilar nima deydi</h2>
-          <p data-i18n="reviews.subtitle">Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda</p>
+        <div class="section-head reveal">
+          <span class="section-tag">Sharhlar</span>
+          <h2>Foydalanuvchilar <span class="gradient-text">nima deydi</span></h2>
+          <p>Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda</p>
         </div>
         <div class="testimonials-grid">
-          <article class="testimonial-card" data-delay="0">
-            <div class="stars">★★★★★</div>
-            <p class="testimonial-text" data-i18n="reviews.t1.text">"Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson!"</p>
+          <article class="testimonial glass glass-hover" data-delay="0">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q>Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!</q>
             <div class="testimonial-author">
-              <div class="avatar">AK</div>
-              <div class="author-info">
+              <div class="t-avatar">AK</div>
+              <div class="t-author">
                 <strong>Aziza Karimova</strong>
-                <span data-i18n="reviews.t1.role">Do'kon egasi, Toshkent</span>
+                <span>Do'kon egasi, Toshkent</span>
               </div>
             </div>
           </article>
-          <article class="testimonial-card" data-delay="100">
-            <div class="stars">★★★★★</div>
-            <p class="testimonial-text" data-i18n="reviews.t2.text">"Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Tavsiya qilaman!"</p>
+          <article class="testimonial glass glass-hover" data-delay="100">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q>Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!</q>
             <div class="testimonial-author">
-              <div class="avatar">DR</div>
-              <div class="author-info">
-                <strong>Dmitriy Rakhimov</strong>
-                <span data-i18n="reviews.t2.role">IT xizmatlar, Samarqand</span>
+              <div class="t-avatar">DR</div>
+              <div class="t-author">
+                <strong>Dilshod Rakhimov</strong>
+                <span>IT xizmatlar, Samarqand</span>
               </div>
             </div>
           </article>
-          <article class="testimonial-card" data-delay="200">
-            <div class="stars">★★★★★</div>
-            <p class="testimonial-text" data-i18n="reviews.t3.text">"Perfect for my café business. Offline mode is a game changer. Beautiful and simple UI."</p>
+          <article class="testimonial glass glass-hover" data-delay="200">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q>Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.</q>
             <div class="testimonial-author">
-              <div class="avatar">JM</div>
-              <div class="author-info">
-                <strong>James Mitchell</strong>
-                <span data-i18n="reviews.t3.role">Café owner, Tashkent</span>
+              <div class="t-avatar">SN</div>
+              <div class="t-author">
+                <strong>Sardor Nazarov</strong>
+                <span>Kafe egasi, Toshkent</span>
               </div>
             </div>
           </article>
@@ -1149,325 +1716,176 @@
       </div>
     </section>
 
-    <section class="cta-section" id="download">
+    <!-- 7. PRICING -->
+    <section id="pricing">
       <div class="container">
-        <div class="cta-box reveal">
-          <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
-          <p data-i18n="cta.desc">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
-          <div class="cta-actions">
-            <button type="button" class="btn" id="ctaInstallBtn" data-i18n="cta.btn">Yuklab olish</button>
-            <button type="button" class="btn btn-ios hidden" id="ctaIosBtn" data-i18n="hero.ios">iPhone uchun</button>
+        <div class="section-head reveal">
+          <span class="section-tag">Narxlar</span>
+          <h2>Sizga mos <span class="gradient-text">rejani tanlang</span></h2>
+          <p>Bepul boshlang — kerak bo'lsa Premiumga o'ting</p>
+        </div>
+        <div class="pricing-box glass reveal">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  <span class="plan-title">Bepul</span>
+                  <span class="plan-cost">0 so'm<small>abadiy</small></span>
+                </th>
+                <th class="col-premium">
+                  <span class="badge-tavsiya">TAVSIYA</span>
+                  <span class="plan-title">Premium</span>
+                  <span class="plan-cost">29 900 so'm<small>oyiga</small></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Daromad / xarajat qo'shish</td><td><span class="yes" aria-label="Mavjud">✓</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Asosiy statistika</td><td><span class="yes" aria-label="Mavjud">✓</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Kengaytirilgan grafiklar</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Cheksiz operatsiyalar</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Export (PDF / Excel)</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Ustuvor qo'llab-quvvatlash</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td>Reklamasiz</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pricing-foot">
+            <a href="https://bizneshisob.vercel.app" class="btn btn-outline" target="_blank" rel="noopener">Bepul boshlash</a>
+            <a href="https://bizneshisob.vercel.app" class="btn btn-primary" target="_blank" rel="noopener">Premiumga o'tish</a>
           </div>
-          <p class="ios-install-hint hidden" id="ctaIosHint" data-i18n="install.iosHint"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. CTA BANNER -->
+    <section class="cta-banner" id="cta-banner">
+      <div class="cta-banner-inner reveal">
+        <h2>Bugun boshlang — bepul!</h2>
+        <p>BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
+        <div class="cta-banner-actions">
+          <button type="button" class="btn btn-white" id="ctaInstallBtn">Yuklab olish</button>
+          <button type="button" class="btn btn-outline hidden" id="ctaIosBtn" style="border-color:rgba(255,255,255,0.4);color:#fff">iPhone uchun</button>
+        </div>
+        <p class="ios-hint hidden" id="ctaIosHint" style="margin-top:1rem;color:rgba(255,255,255,0.8)">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
+      </div>
+    </section>
+
+    <!-- 9. CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="contact-card glass glass-hover reveal">
+          <span class="section-tag">Aloqa</span>
+          <h3>Savollaringiz bormi?</h3>
+          <p>Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.</p>
+          <div class="contact-btns">
+            <a href="https://t.me/bizneshisob" class="btn btn-telegram" target="_blank" rel="noopener">✈ Telegram orqali yozish</a>
+            <div class="phone-ph" aria-label="Telefon tez orada">📞 +998 XX XXX XX XX</div>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- 10. FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="#" class="logo">
-            <div class="logo-icon">📊</div>
+            <div class="logo-mark">📊</div>
             <span>BiznesHisob</span>
           </a>
-          <p data-i18n="footer.desc">Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.</p>
+          <p>Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova. O'zbekiston tadbirkorlari uchun yaratilgan.</p>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer.product">Mahsulot</h4>
+          <h4>Mahsulot</h4>
           <ul>
-            <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
-            <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
-            <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener" data-i18n="nav.download">Yuklab olish</a></li>
+            <li><a href="#features">Imkoniyatlar</a></li>
+            <li><a href="#how">Qanday ishlaydi</a></li>
+            <li><a href="#pricing">Narxlar</a></li>
+            <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener">Yuklab olish</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer.company">Kompaniya</h4>
+          <h4>Kompaniya</h4>
           <ul>
-            <li><a href="#" data-i18n="footer.about">Biz haqimizda</a></li>
-            <li><a href="#" data-i18n="footer.contact">Aloqa</a></li>
-            <li><a href="#" data-i18n="footer.privacy">Maxfiylik</a></li>
+            <li><a href="#compare">Biz haqimizda</a></li>
+            <li><a href="#contact">Aloqa</a></li>
+            <li><a href="#">Maxfiylik</a></li>
           </ul>
         </div>
         <div class="footer-col">
-          <h4 data-i18n="footer.support">Yordam</h4>
+          <h4>Yordam</h4>
           <ul>
-            <li><a href="#" data-i18n="footer.faq">FAQ</a></li>
+            <li><a href="#reviews">Sharhlar</a></li>
             <li><a href="mailto:support@bizneshisob.uz">support@bizneshisob.uz</a></li>
             <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener">bizneshisob.vercel.app</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 BiznesHisob. <span data-i18n="footer.rights">Barcha huquqlar himoyalangan.</span></span>
-        <div class="social-links">
-          <a href="#" aria-label="Telegram">✈</a>
-          <a href="#" aria-label="Instagram">📷</a>
-          <a href="#" aria-label="Facebook">f</a>
-        </div>
+        © 2026 BiznesHisob. Barcha huquqlar himoyalangan.
       </div>
     </div>
   </footer>
 
   <script>
-    const i18n = {
-      uz: {
-        "nav.features": "Imkoniyatlar",
-        "nav.how": "Qanday ishlaydi",
-        "nav.reviews": "Sharhlar",
-        "nav.download": "Yuklab olish",
-        "hero.badge": "#1 biznes moliya ilovasi",
-        "hero.title1": "Biznesingiz moliyasini",
-        "hero.title2": "oson boshqaring",
-        "hero.desc": "Daromad va xarajatlarni bir joyda kuzating. BiznesHisob — kichik biznes egalari uchun zamonaviy, tez va xavfsiz hisob-kitob yordamchisi.",
-        "hero.cta": "Yuklab olish",
-        "hero.ios": "iPhone uchun",
-        "hero.learn": "Batafsil",
-        "install.iosHint": "Safarida «Ulashish» tugmasini bosing, soʻng «Bosh ekranga qoʻshish» ni tanlang.",
-        "stats.users": "Faol foydalanuvchilar",
-        "stats.transactions": "Operatsiyalar",
-        "stats.satisfaction": "Mamnunlik",
-        "stats.support": "Qo'llab-quvvatlash",
-        "features.tag": "Imkoniyatlar",
-        "features.title": "Nima uchun BiznesHisob?",
-        "features.subtitle": "Biznesingiz uchun kerakli barcha moliyaviy vositalar bitta ilovada",
-        "features.f1.title": "Daromad va xarajat",
-        "features.f1.desc": "Har bir operatsiyani soniyalar ichida qo'shing va real vaqtda balansni kuzating.",
-        "features.f2.title": "Vizual hisobotlar",
-        "features.f2.desc": "Daromad va xarajatlar bo'yicha aniq statistika va grafiklar.",
-        "features.f3.title": "Mobil va PWA",
-        "features.f3.desc": "Telefoningizga o'rnating — ilova kabi ishlaydi, internet bo'lmasa ham.",
-        "features.f4.title": "Xavfsizlik",
-        "features.f4.desc": "Ma'lumotlaringiz shifrlangan va faqat sizga tegishli hisobda saqlanadi.",
-        "features.f5.title": "Tezkor qo'shish",
-        "features.f5.desc": "Bir bosish bilan daromad yoki xarajat qo'shing — vaqt tejang.",
-        "features.f6.title": "Ko'p tilli",
-        "features.f6.desc": "O'zbek, rus va ingliz tillarida qulay interfeys.",
-        "how.tag": "Jarayon",
-        "how.title": "Qanday ishlaydi?",
-        "how.subtitle": "Uch oddiy qadam — va moliyangiz nazorat ostida",
-        "how.s1.title": "Ro'yxatdan o'ting",
-        "how.s1.desc": "Email va parol bilan tez va bepul hisob yarating.",
-        "how.s2.title": "Operatsiya qo'shing",
-        "how.s2.desc": "Daromad va xarajatlarni kategoriyalar bilan belgilang.",
-        "how.s3.title": "Tahlil qiling",
-        "how.s3.desc": "Statistikani ko'ring va biznesingizni rivojlantiring.",
-        "reviews.tag": "Sharhlar",
-        "reviews.title": "Foydalanuvchilar nima deydi",
-        "reviews.subtitle": "Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda",
-        "reviews.t1.text": "\"Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson!\"",
-        "reviews.t1.role": "Do'kon egasi, Toshkent",
-        "reviews.t2.text": "\"Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Tavsiya qilaman!\"",
-        "reviews.t2.role": "IT xizmatlar, Samarqand",
-        "reviews.t3.text": "\"Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys.\"",
-        "reviews.t3.role": "Kafe egasi, Toshkent",
-        "cta.title": "Bugun boshlang — bepul!",
-        "cta.desc": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
-        "cta.btn": "Yuklab olish",
-        "footer.desc": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
-        "footer.product": "Mahsulot",
-        "footer.company": "Kompaniya",
-        "footer.support": "Yordam",
-        "footer.about": "Biz haqimizda",
-        "footer.contact": "Aloqa",
-        "footer.privacy": "Maxfiylik",
-        "footer.faq": "FAQ",
-        "footer.rights": "Barcha huquqlar himoyalangan."
-      },
-      ru: {
-        "nav.features": "Возможности",
-        "nav.how": "Как это работает",
-        "nav.reviews": "Отзывы",
-        "nav.download": "Скачать",
-        "hero.badge": "#1 приложение для бизнес-финансов",
-        "hero.title1": "Управляйте финансами",
-        "hero.title2": "вашего бизнеса легко",
-        "hero.desc": "Отслеживайте доходы и расходы в одном месте. BiznesHisob — современный, быстрый и безопасный помощник для малого бизнеса.",
-        "hero.cta": "Скачать",
-        "hero.ios": "Для iPhone",
-        "hero.learn": "Подробнее",
-        "install.iosHint": "В Safari нажмите «Поделиться», затем «На экран Домой».",
-        "stats.users": "Активных пользователей",
-        "stats.transactions": "Операций",
-        "stats.satisfaction": "Удовлетворённость",
-        "stats.support": "Поддержка",
-        "features.tag": "Возможности",
-        "features.title": "Почему BiznesHisob?",
-        "features.subtitle": "Все финансовые инструменты для вашего бизнеса в одном приложении",
-        "features.f1.title": "Доходы и расходы",
-        "features.f1.desc": "Добавляйте операции за секунды и следите за балансом в реальном времени.",
-        "features.f2.title": "Визуальные отчёты",
-        "features.f2.desc": "Чёткая статистика и графики по доходам и расходам.",
-        "features.f3.title": "Мобильное и PWA",
-        "features.f3.desc": "Установите на телефон — работает как приложение, даже без интернета.",
-        "features.f4.title": "Безопасность",
-        "features.f4.desc": "Ваши данные зашифрованы и хранятся только в вашем аккаунте.",
-        "features.f5.title": "Быстрое добавление",
-        "features.f5.desc": "Добавляйте доход или расход одним нажатием — экономьте время.",
-        "features.f6.title": "Многоязычность",
-        "features.f6.desc": "Удобный интерфейс на узбекском, русском и английском.",
-        "how.tag": "Процесс",
-        "how.title": "Как это работает?",
-        "how.subtitle": "Три простых шага — и ваши финансы под контролем",
-        "how.s1.title": "Зарегистрируйтесь",
-        "how.s1.desc": "Создайте бесплатный аккаунт по email и паролю за минуту.",
-        "how.s2.title": "Добавьте операции",
-        "how.s2.desc": "Отмечайте доходы и расходы с категориями.",
-        "how.s3.title": "Анализируйте",
-        "how.s3.desc": "Смотрите статистику и развивайте свой бизнес.",
-        "reviews.tag": "Отзывы",
-        "reviews.title": "Что говорят пользователи",
-        "reviews.subtitle": "Тысячи предпринимателей уже используют BiznesHisob",
-        "reviews.t1.text": "\"Отличное приложение для моего магазина. Каждый день слежу за доходами и расходами с телефона. Очень просто!\"",
-        "reviews.t1.role": "Владелец магазина, Ташкент",
-        "reviews.t2.text": "\"Раньше вёл учёт в Excel. Теперь всё в одном месте — быстрее и удобнее. Рекомендую!\"",
-        "reviews.t2.role": "IT-услуги, Самарканд",
-        "reviews.t3.text": "\"Идеально для моего кафе. Офлайн-режим — находка. Красивый и простой интерфейс.\"",
-        "reviews.t3.role": "Владелец кафе, Ташкент",
-        "cta.title": "Начните сегодня — бесплатно!",
-        "cta.desc": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
-        "cta.btn": "Скачать",
-        "footer.desc": "Современное мобильное приложение для учёта доходов и расходов бизнеса.",
-        "footer.product": "Продукт",
-        "footer.company": "Компания",
-        "footer.support": "Поддержка",
-        "footer.about": "О нас",
-        "footer.contact": "Контакты",
-        "footer.privacy": "Конфиденциальность",
-        "footer.faq": "FAQ",
-        "footer.rights": "Все права защищены."
-      },
-      en: {
-        "nav.features": "Features",
-        "nav.how": "How it works",
-        "nav.reviews": "Reviews",
-        "nav.download": "Download",
-        "hero.badge": "#1 business finance app",
-        "hero.title1": "Manage your business",
-        "hero.title2": "finances with ease",
-        "hero.desc": "Track income and expenses in one place. BiznesHisob is a modern, fast, and secure accounting assistant for small business owners.",
-        "hero.cta": "Download",
-        "hero.ios": "For iPhone",
-        "hero.learn": "Learn more",
-        "install.iosHint": "In Safari, tap Share, then Add to Home Screen.",
-        "stats.users": "Active users",
-        "stats.transactions": "Transactions",
-        "stats.satisfaction": "Satisfaction",
-        "stats.support": "Support",
-        "features.tag": "Features",
-        "features.title": "Why BiznesHisob?",
-        "features.subtitle": "All the financial tools your business needs in one app",
-        "features.f1.title": "Income & expenses",
-        "features.f1.desc": "Add transactions in seconds and monitor your balance in real time.",
-        "features.f2.title": "Visual reports",
-        "features.f2.desc": "Clear statistics and charts for income and expenses.",
-        "features.f3.title": "Mobile & PWA",
-        "features.f3.desc": "Install on your phone — works like a native app, even offline.",
-        "features.f4.title": "Security",
-        "features.f4.desc": "Your data is encrypted and stored only in your account.",
-        "features.f5.title": "Quick add",
-        "features.f5.desc": "Add income or expense with one tap — save time.",
-        "features.f6.title": "Multilingual",
-        "features.f6.desc": "Comfortable interface in Uzbek, Russian, and English.",
-        "how.tag": "Process",
-        "how.title": "How it works?",
-        "how.subtitle": "Three simple steps — and your finances are under control",
-        "how.s1.title": "Sign up",
-        "how.s1.desc": "Create a free account with email and password in a minute.",
-        "how.s2.title": "Add transactions",
-        "how.s2.desc": "Label income and expenses with categories.",
-        "how.s3.title": "Analyze",
-        "how.s3.desc": "View statistics and grow your business.",
-        "reviews.tag": "Reviews",
-        "reviews.title": "What users say",
-        "reviews.subtitle": "Thousands of entrepreneurs already use BiznesHisob",
-        "reviews.t1.text": "\"Great app for my small shop. I track income and expenses from my phone every day. So easy!\"",
-        "reviews.t1.role": "Shop owner, Tashkent",
-        "reviews.t2.text": "\"I used to track everything in Excel. Now it's all in one place — faster and more convenient. Highly recommend!\"",
-        "reviews.t2.role": "IT services, Samarkand",
-        "reviews.t3.text": "\"Perfect for my café business. Offline mode is a game changer. Beautiful and simple UI.\"",
-        "reviews.t3.role": "Café owner, Tashkent",
-        "cta.title": "Start today — it's free!",
-        "cta.desc": "Open BiznesHisob now or install it on your phone. Sign up takes one minute.",
-        "cta.btn": "Download",
-        "footer.desc": "A modern mobile app for managing business income and expenses.",
-        "footer.product": "Product",
-        "footer.company": "Company",
-        "footer.support": "Support",
-        "footer.about": "About us",
-        "footer.contact": "Contact",
-        "footer.privacy": "Privacy",
-        "footer.faq": "FAQ",
-        "footer.rights": "All rights reserved."
+    const APP_URL = "https://bizneshisob.vercel.app/";
+    let deferredInstallPrompt = null;
+
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      const nav = document.getElementById("mobileNav");
+      const open = nav.classList.toggle("open");
+      nav.setAttribute("aria-hidden", !open);
+    });
+    document.querySelectorAll("#mobileNav a").forEach((a) => {
+      a.addEventListener("click", () => {
+        document.getElementById("mobileNav").classList.remove("open");
+      });
+    });
+
+    /* 3D phone tilt */
+    const phoneTilt = document.getElementById("phoneTilt");
+    const heroVisual = document.querySelector(".hero-visual");
+
+    if (phoneTilt && heroVisual && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      heroVisual.addEventListener("mousemove", (e) => {
+        const rect = heroVisual.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        phoneTilt.style.animation = "none";
+        phoneTilt.style.transform =
+          `perspective(1200px) rotateY(${x * 16}deg) rotateX(${-y * 12}deg) translateY(-6px)`;
+      });
+      heroVisual.addEventListener("mouseleave", () => {
+        phoneTilt.style.transform = "";
+        phoneTilt.style.animation = "phoneFloat 3s ease-in-out infinite";
+      });
+    }
+
+    function formatCount(n, suffix, final) {
+      if (suffix === "K+") {
+        if (final || n >= 1000) {
+          const k = n / 1000;
+          const label = (k % 1 === 0 ? k : k.toFixed(1).replace(/\.0$/, "")) + "K+";
+          return final ? label : (n >= 1000 ? label : String(Math.floor(n)));
+        }
+        return String(Math.floor(n));
       }
-    };
-
-    let currentLang = localStorage.getItem("bh-landing-lang") || "uz";
-
-    function setLang(lang) {
-      currentLang = lang;
-      localStorage.setItem("bh-landing-lang", lang);
-      document.documentElement.lang = lang;
-      document.querySelectorAll(".lang-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.lang === lang);
-      });
-      document.querySelectorAll("[data-i18n]").forEach((el) => {
-        const key = el.dataset.i18n;
-        if (i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
-      });
-    }
-
-    document.querySelectorAll(".lang-btn").forEach((btn) => {
-      btn.addEventListener("click", () => setLang(btn.dataset.lang));
-    });
-
-    const themeToggle = document.getElementById("themeToggle");
-    const html = document.documentElement;
-    const savedTheme = localStorage.getItem("bh-landing-theme") || "dark";
-
-    function setTheme(theme) {
-      html.dataset.theme = theme;
-      localStorage.setItem("bh-landing-theme", theme);
-      themeToggle.textContent = theme === "dark" ? "🌙" : "☀️";
-    }
-
-    setTheme(savedTheme);
-    themeToggle.addEventListener("click", () => {
-      setTheme(html.dataset.theme === "dark" ? "light" : "dark");
-    });
-
-    const header = document.getElementById("header");
-    window.addEventListener("scroll", () => {
-      header.classList.toggle("scrolled", window.scrollY > 40);
-    }, { passive: true });
-
-    const menuToggle = document.getElementById("menuToggle");
-    const mobileNav = document.getElementById("mobileNav");
-    menuToggle.addEventListener("click", () => {
-      mobileNav.classList.toggle("open");
-      mobileNav.setAttribute("aria-hidden", !mobileNav.classList.contains("open"));
-    });
-    mobileNav.querySelectorAll("a").forEach((a) => {
-      a.addEventListener("click", () => mobileNav.classList.remove("open"));
-    });
-
-    function formatCount(n) {
-      if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-      if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "K";
-      return String(n);
+      return String(Math.floor(n)) + suffix;
     }
 
     function animateCounter(el) {
       const target = parseInt(el.dataset.count, 10);
       const suffix = el.dataset.suffix || "";
-      const duration = 2000;
+      const duration = 2200;
       const start = performance.now();
       function tick(now) {
         const t = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - t, 4);
         const val = Math.floor(target * eased);
-        el.textContent = formatCount(val) + (t >= 1 ? suffix : "");
+        el.textContent = formatCount(val, suffix, t >= 1);
         if (t < 1) requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);
@@ -1478,33 +1896,25 @@
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           entry.target.classList.add("visible");
-          if (entry.target.classList.contains("stat-value") && !entry.target.dataset.animated) {
-            entry.target.dataset.animated = "1";
+          if (entry.target.classList.contains("stat-value") && !entry.target.dataset.done) {
+            entry.target.dataset.done = "1";
             animateCounter(entry.target);
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
 
-    document.querySelectorAll(".reveal, .feature-card, .step-card, .testimonial-card, .stat-value").forEach((el) => {
-      const delay = el.dataset.delay;
-      if (delay) el.style.transitionDelay = delay + "ms";
+    document.querySelectorAll(
+      ".reveal, .feature-row, .step-item, .testimonial, .stat-value"
+    ).forEach((el) => {
+      if (el.dataset.delay) el.style.transitionDelay = el.dataset.delay + "ms";
       observer.observe(el);
-    });
-
-    document.querySelectorAll("[data-parallax]").forEach((el) => {
-      const speed = parseFloat(el.dataset.parallax) || 0.05;
-      window.addEventListener("scroll", () => {
-        const y = window.scrollY * speed;
-        el.style.transform = `translateY(${y}px)`;
-      }, { passive: true });
     });
 
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
-    let particles = [];
-    let w, h;
+    let particles = [], w, h;
 
     function resizeCanvas() {
       w = canvas.width = window.innerWidth;
@@ -1512,43 +1922,38 @@
     }
 
     function initParticles() {
-      const count = Math.min(80, Math.floor((w * h) / 15000));
-      particles = Array.from({ length: count }, () => ({
+      const n = Math.min(75, Math.floor((w * h) / 14000));
+      particles = Array.from({ length: n }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        r: Math.random() * 2 + 0.5,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        opacity: Math.random() * 0.5 + 0.2
+        r: Math.random() * 2 + 0.4,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        o: Math.random() * 0.4 + 0.15
       }));
     }
 
     function drawParticles() {
       ctx.clearRect(0, 0, w, h);
-      const color = getComputedStyle(document.documentElement).getPropertyValue("--particle").trim() || "rgba(167,139,250,0.5)";
+      const c = "rgba(167, 139, 250, 0.5)";
       particles.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = w;
-        if (p.x > w) p.x = 0;
-        if (p.y < 0) p.y = h;
-        if (p.y > h) p.y = 0;
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = c;
+        ctx.globalAlpha = p.o;
         ctx.fill();
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
-          const dx = p.x - q.x;
-          const dy = p.y - q.y;
-          const dist = Math.hypot(dx, dy);
-          if (dist < 120) {
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 115) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = color;
-            ctx.globalAlpha = (1 - dist / 120) * 0.15;
+            ctx.strokeStyle = c;
+            ctx.globalAlpha = (1 - d / 115) * 0.1;
             ctx.stroke();
           }
         }
@@ -1560,18 +1965,11 @@
     resizeCanvas();
     initParticles();
     drawParticles();
-    window.addEventListener("resize", () => {
-      resizeCanvas();
-      initParticles();
-    });
-
-    setLang(currentLang);
-
-    const APP_URL = "https://bizneshisob.vercel.app/";
-    let deferredInstallPrompt = null;
+    window.addEventListener("resize", () => { resizeCanvas(); initParticles(); });
 
     const heroInstallBtn = document.getElementById("heroInstallBtn");
     const ctaInstallBtn = document.getElementById("ctaInstallBtn");
+    const navInstallBtn = document.getElementById("navInstallBtn");
     const heroIosBtn = document.getElementById("heroIosBtn");
     const ctaIosBtn = document.getElementById("ctaIosBtn");
     const heroIosHint = document.getElementById("heroIosHint");
@@ -1587,9 +1985,7 @@
         window.navigator.standalone === true;
     }
 
-    function openApp() {
-      window.location.href = APP_URL;
-    }
+    function openApp() { window.location.href = APP_URL; }
 
     async function triggerInstall() {
       if (deferredInstallPrompt) {
@@ -1608,10 +2004,8 @@
 
     function setupInstallUI() {
       if (isStandalone()) {
-        const openLabel = { uz: "Ilovani ochish", ru: "Открыть приложение", en: "Open app" };
-        const label = openLabel[currentLang] || openLabel.uz;
-        heroInstallBtn.textContent = label;
-        ctaInstallBtn.textContent = label;
+        const label = "Ilovani ochish";
+        [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((b) => { if (b) b.textContent = label; });
         heroIosBtn.classList.add("hidden");
         ctaIosBtn.classList.add("hidden");
         toggleIosHint(false);
@@ -1623,7 +2017,8 @@
       }
     }
 
-    [heroInstallBtn, ctaInstallBtn].forEach((btn) => {
+    [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((btn) => {
+      if (!btn) return;
       btn.addEventListener("click", () => {
         if (isStandalone()) openApp();
         else triggerInstall();
@@ -1632,9 +2027,7 @@
 
     function handleIosInstall() {
       toggleIosHint(true);
-      if (!/Safari/i.test(navigator.userAgent) && !isStandalone()) {
-        openApp();
-      }
+      if (!/Safari/i.test(navigator.userAgent) && !isStandalone()) openApp();
     }
 
     heroIosBtn.addEventListener("click", handleIosInstall);
