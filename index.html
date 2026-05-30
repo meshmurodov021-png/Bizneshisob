@@ -436,7 +436,7 @@
     .settings-screen {
       position: absolute;
       inset: 0;
-      z-index: 80;
+      z-index: 110;
       background: var(--bg);
       display: flex;
       flex-direction: column;
@@ -1453,10 +1453,22 @@
 
     .empty-state p { font-size: 0.95rem; line-height: 1.6; }
 
-    /* Profile — redesigned */
+    /* Profile — clean layout */
+    #tabProfile {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
     .profile-hero {
       text-align: center;
-      padding: 1.25rem 0 1.5rem;
+      padding: 0.5rem 0 0;
       animation: statFadeUp 0.45s var(--ease);
     }
 
@@ -1467,44 +1479,44 @@
       background: none;
       padding: 0;
       cursor: pointer;
-      margin-bottom: 0.85rem;
+      margin-bottom: 1rem;
     }
 
     .profile-avatar-lg {
-      width: 88px;
-      height: 88px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       background: linear-gradient(135deg, var(--accent), #a855f7);
       background-size: cover;
       background-position: center;
-      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.45);
+      box-shadow: 0 10px 32px rgba(99, 102, 241, 0.5);
       overflow: hidden;
     }
 
     .profile-avatar-lg [data-lucide] {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       stroke: #fff;
     }
 
     .avatar-edit-badge {
       position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 28px;
-      height: 28px;
+      right: 2px;
+      bottom: 2px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: var(--surface-2);
       border: 2px solid var(--bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+      font-size: 0.9rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     }
 
     .profile-display-name {
@@ -1513,12 +1525,12 @@
       border: none;
       background: none;
       color: var(--text);
-      font-size: 1.2rem;
+      font-size: 1.35rem;
       font-weight: 800;
       font-family: inherit;
       cursor: pointer;
       padding: 0.25rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
       letter-spacing: -0.02em;
     }
 
@@ -1527,151 +1539,195 @@
     }
 
     .profile-email-text {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: var(--muted);
       word-break: break-all;
-      margin: 0;
+      margin: 0 0 0.85rem;
     }
 
-    .profile-section {
-      margin-bottom: 1.25rem;
+    .profile-plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .profile-plan-badge.is-premium {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(99, 102, 241, 0.2));
+      border-color: rgba(167, 139, 250, 0.45);
+      color: #c4b5fd;
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
+    }
+
+    .profile-block {
+      margin-top: 24px;
       animation: statFadeUp 0.45s var(--ease) backwards;
     }
 
-    .profile-section:nth-child(2) { animation-delay: 0.05s; }
-    .profile-section:nth-child(3) { animation-delay: 0.1s; }
-    .profile-section:nth-child(4) { animation-delay: 0.15s; }
-    .profile-section:nth-child(5) { animation-delay: 0.2s; }
+    .profile-block:nth-child(2) { animation-delay: 0.06s; }
+    .profile-block:nth-child(3) { animation-delay: 0.12s; }
 
-    .profile-section-label {
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 0.55rem;
-      padding-left: 0.15rem;
-    }
-
-    .profile-glass-card {
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
+    .profile-upgrade-card {
+      padding: 1.1rem 1.15rem;
       border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
+      background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #6366f1 100%);
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.45), 0 0 40px rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(167, 139, 250, 0.35);
     }
 
-    .profile-tariff-block {
-      padding: 1rem;
+    .upgrade-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
     }
 
     .profile-tariff-text {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.75rem;
-    }
-
-    .profile-premium-active {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.45rem 0.75rem;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.15);
-      border: 1px solid rgba(34, 197, 94, 0.35);
-      color: #4ade80;
-      font-size: 0.82rem;
-      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      margin: 0;
+      flex-shrink: 0;
     }
 
     .profile-premium-btn {
-      width: 100%;
-      padding: 0.85rem 1rem;
+      flex-shrink: 0;
+      padding: 0.55rem 0.85rem;
       border: none;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #7C3AED, #6366f1);
-      color: #fff;
-      font-size: 0.92rem;
-      font-weight: 700;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #5b21b6;
+      font-size: 0.78rem;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
-      transition: transform 0.2s var(--ease), opacity 0.2s;
-      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+      white-space: nowrap;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.45);
     }
 
     .profile-premium-btn:active {
-      transform: scale(0.98);
-      opacity: 0.9;
+      transform: scale(0.97);
     }
 
-    .profile-row-btn {
+    .upgrade-progress-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0 0 0.45rem;
+    }
+
+    .profile-premium-banner {
+      padding: 1rem 1.15rem;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .profile-progress-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+    }
+
+    .profile-progress-track.subtle {
+      background: rgba(255, 255, 255, 0.06);
+      margin-top: 0.5rem;
+    }
+
+    .profile-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: #22c55e;
+      transition: width 0.5s var(--ease), background 0.3s;
+    }
+
+    .profile-progress-fill.warn {
+      background: #eab308;
+    }
+
+    .profile-progress-fill.danger {
+      background: #ef4444;
+    }
+
+    .profile-stats-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .profile-stat-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 100%;
       gap: 0.75rem;
-      padding: 0.95rem 1rem;
-      min-height: 52px;
+      padding: 1rem 0;
       border: none;
-      background: transparent;
+      background: none;
       color: var(--text);
       font-size: 0.95rem;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       text-align: left;
-      transition: background 0.2s var(--ease);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      transition: opacity 0.2s;
     }
 
-    .profile-row-btn + .profile-row-btn,
-    .profile-row-btn + .profile-row,
-    .profile-row + .profile-row-btn,
-    .profile-row + .profile-row {
-      border-top: 1px solid var(--border);
+    .profile-stat-row.static {
+      cursor: default;
+      flex-direction: column;
+      align-items: stretch;
     }
 
-    .profile-row-btn:active {
-      background: rgba(124, 58, 237, 0.08);
+    .profile-stat-row:active:not(.static) {
+      opacity: 0.7;
     }
 
-    .profile-row-btn-left {
-      display: inline-flex;
+    .profile-stat-row-top {
+      display: flex;
       align-items: center;
-      gap: 0.55rem;
+      justify-content: space-between;
+      width: 100%;
     }
 
-    .profile-row-btn [data-lucide] {
-      width: 18px;
-      height: 18px;
-      stroke: var(--muted);
-      flex-shrink: 0;
-    }
-
-    .profile-row-btn-value {
-      font-size: 0.85rem;
+    .profile-stat-label {
       color: var(--muted);
       font-weight: 600;
     }
 
-    .profile-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.95rem 1rem;
-      min-height: 52px;
-    }
-
-    .profile-row-label {
+    .profile-stat-value {
       display: inline-flex;
       align-items: center;
-      gap: 0.55rem;
-      font-size: 0.95rem;
-      font-weight: 600;
+      gap: 0.35rem;
+      font-weight: 700;
       color: var(--text);
+    }
+
+    .profile-stat-value [data-lucide] {
+      width: 16px;
+      height: 16px;
+      stroke: var(--muted);
+    }
+
+    .profile-logout-wrap {
+      margin-top: auto;
+      padding-top: 32px;
+      padding-bottom: 0.5rem;
     }
 
     .profile-logout-full {
@@ -1680,11 +1736,10 @@
       justify-content: center;
       gap: 0.5rem;
       width: 100%;
-      padding: 0.95rem 1rem;
-      margin-top: 0.5rem;
-      border: 1px solid rgba(255, 77, 77, 0.35);
+      padding: 1rem;
+      border: 1px solid rgba(255, 77, 77, 0.4);
       border-radius: var(--radius);
-      background: rgba(255, 77, 77, 0.1);
+      background: rgba(255, 77, 77, 0.12);
       color: #ff4d4d;
       font-size: 0.95rem;
       font-weight: 700;
@@ -1700,7 +1755,7 @@
     }
 
     .profile-logout-full:active {
-      background: rgba(255, 77, 77, 0.18);
+      background: rgba(255, 77, 77, 0.22);
     }
 
     .profile-logout-full:disabled {
@@ -1714,6 +1769,10 @@
       color: var(--muted);
       margin: 1rem 0 0.5rem;
       line-height: 1.5;
+    }
+
+    .profile-bio-btn.hidden {
+      display: none;
     }
 
     .profile-sheet {
@@ -3219,98 +3278,57 @@
 
       <!-- Profil -->
       <section class="tab-panel" id="tabProfile" data-tab="profile">
-        <div class="profile-hero">
-          <button type="button" class="profile-avatar-btn" id="avatarEditBtn" data-i18n-aria="profile.editAvatar">
-            <div class="profile-avatar-lg" id="profileAvatar"><i data-lucide="user"></i></div>
-            <span class="avatar-edit-badge" aria-hidden="true">✏️</span>
-          </button>
-          <button type="button" class="profile-display-name" id="displayNameBtn">Ism Familiya</button>
-          <p class="profile-email-text" id="userEmail">—</p>
+        <div class="profile-page">
+          <div class="profile-hero">
+            <button type="button" class="profile-avatar-btn" id="avatarEditBtn" data-i18n-aria="profile.editAvatar">
+              <div class="profile-avatar-lg" id="profileAvatar"><i data-lucide="user"></i></div>
+              <span class="avatar-edit-badge" aria-hidden="true">✏️</span>
+            </button>
+            <button type="button" class="profile-display-name" id="displayNameBtn">Ism Familiya</button>
+            <p class="profile-email-text" id="userEmail">—</p>
+            <span class="profile-plan-badge" id="profilePlanBadge">Bepul</span>
+          </div>
+
+          <div class="profile-block profile-upgrade-card" id="upgradeCard">
+            <div class="upgrade-card-top">
+              <p class="profile-tariff-text" id="profileTariffText">Tarif: Bepul</p>
+              <button type="button" class="profile-premium-btn" id="upgradeBtn" data-i18n="profile.upgradePremium">Premiumga o'tish →</button>
+            </div>
+            <p class="upgrade-progress-label" id="upgradeProgressLabel">0/100 operatsiya ishlatilgan</p>
+            <div class="profile-progress-track">
+              <div class="profile-progress-fill" id="upgradeProgressFill"></div>
+            </div>
+          </div>
+
+          <div class="profile-block profile-premium-banner hidden" id="profilePremiumBanner" data-i18n="profile.premiumActive">Premium faol ✅</div>
+
+          <div class="profile-block profile-stats-block">
+            <button type="button" class="profile-stat-row" id="profileTxRow">
+              <span class="profile-stat-label" data-i18n="profile.txCount">Operatsiyalar:</span>
+              <span class="profile-stat-value"><span id="profileTxStatValue">0</span> <span data-i18n="profile.txUnit">ta</span> <i data-lucide="chevron-right"></i></span>
+            </button>
+            <div class="profile-stat-row static" id="txLimitRow">
+              <div class="profile-stat-row-top">
+                <span class="profile-stat-label" data-i18n="profile.limitLabel">Limit:</span>
+                <span class="profile-stat-value" id="txLimitText">0/100</span>
+              </div>
+              <div class="profile-progress-track subtle">
+                <div class="profile-progress-fill" id="statsProgressFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-logout-wrap">
+            <button type="button" class="profile-logout-full" id="logoutBtn">
+              <i data-lucide="log-out"></i>
+              <span data-i18n="profile.logout">Chiqish</span>
+            </button>
+          </div>
+
+          <span class="plan-badge premium hidden" id="premiumBadge" aria-hidden="true"></span>
+          <span class="plan-badge free-wrap hidden" id="freePlanBadge" aria-hidden="true"></span>
+          <strong class="hidden" id="profileTxCount" aria-hidden="true">0</strong>
         </div>
-
-        <section class="profile-section">
-          <p class="profile-section-label" data-i18n="profile.section.account">Hisob holati</p>
-          <div class="profile-glass-card profile-tariff-block">
-            <p class="profile-tariff-text" id="profileTariffText">Tarif: Bepul</p>
-            <span class="profile-premium-active hidden" id="profilePremiumActive" data-i18n="profile.premiumActive">Premium faol ✅</span>
-            <button type="button" class="profile-premium-btn" id="upgradeBtn" data-i18n="profile.upgradePremium">Premiumga o'tish →</button>
-          </div>
-        </section>
-
-        <section class="profile-section">
-          <p class="profile-section-label" data-i18n="profile.section.security">Xavfsizlik</p>
-          <div class="profile-glass-card">
-            <button type="button" class="profile-row-btn" id="changePinBtn">
-              <span class="profile-row-btn-left"><span>🔒</span> <span data-i18n="profile.changePin">PIN kod o'zgartirish</span></span>
-              <i data-lucide="chevron-right"></i>
-            </button>
-            <div class="profile-row" id="profileBioRow">
-              <span class="profile-row-label"><span>👆</span> <span data-i18n="settings.biometric">Biometrik</span></span>
-              <label class="settings-toggle">
-                <input type="checkbox" id="profileBioToggle">
-                <span class="settings-toggle-slider"></span>
-              </label>
-            </div>
-          </div>
-          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn" aria-hidden="true" tabindex="-1"></button>
-        </section>
-
-        <section class="profile-section">
-          <p class="profile-section-label" data-i18n="profile.section.app">Ilova sozlamalari</p>
-          <div class="profile-glass-card">
-            <button type="button" class="profile-row-btn" id="profileLangBtn">
-              <span class="profile-row-btn-left"><span>🌐</span> <span data-i18n="profile.language">Til</span></span>
-              <span class="profile-row-btn-value" id="profileLangValue">O'zbek</span>
-            </button>
-            <div class="profile-row">
-              <span class="profile-row-label"><span>🎨</span> <span data-i18n="profile.theme">Mavzu</span></span>
-              <label class="settings-toggle">
-                <input type="checkbox" id="profileThemeToggle" checked>
-                <span class="settings-toggle-slider"></span>
-              </label>
-            </div>
-            <div class="profile-row">
-              <span class="profile-row-label"><span>🔔</span> <span data-i18n="settings.notifications">Bildirishnomalar</span></span>
-              <label class="settings-toggle">
-                <input type="checkbox" id="profileNotifToggle" checked>
-                <span class="settings-toggle-slider"></span>
-              </label>
-            </div>
-            <a href="https://bizneshisob.vercel.app/landing.html" class="profile-row-btn" target="_blank" rel="noopener noreferrer">
-              <span class="profile-row-btn-left"><i data-lucide="globe"></i> <span data-i18n="profile.website">BiznesHisob sayti</span></span>
-              <i data-lucide="chevron-right"></i>
-            </a>
-            <button type="button" class="install-btn hidden profile-row-btn" id="installBtn" style="width:100%">
-              <span class="profile-row-btn-left"><i data-lucide="download"></i> <span data-i18n="profile.install">Ilovani oʻrnatish</span></span>
-              <i data-lucide="chevron-right"></i>
-            </button>
-          </div>
-          <div class="ios-install-hint hidden" id="iosInstallHint" data-i18n="profile.iosHint" data-i18n-html="true"></div>
-        </section>
-
-        <section class="profile-section profile-extra-rows">
-          <div class="info-row">
-            <i data-lucide="bar-chart-2"></i>
-            <span><span data-i18n="profile.txCount">Operatsiyalar:</span> <strong id="profileTxCount">0</strong> <span data-i18n="profile.txUnit">ta</span></span>
-          </div>
-          <div class="info-row hidden" id="txLimitRow">
-            <i data-lucide="package"></i>
-            <span><span data-i18n="profile.freeLimit">Bepul limit:</span> <strong id="txLimitText">0/100</strong></span>
-          </div>
-          <div class="info-row sync-status online" id="syncStatusRow">
-            <i data-lucide="cloud"></i>
-            <span><span data-i18n="profile.status">Holat:</span> <span id="syncStatusText" data-i18n="profile.online">Onlayn</span></span>
-          </div>
-        </section>
-
-        <button type="button" class="profile-logout-full" id="logoutBtn">
-          <i data-lucide="log-out"></i>
-          <span data-i18n="profile.logout">Chiqish</span>
-        </button>
-        <p class="profile-system-hint" data-i18n="profile.hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
-
-        <span class="plan-badge premium hidden" id="premiumBadge" aria-hidden="true"></span>
-        <span class="plan-badge free-wrap hidden" id="freePlanBadge" aria-hidden="true"></span>
       </section>
     </main>
 
@@ -3332,6 +3350,83 @@
         <span data-i18n="nav.profile">Profil</span>
       </button>
     </nav>
+
+    <div class="settings-screen" id="settingsScreen" aria-hidden="true">
+      <div class="settings-topbar">
+        <button type="button" class="settings-back-btn" id="settingsBackBtn" data-i18n-aria="settings.backAria">
+          <i data-lucide="chevron-left"></i>
+        </button>
+        <h2 data-i18n="settings.title">Sozlamalar</h2>
+      </div>
+      <div class="settings-scroll">
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.security">Xavfsizlik</p>
+          <div class="settings-card">
+            <button type="button" class="settings-row-btn" id="changePinBtn">
+              <span>🔒 <span data-i18n="settings.changePin">PIN kod o'zgartirish</span></span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+            <div class="settings-row" id="settingsBioRow">
+              <span class="settings-row-label">👆 <span data-i18n="settings.biometric">Biometrik</span></span>
+              <label class="settings-toggle">
+                <input type="checkbox" id="settingsBioToggle">
+                <span class="settings-toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn" aria-hidden="true" tabindex="-1"></button>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.app">Ilova</p>
+          <div class="settings-card">
+            <button type="button" class="settings-row-btn" id="settingsLangBtn">
+              <span>🌐 <span data-i18n="profile.language">Til</span></span>
+              <span class="settings-row-value" id="settingsLangValue">O'zbek</span>
+            </button>
+            <div class="settings-row">
+              <span class="settings-row-label">🎨 <span data-i18n="profile.theme">Mavzu</span></span>
+              <label class="settings-toggle">
+                <input type="checkbox" id="settingsThemeToggle" checked>
+                <span class="settings-toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <span class="settings-row-label">🔔 <span data-i18n="settings.notifications">Bildirishnomalar</span></span>
+              <label class="settings-toggle">
+                <input type="checkbox" id="settingsNotifToggle" checked>
+                <span class="settings-toggle-slider"></span>
+              </label>
+            </div>
+            <a href="https://bizneshisob.vercel.app/landing.html" class="settings-row-btn" target="_blank" rel="noopener noreferrer">
+              <span><i data-lucide="globe"></i> <span data-i18n="profile.website">BiznesHisob sayti</span></span>
+              <i data-lucide="chevron-right"></i>
+            </a>
+            <button type="button" class="install-btn hidden settings-row-btn" id="installBtn">
+              <span><i data-lucide="download"></i> <span data-i18n="profile.install">Ilovani oʻrnatish</span></span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+          <div class="ios-install-hint hidden" id="iosInstallHint" data-i18n="profile.iosHint" data-i18n-html="true"></div>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.account">Hisob</p>
+          <div class="settings-card">
+            <div class="settings-row settings-row-static">
+              <span class="settings-row-label" data-i18n="settings.email">Email</span>
+              <span class="settings-row-value" id="settingsUserEmail">—</span>
+            </div>
+            <div class="settings-row settings-row-static sync-status online" id="syncStatusRow">
+              <span class="settings-row-label"><i data-lucide="cloud"></i> <span data-i18n="profile.status">Holat</span></span>
+              <span class="settings-row-value" id="syncStatusText" data-i18n="profile.online">Onlayn</span>
+            </div>
+          </div>
+        </section>
+
+        <p class="profile-system-hint" data-i18n="profile.hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
+      </div>
+    </div>
   </div>
 
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
@@ -3427,11 +3522,10 @@
 
   <div class="modal-overlay" id="logoutModal" role="dialog" aria-modal="true">
     <div class="profile-sheet">
-      <h3 data-i18n="profile.logoutConfirmTitle">Chiqishni tasdiqlang</h3>
-      <p style="text-align:center;color:var(--muted);margin-bottom:1.25rem;font-size:0.9rem" data-i18n="profile.logoutConfirm">Haqiqatan ham chiqmoqchimisiz?</p>
+      <h3 data-i18n="profile.logoutConfirmShort">Chiqmoqchimisiz?</h3>
       <div class="profile-sheet-actions">
-        <button type="button" class="profile-sheet-btn secondary" id="logoutCancel" data-i18n="profile.cancel">Bekor</button>
-        <button type="button" class="profile-sheet-btn primary" id="logoutConfirm" style="background:linear-gradient(135deg,#ef4444,#dc2626)" data-i18n="profile.logout">Chiqish</button>
+        <button type="button" class="profile-sheet-btn secondary" id="logoutCancel" data-i18n="profile.no">Yo'q</button>
+        <button type="button" class="profile-sheet-btn primary" id="logoutConfirm" style="background:linear-gradient(135deg,#ef4444,#dc2626)" data-i18n="profile.yes">Ha</button>
       </div>
     </div>
   </div>
@@ -3690,10 +3784,17 @@
         "tx.income": "Daromad",
         "tx.expense": "Xarajat",
         "profile.free": "Bepul",
+        "profile.freeBadge": "Bepul",
+        "profile.premiumBadge": "Premium 💎",
         "profile.tariffFree": "Tarif: Bepul",
         "profile.tariffPremium": "Tarif: Premium 💎",
         "profile.premiumActive": "Premium faol ✅",
         "profile.upgradePremium": "Premiumga o'tish →",
+        "profile.usageProgress": "{{count}}/{{limit}} operatsiya ishlatilgan",
+        "profile.limitLabel": "Limit:",
+        "profile.logoutConfirmShort": "Chiqmoqchimisiz?",
+        "profile.yes": "Ha",
+        "profile.no": "Yo'q",
         "profile.section.account": "Hisob holati",
         "profile.section.security": "Xavfsizlik",
         "profile.section.app": "Ilova sozlamalari",
@@ -3865,10 +3966,17 @@
         "tx.income": "Доход",
         "tx.expense": "Расход",
         "profile.free": "Бесплатно",
+        "profile.freeBadge": "Бесплатно",
+        "profile.premiumBadge": "Premium 💎",
         "profile.tariffFree": "Тариф: Бесплатно",
         "profile.tariffPremium": "Тариф: Premium 💎",
         "profile.premiumActive": "Premium активен ✅",
         "profile.upgradePremium": "Перейти на Premium →",
+        "profile.usageProgress": "{{count}}/{{limit}} операций использовано",
+        "profile.limitLabel": "Лимит:",
+        "profile.logoutConfirmShort": "Выйти?",
+        "profile.yes": "Да",
+        "profile.no": "Нет",
         "profile.section.account": "Статус аккаунта",
         "profile.section.security": "Безопасность",
         "profile.section.app": "Настройки приложения",
@@ -4040,10 +4148,17 @@
         "tx.income": "Income",
         "tx.expense": "Expense",
         "profile.free": "Free",
+        "profile.freeBadge": "Free",
+        "profile.premiumBadge": "Premium 💎",
         "profile.tariffFree": "Plan: Free",
         "profile.tariffPremium": "Plan: Premium 💎",
         "profile.premiumActive": "Premium active ✅",
         "profile.upgradePremium": "Upgrade to Premium →",
+        "profile.usageProgress": "{{count}}/{{limit}} transactions used",
+        "profile.limitLabel": "Limit:",
+        "profile.logoutConfirmShort": "Log out?",
+        "profile.yes": "Yes",
+        "profile.no": "No",
         "profile.section.account": "Account status",
         "profile.section.security": "Security",
         "profile.section.app": "App settings",
@@ -4185,7 +4300,10 @@
       setType(currentType);
       updateOnlineStatus();
       if (pinScreen.classList.contains("visible")) configurePinUI(pinMode);
-      if (currentUser) renderProfileUI();
+      if (currentUser) {
+        renderProfileUI();
+        updateSettingsUI();
+      }
       render();
     }
 
@@ -4257,17 +4375,27 @@
     const paymeBtn = document.getElementById("paymeBtn");
     const clickBtn = document.getElementById("clickBtn");
     const settingsOpenBtn = document.getElementById("settingsOpenBtn");
+    const settingsScreen = document.getElementById("settingsScreen");
+    const settingsBackBtn = document.getElementById("settingsBackBtn");
+    const settingsUserEmail = document.getElementById("settingsUserEmail");
     const profileAvatar = document.getElementById("profileAvatar");
     const avatarEditBtn = document.getElementById("avatarEditBtn");
     const displayNameBtn = document.getElementById("displayNameBtn");
+    const profilePlanBadge = document.getElementById("profilePlanBadge");
     const profileTariffText = document.getElementById("profileTariffText");
-    const profilePremiumActive = document.getElementById("profilePremiumActive");
-    const profileBioToggle = document.getElementById("profileBioToggle");
-    const profileBioRow = document.getElementById("profileBioRow");
-    const profileLangBtn = document.getElementById("profileLangBtn");
-    const profileLangValue = document.getElementById("profileLangValue");
-    const profileThemeToggle = document.getElementById("profileThemeToggle");
-    const profileNotifToggle = document.getElementById("profileNotifToggle");
+    const upgradeCard = document.getElementById("upgradeCard");
+    const profilePremiumBanner = document.getElementById("profilePremiumBanner");
+    const upgradeProgressLabel = document.getElementById("upgradeProgressLabel");
+    const upgradeProgressFill = document.getElementById("upgradeProgressFill");
+    const statsProgressFill = document.getElementById("statsProgressFill");
+    const profileTxRow = document.getElementById("profileTxRow");
+    const profileTxStatValue = document.getElementById("profileTxStatValue");
+    const settingsBioToggle = document.getElementById("settingsBioToggle");
+    const settingsBioRow = document.getElementById("settingsBioRow");
+    const settingsLangBtn = document.getElementById("settingsLangBtn");
+    const settingsLangValue = document.getElementById("settingsLangValue");
+    const settingsThemeToggle = document.getElementById("settingsThemeToggle");
+    const settingsNotifToggle = document.getElementById("settingsNotifToggle");
     const avatarModal = document.getElementById("avatarModal");
     const avatarUploadBtn = document.getElementById("avatarUploadBtn");
     const avatarFileInput = document.getElementById("avatarFileInput");
@@ -4448,7 +4576,7 @@
       return !!(window.PublicKeyCredential && navigator.credentials);
     }
 
-    function updateProfileSecurityUI() {
+    function updateSettingsSecurityUI() {
       if (!currentUser) return;
       const bioOn = isBioEnabled(currentUser.uid);
       const canBio = canUseWebAuthn();
@@ -4456,18 +4584,60 @@
 
       enableBioBtn.classList.toggle("hidden", true);
 
-      if (profileBioRow) profileBioRow.classList.toggle("hidden", !canBio);
-      if (profileBioToggle) {
-        profileBioToggle.checked = bioOn;
-        profileBioToggle.disabled = !hasPin || !canBio;
+      if (settingsBioRow) settingsBioRow.classList.toggle("hidden", !canBio);
+      if (settingsBioToggle) {
+        settingsBioToggle.checked = bioOn;
+        settingsBioToggle.disabled = !hasPin || !canBio;
       }
+    }
+
+    function updateSettingsUI() {
+      if (settingsLangValue) {
+        settingsLangValue.textContent = LANG_LABELS[currentLang] || LANG_LABELS.uz;
+      }
+      if (settingsNotifToggle) {
+        settingsNotifToggle.checked = localStorage.getItem(NOTIF_KEY) !== "0";
+      }
+      if (settingsUserEmail && currentUser) {
+        settingsUserEmail.textContent = currentUser.email || "—";
+      }
+          updateSettingsSecurityUI();
+    }
+
+    function openSettings() {
+      if (!settingsScreen) return;
+      settingsScreen.classList.add("open");
+      settingsScreen.setAttribute("aria-hidden", "false");
+      updateSettingsUI();
+      refreshIcons();
+    }
+
+    function closeSettings() {
+      if (!settingsScreen) return;
+      settingsScreen.classList.remove("open");
+      settingsScreen.setAttribute("aria-hidden", "true");
     }
 
     function applyTheme(theme) {
       const isDark = theme !== "light";
       document.documentElement.classList.toggle("light-theme", !isDark);
       localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
-      if (profileThemeToggle) profileThemeToggle.checked = isDark;
+      if (settingsThemeToggle) settingsThemeToggle.checked = isDark;
+    }
+
+    function usageProgressLabel(count, limit) {
+      return t("profile.usageProgress")
+        .replace("{{count}}", count)
+        .replace("{{limit}}", limit);
+    }
+
+    function setUsageProgressFill(el, count, limit) {
+      if (!el) return;
+      const pct = limit > 0 ? Math.min(100, (count / limit) * 100) : 0;
+      el.style.width = `${pct}%`;
+      el.classList.remove("warn", "danger");
+      if (pct >= 80) el.classList.add("danger");
+      else if (pct >= 60) el.classList.add("warn");
     }
 
     async function saveUserProfilePatch(patch) {
@@ -4511,14 +4681,7 @@
       if (userEmailEl) {
         userEmailEl.textContent = currentUser?.email || userProfile.email || "—";
       }
-      if (profileLangValue) {
-        profileLangValue.textContent = LANG_LABELS[currentLang] || LANG_LABELS.uz;
-      }
-      if (profileNotifToggle) {
-        profileNotifToggle.checked = localStorage.getItem(NOTIF_KEY) !== "0";
-      }
       renderProfileAvatar();
-      updateProfileSecurityUI();
       updatePremiumUI();
     }
 
@@ -4910,7 +5073,7 @@
       pinAttempts = 0;
       lockoutUntil = 0;
       if (currentUser) clearPinSecurityState(currentUser.uid);
-      updateProfileSecurityUI();
+      updateSettingsSecurityUI();
     }
 
     async function finishPinSetup(pin) {
@@ -5131,7 +5294,7 @@
         });
         if (cred && cred.rawId) {
           setBioEnabled(currentUser.uid, bufferToBase64(cred.rawId));
-          updateProfileSecurityUI();
+          updateSettingsSecurityUI();
           return true;
         }
       } catch (err) {
@@ -5186,6 +5349,7 @@
     });
 
     changePinBtn.addEventListener("click", () => {
+      closeSettings();
       if (!currentUser || !hasPinForUser(currentUser.uid)) {
         showPinScreen("setup");
         return;
@@ -5197,10 +5361,13 @@
     enableBioBtn.addEventListener("click", async () => {
       const ok = await registerBiometric();
       alert(ok ? t("pin.bioOk") : t("pin.bioNo"));
-      updateProfileSecurityUI();
+      updateSettingsSecurityUI();
     });
 
-    settingsOpenBtn?.addEventListener("click", () => switchTab("profile"));
+    settingsOpenBtn?.addEventListener("click", openSettings);
+    settingsBackBtn?.addEventListener("click", closeSettings);
+
+    profileTxRow?.addEventListener("click", () => switchTab("list"));
 
     avatarEditBtn?.addEventListener("click", () => {
       renderAvatarPresets();
@@ -5255,35 +5422,36 @@
       }
     });
 
-    profileLangBtn?.addEventListener("click", () => openProfileModal(langModal));
+    settingsLangBtn?.addEventListener("click", () => openProfileModal(langModal));
 
     langModal?.querySelectorAll(".settings-lang-option").forEach(btn => {
       btn.addEventListener("click", () => {
         setLang(btn.dataset.lang);
         closeProfileModal(langModal);
+        updateSettingsUI();
       });
     });
 
-    profileBioToggle?.addEventListener("change", async () => {
+    settingsBioToggle?.addEventListener("change", async () => {
       if (!currentUser) return;
-      if (profileBioToggle.checked) {
+      if (settingsBioToggle.checked) {
         const ok = await registerBiometric();
         if (!ok) {
-          profileBioToggle.checked = false;
+          settingsBioToggle.checked = false;
           alert(t("pin.bioNo"));
         }
       } else {
         clearBioStorage(currentUser.uid);
       }
-      updateProfileSecurityUI();
+      updateSettingsSecurityUI();
     });
 
-    profileNotifToggle?.addEventListener("change", () => {
-      localStorage.setItem(NOTIF_KEY, profileNotifToggle.checked ? "1" : "0");
+    settingsNotifToggle?.addEventListener("change", () => {
+      localStorage.setItem(NOTIF_KEY, settingsNotifToggle.checked ? "1" : "0");
     });
 
-    profileThemeToggle?.addEventListener("change", () => {
-      applyTheme(profileThemeToggle.checked ? "dark" : "light");
+    settingsThemeToggle?.addEventListener("change", () => {
+      applyTheme(settingsThemeToggle.checked ? "dark" : "light");
     });
 
     [avatarModal, langModal, nameModal, logoutModal].forEach(modal => {
@@ -5525,27 +5693,35 @@
 
     function updatePremiumUI() {
       const premium = isPremiumUser();
+      const count = transactions.length;
+
       premiumBadge?.classList.toggle("hidden", true);
       freePlanBadge?.classList.toggle("hidden", true);
 
-      if (profileTariffText) {
-        profileTariffText.textContent = premium ? t("profile.tariffPremium") : t("profile.tariffFree");
-        profileTariffText.classList.toggle("hidden", premium && profilePremiumActive);
+      if (profilePlanBadge) {
+        profilePlanBadge.textContent = premium ? t("profile.premiumBadge") : t("profile.freeBadge");
+        profilePlanBadge.classList.toggle("is-premium", premium);
       }
-      profilePremiumActive?.classList.toggle("hidden", !premium);
-      upgradeBtn?.classList.toggle("hidden", premium);
 
-      txLimitRow.classList.toggle("hidden", premium);
+      upgradeCard?.classList.toggle("hidden", premium);
+      profilePremiumBanner?.classList.toggle("hidden", !premium);
+
+      if (profileTariffText) {
+        profileTariffText.textContent = t("profile.tariffFree");
+      }
+
+      if (profileTxStatValue) profileTxStatValue.textContent = count;
+      if (profileTxCount) profileTxCount.textContent = count;
+
+      txLimitRow?.classList.toggle("hidden", premium);
+
       if (!premium) {
-        const count = transactions.length;
-        txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
-        if (count >= FREE_TX_LIMIT) {
-          txLimitText.style.color = "#f87171";
-        } else if (count >= FREE_TX_LIMIT - 2) {
-          txLimitText.style.color = "#fb923c";
-        } else {
-          txLimitText.style.color = "";
+        if (txLimitText) txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
+        if (upgradeProgressLabel) {
+          upgradeProgressLabel.textContent = usageProgressLabel(count, FREE_TX_LIMIT);
         }
+        setUsageProgressFill(upgradeProgressFill, count, FREE_TX_LIMIT);
+        setUsageProgressFill(statsProgressFill, count, FREE_TX_LIMIT);
       }
     }
 
@@ -5639,6 +5815,10 @@
       }
       if (avatarModal?.classList.contains("open")) {
         closeProfileModal(avatarModal);
+        return;
+      }
+      if (settingsScreen?.classList.contains("open")) {
+        closeSettings();
         return;
       }
       if (premiumModal.classList.contains("open")) {
@@ -6646,6 +6826,7 @@
       const countText = t("list.count", { n: transactions.length });
       txCountEl.textContent = countText;
       profileTxCount.textContent = transactions.length;
+      if (profileTxStatValue) profileTxStatValue.textContent = transactions.length;
 
       const hasItems = transactions.length > 0;
       emptyState.style.display = hasItems ? "none" : "block";
@@ -6722,8 +6903,10 @@
         initPinSecurity(user.uid);
         handlePaymentReturn();
         renderProfileUI();
+        updateSettingsUI();
         refreshIcons();
       } else {
+        closeSettings();
         closeAllProfileModals();
         transactions = [];
         userProfile = { isPremium: false };
