@@ -3768,6 +3768,50 @@
       return collection(db, "users", uid, "transactions");
     }
 
+    function transactionsCollectionPath(uid) {
+      return `users/${uid}/transactions`;
+    }
+
+    function buildTransactionPayload({ type, description, amount, userId }) {
+      const normalizedType = String(type ?? "").trim();
+      if (normalizedType !== "income" && normalizedType !== "expense") {
+        const err = new Error(`Invalid transaction type: ${type}`);
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const normalizedDescription = String(description ?? "").trim();
+      if (!normalizedDescription) {
+        const err = new Error("Description is required");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const normalizedAmount = Number(
+        typeof amount === "number" ? amount : parseFloat(String(amount).replace(/\s/g, ""))
+      );
+      if (!Number.isFinite(normalizedAmount) || normalizedAmount <= 0) {
+        const err = new Error(`Invalid amount: ${amount}`);
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const normalizedUserId = String(userId ?? "").trim();
+      if (!normalizedUserId) {
+        const err = new Error("userId is required");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      return {
+        type: normalizedType,
+        description: normalizedDescription,
+        amount: normalizedAmount,
+        date: new Date().toISOString(),
+        userId: normalizedUserId
+      };
+    }
+
     function isPremiumUser() {
       return !!userProfile.isPremium;
     }
@@ -4245,7 +4289,8 @@
     function parseAmountDigits(value) {
       const digits = String(value).replace(/\D/g, "");
       if (!digits) return 0;
-      return parseInt(digits, 10);
+      const amount = Number.parseInt(digits, 10);
+      return Number.isFinite(amount) ? amount : 0;
     }
 
     function formatAmountSpaces(digits) {
@@ -4448,7 +4493,7 @@
       return t("alert.saveError");
     }
 
-    async function saveTransaction(txData) {
+    async function saveTransaction(rawTxData) {
       const user = auth.currentUser;
       if (!user) {
         const err = new Error("User not authenticated");
@@ -4467,9 +4512,45 @@
         throw err;
       }
 
-      console.log("[BiznesHisob] Saving transaction:", { uid: user.uid, ...txData });
+      const txData = buildTransactionPayload({
+        type: rawTxData.type,
+        description: rawTxData.description,
+        amount: rawTxData.amount,
+        userId: user.uid
+      });
+
+      if (txData.userId !== user.uid) {
+        const err = new Error("userId must match authenticated user");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      await ensureUserDocument(user).catch(ensureErr => {
+        console.warn("[BiznesHisob] ensureUserDocument before save failed (continuing):", ensureErr);
+      });
+
+      try {
+        await user.getIdToken(true);
+      } catch (tokenErr) {
+        console.warn("[BiznesHisob] Token refresh failed (continuing):", tokenErr);
+      }
+
+      const collectionPath = transactionsCollectionPath(user.uid);
+      console.log("[BiznesHisob] Firestore save attempt:", {
+        collectionPath,
+        payload: txData,
+        fieldTypes: {
+          type: typeof txData.type,
+          description: typeof txData.description,
+          amount: typeof txData.amount,
+          date: typeof txData.date,
+          userId: typeof txData.userId
+        },
+        amountIsNumber: typeof txData.amount === "number" && Number.isFinite(txData.amount)
+      });
+
       const docRef = await addDoc(transactionsRef(user.uid), txData);
-      console.log("[BiznesHisob] Transaction saved:", docRef.id);
+      console.log("[BiznesHisob] Transaction saved:", { id: docRef.id, collectionPath });
       return docRef;
     }
 
@@ -4494,14 +4575,11 @@
 
       setBusy(true);
       try {
-        const txData = {
+        await saveTransaction({
           type: currentType,
           description,
-          amount,
-          date: new Date().toISOString(),
-          userId: auth.currentUser.uid
-        };
-        await saveTransaction(txData);
+          amount: Number(amount)
+        });
         form.reset();
         amountHint.textContent = "";
         switchTab("list");
