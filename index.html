@@ -4418,7 +4418,10 @@
         unsubscribeTransactions = null;
       }
 
+      const collectionPath = transactionsCollectionPath(uid);
       const q = query(transactionsRef(uid), orderBy("date", "desc"));
+      console.log("[BiznesHisob] Subscribing to transactions:", { uid, collectionPath });
+
       unsubscribeTransactions = onSnapshot(
         q,
         snapshot => {
@@ -4426,10 +4429,19 @@
             id: d.id,
             ...d.data()
           }));
+          console.log("[BiznesHisob] Transactions fetched:", {
+            collectionPath,
+            count: transactions.length,
+            transactions
+          });
           render();
         },
         err => {
-          console.error(err);
+          console.error("[BiznesHisob] Transactions listener error:", {
+            collectionPath,
+            code: err?.code,
+            message: err?.message
+          }, err);
           alert(t("alert.loadError"));
         }
       );
@@ -4612,9 +4624,9 @@
       let totalIncome = 0;
       let totalExpense = 0;
 
-      transactions.forEach(t => {
-        const amount = Number(t.amount) || 0;
-        if (t.type === "income") totalIncome += amount;
+      transactions.forEach(tx => {
+        const amount = Number(tx.amount) || 0;
+        if (tx.type === "income") totalIncome += amount;
         else totalExpense += amount;
       });
 
@@ -4633,21 +4645,21 @@
       emptyState.style.display = hasItems ? "none" : "block";
       transactionList.style.display = hasItems ? "flex" : "none";
 
-      transactionList.innerHTML = transactions.map(t => {
-        const isIncome = t.type === "income";
+      transactionList.innerHTML = transactions.map(tx => {
+        const isIncome = tx.type === "income";
         const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
         const sign = isIncome ? "+" : "−";
         const iconName = isIncome ? "trending-up" : "trending-down";
         return `
           <li class="transaction-item">
-            <div class="tx-icon ${t.type}"><i data-lucide="${iconName}" class="icon-list"></i></div>
+            <div class="tx-icon ${tx.type}"><i data-lucide="${iconName}" class="icon-list"></i></div>
             <div class="transaction-info">
-              <div class="transaction-desc">${escapeHtml(t.description)}</div>
-              <div class="transaction-meta">${typeLabel} · ${formatDate(t.date)}</div>
+              <div class="transaction-desc">${escapeHtml(tx.description)}</div>
+              <div class="transaction-meta">${typeLabel} · ${formatDate(tx.date)}</div>
             </div>
             <div class="transaction-right">
-              <span class="transaction-amount ${t.type}">${sign}${formatUZS(t.amount)}</span>
-              <button class="delete-btn" type="button" data-id="${t.id}" aria-label="Oʻchirish"><i data-lucide="trash-2"></i></button>
+              <span class="transaction-amount ${tx.type}">${sign}${formatUZS(tx.amount)}</span>
+              <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="Oʻchirish"><i data-lucide="trash-2"></i></button>
             </div>
           </li>
         `;
