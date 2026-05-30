@@ -737,14 +737,20 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding-bottom: calc(80px + env(safe-area-inset-bottom));
+      display: none;
       visibility: hidden;
+      opacity: 0;
       pointer-events: none;
-      animation: tabIn 0.35s var(--ease);
+      z-index: 1;
     }
 
     .tab-panel.active {
+      display: block;
       visibility: visible;
+      opacity: 1;
       pointer-events: auto;
+      z-index: 2;
+      animation: tabIn 0.3s var(--ease) both;
     }
 
     @keyframes tabIn {
@@ -5269,29 +5275,32 @@
     document.addEventListener("visibilitychange", handleVisibilityLock);
 
     function switchTab(tabName) {
-      const activePanel = document.querySelector(".tab-panel.active");
-      if (activePanel) {
-        tabScrollPos[currentTab] = activePanel.scrollTop;
+      if (tabName === currentTab) return;
+
+      const prevPanel = document.querySelector(".tab-panel.active");
+      if (prevPanel) {
+        tabScrollPos[currentTab] = prevPanel.scrollTop;
+        prevPanel.classList.remove("active");
       }
 
       currentTab = tabName;
+
       tabPanels.forEach(panel => {
-        const isActive = panel.dataset.tab === tabName;
-        panel.classList.toggle("active", isActive);
-        if (isActive) {
-          panel.style.animation = "none";
-          panel.offsetHeight;
-          panel.style.animation = "";
-        }
-      });
-      navItems.forEach(nav => {
-        nav.classList.toggle("active", nav.dataset.tab === tabName);
+        panel.classList.remove("active");
       });
 
       const newPanel = document.querySelector(`.tab-panel[data-tab="${tabName}"]`);
       if (newPanel) {
         newPanel.scrollTop = tabScrollPos[tabName] || 0;
+        newPanel.classList.add("active");
+        newPanel.style.animation = "none";
+        void newPanel.offsetHeight;
+        newPanel.style.animation = "";
       }
+
+      navItems.forEach(nav => {
+        nav.classList.toggle("active", nav.dataset.tab === tabName);
+      });
 
       requestAnimationFrame(refreshIcons);
     }
