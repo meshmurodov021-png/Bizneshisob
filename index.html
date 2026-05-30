@@ -403,6 +403,321 @@
       stroke: var(--income);
     }
 
+    .header-icon-btn {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .header-icon-btn [data-lucide] {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .header-icon-btn:active {
+      transform: scale(0.94);
+      color: var(--accent-hover);
+      border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    /* Settings screen */
+    .settings-screen {
+      position: absolute;
+      inset: 0;
+      z-index: 80;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      visibility: hidden;
+      transition: transform 0.4s var(--ease), visibility 0.4s;
+    }
+
+    .settings-screen.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .settings-topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-height: var(--header-h);
+      padding: max(0.5rem, env(safe-area-inset-top)) 1rem 0.5rem;
+      background: rgba(12, 14, 20, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-back-btn {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+    }
+
+    .settings-back-btn [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+    }
+
+    .settings-back-btn:active {
+      transform: scale(0.94);
+      border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    .settings-topbar h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .settings-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 1rem calc(80px + env(safe-area-inset-bottom));
+    }
+
+    .settings-section {
+      margin-bottom: 1.35rem;
+    }
+
+    .settings-section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+      padding-left: 0.15rem;
+    }
+
+    .settings-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .settings-lang-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s var(--ease);
+      text-align: left;
+    }
+
+    .settings-lang-option + .settings-lang-option {
+      border-top: 1px solid var(--border);
+    }
+
+    .settings-lang-option:active {
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .settings-lang-check {
+      width: 20px;
+      height: 20px;
+      stroke: #7C3AED;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+
+    .settings-lang-option.active .settings-lang-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.95rem 1rem;
+      min-height: 52px;
+    }
+
+    .settings-row + .settings-row,
+    .settings-row-btn + .settings-row,
+    .settings-row + .settings-row-btn {
+      border-top: 1px solid var(--border);
+    }
+
+    .settings-row-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.95rem 1rem;
+      min-height: 52px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s var(--ease);
+      text-align: left;
+    }
+
+    .settings-row-btn [data-lucide] {
+      width: 18px;
+      height: 18px;
+      stroke: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .settings-row-btn:active {
+      background: rgba(124, 58, 237, 0.08);
+    }
+
+    .settings-row-static {
+      font-size: 0.95rem;
+    }
+
+    .settings-row-label {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .settings-row-value {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: right;
+      word-break: break-all;
+    }
+
+    .settings-row-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .settings-row-meta [data-lucide] {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+    }
+
+    .settings-toggle {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .settings-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .settings-toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+
+    .settings-toggle-slider::before {
+      content: "";
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s var(--ease);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .settings-toggle input:checked + .settings-toggle-slider {
+      background: linear-gradient(135deg, #7C3AED, #6366f1);
+      border-color: rgba(124, 58, 237, 0.5);
+    }
+
+    .settings-toggle input:checked + .settings-toggle-slider::before {
+      transform: translate(20px, -50%);
+    }
+
+    .settings-toggle input:disabled + .settings-toggle-slider {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .settings-logout-btn {
+      display: block;
+      width: 100%;
+      margin-top: 0.35rem;
+      padding: 0.95rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #f87171;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s var(--ease);
+    }
+
+    .settings-logout-btn:active {
+      background: rgba(239, 68, 68, 0.18);
+    }
+
+    .settings-logout-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .app-main {
       flex: 1;
       min-height: 0;
@@ -2298,14 +2613,95 @@
         <h1>BiznesHisob</h1>
       </div>
       <div class="app-header-actions">
-        <div class="lang-switcher" role="group" data-i18n-aria="lang.aria">
-          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
-          <button type="button" class="lang-btn" data-lang="ru">RU</button>
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
-        </div>
         <span class="header-badge"><i data-lucide="cloud"></i> <span data-i18n="header.cloud">Bulut</span></span>
+        <button type="button" class="header-icon-btn" id="settingsOpenBtn" data-i18n-aria="settings.openAria">
+          <i data-lucide="settings"></i>
+        </button>
       </div>
     </header>
+
+    <div class="settings-screen" id="settingsScreen" aria-hidden="true">
+      <header class="settings-topbar">
+        <button type="button" class="settings-back-btn" id="settingsBackBtn" data-i18n-aria="settings.backAria">
+          <i data-lucide="arrow-left"></i>
+        </button>
+        <h2 data-i18n="settings.title">Sozlamalar</h2>
+      </header>
+      <div class="settings-scroll">
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.lang">Til</p>
+          <div class="settings-card">
+            <button type="button" class="settings-lang-option active" data-lang="uz">
+              <span data-i18n="settings.langUz">UZ O'zbek</span>
+              <i data-lucide="check" class="settings-lang-check"></i>
+            </button>
+            <button type="button" class="settings-lang-option" data-lang="ru">
+              <span data-i18n="settings.langRu">RU Русский</span>
+              <i data-lucide="check" class="settings-lang-check"></i>
+            </button>
+            <button type="button" class="settings-lang-option" data-lang="en">
+              <span data-i18n="settings.langEn">EN English</span>
+              <i data-lucide="check" class="settings-lang-check"></i>
+            </button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.security">Xavfsizlik</p>
+          <div class="settings-card">
+            <button type="button" class="settings-row-btn" id="settingsPinBtn">
+              <span data-i18n="settings.changePin">PIN kod o'zgartirish</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+            <div class="settings-row">
+              <span data-i18n="settings.biometric">Biometrik</span>
+              <label class="settings-toggle">
+                <input type="checkbox" id="settingsBioToggle">
+                <span class="settings-toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.app">Ilova</p>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span data-i18n="settings.notifications">Bildirishnomalar</span>
+              <label class="settings-toggle">
+                <input type="checkbox" id="settingsNotifToggle" checked>
+                <span class="settings-toggle-slider"></span>
+              </label>
+            </div>
+            <div class="settings-row">
+              <span data-i18n="settings.darkMode">Dark mode</span>
+              <div class="settings-row-meta">
+                <span data-i18n="settings.darkModeLocked">Doim yoqilgan</span>
+                <i data-lucide="lock"></i>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.section.account">Hisob</p>
+          <div class="settings-card">
+            <div class="settings-row settings-row-static">
+              <span class="settings-row-label" data-i18n="settings.email">Email</span>
+              <span class="settings-row-value" id="settingsUserEmail">—</span>
+            </div>
+            <div class="settings-row settings-row-static">
+              <span class="settings-row-label">Premium</span>
+              <span class="plan-badge premium hidden" id="settingsPremiumBadge"><i data-lucide="crown"></i> Premium</span>
+              <span class="plan-badge free-wrap hidden" id="settingsFreeBadge">
+                <span data-i18n="profile.free">Bepul</span>
+              </span>
+            </div>
+          </div>
+          <button type="button" class="settings-logout-btn" id="settingsLogoutBtn" data-i18n="profile.logout">Chiqish</button>
+        </section>
+      </div>
+    </div>
 
     <main class="app-main">
       <!-- Bosh sahifa -->
@@ -2677,6 +3073,22 @@
         "auth.err.network-request-failed": "Internet aloqasini tekshiring.",
         "auth.err.default": "Xatolik yuz berdi. Qayta urinib koʻring.",
         "header.cloud": "Bulut",
+        "settings.title": "Sozlamalar",
+        "settings.openAria": "Sozlamalar",
+        "settings.backAria": "Orqaga",
+        "settings.section.lang": "Til",
+        "settings.section.security": "Xavfsizlik",
+        "settings.section.app": "Ilova",
+        "settings.section.account": "Hisob",
+        "settings.langUz": "UZ O'zbek",
+        "settings.langRu": "RU Русский",
+        "settings.langEn": "EN English",
+        "settings.changePin": "PIN kod o'zgartirish",
+        "settings.biometric": "Biometrik",
+        "settings.notifications": "Bildirishnomalar",
+        "settings.darkMode": "Dark mode",
+        "settings.darkModeLocked": "Doim yoqilgan",
+        "settings.email": "Email",
         "home.profit": "Sof foyda",
         "home.income": "Daromad",
         "home.expense": "Xarajat",
@@ -2808,6 +3220,22 @@
         "auth.err.network-request-failed": "Проверьте подключение к интернету.",
         "auth.err.default": "Ошибка. Попробуйте снова.",
         "header.cloud": "Облако",
+        "settings.title": "Настройки",
+        "settings.openAria": "Настройки",
+        "settings.backAria": "Назад",
+        "settings.section.lang": "Язык",
+        "settings.section.security": "Безопасность",
+        "settings.section.app": "Приложение",
+        "settings.section.account": "Аккаунт",
+        "settings.langUz": "UZ O'zbek",
+        "settings.langRu": "RU Русский",
+        "settings.langEn": "EN English",
+        "settings.changePin": "Изменить PIN-код",
+        "settings.biometric": "Биометрия",
+        "settings.notifications": "Уведомления",
+        "settings.darkMode": "Тёмная тема",
+        "settings.darkModeLocked": "Всегда включена",
+        "settings.email": "Email",
         "home.profit": "Чистая прибыль",
         "home.income": "Доход",
         "home.expense": "Расход",
@@ -2939,6 +3367,22 @@
         "auth.err.network-request-failed": "Check your internet connection.",
         "auth.err.default": "Something went wrong. Try again.",
         "header.cloud": "Cloud",
+        "settings.title": "Settings",
+        "settings.openAria": "Settings",
+        "settings.backAria": "Back",
+        "settings.section.lang": "Language",
+        "settings.section.security": "Security",
+        "settings.section.app": "App",
+        "settings.section.account": "Account",
+        "settings.langUz": "UZ O'zbek",
+        "settings.langRu": "RU Русский",
+        "settings.langEn": "EN English",
+        "settings.changePin": "Change PIN",
+        "settings.biometric": "Biometrics",
+        "settings.notifications": "Notifications",
+        "settings.darkMode": "Dark mode",
+        "settings.darkModeLocked": "Always on",
+        "settings.email": "Email",
         "home.profit": "Net profit",
         "home.income": "Income",
         "home.expense": "Expense",
@@ -3062,7 +3506,7 @@
 
     function applyI18n() {
       document.documentElement.lang = currentLang;
-      document.querySelectorAll(".lang-btn").forEach(btn => {
+      document.querySelectorAll(".lang-btn, .settings-lang-option").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.lang === currentLang);
       });
       document.querySelectorAll("[data-i18n]").forEach(el => {
@@ -3096,7 +3540,7 @@
       applyI18n();
     }
 
-    document.querySelectorAll(".lang-btn").forEach(btn => {
+    document.querySelectorAll(".lang-btn, .settings-lang-option").forEach(btn => {
       btn.addEventListener("click", () => setLang(btn.dataset.lang));
     });
 
@@ -3105,6 +3549,7 @@
     }
     const PAYME_URL = "https://payme.uz/checkout/bizneshisob";
     const CLICK_URL = "https://my.click.uz/services/bizneshisob";
+    const NOTIF_KEY = "bh-notifications";
 
     let currentUser = null;
     let transactions = [];
@@ -3143,6 +3588,16 @@
     const paymentChecking = document.getElementById("paymentChecking");
     const paymeBtn = document.getElementById("paymeBtn");
     const clickBtn = document.getElementById("clickBtn");
+    const settingsScreen = document.getElementById("settingsScreen");
+    const settingsOpenBtn = document.getElementById("settingsOpenBtn");
+    const settingsBackBtn = document.getElementById("settingsBackBtn");
+    const settingsPinBtn = document.getElementById("settingsPinBtn");
+    const settingsBioToggle = document.getElementById("settingsBioToggle");
+    const settingsNotifToggle = document.getElementById("settingsNotifToggle");
+    const settingsUserEmail = document.getElementById("settingsUserEmail");
+    const settingsPremiumBadge = document.getElementById("settingsPremiumBadge");
+    const settingsFreeBadge = document.getElementById("settingsFreeBadge");
+    const settingsLogoutBtn = document.getElementById("settingsLogoutBtn");
 
     const form = document.getElementById("transactionForm");
     const descriptionInput = document.getElementById("description");
@@ -3310,8 +3765,41 @@
     function updateProfileSecurityUI() {
       if (!currentUser) return;
       const bioOn = isBioEnabled(currentUser.uid);
-      enableBioBtn.classList.toggle("hidden", bioOn || !canUseWebAuthn());
-      enableBioBtn.disabled = !hasPinForUser(currentUser.uid);
+      const canBio = canUseWebAuthn();
+      const hasPin = hasPinForUser(currentUser.uid);
+
+      enableBioBtn.classList.toggle("hidden", bioOn || !canBio);
+      enableBioBtn.disabled = !hasPin;
+
+      const bioRow = settingsBioToggle?.closest(".settings-row");
+      if (bioRow) bioRow.classList.toggle("hidden", !canBio);
+      if (settingsBioToggle) {
+        settingsBioToggle.checked = bioOn;
+        settingsBioToggle.disabled = !hasPin || !canBio;
+      }
+    }
+
+    function updateSettingsUI() {
+      if (settingsUserEmail) {
+        settingsUserEmail.textContent = currentUser?.email || "—";
+      }
+      if (settingsNotifToggle) {
+        settingsNotifToggle.checked = localStorage.getItem(NOTIF_KEY) !== "0";
+      }
+      updateProfileSecurityUI();
+    }
+
+    function openSettings() {
+      updateSettingsUI();
+      updatePremiumUI();
+      settingsScreen.classList.add("open");
+      settingsScreen.setAttribute("aria-hidden", "false");
+      refreshIcons();
+    }
+
+    function closeSettings() {
+      settingsScreen.classList.remove("open");
+      settingsScreen.setAttribute("aria-hidden", "true");
     }
 
     function resetPinBuffer() {
@@ -3957,6 +4445,44 @@
       updateProfileSecurityUI();
     });
 
+    settingsOpenBtn.addEventListener("click", openSettings);
+    settingsBackBtn.addEventListener("click", closeSettings);
+
+    settingsPinBtn.addEventListener("click", () => {
+      closeSettings();
+      changePinBtn.click();
+    });
+
+    settingsBioToggle?.addEventListener("change", async () => {
+      if (!currentUser) return;
+      if (settingsBioToggle.checked) {
+        const ok = await registerBiometric();
+        if (!ok) {
+          settingsBioToggle.checked = false;
+          alert(t("pin.bioNo"));
+        }
+      } else {
+        clearBioStorage(currentUser.uid);
+      }
+      updateProfileSecurityUI();
+    });
+
+    settingsNotifToggle?.addEventListener("change", () => {
+      localStorage.setItem(NOTIF_KEY, settingsNotifToggle.checked ? "1" : "0");
+    });
+
+    async function handleLogout() {
+      setBusy(true);
+      try {
+        closeSettings();
+        await signOut(auth);
+      } catch (err) {
+        alert(authErrorMessage(err.code));
+      } finally {
+        setBusy(false);
+      }
+    }
+
     function initPinSecurity(uid) {
       appUnlocked = false;
       if (!hasPinForUser(uid)) {
@@ -4167,6 +4693,8 @@
       premiumBadge.classList.toggle("hidden", !premium);
       freePlanBadge.classList.toggle("hidden", premium);
       txLimitRow.classList.toggle("hidden", premium);
+      settingsPremiumBadge?.classList.toggle("hidden", !premium);
+      settingsFreeBadge?.classList.toggle("hidden", premium);
       if (!premium) {
         const count = transactions.length;
         txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
@@ -4564,6 +5092,7 @@
       submitBtn.disabled = state;
       authSubmitBtn.disabled = state;
       logoutBtn.disabled = state;
+      if (settingsLogoutBtn) settingsLogoutBtn.disabled = state;
       document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.disabled = state;
       });
@@ -4705,16 +5234,8 @@
       }
     });
 
-    logoutBtn.addEventListener("click", async () => {
-      setBusy(true);
-      try {
-        await signOut(auth);
-      } catch (err) {
-        alert(authErrorMessage(err.code));
-      } finally {
-        setBusy(false);
-      }
-    });
+    logoutBtn.addEventListener("click", handleLogout);
+    settingsLogoutBtn?.addEventListener("click", handleLogout);
 
     function subscribeTransactions(uid) {
       if (unsubscribeTransactions) {
@@ -5131,6 +5652,7 @@
 
       if (user) {
         userEmailEl.textContent = user.email || "";
+        if (settingsUserEmail) settingsUserEmail.textContent = user.email || "—";
         transactions = [];
         userProfile = { isPremium: false };
         try {
@@ -5146,8 +5668,10 @@
         showView("app");
         initPinSecurity(user.uid);
         handlePaymentReturn();
+        updateSettingsUI();
         refreshIcons();
       } else {
+        closeSettings();
         transactions = [];
         userProfile = { isPremium: false };
         appUnlocked = false;
