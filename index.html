@@ -1055,14 +1055,174 @@
       margin-bottom: 0.85rem;
     }
 
+    .period-stats-card {
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .period-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .period-stat-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      padding: 0.85rem 0.75rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      animation: statFadeUp 0.45s var(--ease) backwards;
+    }
+
+    .period-stat-item:nth-child(1) { animation-delay: 0.05s; }
+    .period-stat-item:nth-child(2) { animation-delay: 0.1s; }
+    .period-stat-item:nth-child(3) { animation-delay: 0.15s; }
+    .period-stat-item:nth-child(4) { animation-delay: 0.2s; }
+
+    @keyframes statFadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .period-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 0.25rem;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .period-stat-item.period-today .period-dot { background: #EAB308; color: #EAB308; }
+    .period-stat-item.period-week .period-dot { background: #22C55E; color: #22C55E; }
+    .period-stat-item.period-month .period-dot { background: #3B82F6; color: #3B82F6; }
+    .period-stat-item.period-quarter .period-dot { background: #EF4444; color: #EF4444; }
+
+    .period-stat-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .period-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .period-value {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .period-value.positive { color: var(--income); }
+    .period-value.negative { color: var(--expense); }
+
     .chart-wrap {
       position: relative;
       height: 220px;
       width: 100%;
     }
 
+    .chart-wrap-donut {
+      height: 200px;
+      margin-bottom: 0.5rem;
+    }
+
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    .donut-center-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.15rem;
+    }
+
+    .donut-center-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      margin-top: 0.25rem;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) minmax(16px, 1fr) auto auto;
+      gap: 0.35rem 0.45rem;
+      align-items: center;
+      font-size: 0.78rem;
+      padding: 0.4rem 0;
+      animation: statFadeUp 0.4s var(--ease) backwards;
+    }
+
+    .legend-row:nth-child(1) { animation-delay: 0.1s; }
+    .legend-row:nth-child(2) { animation-delay: 0.15s; }
+    .legend-row:nth-child(3) { animation-delay: 0.2s; }
+    .legend-row:nth-child(4) { animation-delay: 0.25s; }
+    .legend-row:nth-child(5) { animation-delay: 0.3s; }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .legend-leader {
+      border-bottom: 1px dotted rgba(255, 255, 255, 0.12);
+      min-width: 12px;
+      align-self: center;
+    }
+
+    .legend-amount {
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      font-size: 0.72rem;
+    }
+
+    .legend-pct {
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      font-size: 0.72rem;
+    }
+
     .chart-wrap-bar {
-      height: 240px;
+      height: 260px;
     }
 
     .chart-empty {
@@ -2727,11 +2887,21 @@
         </div>
 
         <p class="section-title" data-i18n="stats.title">Statistika</p>
+
+        <div class="card period-stats-card">
+          <div class="period-stats-grid" id="periodStatsGrid"></div>
+        </div>
+
         <div class="card chart-card">
           <div class="chart-title" data-i18n="stats.expenseBreakdown">Xarajatlar boʻyicha</div>
-          <div class="chart-wrap" id="expenseChartWrap">
+          <div class="chart-wrap chart-wrap-donut" id="expenseChartWrap">
             <canvas id="expenseDonutChart" aria-label="Xarajatlar diagrammasi"></canvas>
+            <div class="donut-center" id="expenseDonutCenter">
+              <span class="donut-center-label" data-i18n="stats.total">Jami</span>
+              <span class="donut-center-value" id="expenseDonutTotal">0</span>
+            </div>
           </div>
+          <div class="chart-legend" id="expenseChartLegend"></div>
           <div class="chart-empty hidden" id="expenseChartEmpty" data-i18n="stats.noExpense">Xarajatlar yoʻq</div>
         </div>
         <div class="card chart-card">
@@ -3013,6 +3183,40 @@
       expense: "boshqa_xarajat"
     };
 
+    const CHART_SEGMENT_COLORS = [
+      "#EF4444", "#3B82F6", "#22C55E", "#F97316", "#EC4899",
+      "#8B5CF6", "#EAB308", "#06B6D4", "#F43F5E", "#6366F1", "#84CC16"
+    ];
+
+    const barValueLabelPlugin = {
+      id: "barValueLabels",
+      afterDatasetsDraw(chart) {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        ctx.save();
+        ctx.fillStyle = "#e8eaef";
+        ctx.font = "600 10px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        chart.data.datasets.forEach((dataset, di) => {
+          chart.getDatasetMeta(di).data.forEach((bar, index) => {
+            const value = dataset.data[index];
+            if (!value) return;
+            const label = formatUZSShort(value);
+            const y = bar.y - 6;
+            if (y > chartArea.top) {
+              ctx.fillText(label, bar.x, y);
+            }
+          });
+        });
+        ctx.restore();
+      }
+    };
+
+    if (typeof Chart !== "undefined" && !window.__bhChartsRegistered) {
+      Chart.register(barValueLabelPlugin);
+      window.__bhChartsRegistered = true;
+    }
+
     function getDefaultCategoryId(type) {
       return DEFAULT_CATEGORY[type] || CATEGORIES[type]?.[0]?.id || "";
     }
@@ -3098,6 +3302,11 @@
         "stats.incomeBreakdown": "Daromadlar boʻyicha",
         "stats.noExpense": "Xarajatlar yoʻq",
         "stats.noIncome": "Daromadlar yoʻq",
+        "stats.total": "Jami",
+        "stats.periodToday": "Bugun",
+        "stats.periodWeek": "Bu hafta",
+        "stats.periodMonth": "Bu oy",
+        "stats.period3months": "3 oy",
         "add.title": "Yangi operatsiya",
         "add.desc": "Tavsif",
         "add.descPh": "Masalan: Mahsulot sotuvi",
@@ -3245,6 +3454,11 @@
         "stats.incomeBreakdown": "Доходы по категориям",
         "stats.noExpense": "Нет расходов",
         "stats.noIncome": "Нет доходов",
+        "stats.total": "Итого",
+        "stats.periodToday": "Сегодня",
+        "stats.periodWeek": "Эта неделя",
+        "stats.periodMonth": "Этот месяц",
+        "stats.period3months": "3 месяца",
         "add.title": "Новая операция",
         "add.desc": "Описание",
         "add.descPh": "Например: Продажа товара",
@@ -3392,6 +3606,11 @@
         "stats.incomeBreakdown": "Income by category",
         "stats.noExpense": "No expenses",
         "stats.noIncome": "No income",
+        "stats.total": "Total",
+        "stats.periodToday": "Today",
+        "stats.periodWeek": "This week",
+        "stats.periodMonth": "This month",
+        "stats.period3months": "3 months",
         "add.title": "New transaction",
         "add.desc": "Description",
         "add.descPh": "e.g. Product sale",
@@ -3641,6 +3860,10 @@
     const incomeChartWrap = document.getElementById("incomeChartWrap");
     const expenseChartEmpty = document.getElementById("expenseChartEmpty");
     const incomeChartEmpty = document.getElementById("incomeChartEmpty");
+    const expenseChartLegend = document.getElementById("expenseChartLegend");
+    const expenseDonutTotal = document.getElementById("expenseDonutTotal");
+    const expenseDonutCenter = document.getElementById("expenseDonutCenter");
+    const periodStatsGrid = document.getElementById("periodStatsGrid");
 
     let deferredInstallPrompt = null;
 
@@ -4801,6 +5024,11 @@
         case "month":
           start = new Date(now.getFullYear(), now.getMonth(), 1);
           break;
+        case "3months":
+          start = new Date(now);
+          start.setMonth(start.getMonth() - 3);
+          start.setHours(0, 0, 0, 0);
+          break;
         default:
           return { start: null, end: null };
       }
@@ -5291,6 +5519,59 @@
       refreshIcons();
     }
 
+    function getChartColor(index) {
+      return CHART_SEGMENT_COLORS[index % CHART_SEGMENT_COLORS.length];
+    }
+
+    function calcPeriodNet(period) {
+      const list = filterTransactionsByPeriod(period);
+      return calcExportSummary(list).net;
+    }
+
+    function renderPeriodStats() {
+      if (!periodStatsGrid) return;
+
+      const periods = [
+        { key: "today", labelKey: "stats.periodToday", className: "period-today" },
+        { key: "week", labelKey: "stats.periodWeek", className: "period-week" },
+        { key: "month", labelKey: "stats.periodMonth", className: "period-month" },
+        { key: "3months", labelKey: "stats.period3months", className: "period-quarter" }
+      ];
+
+      periodStatsGrid.innerHTML = periods.map(period => {
+        const net = calcPeriodNet(period.key);
+        const valueClass = net > 0 ? "positive" : net < 0 ? "negative" : "";
+        const sign = net > 0 ? "+" : net < 0 ? "−" : "";
+        const displayAmount = net === 0 ? formatUZS(0) : `${sign}${formatUZS(Math.abs(net))}`;
+        return `
+          <div class="period-stat-item ${period.className}">
+            <span class="period-dot" aria-hidden="true"></span>
+            <div class="period-stat-body">
+              <div class="period-label">${escapeHtml(t(period.labelKey))}</div>
+              <div class="period-value ${valueClass}">${displayAmount}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderExpenseLegend(data, total) {
+      if (!expenseChartLegend) return;
+      expenseChartLegend.innerHTML = data.map((item, index) => {
+        const color = getChartColor(index);
+        const pct = total > 0 ? Math.round((item.amount / total) * 100) : 0;
+        return `
+          <div class="legend-row">
+            <span class="legend-dot" style="background:${color}"></span>
+            <span class="legend-name">${escapeHtml(item.label)}</span>
+            <span class="legend-leader" aria-hidden="true"></span>
+            <span class="legend-amount">${formatUZS(item.amount)}</span>
+            <span class="legend-pct">(${pct}%)</span>
+          </div>
+        `;
+      }).join("");
+    }
+
     function aggregateByCategory(type) {
       const totals = new Map();
       transactions.forEach(tx => {
@@ -5309,13 +5590,25 @@
     function renderCategoryCharts() {
       if (typeof Chart === "undefined") return;
 
+      renderPeriodStats();
+
       const expenseData = aggregateByCategory("expense");
       const incomeData = aggregateByCategory("income");
+      const expenseTotal = expenseData.reduce((sum, item) => sum + item.amount, 0);
 
-      expenseChartWrap.classList.toggle("hidden", expenseData.length === 0);
-      expenseChartEmpty.classList.toggle("hidden", expenseData.length > 0);
-      incomeChartWrap.classList.toggle("hidden", incomeData.length === 0);
-      incomeChartEmpty.classList.toggle("hidden", incomeData.length > 0);
+      const hasExpense = expenseData.length > 0;
+      expenseChartWrap.classList.toggle("hidden", !hasExpense);
+      expenseChartLegend?.classList.toggle("hidden", !hasExpense);
+      expenseDonutCenter?.classList.toggle("hidden", !hasExpense);
+      expenseChartEmpty.classList.toggle("hidden", hasExpense);
+
+      const hasIncome = incomeData.length > 0;
+      incomeChartWrap.classList.toggle("hidden", !hasIncome);
+      incomeChartEmpty.classList.toggle("hidden", hasIncome);
+
+      if (expenseDonutTotal) {
+        expenseDonutTotal.textContent = formatUZSShort(expenseTotal);
+      }
 
       if (expenseChartInstance) {
         expenseChartInstance.destroy();
@@ -5326,60 +5619,111 @@
         incomeChartInstance = null;
       }
 
-      if (expenseData.length) {
+      if (hasExpense) {
+        renderExpenseLegend(expenseData, expenseTotal);
+
         expenseChartInstance = new Chart(expenseDonutChart, {
           type: "doughnut",
           data: {
             labels: expenseData.map(item => item.label),
             datasets: [{
               data: expenseData.map(item => item.amount),
-              backgroundColor: expenseData.map(item => item.iconBg),
+              backgroundColor: expenseData.map((_, i) => getChartColor(i)),
               borderWidth: 0,
-              hoverOffset: 6
+              hoverOffset: 8,
+              spacing: 2
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            cutout: "75%",
+            animation: {
+              animateRotate: true,
+              animateScale: true,
+              duration: 900,
+              easing: "easeOutQuart"
+            },
             plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  color: "#94a3b8",
-                  boxWidth: 12,
-                  padding: 10,
-                  font: { size: 11 }
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "rgba(20, 24, 32, 0.95)",
+                titleColor: "#e8eaef",
+                bodyColor: "#94a3b8",
+                borderColor: "rgba(124, 58, 237, 0.35)",
+                borderWidth: 1,
+                padding: 10,
+                callbacks: {
+                  label(ctx) {
+                    const value = ctx.parsed || 0;
+                    const pct = expenseTotal > 0 ? Math.round((value / expenseTotal) * 100) : 0;
+                    return ` ${formatUZS(value)} (${pct}%)`;
+                  }
                 }
               }
             }
           }
         });
+      } else if (expenseChartLegend) {
+        expenseChartLegend.innerHTML = "";
       }
 
-      if (incomeData.length) {
+      if (hasIncome) {
         incomeChartInstance = new Chart(incomeBarChart, {
           type: "bar",
           data: {
             labels: incomeData.map(item => item.label),
             datasets: [{
               data: incomeData.map(item => item.amount),
-              backgroundColor: incomeData.map(item => item.iconBg),
+              backgroundColor: incomeData.map((_, i) => getChartColor(i)),
               borderRadius: 8,
-              borderSkipped: false
+              borderSkipped: false,
+              maxBarThickness: 48
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            animation: {
+              duration: 800,
+              easing: "easeOutQuart"
+            },
+            layout: {
+              padding: { top: 24 }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "rgba(20, 24, 32, 0.95)",
+                titleColor: "#e8eaef",
+                bodyColor: "#94a3b8",
+                borderColor: "rgba(124, 58, 237, 0.35)",
+                borderWidth: 1,
+                callbacks: {
+                  label(ctx) {
+                    return ` ${formatUZS(ctx.parsed.y)}`;
+                  }
+                }
+              }
+            },
             scales: {
               x: {
                 grid: { display: false },
-                ticks: { color: "#94a3b8", font: { size: 10 }, maxRotation: 45, minRotation: 0 }
+                ticks: {
+                  color: "#94a3b8",
+                  font: { size: 10, weight: "600" },
+                  maxRotation: 45,
+                  minRotation: 0
+                }
               },
               y: {
+                beginAtZero: true,
                 grid: { color: "rgba(255,255,255,0.06)" },
-                ticks: { color: "#94a3b8", font: { size: 10 } }
+                ticks: {
+                  color: "#94a3b8",
+                  font: { size: 10 },
+                  callback: value => formatUZSShort(value)
+                }
               }
             }
           }
