@@ -259,6 +259,47 @@
     .auth-btn:active:not(:disabled) { transform: scale(0.98); }
     .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+    .lang-switcher {
+      display: inline-flex;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+
+    .lang-btn {
+      padding: 0.35rem 0.55rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+
+    .lang-btn.active {
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      color: #fff;
+    }
+
+    .auth-lang-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .app-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+
     /* App shell */
     .app-shell {
       position: relative;
@@ -2065,12 +2106,12 @@
 
   <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite">
     <i data-lucide="wifi-off"></i>
-    <span>Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi</span>
+    <span data-i18n="offline">Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi</span>
   </div>
 
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
-    <p class="loading-text">Yuklanmoqda...</p>
+    <p class="loading-text" data-i18n="loading">Yuklanmoqda...</p>
   </div>
 
   <div class="auth-screen hidden" id="authScreen">
@@ -2079,12 +2120,19 @@
         <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
         <h1>BiznesHisob</h1>
       </div>
-      <p class="tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
+      <p class="tagline" data-i18n="auth.tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
+    </div>
+    <div class="auth-lang-wrap">
+      <div class="lang-switcher" role="group" data-i18n-aria="lang.aria">
+        <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+        <button type="button" class="lang-btn" data-lang="ru">RU</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
     </div>
     <div class="auth-card">
       <div class="auth-tabs">
-        <button type="button" class="auth-tab active" data-mode="login">Kirish</button>
-        <button type="button" class="auth-tab" data-mode="register">Roʻyxatdan oʻtish</button>
+        <button type="button" class="auth-tab active" data-mode="login" data-i18n="auth.login">Kirish</button>
+        <button type="button" class="auth-tab" data-mode="register" data-i18n="auth.register">Roʻyxatdan oʻtish</button>
       </div>
       <div class="auth-error" id="authError"></div>
       <form id="authForm">
@@ -2093,10 +2141,10 @@
           <input type="email" id="authEmail" placeholder="email@misol.uz" required autocomplete="email">
         </div>
         <div class="form-row">
-          <label for="authPassword">Parol</label>
-          <input type="password" id="authPassword" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
+          <label for="authPassword" data-i18n="auth.password">Parol</label>
+          <input type="password" id="authPassword" data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
         </div>
-        <button type="submit" class="auth-btn" id="authSubmitBtn">Kirish</button>
+        <button type="submit" class="auth-btn" id="authSubmitBtn" data-i18n="auth.login">Kirish</button>
       </form>
     </div>
   </div>
@@ -2107,48 +2155,55 @@
         <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
         <h1>BiznesHisob</h1>
       </div>
-      <span class="header-badge"><i data-lucide="cloud"></i> Bulut</span>
+      <div class="app-header-actions">
+        <div class="lang-switcher" role="group" data-i18n-aria="lang.aria">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <span class="header-badge"><i data-lucide="cloud"></i> <span data-i18n="header.cloud">Bulut</span></span>
+      </div>
     </header>
 
     <main class="app-main">
       <!-- Bosh sahifa -->
       <section class="tab-panel active" id="tabHome" data-tab="home">
         <div class="card hero-card" id="profitCard">
-          <div class="card-label">Sof foyda</div>
+          <div class="card-label" data-i18n="home.profit">Sof foyda</div>
           <div class="card-value" id="netProfit">0 soʻm</div>
         </div>
         <div class="stats-grid">
           <div class="card stat-card income">
-            <div class="card-label">Daromad</div>
+            <div class="card-label" data-i18n="home.income">Daromad</div>
             <div class="card-value" id="totalIncome">0</div>
           </div>
           <div class="card stat-card expense">
-            <div class="card-label">Xarajat</div>
+            <div class="card-label" data-i18n="home.expense">Xarajat</div>
             <div class="card-value" id="totalExpense">0</div>
           </div>
         </div>
-        <p class="section-title">Tezkor qoʻshish</p>
+        <p class="section-title" data-i18n="home.quick">Tezkor qoʻshish</p>
         <div class="quick-actions">
-          <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> Daromad</button>
-          <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> Xarajat</button>
+          <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
+          <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
         </div>
       </section>
 
       <!-- Qo'shish -->
       <section class="tab-panel" id="tabAdd" data-tab="add">
         <div class="card">
-          <div class="panel-title">Yangi operatsiya</div>
+          <div class="panel-title" data-i18n="add.title">Yangi operatsiya</div>
           <div class="type-toggle">
-            <button type="button" class="type-btn income active" data-type="income"><i data-lucide="plus-circle"></i> Daromad</button>
-            <button type="button" class="type-btn expense" data-type="expense"><i data-lucide="minus-circle"></i> Xarajat</button>
+            <button type="button" class="type-btn income active" data-type="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
+            <button type="button" class="type-btn expense" data-type="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
           </div>
           <form id="transactionForm">
             <div class="form-row">
-              <label for="description"><i data-lucide="file-text"></i> Tavsif</label>
-              <input type="text" id="description" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
+              <label for="description"><i data-lucide="file-text"></i> <span data-i18n="add.desc">Tavsif</span></label>
+              <input type="text" id="description" data-i18n-placeholder="add.descPh" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
             </div>
             <div class="form-row">
-              <label for="amount"><i data-lucide="banknote"></i> Summa (UZS)</label>
+              <label for="amount"><i data-lucide="banknote"></i> <span data-i18n="add.amount">Summa (UZS)</span></label>
               <input type="text" id="amount" placeholder="0" inputmode="numeric" autocomplete="off" required>
               <p class="amount-hint" id="amountHint" aria-live="polite"></p>
             </div>
@@ -2160,11 +2215,11 @@
       <!-- Ro'yxat -->
       <section class="tab-panel" id="tabList" data-tab="list">
         <div class="list-header">
-          <p class="section-title" style="margin:0">Operatsiyalar</p>
+          <p class="section-title" style="margin:0" data-i18n="list.title">Operatsiyalar</p>
           <div class="list-header-actions">
-            <button type="button" class="export-btn" id="exportOpenBtn" aria-label="Hisobotni eksport qilish">
+            <button type="button" class="export-btn" id="exportOpenBtn" data-i18n-aria="list.exportAria">
               <i data-lucide="upload"></i>
-              Eksport
+              <span data-i18n="list.export">Eksport</span>
             </button>
             <span class="count-badge" id="txCount">0 ta</span>
           </div>
@@ -2172,7 +2227,7 @@
         <ul class="transaction-list" id="transactionList"></ul>
         <div class="empty-state" id="emptyState">
           <div class="icon"><i data-lucide="list" class="icon-lg"></i></div>
-          <p>Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.</p>
+          <p data-i18n="list.empty" data-i18n-html="true">Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.</p>
         </div>
       </section>
 
@@ -2184,104 +2239,104 @@
           <div class="profile-plan-row">
             <span class="plan-badge premium hidden" id="premiumBadge"><i data-lucide="crown"></i> Premium</span>
             <span class="plan-badge free-wrap hidden" id="freePlanBadge">
-              Bepul
+              <span data-i18n="profile.free">Bepul</span>
               <button type="button" class="upgrade-btn" id="upgradeBtn">Upgrade</button>
             </span>
           </div>
           <a href="https://bizneshisob.vercel.app/landing.html" class="profile-website-link" target="_blank" rel="noopener noreferrer">
             <i data-lucide="globe"></i>
-            BiznesHisob sayti
+            <span data-i18n="profile.website">BiznesHisob sayti</span>
           </a>
-          <p class="profile-hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
-          <button type="button" class="profile-pin-btn" id="changePinBtn"><i data-lucide="lock"></i> PIN kodni o'zgartirish</button>
-          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn"><i data-lucide="fingerprint"></i> Biometrikni yoqish</button>
-          <button type="button" class="install-btn hidden" id="installBtn"><i data-lucide="download"></i> Ilovani oʻrnatish</button>
-          <div class="ios-install-hint hidden" id="iosInstallHint">
+          <p class="profile-hint" data-i18n="profile.hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
+          <button type="button" class="profile-pin-btn" id="changePinBtn"><i data-lucide="lock"></i> <span data-i18n="profile.changePin">PIN kodni o'zgartirish</span></button>
+          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn"><i data-lucide="fingerprint"></i> <span data-i18n="profile.enableBio">Biometrikni yoqish</span></button>
+          <button type="button" class="install-btn hidden" id="installBtn"><i data-lucide="download"></i> <span data-i18n="profile.install">Ilovani oʻrnatish</span></button>
+          <div class="ios-install-hint hidden" id="iosInstallHint" data-i18n="profile.iosHint" data-i18n-html="true">
             <strong>iPhone/iPad:</strong> Safari brauzerida «Ulashish» → «Bosh ekranga qoʻshish» tugmasini bosing.
           </div>
-          <button type="button" class="logout-btn" id="logoutBtn"><i data-lucide="log-out"></i> Chiqish</button>
+          <button type="button" class="logout-btn" id="logoutBtn"><i data-lucide="log-out"></i> <span data-i18n="profile.logout">Chiqish</span></button>
         </div>
         <div class="info-row">
           <i data-lucide="bar-chart-2"></i>
-          <span>Operatsiyalar: <strong id="profileTxCount">0</strong> ta</span>
+          <span><span data-i18n="profile.txCount">Operatsiyalar:</span> <strong id="profileTxCount">0</strong> <span data-i18n="profile.txUnit">ta</span></span>
         </div>
         <div class="info-row hidden" id="txLimitRow">
           <i data-lucide="package"></i>
-          <span>Bepul limit: <strong id="txLimitText">0/100</strong></span>
+          <span><span data-i18n="profile.freeLimit">Bepul limit:</span> <strong id="txLimitText">0/100</strong></span>
         </div>
         <div class="info-row sync-status online" id="syncStatusRow">
           <i data-lucide="cloud"></i>
-          <span>Holat: <span id="syncStatusText">Onlayn</span></span>
+          <span><span data-i18n="profile.status">Holat:</span> <span id="syncStatusText" data-i18n="profile.online">Onlayn</span></span>
         </div>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Asosiy menyu">
-      <button type="button" class="nav-item active" data-tab="home" aria-label="Bosh sahifa">
+    <nav class="bottom-nav" data-i18n-aria="nav.menuAria">
+      <button type="button" class="nav-item active" data-tab="home" data-i18n-aria="nav.homeAria">
         <span class="nav-icon"><i data-lucide="home"></i></span>
-        <span>Bosh</span>
+        <span data-i18n="nav.home">Bosh</span>
       </button>
-      <button type="button" class="nav-item" data-tab="add" aria-label="Qoʻshish">
+      <button type="button" class="nav-item" data-tab="add" data-i18n-aria="nav.addAria">
         <span class="nav-icon"><i data-lucide="plus-circle"></i></span>
-        <span>Qoʻshish</span>
+        <span data-i18n="nav.add">Qoʻshish</span>
       </button>
-      <button type="button" class="nav-item" data-tab="list" aria-label="Roʻyxat">
+      <button type="button" class="nav-item" data-tab="list" data-i18n-aria="nav.listAria">
         <span class="nav-icon"><i data-lucide="list"></i></span>
-        <span>Roʻyxat</span>
+        <span data-i18n="nav.list">Roʻyxat</span>
       </button>
-      <button type="button" class="nav-item" data-tab="profile" aria-label="Profil">
+      <button type="button" class="nav-item" data-tab="profile" data-i18n-aria="nav.profileAria">
         <span class="nav-icon"><i data-lucide="user"></i></span>
-        <span>Profil</span>
+        <span data-i18n="nav.profile">Profil</span>
       </button>
     </nav>
   </div>
 
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
     <div class="premium-modal">
-      <button type="button" class="modal-close" id="premiumModalClose" aria-label="Yopish">×</button>
-      <div class="premium-limit-alert hidden" id="premiumLimitAlert">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
-      <div class="payment-checking hidden" id="paymentChecking">To'lov tekshirilmoqda...</div>
-      <h2 id="premiumModalTitle" class="premium-modal-title"><i data-lucide="crown"></i> Premium ga o'ting</h2>
-      <p class="premium-sub">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
-      <p class="premium-price">29 900 so'm / oy</p>
+      <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
+      <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
+      <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
+      <h2 id="premiumModalTitle" class="premium-modal-title"><i data-lucide="crown"></i> <span data-i18n="premium.title">Premium ga o'ting</span></h2>
+      <p class="premium-sub" data-i18n="premium.sub">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
+      <p class="premium-price" data-i18n="premium.price">29 900 so'm / oy</p>
       <ul class="premium-features">
-        <li><span class="feat-check"><i data-lucide="check"></i></span> Cheksiz operatsiyalar</li>
-        <li><span class="feat-check"><i data-lucide="check"></i></span> Kengaytirilgan grafiklar (tez kunda)</li>
-        <li><span class="feat-check"><i data-lucide="check"></i></span> Export PDF/Excel</li>
-        <li><span class="feat-check"><i data-lucide="check"></i></span> Reklamasiz</li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f1">Cheksiz operatsiyalar</span></li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f2">Kengaytirilgan grafiklar (tez kunda)</span></li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f3">Export PDF/Excel</span></li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f4">Reklamasiz</span></li>
       </ul>
       <div class="payment-btns">
-        <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> Payme orqali to'lash</button>
-        <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> Click orqali to'lash</button>
+        <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> <span data-i18n="premium.payme">Payme orqali to'lash</span></button>
+        <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> <span data-i18n="premium.click">Click orqali to'lash</span></button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
     <div class="premium-modal export-modal">
-      <button type="button" class="modal-close" id="exportModalClose" aria-label="Yopish">×</button>
-      <h2 id="exportModalTitle"><i data-lucide="download"></i> Hisobotni eksport qilish</h2>
+      <button type="button" class="modal-close" id="exportModalClose" data-i18n-aria="export.closeAria">×</button>
+      <h2 id="exportModalTitle"><i data-lucide="download"></i> <span data-i18n="export.title">Hisobotni eksport qilish</span></h2>
 
-      <p class="export-section-label">Davr</p>
-      <div class="export-option-group" id="exportPeriodGroup" role="group" aria-label="Davr">
-        <button type="button" class="export-option active" data-period="today">Bugun</button>
-        <button type="button" class="export-option" data-period="week">Bu hafta</button>
-        <button type="button" class="export-option" data-period="month">Bu oy</button>
-        <button type="button" class="export-option" data-period="all">Hammasi</button>
+      <p class="export-section-label" data-i18n="export.period">Davr</p>
+      <div class="export-option-group" id="exportPeriodGroup" role="group" data-i18n-aria="export.period">
+        <button type="button" class="export-option active" data-period="today" data-i18n="export.today">Bugun</button>
+        <button type="button" class="export-option" data-period="week" data-i18n="export.week">Bu hafta</button>
+        <button type="button" class="export-option" data-period="month" data-i18n="export.month">Bu oy</button>
+        <button type="button" class="export-option" data-period="all" data-i18n="export.all">Hammasi</button>
       </div>
 
-      <p class="export-section-label">Format</p>
-      <div class="export-format-group" id="exportFormatGroup" role="group" aria-label="Format">
+      <p class="export-section-label" data-i18n="export.format">Format</p>
+      <div class="export-format-group" id="exportFormatGroup" role="group" data-i18n-aria="export.format">
         <button type="button" class="export-format-btn active" data-format="pdf">📄 PDF</button>
         <button type="button" class="export-format-btn" data-format="excel">📊 Excel</button>
       </div>
 
       <div class="export-loading hidden" id="exportLoading" aria-live="polite">
         <div class="export-spinner"></div>
-        <span>Yaratilmoqda...</span>
+        <span data-i18n="export.generating">Yaratilmoqda...</span>
       </div>
 
-      <button type="button" class="export-submit-btn" id="exportSubmitBtn">Eksport qilish</button>
+      <button type="button" class="export-submit-btn" id="exportSubmitBtn" data-i18n="export.submit">Eksport qilish</button>
     </div>
   </div>
 
@@ -2342,6 +2397,425 @@
     /** Users who already exceed the cap keep adding (not blocked by the new limit). */
     function isGrandfatheredOverTxLimit(count = transactions.length) {
       return count > FREE_TX_LIMIT;
+    }
+
+    /* ——— i18n ——— */
+    let currentLang = localStorage.getItem("bh-lang") || "uz";
+    const DATE_LOCALES = { uz: "uz-UZ", ru: "ru-RU", en: "en-GB" };
+
+    const i18n = {
+      uz: {
+        "lang.aria": "Til",
+        "offline": "Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi",
+        "loading": "Yuklanmoqda...",
+        "auth.tagline": "Hisobingizga kiring yoki roʻyxatdan oʻting",
+        "auth.login": "Kirish",
+        "auth.register": "Roʻyxatdan oʻtish",
+        "auth.password": "Parol",
+        "auth.passwordPh": "Kamida 6 ta belgi",
+        "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
+        "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
+        "auth.err.invalid-email": "Email notoʻgʻri.",
+        "auth.err.weak-password": "Parol juda zaif (kamida 6 belgi).",
+        "auth.err.user-not-found": "Foydalanuvchi topilmadi.",
+        "auth.err.wrong-password": "Parol notoʻgʻri.",
+        "auth.err.invalid-credential": "Email yoki parol notoʻgʻri.",
+        "auth.err.too-many-requests": "Juda koʻp urinish. Biroz kuting.",
+        "auth.err.network-request-failed": "Internet aloqasini tekshiring.",
+        "auth.err.default": "Xatolik yuz berdi. Qayta urinib koʻring.",
+        "header.cloud": "Bulut",
+        "home.profit": "Sof foyda",
+        "home.income": "Daromad",
+        "home.expense": "Xarajat",
+        "home.quick": "Tezkor qoʻshish",
+        "add.title": "Yangi operatsiya",
+        "add.desc": "Tavsif",
+        "add.descPh": "Masalan: Mahsulot sotuvi",
+        "add.amount": "Summa (UZS)",
+        "add.submitIncome": "Daromad qoʻshish",
+        "add.submitExpense": "Xarajat qoʻshish",
+        "list.title": "Operatsiyalar",
+        "list.export": "Eksport",
+        "list.exportAria": "Hisobotni eksport qilish",
+        "list.count": "{{n}} ta",
+        "list.empty": "Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.",
+        "tx.income": "Daromad",
+        "tx.expense": "Xarajat",
+        "profile.free": "Bepul",
+        "profile.website": "BiznesHisob sayti",
+        "profile.hint": "Maʼlumotlar Firestore bulutida saqlanadi",
+        "profile.changePin": "PIN kodni o'zgartirish",
+        "profile.enableBio": "Biometrikni yoqish",
+        "profile.install": "Ilovani oʻrnatish",
+        "profile.iosHint": "<strong>iPhone/iPad:</strong> Safari brauzerida «Ulashish» → «Bosh ekranga qoʻshish» tugmasini bosing.",
+        "profile.logout": "Chiqish",
+        "profile.txCount": "Operatsiyalar:",
+        "profile.txUnit": "ta",
+        "profile.freeLimit": "Bepul limit:",
+        "profile.status": "Holat:",
+        "profile.online": "Onlayn",
+        "profile.offline": "Oflayn (kesh)",
+        "nav.menuAria": "Asosiy menyu",
+        "nav.home": "Bosh",
+        "nav.add": "Qoʻshish",
+        "nav.list": "Roʻyxat",
+        "nav.profile": "Profil",
+        "nav.homeAria": "Bosh sahifa",
+        "nav.addAria": "Qoʻshish",
+        "nav.listAria": "Roʻyxat",
+        "nav.profileAria": "Profil",
+        "premium.limitAlert": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.checking": "To'lov tekshirilmoqda...",
+        "premium.activated": "Premium faollashtirildi! 🎉",
+        "premium.pending": "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.",
+        "premium.checkError": "Tekshirishda xatolik. Qayta urinib ko'ring.",
+        "premium.title": "Premium ga o'ting",
+        "premium.sub": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.price": "29 900 so'm / oy",
+        "premium.f1": "Cheksiz operatsiyalar",
+        "premium.f2": "Kengaytirilgan grafiklar (tez kunda)",
+        "premium.f3": "Export PDF/Excel",
+        "premium.f4": "Reklamasiz",
+        "premium.payme": "Payme orqali to'lash",
+        "premium.click": "Click orqali to'lash",
+        "export.title": "Hisobotni eksport qilish",
+        "export.period": "Davr",
+        "export.today": "Bugun",
+        "export.week": "Bu hafta",
+        "export.month": "Bu oy",
+        "export.all": "Hammasi",
+        "export.format": "Format",
+        "export.generating": "Yaratilmoqda...",
+        "export.submit": "Eksport qilish",
+        "export.closeAria": "Yopish",
+        "export.success": "Fayl yuklab olindi ✅",
+        "export.error": "Eksportda xatolik. Internetni tekshiring va qayta urinib ko'ring.",
+        "export.noTx": "Operatsiyalar yo'q",
+        "alert.saveError": "Operatsiyani saqlashda xatolik yuz berdi.",
+        "alert.deleteError": "Oʻchirishda xatolik yuz berdi.",
+        "alert.loadError": "Maʼlumotlarni yuklashda xatolik. Firestore qoidalarini tekshiring.",
+        "pin.lockout": "{{n}} soniyadan keyin qayta urinib ko'ring",
+        "pin.mismatch": "PIN mos kelmadi. Qayta urinib ko'ring.",
+        "pin.wrong": "Noto'g'ri PIN",
+        "pin.wrongLeft": "Noto'g'ri PIN ({{n}} urinish qoldi)",
+        "pin.updated": "PIN yangilandi ✓",
+        "pin.bioFail": "Biometrik tasdiqlanmadi. PIN kiriting.",
+        "pin.bioEnableFail": "Biometrik yoqilmadi. Keyinroq profildan urinib ko'ring.",
+        "pin.bioOk": "Biometrik yoqildi ✓",
+        "pin.bioNo": "Biometrik qo'llab-quvvatlanmaydi yoki rad etildi.",
+        "pin.title.unlock": "PIN kodni kiriting",
+        "pin.title.setup": "PIN kod o'rnating",
+        "pin.title.setup-confirm": "PIN kodni tasdiqlang",
+        "pin.title.reset-setup": "Yangi PIN o'rnating",
+        "pin.title.reset-confirm": "Yangi PIN ni tasdiqlang",
+        "pin.title.change-old": "Joriy PIN kod",
+        "pin.title.change-new": "Yangi PIN kod",
+        "pin.title.change-confirm": "Yangi PIN ni tasdiqlang",
+        "pin.title.bio-offer": "Biometrik himoya",
+        "pin.sub.setup": "4 raqamli kod tanlang",
+        "pin.sub.setup-confirm": "Kodni qayta kiriting",
+        "pin.sub.reset-setup": "4 raqamli yangi kod tanlang",
+        "pin.sub.reset-confirm": "Kodni qayta kiriting",
+        "pin.sub.change-new": "4 raqamli yangi kod",
+        "pin.sub.change-confirm": "Yangi kodni qayta kiriting",
+        "pin.sub.bio-offer": "Face ID / Touch ID bilan tezroq kiring",
+        "pin.enableBio": "Biometrikni yoqish",
+        "pin.skipBio": "Keyinroq",
+        "pin.forgot": "PIN kodini unutdim?",
+        "currency.suffix": " soʻm"
+      },
+      ru: {
+        "lang.aria": "Язык",
+        "offline": "Нет интернета — показаны сохранённые данные",
+        "loading": "Загрузка...",
+        "auth.tagline": "Войдите или зарегистрируйтесь",
+        "auth.login": "Вход",
+        "auth.register": "Регистрация",
+        "auth.password": "Пароль",
+        "auth.passwordPh": "Минимум 6 символов",
+        "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
+        "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
+        "auth.err.invalid-email": "Неверный email.",
+        "auth.err.weak-password": "Слабый пароль (минимум 6 символов).",
+        "auth.err.user-not-found": "Пользователь не найден.",
+        "auth.err.wrong-password": "Неверный пароль.",
+        "auth.err.invalid-credential": "Неверный email или пароль.",
+        "auth.err.too-many-requests": "Слишком много попыток. Подождите.",
+        "auth.err.network-request-failed": "Проверьте подключение к интернету.",
+        "auth.err.default": "Ошибка. Попробуйте снова.",
+        "header.cloud": "Облако",
+        "home.profit": "Чистая прибыль",
+        "home.income": "Доход",
+        "home.expense": "Расход",
+        "home.quick": "Быстрое добавление",
+        "add.title": "Новая операция",
+        "add.desc": "Описание",
+        "add.descPh": "Например: Продажа товара",
+        "add.amount": "Сумма (UZS)",
+        "add.submitIncome": "Добавить доход",
+        "add.submitExpense": "Добавить расход",
+        "list.title": "Операции",
+        "list.export": "Экспорт",
+        "list.exportAria": "Экспорт отчёта",
+        "list.count": "{{n}} шт.",
+        "list.empty": "Операций пока нет.<br>Добавьте первую запись в разделе «Добавить».",
+        "tx.income": "Доход",
+        "tx.expense": "Расход",
+        "profile.free": "Бесплатно",
+        "profile.website": "Сайт BiznesHisob",
+        "profile.hint": "Данные хранятся в облаке Firestore",
+        "profile.changePin": "Изменить PIN-код",
+        "profile.enableBio": "Включить биометрию",
+        "profile.install": "Установить приложение",
+        "profile.iosHint": "<strong>iPhone/iPad:</strong> В Safari нажмите «Поделиться» → «На экран Домой».",
+        "profile.logout": "Выход",
+        "profile.txCount": "Операции:",
+        "profile.txUnit": "шт.",
+        "profile.freeLimit": "Бесплатный лимит:",
+        "profile.status": "Статус:",
+        "profile.online": "Онлайн",
+        "profile.offline": "Офлайн (кеш)",
+        "nav.menuAria": "Главное меню",
+        "nav.home": "Главная",
+        "nav.add": "Добавить",
+        "nav.list": "Список",
+        "nav.profile": "Профиль",
+        "nav.homeAria": "Главная",
+        "nav.addAria": "Добавить",
+        "nav.listAria": "Список",
+        "nav.profileAria": "Профиль",
+        "premium.limitAlert": "Для более 100 операций перейдите на Premium",
+        "premium.checking": "Проверка оплаты...",
+        "premium.activated": "Premium активирован! 🎉",
+        "premium.pending": "Оплата ещё не подтверждена. Premium включится после проверки.",
+        "premium.checkError": "Ошибка проверки. Попробуйте снова.",
+        "premium.title": "Перейти на Premium",
+        "premium.sub": "Для более 100 операций перейдите на Premium",
+        "premium.price": "29 900 so'm / мес",
+        "premium.f1": "Безлимитные операции",
+        "premium.f2": "Расширенные графики (скоро)",
+        "premium.f3": "Export PDF/Excel",
+        "premium.f4": "Без рекламы",
+        "premium.payme": "Оплатить через Payme",
+        "premium.click": "Оплатить через Click",
+        "export.title": "Экспорт отчёта",
+        "export.period": "Период",
+        "export.today": "Сегодня",
+        "export.week": "Эта неделя",
+        "export.month": "Этот месяц",
+        "export.all": "Все",
+        "export.format": "Формат",
+        "export.generating": "Создание...",
+        "export.submit": "Экспортировать",
+        "export.closeAria": "Закрыть",
+        "export.success": "Файл загружен ✅",
+        "export.error": "Ошибка экспорта. Проверьте интернет и повторите.",
+        "export.noTx": "Нет операций",
+        "alert.saveError": "Ошибка сохранения операции.",
+        "alert.deleteError": "Ошибка удаления.",
+        "alert.loadError": "Ошибка загрузки данных. Проверьте правила Firestore.",
+        "pin.lockout": "Повторите через {{n}} сек.",
+        "pin.mismatch": "PIN не совпадает. Попробуйте снова.",
+        "pin.wrong": "Неверный PIN",
+        "pin.wrongLeft": "Неверный PIN (осталось {{n}})",
+        "pin.updated": "PIN обновлён ✓",
+        "pin.bioFail": "Биометрия не подтверждена. Введите PIN.",
+        "pin.bioEnableFail": "Биометрия не включена. Попробуйте позже в профиле.",
+        "pin.bioOk": "Биометрия включена ✓",
+        "pin.bioNo": "Биометрия не поддерживается или отклонена.",
+        "pin.title.unlock": "Введите PIN-код",
+        "pin.title.setup": "Установите PIN",
+        "pin.title.setup-confirm": "Подтвердите PIN",
+        "pin.title.reset-setup": "Новый PIN",
+        "pin.title.reset-confirm": "Подтвердите новый PIN",
+        "pin.title.change-old": "Текущий PIN",
+        "pin.title.change-new": "Новый PIN",
+        "pin.title.change-confirm": "Подтвердите новый PIN",
+        "pin.title.bio-offer": "Биометрическая защита",
+        "pin.sub.setup": "Выберите 4-значный код",
+        "pin.sub.setup-confirm": "Повторите код",
+        "pin.sub.reset-setup": "Новый 4-значный код",
+        "pin.sub.reset-confirm": "Повторите код",
+        "pin.sub.change-new": "Новый 4-значный код",
+        "pin.sub.change-confirm": "Повторите новый код",
+        "pin.sub.bio-offer": "Face ID / Touch ID для быстрого входа",
+        "pin.enableBio": "Включить биометрию",
+        "pin.skipBio": "Позже",
+        "pin.forgot": "Забыли PIN?",
+        "currency.suffix": " so'm"
+      },
+      en: {
+        "lang.aria": "Language",
+        "offline": "No internet — showing saved data",
+        "loading": "Loading...",
+        "auth.tagline": "Sign in or create an account",
+        "auth.login": "Sign in",
+        "auth.register": "Sign up",
+        "auth.password": "Password",
+        "auth.passwordPh": "At least 6 characters",
+        "auth.err.credentials": "Enter email and password (at least 6 characters).",
+        "auth.err.email-already-in-use": "This email is already registered.",
+        "auth.err.invalid-email": "Invalid email.",
+        "auth.err.weak-password": "Password too weak (min 6 characters).",
+        "auth.err.user-not-found": "User not found.",
+        "auth.err.wrong-password": "Wrong password.",
+        "auth.err.invalid-credential": "Invalid email or password.",
+        "auth.err.too-many-requests": "Too many attempts. Please wait.",
+        "auth.err.network-request-failed": "Check your internet connection.",
+        "auth.err.default": "Something went wrong. Try again.",
+        "header.cloud": "Cloud",
+        "home.profit": "Net profit",
+        "home.income": "Income",
+        "home.expense": "Expense",
+        "home.quick": "Quick add",
+        "add.title": "New transaction",
+        "add.desc": "Description",
+        "add.descPh": "e.g. Product sale",
+        "add.amount": "Amount (UZS)",
+        "add.submitIncome": "Add income",
+        "add.submitExpense": "Add expense",
+        "list.title": "Transactions",
+        "list.export": "Export",
+        "list.exportAria": "Export report",
+        "list.count": "{{n}} items",
+        "list.empty": "No transactions yet.<br>Add your first entry in the Add tab.",
+        "tx.income": "Income",
+        "tx.expense": "Expense",
+        "profile.free": "Free",
+        "profile.website": "BiznesHisob website",
+        "profile.hint": "Data is stored in Firestore cloud",
+        "profile.changePin": "Change PIN",
+        "profile.enableBio": "Enable biometrics",
+        "profile.install": "Install app",
+        "profile.iosHint": "<strong>iPhone/iPad:</strong> In Safari tap Share → Add to Home Screen.",
+        "profile.logout": "Sign out",
+        "profile.txCount": "Transactions:",
+        "profile.txUnit": "",
+        "profile.freeLimit": "Free limit:",
+        "profile.status": "Status:",
+        "profile.online": "Online",
+        "profile.offline": "Offline (cache)",
+        "nav.menuAria": "Main menu",
+        "nav.home": "Home",
+        "nav.add": "Add",
+        "nav.list": "List",
+        "nav.profile": "Profile",
+        "nav.homeAria": "Home",
+        "nav.addAria": "Add",
+        "nav.listAria": "List",
+        "nav.profileAria": "Profile",
+        "premium.limitAlert": "Upgrade to Premium for more than 100 transactions",
+        "premium.checking": "Verifying payment...",
+        "premium.activated": "Premium activated! 🎉",
+        "premium.pending": "Payment not confirmed yet. Premium will activate after review.",
+        "premium.checkError": "Verification error. Please try again.",
+        "premium.title": "Upgrade to Premium",
+        "premium.sub": "Upgrade to Premium for more than 100 transactions",
+        "premium.price": "29,900 UZS / month",
+        "premium.f1": "Unlimited transactions",
+        "premium.f2": "Advanced charts (coming soon)",
+        "premium.f3": "Export PDF/Excel",
+        "premium.f4": "Ad-free",
+        "premium.payme": "Pay with Payme",
+        "premium.click": "Pay with Click",
+        "export.title": "Export report",
+        "export.period": "Period",
+        "export.today": "Today",
+        "export.week": "This week",
+        "export.month": "This month",
+        "export.all": "All",
+        "export.format": "Format",
+        "export.generating": "Generating...",
+        "export.submit": "Export",
+        "export.closeAria": "Close",
+        "export.success": "File downloaded ✅",
+        "export.error": "Export failed. Check internet and try again.",
+        "export.noTx": "No transactions",
+        "alert.saveError": "Failed to save transaction.",
+        "alert.deleteError": "Failed to delete.",
+        "alert.loadError": "Failed to load data. Check Firestore rules.",
+        "pin.lockout": "Try again in {{n}} seconds",
+        "pin.mismatch": "PINs don't match. Try again.",
+        "pin.wrong": "Wrong PIN",
+        "pin.wrongLeft": "Wrong PIN ({{n}} left)",
+        "pin.updated": "PIN updated ✓",
+        "pin.bioFail": "Biometrics failed. Enter PIN.",
+        "pin.bioEnableFail": "Could not enable biometrics. Try later in profile.",
+        "pin.bioOk": "Biometrics enabled ✓",
+        "pin.bioNo": "Biometrics not supported or denied.",
+        "pin.title.unlock": "Enter PIN",
+        "pin.title.setup": "Set PIN",
+        "pin.title.setup-confirm": "Confirm PIN",
+        "pin.title.reset-setup": "Set new PIN",
+        "pin.title.reset-confirm": "Confirm new PIN",
+        "pin.title.change-old": "Current PIN",
+        "pin.title.change-new": "New PIN",
+        "pin.title.change-confirm": "Confirm new PIN",
+        "pin.title.bio-offer": "Biometric unlock",
+        "pin.sub.setup": "Choose a 4-digit code",
+        "pin.sub.setup-confirm": "Re-enter code",
+        "pin.sub.reset-setup": "Choose new 4-digit code",
+        "pin.sub.reset-confirm": "Re-enter code",
+        "pin.sub.change-new": "New 4-digit code",
+        "pin.sub.change-confirm": "Re-enter new code",
+        "pin.sub.bio-offer": "Use Face ID / Touch ID for faster unlock",
+        "pin.enableBio": "Enable biometrics",
+        "pin.skipBio": "Later",
+        "pin.forgot": "Forgot PIN?",
+        "currency.suffix": " UZS"
+      }
+    };
+
+    function t(key, vars = {}) {
+      let str = i18n[currentLang]?.[key] ?? i18n.uz[key] ?? key;
+      Object.entries(vars).forEach(([k, v]) => {
+        str = str.replace(new RegExp(`\\{\\{${k}\\}\\}`, "g"), String(v));
+      });
+      return str;
+    }
+
+    function applyI18n() {
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === currentLang);
+      });
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.dataset.i18n;
+        if (el.dataset.i18nHtml === "true") el.innerHTML = t(key);
+        else el.textContent = t(key);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+        el.setAttribute("aria-label", t(el.dataset.i18nAria));
+      });
+      const pinEnableBioEl = document.getElementById("pinEnableBio");
+      const pinSkipBioEl = document.getElementById("pinSkipBio");
+      const pinForgotEl = document.getElementById("pinForgot");
+      if (pinEnableBioEl) pinEnableBioEl.textContent = t("pin.enableBio");
+      if (pinSkipBioEl) pinSkipBioEl.textContent = t("pin.skipBio");
+      if (pinForgotEl) pinForgotEl.textContent = t("pin.forgot");
+      setAuthMode(authMode);
+      setType(currentType);
+      updateOnlineStatus();
+      if (pinScreen.classList.contains("visible")) configurePinUI(pinMode);
+      render();
+    }
+
+    function setLang(lang) {
+      if (!i18n[lang]) return;
+      currentLang = lang;
+      localStorage.setItem("bh-lang", lang);
+      applyI18n();
+    }
+
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+
+    function getPeriodLabel(period) {
+      return t(`export.${period}`);
     }
     const PAYME_URL = "https://payme.uz/checkout/bizneshisob";
     const CLICK_URL = "https://my.click.uz/services/bizneshisob";
@@ -2625,7 +3099,7 @@
           pinBioBtn.disabled = false;
           return;
         }
-        setPinMsg(`${left} soniyadan keyin qayta urinib ko'ring`, "lockout");
+        setPinMsg(t("pin.lockout", { n: left }), "lockout");
       };
       tick();
       lockoutTimer = setInterval(tick, 1000);
@@ -2839,30 +3313,12 @@
       pinBioBtn.classList.add("hidden");
       pinKeypad.classList.remove("hidden");
 
-      const titles = {
-        unlock: "PIN kodni kiriting",
-        setup: "PIN kod o'rnating",
-        "setup-confirm": "PIN kodni tasdiqlang",
-        "reset-setup": "Yangi PIN o'rnating",
-        "reset-confirm": "Yangi PIN ni tasdiqlang",
-        "change-old": "Joriy PIN kod",
-        "change-new": "Yangi PIN kod",
-        "change-confirm": "Yangi PIN ni tasdiqlang",
-        "bio-offer": "Biometrik himoya"
-      };
-      pinTitle.textContent = titles[mode] || "PIN";
+      pinTitle.textContent = t(`pin.title.${mode}`) || "PIN";
 
-      const subs = {
-        setup: "4 raqamli kod tanlang",
-        "setup-confirm": "Kodni qayta kiriting",
-        "reset-setup": "4 raqamli yangi kod tanlang",
-        "reset-confirm": "Kodni qayta kiriting",
-        "change-new": "4 raqamli yangi kod",
-        "change-confirm": "Yangi kodni qayta kiriting",
-        "bio-offer": "Face ID / Touch ID bilan tezroq kiring"
-      };
-      pinSub.textContent = subs[mode] || "";
-      pinSub.style.display = (subs[mode] || mode === "bio-offer") ? "block" : "none";
+      const subKey = `pin.sub.${mode}`;
+      const subText = i18n[currentLang]?.[subKey] ?? i18n.uz[subKey] ?? "";
+      pinSub.textContent = subText;
+      pinSub.style.display = (subText || mode === "bio-offer") ? "block" : "none";
 
       if (mode === "bio-offer") {
         pinKeypad.classList.add("hidden");
@@ -2945,7 +3401,7 @@
 
       if (pinMode === "setup-confirm") {
         if (pinBuffer !== pinSetupFirst) {
-          setPinMsg("PIN mos kelmadi. Qayta urinib ko'ring.", "error");
+          setPinMsg(t("pin.mismatch"), "error");
           shakeDots();
           resetPinBuffer();
           configurePinUI("setup");
@@ -2966,7 +3422,7 @@
 
       if (pinMode === "reset-confirm") {
         if (pinBuffer !== pinSetupFirst) {
-          setPinMsg("PIN mos kelmadi. Qayta urinib ko'ring.", "error");
+          setPinMsg(t("pin.mismatch"), "error");
           shakeDots();
           resetPinBuffer();
           configurePinUI("reset-setup");
@@ -2982,7 +3438,7 @@
 
       if (pinMode === "change-old") {
         if (!(await verifyPinInput(pinBuffer))) {
-          setPinMsg("Noto'g'ri PIN", "error");
+          setPinMsg(t("pin.wrong"), "error");
           shakeDots();
           resetPinBuffer();
           return;
@@ -3001,7 +3457,7 @@
 
       if (pinMode === "change-confirm") {
         if (pinBuffer !== pinSetupFirst) {
-          setPinMsg("PIN mos kelmadi", "error");
+          setPinMsg(t("pin.mismatch"), "error");
           shakeDots();
           resetPinBuffer();
           configurePinUI("change-new");
@@ -3010,7 +3466,7 @@
         }
         await savePin(pinBuffer, currentUser.uid);
         pinSetupFirst = "";
-        setPinMsg("PIN yangilandi ✓");
+        setPinMsg(t("pin.updated"));
         setTimeout(() => {
           if (appUnlocked) hidePinScreen();
           else unlockApp();
@@ -3026,7 +3482,7 @@
           if (pinAttempts >= MAX_PIN_ATTEMPTS) {
             startLockout();
           } else {
-            setPinMsg(`Noto'g'ri PIN (${MAX_PIN_ATTEMPTS - pinAttempts} urinish qoldi)`, "error");
+            setPinMsg(t("pin.wrongLeft", { n: MAX_PIN_ATTEMPTS - pinAttempts }), "error");
             shakeDots();
           }
           return;
@@ -3167,7 +3623,7 @@
           return true;
         }
       } catch (err) {
-        if (!auto) setPinMsg("Biometrik tasdiqlanmadi. PIN kiriting.", "error");
+        if (!auto) setPinMsg(t("pin.bioFail"), "error");
       }
       return false;
     }
@@ -3180,7 +3636,7 @@
         bioOfferPending = false;
         unlockApp();
       } else {
-        setPinMsg("Biometrik yoqilmadi. Keyinroq profildan urinib ko'ring.", "error");
+        setPinMsg(t("pin.bioEnableFail"), "error");
       }
     });
 
@@ -3200,7 +3656,7 @@
 
     enableBioBtn.addEventListener("click", async () => {
       const ok = await registerBiometric();
-      alert(ok ? "Biometrik yoqildi ✓" : "Biometrik qo'llab-quvvatlanmaydi yoki rad etildi.");
+      alert(ok ? t("pin.bioOk") : t("pin.bioNo"));
       updateProfileSecurityUI();
     });
 
@@ -3240,7 +3696,7 @@
       offlineBanner.classList.toggle("visible", !online);
       syncStatusRow.classList.toggle("online", online);
       syncStatusRow.classList.toggle("offline", !online);
-      syncStatusText.textContent = online ? "Onlayn" : "Oflayn (kesh)";
+      syncStatusText.textContent = online ? t("profile.online") : t("profile.offline");
     }
 
     window.addEventListener("online", updateOnlineStatus);
@@ -3381,7 +3837,7 @@
 
     function showPremiumModal(options = {}) {
       premiumLimitAlert.classList.toggle("hidden", options.reason !== "limit");
-      paymentChecking.textContent = "To'lov tekshirilmoqda...";
+      paymentChecking.textContent = t("premium.checking");
       paymentChecking.classList.add("hidden");
       premiumModal.classList.add("open");
       updateBodyScrollLock();
@@ -3409,21 +3865,20 @@
       try {
         const snap = await getDoc(userDocRef(currentUser.uid));
         if (snap.exists() && snap.data().isPremium) {
-          paymentChecking.textContent = "Premium faollashtirildi! 🎉";
+          paymentChecking.textContent = t("premium.activated");
           setTimeout(() => {
             paymentChecking.classList.add("hidden");
             closePremiumModal();
           }, 2500);
         } else {
-          paymentChecking.textContent = "To'lov tekshirilmoqda...";
+          paymentChecking.textContent = t("premium.checking");
           setTimeout(() => {
-            paymentChecking.textContent =
-              "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.";
+            paymentChecking.textContent = t("premium.pending");
           }, 4000);
         }
       } catch (err) {
         console.error(err);
-        paymentChecking.textContent = "Tekshirishda xatolik. Qayta urinib ko'ring.";
+        paymentChecking.textContent = t("premium.checkError");
       }
     }
 
@@ -3447,12 +3902,6 @@
     });
 
     /* ——— Export reports ——— */
-    const PERIOD_LABELS = {
-      today: "Bugun",
-      week: "Bu hafta",
-      month: "Bu oy",
-      all: "Hammasi"
-    };
 
     function getPeriodRange(period) {
       const now = new Date();
@@ -3613,13 +4062,13 @@
       doc.setFont(undefined, "normal");
 
       const tableBody = list.length
-        ? list.map(t => [
-            formatExportDate(t.date),
-            t.description,
-            t.type === "income" ? "Daromad" : "Xarajat",
-            (t.type === "income" ? "+" : "−") + formatUZS(t.amount)
+        ? list.map(tx => [
+            formatExportDate(tx.date),
+            tx.description,
+            tx.type === "income" ? t("tx.income") : t("tx.expense"),
+            (tx.type === "income" ? "+" : "−") + formatUZS(tx.amount)
           ])
-        : [["—", "Operatsiyalar yo'q", "—", "—"]];
+        : [["—", t("export.noTx"), "—", "—"]];
 
       doc.autoTable({
         startY: summaryY + 22,
@@ -3660,7 +4109,7 @@
       const rows = [
         ["BiznesHisob — Hisobot"],
         ["Eksport sanasi", new Date().toLocaleDateString("uz-UZ")],
-        ["Davr", PERIOD_LABELS[exportPeriod] || exportPeriod],
+        ["Davr", getPeriodLabel(exportPeriod)],
         [],
         ["Sana", "Tavsif", "Tur", "Summa"]
       ];
@@ -3690,7 +4139,7 @@
       if (exportBusy || !currentUser) return;
 
       const list = filterTransactionsByPeriod(exportPeriod);
-      const periodLabel = PERIOD_LABELS[exportPeriod] || exportPeriod;
+      const periodLabel = getPeriodLabel(exportPeriod);
 
       setExportLoading(true);
       try {
@@ -3701,13 +4150,10 @@
           generatePdfExport(list, periodLabel);
         }
         closeExportModal();
-        showExportToast("Fayl yuklab olindi ✅");
+        showExportToast(t("export.success"));
       } catch (err) {
         console.error("Export:", err);
-        showExportToast(
-          err.message || "Eksportda xatolik. Internetni tekshiring va qayta urinib ko'ring.",
-          true
-        );
+        showExportToast(err.message || t("export.error"), true);
       } finally {
         setExportLoading(false);
       }
@@ -3775,21 +4221,12 @@
     }
 
     function authErrorMessage(code) {
-      const messages = {
-        "auth/email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
-        "auth/invalid-email": "Email notoʻgʻri.",
-        "auth/weak-password": "Parol juda zaif (kamida 6 belgi).",
-        "auth/user-not-found": "Foydalanuvchi topilmadi.",
-        "auth/wrong-password": "Parol notoʻgʻri.",
-        "auth/invalid-credential": "Email yoki parol notoʻgʻri.",
-        "auth/too-many-requests": "Juda koʻp urinish. Biroz kuting.",
-        "auth/network-request-failed": "Internet aloqasini tekshiring."
-      };
-      return messages[code] || "Xatolik yuz berdi. Qayta urinib koʻring.";
+      const key = `auth.err.${code?.replace("auth/", "")}`;
+      return i18n[currentLang]?.[key] ? t(key) : t("auth.err.default");
     }
 
     function formatUZS(amount) {
-      return new Intl.NumberFormat("uz-UZ").format(amount) + " soʻm";
+      return new Intl.NumberFormat(DATE_LOCALES[currentLang] || "uz-UZ").format(amount) + t("currency.suffix");
     }
 
     const MAX_AMOUNT_DIGITS = 15;
@@ -3854,7 +4291,7 @@
 
     function formatDate(iso) {
       const d = new Date(iso);
-      return d.toLocaleDateString("uz-UZ", {
+      return d.toLocaleDateString(DATE_LOCALES[currentLang] || "uz-UZ", {
         day: "numeric",
         month: "short",
         hour: "2-digit",
@@ -3873,7 +4310,7 @@
       authTabs.forEach(tab => {
         tab.classList.toggle("active", tab.dataset.mode === mode);
       });
-      authSubmitBtn.textContent = mode === "login" ? "Kirish" : "Roʻyxatdan oʻtish";
+      authSubmitBtn.textContent = mode === "login" ? t("auth.login") : t("auth.register");
       authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
       clearAuthError();
     }
@@ -3889,7 +4326,7 @@
       const password = authPassword.value;
 
       if (!email || password.length < 6) {
-        showAuthError("Email va parol (kamida 6 belgi) kiriting.");
+        showAuthError(t("auth.err.credentials"));
         return;
       }
 
@@ -3937,7 +4374,7 @@
         },
         err => {
           console.error(err);
-          alert("Maʼlumotlarni yuklashda xatolik. Firestore qoidalarini tekshiring.");
+          alert(t("alert.loadError"));
         }
       );
     }
@@ -3948,7 +4385,7 @@
         btn.classList.toggle("active", btn.dataset.type === type);
       });
       submitBtn.className = "submit-btn " + type;
-      submitBtn.textContent = type === "income" ? "Daromad qoʻshish" : "Xarajat qoʻshish";
+      submitBtn.textContent = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
     }
 
     typeButtons.forEach(btn => {
@@ -3997,7 +4434,7 @@
         if (err.code === "tx-limit") {
           showPremiumModal({ reason: "limit" });
         } else {
-          alert("Operatsiyani saqlashda xatolik yuz berdi.");
+          alert(t("alert.saveError"));
         }
       } finally {
         setBusy(false);
@@ -4011,7 +4448,7 @@
         await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
       } catch (err) {
         console.error(err);
-        alert("Oʻchirishda xatolik yuz berdi.");
+        alert(t("alert.deleteError"));
       } finally {
         setBusy(false);
       }
@@ -4034,7 +4471,7 @@
       netProfitEl.textContent = formatUZS(netProfit);
       profitCard.classList.toggle("negative", netProfit < 0);
 
-      const countText = transactions.length + " ta";
+      const countText = t("list.count", { n: transactions.length });
       txCountEl.textContent = countText;
       profileTxCount.textContent = transactions.length;
 
@@ -4044,7 +4481,7 @@
 
       transactionList.innerHTML = transactions.map(t => {
         const isIncome = t.type === "income";
-        const typeLabel = isIncome ? "Daromad" : "Xarajat";
+        const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
         const sign = isIncome ? "+" : "−";
         const iconName = isIncome ? "trending-up" : "trending-down";
         return `
@@ -4125,6 +4562,7 @@
     });
 
     setupInstallUI();
+    applyI18n();
     showView("loading");
 
     window.addEventListener("load", refreshIcons);
