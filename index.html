@@ -616,59 +616,77 @@
       display: none;
     }
 
-    .category-scroll {
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem 0.45rem;
+      padding: 0.25rem 0 0.75rem;
+    }
+
+    .category-option {
       display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding: 0.15rem 0 0.65rem;
-      margin: 0 -0.15rem;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-
-    .category-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-pill {
-      flex: 0 0 auto;
-      display: inline-flex;
+      flex-direction: column;
       align-items: center;
       gap: 0.35rem;
-      padding: 0.55rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 600;
-      font-family: inherit;
+      background: none;
+      border: none;
+      padding: 0.15rem;
       cursor: pointer;
-      transition: all 0.2s var(--ease);
-      white-space: nowrap;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .category-pill:active {
-      transform: scale(0.97);
+    .category-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease);
     }
 
-    .category-pill.active {
-      background: rgba(124, 58, 237, 0.35);
-      border-color: rgba(124, 58, 237, 0.65);
+    .category-icon-wrap [data-lucide] {
+      width: 20px;
+      height: 20px;
+      stroke: #fff;
+      stroke-width: 2;
+    }
+
+    .category-option.active .category-icon-wrap {
+      transform: scale(1.12);
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(124, 58, 237, 0.45);
+    }
+
+    .category-option-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.25;
+      max-width: 100%;
+      word-break: break-word;
+    }
+
+    .category-option.active .category-option-label {
       color: #fff;
-      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
     }
 
-    .category-pill .cat-emoji {
-      font-size: 1.05rem;
-      line-height: 1;
+    .tx-cat-icon {
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
     }
 
-    .tx-cat-icon .cat-emoji {
-      font-size: 1.35rem;
-      line-height: 1;
+    .tx-cat-icon .category-icon-wrap {
+      width: 44px;
+      height: 44px;
+    }
+
+    .tx-cat-icon .category-icon-wrap [data-lucide] {
+      width: 22px;
+      height: 22px;
     }
 
     .chart-card {
@@ -2304,7 +2322,7 @@
             </div>
             <div class="form-row">
               <label><i data-lucide="tag"></i> <span data-i18n="add.category">Kategoriya</span></label>
-              <div class="category-scroll" id="categorySelector" role="listbox" aria-label="Kategoriya"></div>
+              <div class="category-grid" id="categorySelector" role="listbox" aria-label="Kategoriya"></div>
             </div>
             <div class="form-row">
               <label for="amount"><i data-lucide="banknote"></i> <span data-i18n="add.amount">Summa (UZS)</span></label>
@@ -2498,25 +2516,52 @@
 
     const FREE_TX_LIMIT = 100;
 
+    const CAT_ICON_COLORS = {
+      green: "#22C55E",
+      blue: "#3B82F6",
+      purple: "#7C3AED",
+      yellow: "#EAB308",
+      red: "#EF4444",
+      orange: "#F97316",
+      cyan: "#06B6D4",
+      brown: "#A16207",
+      pink: "#EC4899",
+      lime: "#84CC16",
+      indigo: "#6366F1",
+      amber: "#F59E0B",
+      rose: "#F43F5E",
+      violet: "#8B5CF6",
+      sky: "#0EA5E9"
+    };
+
+    function defineCategory(id, label, icon, colorKey) {
+      return {
+        id,
+        label,
+        icon,
+        iconBg: CAT_ICON_COLORS[colorKey] || CAT_ICON_COLORS.purple
+      };
+    }
+
     const CATEGORIES = {
       income: [
-        { id: "sotuv", emoji: "💰", label: "Sotuv" },
-        { id: "xizmat", emoji: "🛍️", label: "Xizmat" },
-        { id: "ish_haqi", emoji: "💼", label: "Ish haqi" },
-        { id: "investitsiya", emoji: "📈", label: "Investitsiya" },
-        { id: "boshqa_daromad", emoji: "🎁", label: "Boshqa daromad" }
+        defineCategory("sotuv", "Sotuv", "shopping-cart", "green"),
+        defineCategory("xizmat", "Xizmat", "briefcase", "blue"),
+        defineCategory("ish_haqi", "Ish haqi", "briefcase", "blue"),
+        defineCategory("investitsiya", "Investitsiya", "trending-up", "purple"),
+        defineCategory("boshqa_daromad", "Boshqa daromad", "gift", "amber")
       ],
       expense: [
-        { id: "ijara", emoji: "🏠", label: "Ijara" },
-        { id: "oziq_ovqat", emoji: "🛒", label: "Oziq-ovqat" },
-        { id: "transport", emoji: "🚗", label: "Transport" },
-        { id: "kommunal", emoji: "💡", label: "Kommunal" },
-        { id: "telefon_internet", emoji: "📱", label: "Telefon/Internet" },
-        { id: "ish_haqi_xodim", emoji: "👨‍💼", label: "Ish haqi (xodim)" },
-        { id: "mahsulot", emoji: "📦", label: "Mahsulot" },
-        { id: "reklama", emoji: "🎯", label: "Reklama" },
-        { id: "tamirlash", emoji: "🔧", label: "Ta'mirlash" },
-        { id: "boshqa_xarajat", emoji: "💸", label: "Boshqa xarajat" }
+        defineCategory("ijara", "Ijara", "home", "yellow"),
+        defineCategory("oziq_ovqat", "Oziq-ovqat", "utensils", "orange"),
+        defineCategory("transport", "Transport", "car", "red"),
+        defineCategory("kommunal", "Kommunal", "zap", "lime"),
+        defineCategory("telefon_internet", "Telefon/Internet", "phone", "cyan"),
+        defineCategory("ish_haqi_xodim", "Ish haqi (xodim)", "briefcase", "blue"),
+        defineCategory("mahsulot", "Mahsulot", "package", "violet"),
+        defineCategory("reklama", "Reklama", "bar-chart", "sky"),
+        defineCategory("tamirlash", "Ta'mirlash", "wrench", "brown"),
+        defineCategory("boshqa_xarajat", "Boshqa xarajat", "alert-circle", "rose")
       ]
     };
 
@@ -2526,11 +2571,6 @@
         CATEGORY_MAP[cat.id] = { ...cat, type };
       });
     });
-
-    const CHART_COLORS = [
-      "#7C3AED", "#A855F7", "#6366F1", "#8B5CF6", "#C084FC",
-      "#F97316", "#EF4444", "#22C55E", "#3B82F6", "#EC4899", "#14B8A6"
-    ];
 
     const DEFAULT_CATEGORY = {
       income: "boshqa_daromad",
@@ -2551,6 +2591,10 @@
       const type = tx.type === "expense" ? "expense" : "income";
       const id = resolveCategoryId(tx.category, type);
       return CATEGORY_MAP[id] || CATEGORIES[type][CATEGORIES[type].length - 1];
+    }
+
+    function categoryIconHtml(cat) {
+      return `<span class="category-icon-wrap" style="background:${cat.iconBg}"><i data-lucide="${cat.icon}"></i></span>`;
     }
 
     function normalizeTransactionDoc(id, data) {
@@ -4661,18 +4705,19 @@
       }
 
       categorySelector.innerHTML = cats.map(cat => `
-        <button type="button" class="category-pill${selectedCategory === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${selectedCategory === cat.id}">
-          <span class="cat-emoji">${cat.emoji}</span>
-          <span class="cat-label">${escapeHtml(cat.label)}</span>
+        <button type="button" class="category-option${selectedCategory === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${selectedCategory === cat.id}" aria-label="${escapeHtml(cat.label)}">
+          ${categoryIconHtml(cat)}
+          <span class="category-option-label">${escapeHtml(cat.label)}</span>
         </button>
       `).join("");
 
-      categorySelector.querySelectorAll(".category-pill").forEach(btn => {
+      categorySelector.querySelectorAll(".category-option").forEach(btn => {
         btn.addEventListener("click", () => {
           selectedCategory = btn.dataset.category;
           renderCategorySelector(type);
         });
       });
+      refreshIcons();
     }
 
     function aggregateByCategory(type) {
@@ -4714,10 +4759,10 @@
         expenseChartInstance = new Chart(expenseDonutChart, {
           type: "doughnut",
           data: {
-            labels: expenseData.map(item => `${item.emoji} ${item.label}`),
+            labels: expenseData.map(item => item.label),
             datasets: [{
               data: expenseData.map(item => item.amount),
-              backgroundColor: CHART_COLORS.slice(0, expenseData.length),
+              backgroundColor: expenseData.map(item => item.iconBg),
               borderWidth: 0,
               hoverOffset: 6
             }]
@@ -4744,10 +4789,10 @@
         incomeChartInstance = new Chart(incomeBarChart, {
           type: "bar",
           data: {
-            labels: incomeData.map(item => `${item.emoji} ${item.label}`),
+            labels: incomeData.map(item => item.label),
             datasets: [{
               data: incomeData.map(item => item.amount),
-              backgroundColor: "rgba(124, 58, 237, 0.78)",
+              backgroundColor: incomeData.map(item => item.iconBg),
               borderRadius: 8,
               borderSkipped: false
             }]
@@ -4987,7 +5032,7 @@
         const sign = isIncome ? "+" : "−";
         return `
           <li class="transaction-item">
-            <div class="tx-icon ${tx.type} tx-cat-icon"><span class="cat-emoji">${cat.emoji}</span></div>
+            <div class="tx-icon tx-cat-icon">${categoryIconHtml(cat)}</div>
             <div class="transaction-info">
               <div class="transaction-desc">${escapeHtml(tx.description)}</div>
               <div class="transaction-meta">${typeLabel} · ${escapeHtml(cat.label)} · ${formatDate(tx.date)}</div>
