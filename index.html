@@ -3249,6 +3249,7 @@
         id,
         ...data,
         type,
+        amount: Number(data.amount) || 0,
         category: resolveCategoryId(data.category, type)
       };
     }
@@ -5010,54 +5011,119 @@
 
     /* ——— Export reports ——— */
 
+    function startOfDay(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function endOfDay(date) {
+      const d = new Date(date);
+      d.setHours(23, 59, 59, 999);
+      return d;
+    }
+
+    function parseTxDate(tx) {
+      const raw = tx?.date;
+      if (raw == null || raw === "") return null;
+
+      if (typeof raw?.toDate === "function") {
+        return raw.toDate();
+      }
+
+      if (typeof raw === "object" && typeof raw.seconds === "number") {
+        return new Date(raw.seconds * 1000);
+      }
+
+      const d = new Date(raw);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
     function getPeriodRange(period) {
       const now = new Date();
-      const end = new Date(now);
-      let start;
+      const todayStart = startOfDay(now);
+      const todayEnd = endOfDay(now);
 
       switch (period) {
         case "today":
-          start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-          break;
+          return { start: todayStart, end: todayEnd };
         case "week": {
-          start = new Date(now);
+          const start = new Date(todayStart);
           const day = start.getDay();
-          const diff = day === 0 ? 6 : day - 1;
-          start.setDate(start.getDate() - diff);
-          start.setHours(0, 0, 0, 0);
-          break;
+          const daysFromMonday = day === 0 ? 6 : day - 1;
+          start.setDate(start.getDate() - daysFromMonday);
+          return { start, end: todayEnd };
         }
         case "month":
-          start = new Date(now.getFullYear(), now.getMonth(), 1);
-          break;
-        case "3months":
-          start = new Date(now);
+          return {
+            start: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
+            end: todayEnd
+          };
+        case "3months": {
+          const start = new Date(todayStart);
           start.setMonth(start.getMonth() - 3);
-          start.setHours(0, 0, 0, 0);
-          break;
+          return { start, end: todayEnd };
+        }
         default:
           return { start: null, end: null };
       }
-      return { start, end };
+    }
+
+    function isTxInPeriod(tx, period) {
+      const txDate = parseTxDate(tx);
+      if (!txDate) return false;
+
+      if (period === "today") {
+        return txDate.toDateString() === new Date().toDateString();
+      }
+
+      const { start, end } = getPeriodRange(period);
+      if (!start || !end) return false;
+      return txDate >= start && txDate <= end;
     }
 
     function filterTransactionsByPeriod(period) {
       if (period === "all") return [...transactions];
-      const { start, end } = getPeriodRange(period);
-      return transactions.filter(t => {
-        const d = new Date(t.date);
-        return d >= start && d <= end;
-      });
+      return transactions.filter(tx => isTxInPeriod(tx, period));
     }
 
     function calcExportSummary(list) {
       let income = 0;
       let expense = 0;
-      list.forEach(t => {
-        if (t.type === "income") income += t.amount;
-        else expense += t.amount;
+      list.forEach(tx => {
+        const amount = Number(tx.amount) || 0;
+        if (tx.type === "income") income += amount;
+        else expense += amount;
       });
       return { income, expense, net: income - expense };
+    }
+
+    function logStatsDebug() {
+      const periodKeys = ["today", "week", "month", "3months"];
+      const periodSums = {};
+
+      periodKeys.forEach(period => {
+        const list = filterTransactionsByPeriod(period);
+        periodSums[period] = {
+          count: list.length,
+          ...calcExportSummary(list)
+        };
+      });
+
+      console.log("[BiznesHisob] Stats debug:", {
+        totalTransactions: transactions.length,
+        todayString: new Date().toDateString(),
+        transactions: transactions.map(tx => ({
+          id: tx.id,
+          type: tx.type,
+          amount: Number(tx.amount) || 0,
+          dateRaw: tx.date,
+          dateParsed: parseTxDate(tx)?.toISOString() ?? null,
+          dateLocal: parseTxDate(tx)?.toDateString() ?? null,
+          category: tx.category
+        })),
+        periodSums
+      });
     }
 
     function formatExportDate(iso) {
@@ -5581,12 +5647,13 @@
       }).join("");
     }
 
-    function aggregateByCategory(type) {
+    function aggregateByCategory(type, sourceTransactions = transactions) {
       const totals = new Map();
-      transactions.forEach(tx => {
+      sourceTransactions.forEach(tx => {
         if (tx.type !== type) return;
         const cat = getCategoryForTx(tx);
-        totals.set(cat.id, (totals.get(cat.id) || 0) + (Number(tx.amount) || 0));
+        const amount = Number(tx.amount) || 0;
+        totals.set(cat.id, (totals.get(cat.id) || 0) + amount);
       });
 
       const items = [];
@@ -5599,6 +5666,7 @@
     function renderCategoryCharts() {
       if (typeof Chart === "undefined") return;
 
+      logStatsDebug();
       renderPeriodStats();
 
       const expenseData = aggregateByCategory("expense");
