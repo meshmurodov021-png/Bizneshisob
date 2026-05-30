@@ -304,11 +304,13 @@
     .app-shell {
       position: relative;
       z-index: 1;
-      min-height: 100dvh;
+      height: 100dvh;
+      max-height: 100dvh;
       max-width: 480px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       animation: fadeIn 0.35s var(--ease);
     }
 
@@ -316,6 +318,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -378,19 +381,31 @@
 
     .app-main {
       flex: 1;
-      padding: 1rem 1rem calc(var(--nav-h) + 1rem + env(safe-area-inset-bottom));
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      padding: 1rem 1rem 0;
     }
 
-    /* Tab panels */
+    /* Tab panels — each fills main and scrolls independently */
     .tab-panel {
-      display: none;
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      right: 1rem;
+      bottom: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
+      visibility: hidden;
+      pointer-events: none;
       animation: tabIn 0.35s var(--ease);
     }
 
     .tab-panel.active {
-      display: block;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     @keyframes tabIn {
@@ -1229,6 +1244,7 @@
     @media (min-width: 768px) {
       .app-shell { max-width: 720px; }
       .app-main { padding-left: 1.5rem; padding-right: 1.5rem; }
+      .tab-panel { left: 1.5rem; right: 1.5rem; }
       .bottom-nav { max-width: 720px; }
     }
 
@@ -3073,6 +3089,7 @@
     let selectedCategory = getDefaultCategoryId("income");
     let authMode = "login";
     let currentTab = "home";
+    const tabScrollPos = { home: 0, add: 0, list: 0, profile: 0 };
     let unsubscribeTransactions = null;
     let unsubscribeUser = null;
     let busy = false;
@@ -4472,6 +4489,11 @@
     document.addEventListener("visibilitychange", handleVisibilityLock);
 
     function switchTab(tabName) {
+      const activePanel = document.querySelector(".tab-panel.active");
+      if (activePanel) {
+        tabScrollPos[currentTab] = activePanel.scrollTop;
+      }
+
       currentTab = tabName;
       tabPanels.forEach(panel => {
         const isActive = panel.dataset.tab === tabName;
@@ -4485,8 +4507,12 @@
       navItems.forEach(nav => {
         nav.classList.toggle("active", nav.dataset.tab === tabName);
       });
-      appScreen.scrollTop = 0;
-      document.querySelector(".app-main")?.scrollTo({ top: 0, behavior: "smooth" });
+
+      const newPanel = document.querySelector(`.tab-panel[data-tab="${tabName}"]`);
+      if (newPanel) {
+        newPanel.scrollTop = tabScrollPos[tabName] || 0;
+      }
+
       requestAnimationFrame(refreshIcons);
     }
 
@@ -4506,7 +4532,7 @@
       loadingScreen.classList.toggle("hidden", view !== "loading");
       authScreen.classList.toggle("hidden", view !== "auth");
       appScreen.classList.toggle("hidden", view !== "app");
-      document.body.style.overflow = view === "app" ? "hidden" : "";
+      document.body.style.overflow = view === "loading" ? "hidden" : "";
     }
 
     function setBusy(state) {
