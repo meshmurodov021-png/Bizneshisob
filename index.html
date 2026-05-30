@@ -616,6 +616,90 @@
       display: none;
     }
 
+    .category-scroll {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.15rem 0 0.65rem;
+      margin: 0 -0.15rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-pill {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s var(--ease);
+      white-space: nowrap;
+    }
+
+    .category-pill:active {
+      transform: scale(0.97);
+    }
+
+    .category-pill.active {
+      background: rgba(124, 58, 237, 0.35);
+      border-color: rgba(124, 58, 237, 0.65);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+    }
+
+    .category-pill .cat-emoji {
+      font-size: 1.05rem;
+      line-height: 1;
+    }
+
+    .tx-cat-icon .cat-emoji {
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .chart-card {
+      padding: 1.15rem 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .chart-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.85rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+      width: 100%;
+    }
+
+    .chart-wrap-bar {
+      height: 240px;
+    }
+
+    .chart-empty {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
     .submit-btn {
       width: 100%;
       min-height: 56px;
@@ -2187,6 +2271,22 @@
           <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
           <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
         </div>
+
+        <p class="section-title" data-i18n="stats.title">Statistika</p>
+        <div class="card chart-card">
+          <div class="chart-title" data-i18n="stats.expenseBreakdown">Xarajatlar boʻyicha</div>
+          <div class="chart-wrap" id="expenseChartWrap">
+            <canvas id="expenseDonutChart" aria-label="Xarajatlar diagrammasi"></canvas>
+          </div>
+          <div class="chart-empty hidden" id="expenseChartEmpty" data-i18n="stats.noExpense">Xarajatlar yoʻq</div>
+        </div>
+        <div class="card chart-card">
+          <div class="chart-title" data-i18n="stats.incomeBreakdown">Daromadlar boʻyicha</div>
+          <div class="chart-wrap chart-wrap-bar" id="incomeChartWrap">
+            <canvas id="incomeBarChart" aria-label="Daromadlar diagrammasi"></canvas>
+          </div>
+          <div class="chart-empty hidden" id="incomeChartEmpty" data-i18n="stats.noIncome">Daromadlar yoʻq</div>
+        </div>
       </section>
 
       <!-- Qo'shish -->
@@ -2201,6 +2301,10 @@
             <div class="form-row">
               <label for="description"><i data-lucide="file-text"></i> <span data-i18n="add.desc">Tavsif</span></label>
               <input type="text" id="description" data-i18n-placeholder="add.descPh" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
+            </div>
+            <div class="form-row">
+              <label><i data-lucide="tag"></i> <span data-i18n="add.category">Kategoriya</span></label>
+              <div class="category-scroll" id="categorySelector" role="listbox" aria-label="Kategoriya"></div>
             </div>
             <div class="form-row">
               <label for="amount"><i data-lucide="banknote"></i> <span data-i18n="add.amount">Summa (UZS)</span></label>
@@ -2342,6 +2446,7 @@
 
   <div class="export-toast hidden" id="exportToast" role="status" aria-live="polite"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -2393,6 +2498,71 @@
 
     const FREE_TX_LIMIT = 100;
 
+    const CATEGORIES = {
+      income: [
+        { id: "sotuv", emoji: "💰", label: "Sotuv" },
+        { id: "xizmat", emoji: "🛍️", label: "Xizmat" },
+        { id: "ish_haqi", emoji: "💼", label: "Ish haqi" },
+        { id: "investitsiya", emoji: "📈", label: "Investitsiya" },
+        { id: "boshqa_daromad", emoji: "🎁", label: "Boshqa daromad" }
+      ],
+      expense: [
+        { id: "ijara", emoji: "🏠", label: "Ijara" },
+        { id: "oziq_ovqat", emoji: "🛒", label: "Oziq-ovqat" },
+        { id: "transport", emoji: "🚗", label: "Transport" },
+        { id: "kommunal", emoji: "💡", label: "Kommunal" },
+        { id: "telefon_internet", emoji: "📱", label: "Telefon/Internet" },
+        { id: "ish_haqi_xodim", emoji: "👨‍💼", label: "Ish haqi (xodim)" },
+        { id: "mahsulot", emoji: "📦", label: "Mahsulot" },
+        { id: "reklama", emoji: "🎯", label: "Reklama" },
+        { id: "tamirlash", emoji: "🔧", label: "Ta'mirlash" },
+        { id: "boshqa_xarajat", emoji: "💸", label: "Boshqa xarajat" }
+      ]
+    };
+
+    const CATEGORY_MAP = {};
+    Object.entries(CATEGORIES).forEach(([type, list]) => {
+      list.forEach(cat => {
+        CATEGORY_MAP[cat.id] = { ...cat, type };
+      });
+    });
+
+    const CHART_COLORS = [
+      "#7C3AED", "#A855F7", "#6366F1", "#8B5CF6", "#C084FC",
+      "#F97316", "#EF4444", "#22C55E", "#3B82F6", "#EC4899", "#14B8A6"
+    ];
+
+    const DEFAULT_CATEGORY = {
+      income: "boshqa_daromad",
+      expense: "boshqa_xarajat"
+    };
+
+    function getDefaultCategoryId(type) {
+      return DEFAULT_CATEGORY[type] || CATEGORIES[type]?.[0]?.id || "";
+    }
+
+    function resolveCategoryId(categoryId, type) {
+      const list = CATEGORIES[type] || [];
+      if (categoryId && list.some(cat => cat.id === categoryId)) return categoryId;
+      return getDefaultCategoryId(type);
+    }
+
+    function getCategoryForTx(tx) {
+      const type = tx.type === "expense" ? "expense" : "income";
+      const id = resolveCategoryId(tx.category, type);
+      return CATEGORY_MAP[id] || CATEGORIES[type][CATEGORIES[type].length - 1];
+    }
+
+    function normalizeTransactionDoc(id, data) {
+      const type = data.type === "expense" ? "expense" : "income";
+      return {
+        id,
+        ...data,
+        type,
+        category: resolveCategoryId(data.category, type)
+      };
+    }
+
     /** Users who already exceed the cap keep adding (not blocked by the new limit). */
     function isGrandfatheredOverTxLimit(count = transactions.length) {
       return count > FREE_TX_LIMIT;
@@ -2427,9 +2597,16 @@
         "home.income": "Daromad",
         "home.expense": "Xarajat",
         "home.quick": "Tezkor qoʻshish",
+        "stats.title": "Statistika",
+        "stats.expenseBreakdown": "Xarajatlar boʻyicha",
+        "stats.incomeBreakdown": "Daromadlar boʻyicha",
+        "stats.noExpense": "Xarajatlar yoʻq",
+        "stats.noIncome": "Daromadlar yoʻq",
         "add.title": "Yangi operatsiya",
         "add.desc": "Tavsif",
         "add.descPh": "Masalan: Mahsulot sotuvi",
+        "add.category": "Kategoriya",
+        "add.categoryRequired": "Iltimos, kategoriyani tanlang",
         "add.amount": "Summa (UZS)",
         "add.submitIncome": "Daromad qoʻshish",
         "add.submitExpense": "Xarajat qoʻshish",
@@ -2551,9 +2728,16 @@
         "home.income": "Доход",
         "home.expense": "Расход",
         "home.quick": "Быстрое добавление",
+        "stats.title": "Статистика",
+        "stats.expenseBreakdown": "Расходы по категориям",
+        "stats.incomeBreakdown": "Доходы по категориям",
+        "stats.noExpense": "Нет расходов",
+        "stats.noIncome": "Нет доходов",
         "add.title": "Новая операция",
         "add.desc": "Описание",
         "add.descPh": "Например: Продажа товара",
+        "add.category": "Категория",
+        "add.categoryRequired": "Выберите категорию",
         "add.amount": "Сумма (UZS)",
         "add.submitIncome": "Добавить доход",
         "add.submitExpense": "Добавить расход",
@@ -2675,9 +2859,16 @@
         "home.income": "Income",
         "home.expense": "Expense",
         "home.quick": "Quick add",
+        "stats.title": "Statistics",
+        "stats.expenseBreakdown": "Expenses by category",
+        "stats.incomeBreakdown": "Income by category",
+        "stats.noExpense": "No expenses",
+        "stats.noIncome": "No income",
         "add.title": "New transaction",
         "add.desc": "Description",
         "add.descPh": "e.g. Product sale",
+        "add.category": "Category",
+        "add.categoryRequired": "Please select a category",
         "add.amount": "Amount (UZS)",
         "add.submitIncome": "Add income",
         "add.submitExpense": "Add expense",
@@ -2835,11 +3026,14 @@
     let transactions = [];
     let userProfile = { isPremium: false };
     let currentType = "income";
+    let selectedCategory = getDefaultCategoryId("income");
     let authMode = "login";
     let currentTab = "home";
     let unsubscribeTransactions = null;
     let unsubscribeUser = null;
     let busy = false;
+    let expenseChartInstance = null;
+    let incomeChartInstance = null;
 
     const loadingScreen = document.getElementById("loadingScreen");
     const authScreen = document.getElementById("authScreen");
@@ -2871,6 +3065,7 @@
     const amountHint = document.getElementById("amountHint");
     const submitBtn = document.getElementById("submitBtn");
     const typeButtons = document.querySelectorAll(".type-btn");
+    const categorySelector = document.getElementById("categorySelector");
     const transactionList = document.getElementById("transactionList");
     const emptyState = document.getElementById("emptyState");
     const totalIncomeEl = document.getElementById("totalIncome");
@@ -2900,6 +3095,12 @@
     const iosInstallHint = document.getElementById("iosInstallHint");
     const syncStatusRow = document.getElementById("syncStatusRow");
     const syncStatusText = document.getElementById("syncStatusText");
+    const expenseDonutChart = document.getElementById("expenseDonutChart");
+    const incomeBarChart = document.getElementById("incomeBarChart");
+    const expenseChartWrap = document.getElementById("expenseChartWrap");
+    const incomeChartWrap = document.getElementById("incomeChartWrap");
+    const expenseChartEmpty = document.getElementById("expenseChartEmpty");
+    const incomeChartEmpty = document.getElementById("incomeChartEmpty");
 
     let deferredInstallPrompt = null;
 
@@ -3772,7 +3973,7 @@
       return `users/${uid}/transactions`;
     }
 
-    function buildTransactionPayload({ type, description, amount, userId }) {
+    function buildTransactionPayload({ type, description, amount, userId, category }) {
       const normalizedType = String(type ?? "").trim();
       if (normalizedType !== "income" && normalizedType !== "expense") {
         const err = new Error(`Invalid transaction type: ${type}`);
@@ -3803,12 +4004,21 @@
         throw err;
       }
 
+      const normalizedCategory = resolveCategoryId(String(category ?? "").trim(), normalizedType);
+      const validIds = CATEGORIES[normalizedType].map(cat => cat.id);
+      if (!validIds.includes(normalizedCategory)) {
+        const err = new Error(`Invalid category: ${category}`);
+        err.code = "invalid-argument";
+        throw err;
+      }
+
       return {
         type: normalizedType,
         description: normalizedDescription,
         amount: normalizedAmount,
         date: new Date().toISOString(),
-        userId: normalizedUserId
+        userId: normalizedUserId,
+        category: normalizedCategory
       };
     }
 
@@ -4425,10 +4635,7 @@
       unsubscribeTransactions = onSnapshot(
         q,
         snapshot => {
-          transactions = snapshot.docs.map(d => ({
-            id: d.id,
-            ...d.data()
-          }));
+          transactions = snapshot.docs.map(d => normalizeTransactionDoc(d.id, d.data()));
           console.log("[BiznesHisob] Transactions fetched:", {
             collectionPath,
             count: transactions.length,
@@ -4447,6 +4654,123 @@
       );
     }
 
+    function renderCategorySelector(type) {
+      const cats = CATEGORIES[type] || [];
+      if (!selectedCategory || !cats.some(cat => cat.id === selectedCategory)) {
+        selectedCategory = getDefaultCategoryId(type);
+      }
+
+      categorySelector.innerHTML = cats.map(cat => `
+        <button type="button" class="category-pill${selectedCategory === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${selectedCategory === cat.id}">
+          <span class="cat-emoji">${cat.emoji}</span>
+          <span class="cat-label">${escapeHtml(cat.label)}</span>
+        </button>
+      `).join("");
+
+      categorySelector.querySelectorAll(".category-pill").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedCategory = btn.dataset.category;
+          renderCategorySelector(type);
+        });
+      });
+    }
+
+    function aggregateByCategory(type) {
+      const totals = new Map();
+      transactions.forEach(tx => {
+        if (tx.type !== type) return;
+        const cat = getCategoryForTx(tx);
+        totals.set(cat.id, (totals.get(cat.id) || 0) + (Number(tx.amount) || 0));
+      });
+
+      const items = [];
+      totals.forEach((amount, id) => {
+        items.push({ ...getCategoryForTx({ type, category: id }), amount });
+      });
+      return items.sort((a, b) => b.amount - a.amount);
+    }
+
+    function renderCategoryCharts() {
+      if (typeof Chart === "undefined") return;
+
+      const expenseData = aggregateByCategory("expense");
+      const incomeData = aggregateByCategory("income");
+
+      expenseChartWrap.classList.toggle("hidden", expenseData.length === 0);
+      expenseChartEmpty.classList.toggle("hidden", expenseData.length > 0);
+      incomeChartWrap.classList.toggle("hidden", incomeData.length === 0);
+      incomeChartEmpty.classList.toggle("hidden", incomeData.length > 0);
+
+      if (expenseChartInstance) {
+        expenseChartInstance.destroy();
+        expenseChartInstance = null;
+      }
+      if (incomeChartInstance) {
+        incomeChartInstance.destroy();
+        incomeChartInstance = null;
+      }
+
+      if (expenseData.length) {
+        expenseChartInstance = new Chart(expenseDonutChart, {
+          type: "doughnut",
+          data: {
+            labels: expenseData.map(item => `${item.emoji} ${item.label}`),
+            datasets: [{
+              data: expenseData.map(item => item.amount),
+              backgroundColor: CHART_COLORS.slice(0, expenseData.length),
+              borderWidth: 0,
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: "#94a3b8",
+                  boxWidth: 12,
+                  padding: 10,
+                  font: { size: 11 }
+                }
+              }
+            }
+          }
+        });
+      }
+
+      if (incomeData.length) {
+        incomeChartInstance = new Chart(incomeBarChart, {
+          type: "bar",
+          data: {
+            labels: incomeData.map(item => `${item.emoji} ${item.label}`),
+            datasets: [{
+              data: incomeData.map(item => item.amount),
+              backgroundColor: "rgba(124, 58, 237, 0.78)",
+              borderRadius: 8,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: "#94a3b8", font: { size: 10 }, maxRotation: 45, minRotation: 0 }
+              },
+              y: {
+                grid: { color: "rgba(255,255,255,0.06)" },
+                ticks: { color: "#94a3b8", font: { size: 10 } }
+              }
+            }
+          }
+        });
+      }
+    }
+
     function setType(type) {
       currentType = type;
       typeButtons.forEach(btn => {
@@ -4454,6 +4778,7 @@
       });
       submitBtn.className = "submit-btn " + type;
       submitBtn.textContent = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
+      renderCategorySelector(type);
     }
 
     typeButtons.forEach(btn => {
@@ -4528,7 +4853,8 @@
         type: rawTxData.type,
         description: rawTxData.description,
         amount: rawTxData.amount,
-        userId: user.uid
+        userId: user.uid,
+        category: rawTxData.category
       });
 
       if (txData.userId !== user.uid) {
@@ -4556,7 +4882,8 @@
           description: typeof txData.description,
           amount: typeof txData.amount,
           date: typeof txData.date,
-          userId: typeof txData.userId
+          userId: typeof txData.userId,
+          category: typeof txData.category
         },
         amountIsNumber: typeof txData.amount === "number" && Number.isFinite(txData.amount)
       });
@@ -4580,6 +4907,11 @@
       const amount = parseAmountDigits(amountInput.value);
       if (!description || !amount || amount <= 0) return;
 
+      if (!selectedCategory) {
+        alert(t("add.categoryRequired"));
+        return;
+      }
+
       if (!canAddTransaction()) {
         showPremiumModal({ reason: "limit" });
         return;
@@ -4590,10 +4922,13 @@
         await saveTransaction({
           type: currentType,
           description,
-          amount: Number(amount)
+          amount: Number(amount),
+          category: selectedCategory
         });
         form.reset();
         amountHint.textContent = "";
+        selectedCategory = getDefaultCategoryId(currentType);
+        renderCategorySelector(currentType);
         switchTab("list");
       } catch (err) {
         logSaveError(err, { type: currentType, amount, description });
@@ -4648,14 +4983,14 @@
       transactionList.innerHTML = transactions.map(tx => {
         const isIncome = tx.type === "income";
         const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
+        const cat = getCategoryForTx(tx);
         const sign = isIncome ? "+" : "−";
-        const iconName = isIncome ? "trending-up" : "trending-down";
         return `
           <li class="transaction-item">
-            <div class="tx-icon ${tx.type}"><i data-lucide="${iconName}" class="icon-list"></i></div>
+            <div class="tx-icon ${tx.type} tx-cat-icon"><span class="cat-emoji">${cat.emoji}</span></div>
             <div class="transaction-info">
               <div class="transaction-desc">${escapeHtml(tx.description)}</div>
-              <div class="transaction-meta">${typeLabel} · ${formatDate(tx.date)}</div>
+              <div class="transaction-meta">${typeLabel} · ${escapeHtml(cat.label)} · ${formatDate(tx.date)}</div>
             </div>
             <div class="transaction-right">
               <span class="transaction-amount ${tx.type}">${sign}${formatUZS(tx.amount)}</span>
@@ -4679,6 +5014,7 @@
       if (exportOpenBtn) {
         exportOpenBtn.disabled = !hasItems;
       }
+      renderCategoryCharts();
       refreshIcons();
     }
 

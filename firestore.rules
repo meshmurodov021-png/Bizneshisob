@@ -17,14 +17,27 @@ service cloud.firestore {
     }
 
     function isValidTransaction() {
-      return request.resource.data.keys().hasAll(['type', 'description', 'amount', 'date', 'userId'])
+      return request.resource.data.keys().hasAll(['type', 'description', 'amount', 'date', 'userId', 'category'])
         && request.resource.data.userId == request.auth.uid
         && request.resource.data.type in ['income', 'expense']
         && request.resource.data.description is string
         && request.resource.data.description.size() > 0
         && request.resource.data.amount is number
         && request.resource.data.amount > 0
-        && request.resource.data.date is string;
+        && request.resource.data.date is string
+        && request.resource.data.category is string
+        && request.resource.data.category.size() > 0
+        && isValidCategory(request.resource.data.type, request.resource.data.category);
+    }
+
+    function isValidCategory(type, category) {
+      return (type == 'income' && category in [
+          'sotuv', 'xizmat', 'ish_haqi', 'investitsiya', 'boshqa_daromad'
+        ])
+        || (type == 'expense' && category in [
+          'ijara', 'oziq_ovqat', 'transport', 'kommunal', 'telefon_internet',
+          'ish_haqi_xodim', 'mahsulot', 'reklama', 'tamirlash', 'boshqa_xarajat'
+        ]);
     }
   }
 }
