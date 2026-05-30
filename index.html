@@ -614,7 +614,48 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.75rem;
       margin-bottom: 1rem;
+    }
+
+    .list-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.12);
+      color: var(--accent-hover);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .export-btn:active:not(:disabled) {
+      transform: scale(0.96);
+      background: rgba(124, 58, 237, 0.22);
+    }
+
+    .export-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .export-btn [data-lucide] {
+      width: 16px;
+      height: 16px;
+      stroke: var(--accent-hover);
     }
 
     .count-badge {
@@ -1224,6 +1265,149 @@
       color: var(--text);
       border-color: rgba(124, 58, 237, 0.4);
       background: rgba(124, 58, 237, 0.12);
+    }
+
+    /* Export modal */
+    .export-modal h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      padding-right: 2rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .export-modal h2 [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: var(--accent-hover);
+    }
+
+    .export-section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .export-option-group,
+    .export-format-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.15rem;
+    }
+
+    .export-option,
+    .export-format-btn {
+      flex: 1;
+      min-width: calc(50% - 0.25rem);
+      min-height: 44px;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+
+    .export-format-btn {
+      min-width: calc(50% - 0.25rem);
+    }
+
+    .export-option.active,
+    .export-format-btn.active {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: rgba(124, 58, 237, 0.5);
+      color: var(--text);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+    }
+
+    .export-submit-btn {
+      width: 100%;
+      min-height: 52px;
+      padding: 0.9rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(124, 58, 237, 0.4);
+      transition: transform 0.2s var(--ease), opacity 0.2s;
+    }
+
+    .export-submit-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .export-submit-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .export-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      padding: 0.75rem;
+      margin-bottom: 0.85rem;
+      border-radius: 10px;
+      background: rgba(124, 58, 237, 0.1);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      font-size: 0.88rem;
+      color: var(--accent-hover);
+    }
+
+    .export-spinner {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-top-color: #7C3AED;
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+
+    .export-toast {
+      position: fixed;
+      bottom: calc(var(--nav-h) + 1rem + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 500;
+      max-width: min(400px, calc(100% - 2rem));
+      padding: 0.85rem 1.25rem;
+      background: rgba(18, 18, 28, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-radius: 14px;
+      color: #4ade80;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      transition: transform 0.4s var(--ease), opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .export-toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .export-toast.error {
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
     }
 
     .premium-limit-alert {
@@ -1977,7 +2161,13 @@
       <section class="tab-panel" id="tabList" data-tab="list">
         <div class="list-header">
           <p class="section-title" style="margin:0">Operatsiyalar</p>
-          <span class="count-badge" id="txCount">0 ta</span>
+          <div class="list-header-actions">
+            <button type="button" class="export-btn" id="exportOpenBtn" aria-label="Hisobotni eksport qilish">
+              <i data-lucide="upload"></i>
+              Eksport
+            </button>
+            <span class="count-badge" id="txCount">0 ta</span>
+          </div>
         </div>
         <ul class="transaction-list" id="transactionList"></ul>
         <div class="empty-state" id="emptyState">
@@ -2057,7 +2247,7 @@
       <ul class="premium-features">
         <li><span class="feat-check"><i data-lucide="check"></i></span> Cheksiz operatsiyalar</li>
         <li><span class="feat-check"><i data-lucide="check"></i></span> Kengaytirilgan grafiklar (tez kunda)</li>
-        <li><span class="feat-check"><i data-lucide="check"></i></span> Export PDF/Excel (tez kunda)</li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> Export PDF/Excel</li>
         <li><span class="feat-check"><i data-lucide="check"></i></span> Reklamasiz</li>
       </ul>
       <div class="payment-btns">
@@ -2067,6 +2257,39 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+    <div class="premium-modal export-modal">
+      <button type="button" class="modal-close" id="exportModalClose" aria-label="Yopish">×</button>
+      <h2 id="exportModalTitle"><i data-lucide="download"></i> Hisobotni eksport qilish</h2>
+
+      <p class="export-section-label">Davr</p>
+      <div class="export-option-group" id="exportPeriodGroup" role="group" aria-label="Davr">
+        <button type="button" class="export-option active" data-period="today">Bugun</button>
+        <button type="button" class="export-option" data-period="week">Bu hafta</button>
+        <button type="button" class="export-option" data-period="month">Bu oy</button>
+        <button type="button" class="export-option" data-period="all">Hammasi</button>
+      </div>
+
+      <p class="export-section-label">Format</p>
+      <div class="export-format-group" id="exportFormatGroup" role="group" aria-label="Format">
+        <button type="button" class="export-format-btn active" data-format="pdf">📄 PDF</button>
+        <button type="button" class="export-format-btn" data-format="excel">📊 Excel</button>
+      </div>
+
+      <div class="export-loading hidden" id="exportLoading" aria-live="polite">
+        <div class="export-spinner"></div>
+        <span>Yaratilmoqda...</span>
+      </div>
+
+      <button type="button" class="export-submit-btn" id="exportSubmitBtn">Eksport qilish</button>
+    </div>
+  </div>
+
+  <div class="export-toast hidden" id="exportToast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -2164,6 +2387,19 @@
     const netProfitEl = document.getElementById("netProfit");
     const profitCard = document.getElementById("profitCard");
     const txCountEl = document.getElementById("txCount");
+    const exportOpenBtn = document.getElementById("exportOpenBtn");
+    const exportModal = document.getElementById("exportModal");
+    const exportModalClose = document.getElementById("exportModalClose");
+    const exportPeriodGroup = document.getElementById("exportPeriodGroup");
+    const exportFormatGroup = document.getElementById("exportFormatGroup");
+    const exportSubmitBtn = document.getElementById("exportSubmitBtn");
+    const exportLoading = document.getElementById("exportLoading");
+    const exportToast = document.getElementById("exportToast");
+
+    let exportPeriod = "today";
+    let exportFormat = "pdf";
+    let exportBusy = false;
+    let exportToastTimer = null;
 
     const tabPanels = document.querySelectorAll(".tab-panel");
     const navItems = document.querySelectorAll(".nav-item");
@@ -3080,17 +3316,22 @@
       }
     }
 
+    function updateBodyScrollLock() {
+      const locked = premiumModal.classList.contains("open") || exportModal.classList.contains("open");
+      document.body.style.overflow = locked ? "hidden" : "";
+    }
+
     function showPremiumModal(options = {}) {
       premiumLimitAlert.classList.toggle("hidden", options.reason !== "limit");
       paymentChecking.textContent = "To'lov tekshirilmoqda...";
       paymentChecking.classList.add("hidden");
       premiumModal.classList.add("open");
-      document.body.style.overflow = "hidden";
+      updateBodyScrollLock();
     }
 
     function closePremiumModal() {
       premiumModal.classList.remove("open");
-      document.body.style.overflow = "";
+      updateBodyScrollLock();
       premiumLimitAlert.classList.add("hidden");
     }
 
@@ -3105,7 +3346,7 @@
       sessionStorage.removeItem("bh_payment_pending");
       paymentChecking.classList.remove("hidden");
       premiumModal.classList.add("open");
-      document.body.style.overflow = "hidden";
+      updateBodyScrollLock();
 
       try {
         const snap = await getDoc(userDocRef(currentUser.uid));
@@ -3137,8 +3378,276 @@
     clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
 
     document.addEventListener("keydown", e => {
-      if (e.key === "Escape" && premiumModal.classList.contains("open")) {
+      if (e.key !== "Escape") return;
+      if (exportModal.classList.contains("open") && !exportBusy) {
+        closeExportModal();
+        return;
+      }
+      if (premiumModal.classList.contains("open")) {
         closePremiumModal();
+      }
+    });
+
+    /* ——— Export reports ——— */
+    const PERIOD_LABELS = {
+      today: "Bugun",
+      week: "Bu hafta",
+      month: "Bu oy",
+      all: "Hammasi"
+    };
+
+    function getPeriodRange(period) {
+      const now = new Date();
+      const end = new Date(now);
+      let start;
+
+      switch (period) {
+        case "today":
+          start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          break;
+        case "week": {
+          start = new Date(now);
+          const day = start.getDay();
+          const diff = day === 0 ? 6 : day - 1;
+          start.setDate(start.getDate() - diff);
+          start.setHours(0, 0, 0, 0);
+          break;
+        }
+        case "month":
+          start = new Date(now.getFullYear(), now.getMonth(), 1);
+          break;
+        default:
+          return { start: null, end: null };
+      }
+      return { start, end };
+    }
+
+    function filterTransactionsByPeriod(period) {
+      if (period === "all") return [...transactions];
+      const { start, end } = getPeriodRange(period);
+      return transactions.filter(t => {
+        const d = new Date(t.date);
+        return d >= start && d <= end;
+      });
+    }
+
+    function calcExportSummary(list) {
+      let income = 0;
+      let expense = 0;
+      list.forEach(t => {
+        if (t.type === "income") income += t.amount;
+        else expense += t.amount;
+      });
+      return { income, expense, net: income - expense };
+    }
+
+    function formatExportDate(iso) {
+      return new Date(iso).toLocaleDateString("uz-UZ", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatFileDate() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function exportFilename(ext) {
+      return `BiznesHisob_hisobot_${formatFileDate()}.${ext}`;
+    }
+
+    function showExportToast(message, isError = false) {
+      if (exportToastTimer) clearTimeout(exportToastTimer);
+      exportToast.textContent = message;
+      exportToast.classList.toggle("error", isError);
+      exportToast.classList.remove("hidden");
+      requestAnimationFrame(() => exportToast.classList.add("visible"));
+      exportToastTimer = setTimeout(() => {
+        exportToast.classList.remove("visible");
+        setTimeout(() => exportToast.classList.add("hidden"), 400);
+      }, 3200);
+    }
+
+    function setExportLoading(loading) {
+      exportBusy = loading;
+      exportLoading.classList.toggle("hidden", !loading);
+      exportSubmitBtn.disabled = loading;
+      exportModalClose.disabled = loading;
+      exportOpenBtn.disabled = loading;
+      exportPeriodGroup.querySelectorAll("button").forEach(b => { b.disabled = loading; });
+      exportFormatGroup.querySelectorAll("button").forEach(b => { b.disabled = loading; });
+    }
+
+    function openExportModal() {
+      if (!currentUser) return;
+      exportModal.classList.add("open");
+      updateBodyScrollLock();
+      refreshIcons();
+    }
+
+    function closeExportModal() {
+      if (exportBusy) return;
+      exportModal.classList.remove("open");
+      updateBodyScrollLock();
+    }
+
+    function bindExportOptionGroup(group, key, onSelect) {
+      group.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (exportBusy) return;
+          group.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          onSelect(btn.dataset[key]);
+        });
+      });
+    }
+
+    bindExportOptionGroup(exportPeriodGroup, "period", v => { exportPeriod = v; });
+    bindExportOptionGroup(exportFormatGroup, "format", v => { exportFormat = v; });
+
+    exportOpenBtn.addEventListener("click", openExportModal);
+    exportModalClose.addEventListener("click", closeExportModal);
+    exportModal.addEventListener("click", e => {
+      if (e.target === exportModal && !exportBusy) closeExportModal();
+    });
+
+    function generatePdfExport(list, periodLabel) {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        throw new Error("PDF kutubxonasi yuklanmadi");
+      }
+      const { jsPDF } = window.jspdf;
+      const summary = calcExportSummary(list);
+      const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const exportDate = new Date().toLocaleDateString("uz-UZ", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+
+      doc.setFontSize(20);
+      doc.setTextColor(124, 58, 237);
+      doc.text("BiznesHisob", 14, 18);
+
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 110);
+      doc.text(`Eksport sanasi: ${exportDate}`, 14, 26);
+      doc.text(`Davr: ${periodLabel}`, 14, 32);
+      doc.text(`Operatsiyalar: ${list.length} ta`, 14, 38);
+
+      doc.setFontSize(11);
+      doc.setTextColor(40, 40, 50);
+      const summaryY = 48;
+      doc.text(`Daromad: ${formatUZS(summary.income)}`, 14, summaryY);
+      doc.text(`Xarajat: ${formatUZS(summary.expense)}`, 14, summaryY + 7);
+      doc.setFont(undefined, "bold");
+      doc.text(`Sof foyda: ${formatUZS(summary.net)}`, 14, summaryY + 14);
+      doc.setFont(undefined, "normal");
+
+      const tableBody = list.length
+        ? list.map(t => [
+            formatExportDate(t.date),
+            t.description,
+            t.type === "income" ? "Daromad" : "Xarajat",
+            (t.type === "income" ? "+" : "−") + formatUZS(t.amount)
+          ])
+        : [["—", "Operatsiyalar yo'q", "—", "—"]];
+
+      doc.autoTable({
+        startY: summaryY + 22,
+        head: [["Sana", "Tavsif", "Tur", "Summa"]],
+        body: tableBody,
+        theme: "grid",
+        headStyles: {
+          fillColor: [124, 58, 237],
+          textColor: 255,
+          fontStyle: "bold"
+        },
+        styles: { fontSize: 9, cellPadding: 3 },
+        alternateRowStyles: { fillColor: [245, 243, 255] },
+        margin: { left: 14, right: 14 }
+      });
+
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 150);
+        doc.text(
+          "BiznesHisob © 2026",
+          doc.internal.pageSize.getWidth() / 2,
+          doc.internal.pageSize.getHeight() - 8,
+          { align: "center" }
+        );
+      }
+
+      doc.save(exportFilename("pdf"));
+    }
+
+    function generateExcelExport(list) {
+      if (typeof XLSX === "undefined") {
+        throw new Error("Excel kutubxonasi yuklanmadi");
+      }
+      const summary = calcExportSummary(list);
+      const rows = [
+        ["BiznesHisob — Hisobot"],
+        ["Eksport sanasi", new Date().toLocaleDateString("uz-UZ")],
+        ["Davr", PERIOD_LABELS[exportPeriod] || exportPeriod],
+        [],
+        ["Sana", "Tavsif", "Tur", "Summa"]
+      ];
+
+      list.forEach(t => {
+        rows.push([
+          formatExportDate(t.date),
+          t.description,
+          t.type === "income" ? "Daromad" : "Xarajat",
+          t.amount
+        ]);
+      });
+
+      rows.push([]);
+      rows.push(["Daromad", summary.income]);
+      rows.push(["Xarajat", summary.expense]);
+      rows.push(["Sof foyda", summary.net]);
+
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      ws["!cols"] = [{ wch: 18 }, { wch: 28 }, { wch: 12 }, { wch: 16 }];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Hisobot");
+      XLSX.writeFile(wb, exportFilename("xlsx"));
+    }
+
+    exportSubmitBtn.addEventListener("click", async () => {
+      if (exportBusy || !currentUser) return;
+
+      const list = filterTransactionsByPeriod(exportPeriod);
+      const periodLabel = PERIOD_LABELS[exportPeriod] || exportPeriod;
+
+      setExportLoading(true);
+      try {
+        await new Promise(r => setTimeout(r, 80));
+        if (exportFormat === "excel") {
+          generateExcelExport(list);
+        } else {
+          generatePdfExport(list, periodLabel);
+        }
+        closeExportModal();
+        showExportToast("Fayl yuklab olindi ✅");
+      } catch (err) {
+        console.error("Export:", err);
+        showExportToast(
+          err.message || "Eksportda xatolik. Internetni tekshiring va qayta urinib ko'ring.",
+          true
+        );
+      } finally {
+        setExportLoading(false);
       }
     });
 
@@ -3485,6 +3994,9 @@
       }
 
       updatePremiumUI();
+      if (exportOpenBtn) {
+        exportOpenBtn.disabled = !hasItems;
+      }
       refreshIcons();
     }
 
@@ -3528,6 +4040,7 @@
         appUnlocked = false;
         hidePinScreen();
         closePremiumModal();
+        closeExportModal();
         showView("auth");
       }
     });
