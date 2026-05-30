@@ -2361,15 +2361,14 @@
       getFirestore,
       enableIndexedDbPersistence,
       collection,
+      addDoc,
       deleteDoc,
       doc,
       getDoc,
       setDoc,
       onSnapshot,
       query,
-      orderBy,
-      limit,
-      runTransaction
+      orderBy
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -2492,6 +2491,10 @@
         "export.error": "Eksportda xatolik. Internetni tekshiring va qayta urinib ko'ring.",
         "export.noTx": "Operatsiyalar yo'q",
         "alert.saveError": "Operatsiyani saqlashda xatolik yuz berdi.",
+        "alert.notAuth": "Iltimos qayta login qiling",
+        "alert.network": "Internet aloqasi yo'q",
+        "alert.firestoreDetail": "Firestore xatoligi: {{msg}}",
+        "alert.permission": "Ruxsat rad etildi: {{msg}}",
         "alert.deleteError": "Oʻchirishda xatolik yuz berdi.",
         "alert.loadError": "Maʼlumotlarni yuklashda xatolik. Firestore qoidalarini tekshiring.",
         "pin.lockout": "{{n}} soniyadan keyin qayta urinib ko'ring",
@@ -2612,6 +2615,10 @@
         "export.error": "Ошибка экспорта. Проверьте интернет и повторите.",
         "export.noTx": "Нет операций",
         "alert.saveError": "Ошибка сохранения операции.",
+        "alert.notAuth": "Пожалуйста, войдите снова",
+        "alert.network": "Нет подключения к интернету",
+        "alert.firestoreDetail": "Ошибка Firestore: {{msg}}",
+        "alert.permission": "Доступ запрещён: {{msg}}",
         "alert.deleteError": "Ошибка удаления.",
         "alert.loadError": "Ошибка загрузки данных. Проверьте правила Firestore.",
         "pin.lockout": "Повторите через {{n}} сек.",
@@ -2732,6 +2739,10 @@
         "export.error": "Export failed. Check internet and try again.",
         "export.noTx": "No transactions",
         "alert.saveError": "Failed to save transaction.",
+        "alert.notAuth": "Please sign in again",
+        "alert.network": "No internet connection",
+        "alert.firestoreDetail": "Firestore error: {{msg}}",
+        "alert.permission": "Permission denied: {{msg}}",
         "alert.deleteError": "Failed to delete.",
         "alert.loadError": "Failed to load data. Check Firestore rules.",
         "pin.lockout": "Try again in {{n}} seconds",
@@ -4392,9 +4403,85 @@
       btn.addEventListener("click", () => setType(btn.dataset.type));
     });
 
+    function logSaveError(err, context = {}) {
+      console.error("[BiznesHisob] Transaction save failed:", {
+        code: err?.code,
+        message: err?.message,
+        name: err?.name,
+        authUid: auth.currentUser?.uid ?? null,
+        currentUserUid: currentUser?.uid ?? null,
+        online: navigator.onLine,
+        ...context
+      }, err);
+    }
+
+    function getSaveErrorMessage(err) {
+      if (err?.code === "tx-limit") return null;
+
+      if (!auth.currentUser || !currentUser) {
+        return t("alert.notAuth");
+      }
+
+      const code = err?.code || "";
+      const message = err?.message || String(err);
+
+      if (code === "auth/not-authenticated" || code === "unauthenticated") {
+        return t("alert.notAuth");
+      }
+
+      if (
+        !navigator.onLine ||
+        code === "unavailable" ||
+        code === "network-request-failed"
+      ) {
+        return t("alert.network");
+      }
+
+      if (code === "permission-denied") {
+        return t("alert.permission", { msg: message });
+      }
+
+      if (message && message !== "[object Object]") {
+        return t("alert.firestoreDetail", { msg: message });
+      }
+
+      return t("alert.saveError");
+    }
+
+    async function saveTransaction(txData) {
+      const user = auth.currentUser;
+      if (!user) {
+        const err = new Error("User not authenticated");
+        err.code = "auth/not-authenticated";
+        throw err;
+      }
+      if (!currentUser || user.uid !== currentUser.uid) {
+        const err = new Error("Auth session mismatch");
+        err.code = "auth/not-authenticated";
+        throw err;
+      }
+
+      if (!isPremiumUser() && !isGrandfatheredOverTxLimit() && transactions.length >= FREE_TX_LIMIT) {
+        const err = new Error("Transaction limit reached");
+        err.code = "tx-limit";
+        throw err;
+      }
+
+      console.log("[BiznesHisob] Saving transaction:", { uid: user.uid, ...txData });
+      const docRef = await addDoc(transactionsRef(user.uid), txData);
+      console.log("[BiznesHisob] Transaction saved:", docRef.id);
+      return docRef;
+    }
+
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      if (!currentUser || busy || !appUnlocked) return;
+
+      if (!auth.currentUser || !currentUser) {
+        alert(t("alert.notAuth"));
+        return;
+      }
+
+      if (busy || !appUnlocked) return;
 
       const description = descriptionInput.value.trim();
       const amount = parseAmountDigits(amountInput.value);
@@ -4412,29 +4499,18 @@
           description,
           amount,
           date: new Date().toISOString(),
-          userId: currentUser.uid
+          userId: auth.currentUser.uid
         };
-        const newRef = doc(transactionsRef(currentUser.uid));
-        await runTransaction(db, async (transaction) => {
-          if (!isPremiumUser()) {
-            const limitQuery = query(transactionsRef(currentUser.uid), limit(FREE_TX_LIMIT + 1));
-            const snap = await transaction.get(limitQuery);
-            const count = snap.size;
-            if (!isGrandfatheredOverTxLimit(count) && count >= FREE_TX_LIMIT) {
-              throw Object.assign(new Error("Transaction limit reached"), { code: "tx-limit" });
-            }
-          }
-          transaction.set(newRef, txData);
-        });
+        await saveTransaction(txData);
         form.reset();
         amountHint.textContent = "";
         switchTab("list");
       } catch (err) {
-        console.error(err);
+        logSaveError(err, { type: currentType, amount, description });
         if (err.code === "tx-limit") {
           showPremiumModal({ reason: "limit" });
         } else {
-          alert(t("alert.saveError"));
+          alert(getSaveErrorMessage(err));
         }
       } finally {
         setBusy(false);
