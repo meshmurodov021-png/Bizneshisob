@@ -1,4 +1,3 @@
 {
-    "git.ignoreLimitWarning": true,
-    "livePreview.defaultPreviewPath": "/index.html"
+    "git.ignoreLimitWarning": true
 }
