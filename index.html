@@ -2207,7 +2207,7 @@
         </div>
         <div class="info-row hidden" id="txLimitRow">
           <i data-lucide="package"></i>
-          <span>Bepul limit: <strong id="txLimitText">0/50</strong></span>
+          <span>Bepul limit: <strong id="txLimitText">0/100</strong></span>
         </div>
         <div class="info-row sync-status online" id="syncStatusRow">
           <i data-lucide="cloud"></i>
@@ -2239,10 +2239,10 @@
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
     <div class="premium-modal">
       <button type="button" class="modal-close" id="premiumModalClose" aria-label="Yopish">×</button>
-      <div class="premium-limit-alert hidden" id="premiumLimitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
+      <div class="premium-limit-alert hidden" id="premiumLimitAlert">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking">To'lov tekshirilmoqda...</div>
       <h2 id="premiumModalTitle" class="premium-modal-title"><i data-lucide="crown"></i> Premium ga o'ting</h2>
-      <p class="premium-sub">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
+      <p class="premium-sub">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
       <p class="premium-price">29 900 so'm / oy</p>
       <ul class="premium-features">
         <li><span class="feat-check"><i data-lucide="check"></i></span> Cheksiz operatsiyalar</li>
@@ -2306,14 +2306,15 @@
       getFirestore,
       enableIndexedDbPersistence,
       collection,
-      addDoc,
       deleteDoc,
       doc,
       getDoc,
       setDoc,
       onSnapshot,
       query,
-      orderBy
+      orderBy,
+      limit,
+      runTransaction
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -2336,7 +2337,12 @@
       }
     });
 
-    const FREE_TX_LIMIT = 50;
+    const FREE_TX_LIMIT = 100;
+
+    /** Users who already exceed the cap keep adding (not blocked by the new limit). */
+    function isGrandfatheredOverTxLimit(count = transactions.length) {
+      return count > FREE_TX_LIMIT;
+    }
     const PAYME_URL = "https://payme.uz/checkout/bizneshisob";
     const CLICK_URL = "https://my.click.uz/services/bizneshisob";
 
@@ -2559,13 +2565,51 @@
       });
     }
 
+    function pinLockoutKey(uid) {
+      return `bzh_lockout_${uid}`;
+    }
+
+    function pinAttemptsKey(uid) {
+      return `bzh_attempts_${uid}`;
+    }
+
+    function savePinSecurityState(uid) {
+      if (!uid) return;
+      if (lockoutUntil > Date.now()) {
+        sessionStorage.setItem(pinLockoutKey(uid), String(lockoutUntil));
+      } else {
+        sessionStorage.removeItem(pinLockoutKey(uid));
+      }
+      sessionStorage.setItem(pinAttemptsKey(uid), String(pinAttempts));
+    }
+
+    function loadPinSecurityState(uid) {
+      const storedLockout = sessionStorage.getItem(pinLockoutKey(uid));
+      lockoutUntil = storedLockout ? parseInt(storedLockout, 10) : 0;
+      if (lockoutUntil <= Date.now()) lockoutUntil = 0;
+
+      const storedAttempts = sessionStorage.getItem(pinAttemptsKey(uid));
+      pinAttempts = storedAttempts ? parseInt(storedAttempts, 10) : 0;
+    }
+
+    function clearPinSecurityState(uid) {
+      if (!uid) return;
+      sessionStorage.removeItem(pinLockoutKey(uid));
+      sessionStorage.removeItem(pinAttemptsKey(uid));
+    }
+
     function isLockoutActive() {
       return Date.now() < lockoutUntil;
     }
 
-    function startLockout() {
-      lockoutUntil = Date.now() + LOCKOUT_SEC * 1000;
-      pinAttempts = 0;
+    function startLockout(resuming = false) {
+      if (!resuming) {
+        lockoutUntil = Date.now() + LOCKOUT_SEC * 1000;
+        pinAttempts = 0;
+      }
+      if (currentUser) savePinSecurityState(currentUser.uid);
+
+      if (lockoutTimer) clearInterval(lockoutTimer);
       setKeypadEnabled(false);
       pinBioBtn.disabled = true;
       const tick = () => {
@@ -2574,6 +2618,8 @@
           clearInterval(lockoutTimer);
           lockoutTimer = null;
           lockoutUntil = 0;
+          pinAttempts = 0;
+          if (currentUser) clearPinSecurityState(currentUser.uid);
           setPinMsg("");
           setKeypadEnabled(true);
           pinBioBtn.disabled = false;
@@ -2866,6 +2912,8 @@
       appUnlocked = true;
       hidePinScreen();
       pinAttempts = 0;
+      lockoutUntil = 0;
+      if (currentUser) clearPinSecurityState(currentUser.uid);
       updateProfileSecurityUI();
     }
 
@@ -2973,6 +3021,7 @@
       if (pinMode === "unlock") {
         if (!(await verifyPinInput(pinBuffer))) {
           pinAttempts++;
+          if (currentUser) savePinSecurityState(currentUser.uid);
           resetPinBuffer();
           if (pinAttempts >= MAX_PIN_ATTEMPTS) {
             startLockout();
@@ -3157,9 +3206,16 @@
 
     function initPinSecurity(uid) {
       appUnlocked = false;
-      pinAttempts = 0;
       if (!hasPinForUser(uid)) {
+        pinAttempts = 0;
+        clearPinSecurityState(uid);
         showPinScreen("setup");
+        return;
+      }
+      loadPinSecurityState(uid);
+      if (isLockoutActive()) {
+        showPinScreen("unlock");
+        startLockout(true);
         return;
       }
       lockApp();
@@ -3250,7 +3306,9 @@
     }
 
     function canAddTransaction() {
-      return isPremiumUser() || transactions.length < FREE_TX_LIMIT;
+      if (isPremiumUser()) return true;
+      if (isGrandfatheredOverTxLimit()) return true;
+      return transactions.length < FREE_TX_LIMIT;
     }
 
     async function ensureUserDocument(user) {
@@ -3492,8 +3550,12 @@
       refreshIcons();
     }
 
-    function closeExportModal() {
-      if (exportBusy) return;
+    function closeExportModal(force = false) {
+      if (exportBusy && !force) return;
+      if (force) {
+        exportBusy = false;
+        setExportLoading(false);
+      }
       exportModal.classList.remove("open");
       updateBodyScrollLock();
     }
@@ -3895,7 +3957,7 @@
 
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      if (!currentUser || busy) return;
+      if (!currentUser || busy || !appUnlocked) return;
 
       const description = descriptionInput.value.trim();
       const amount = parseAmountDigits(amountInput.value);
@@ -3908,26 +3970,42 @@
 
       setBusy(true);
       try {
-        await addDoc(transactionsRef(currentUser.uid), {
+        const txData = {
           type: currentType,
           description,
           amount,
           date: new Date().toISOString(),
           userId: currentUser.uid
+        };
+        const newRef = doc(transactionsRef(currentUser.uid));
+        await runTransaction(db, async (transaction) => {
+          if (!isPremiumUser()) {
+            const limitQuery = query(transactionsRef(currentUser.uid), limit(FREE_TX_LIMIT + 1));
+            const snap = await transaction.get(limitQuery);
+            const count = snap.size;
+            if (!isGrandfatheredOverTxLimit(count) && count >= FREE_TX_LIMIT) {
+              throw Object.assign(new Error("Transaction limit reached"), { code: "tx-limit" });
+            }
+          }
+          transaction.set(newRef, txData);
         });
         form.reset();
         amountHint.textContent = "";
         switchTab("list");
       } catch (err) {
         console.error(err);
-        alert("Operatsiyani saqlashda xatolik yuz berdi.");
+        if (err.code === "tx-limit") {
+          showPremiumModal({ reason: "limit" });
+        } else {
+          alert("Operatsiyani saqlashda xatolik yuz berdi.");
+        }
       } finally {
         setBusy(false);
       }
     });
 
     async function deleteTransaction(id) {
-      if (!currentUser || busy) return;
+      if (!currentUser || busy || !appUnlocked) return;
       setBusy(true);
       try {
         await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
@@ -3944,8 +4022,9 @@
       let totalExpense = 0;
 
       transactions.forEach(t => {
-        if (t.type === "income") totalIncome += t.amount;
-        else totalExpense += t.amount;
+        const amount = Number(t.amount) || 0;
+        if (t.type === "income") totalIncome += amount;
+        else totalExpense += amount;
       });
 
       const netProfit = totalIncome - totalExpense;
@@ -4040,7 +4119,7 @@
         appUnlocked = false;
         hidePinScreen();
         closePremiumModal();
-        closeExportModal();
+        closeExportModal(true);
         showView("auth");
       }
     });
