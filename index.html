@@ -4535,7 +4535,7 @@
     const loadingScreen = document.getElementById("loadingScreen");
 
     onAuthStateChanged(auth, user => {
-      hideLoadingScreen();
+      console.log("[BiznesHisob] Auth state changed", user ? user.uid : "signed out");
       if (handleAuthState) void handleAuthState(user);
       else {
         pendingAuthUser = user;
@@ -7646,6 +7646,63 @@
     let onboardingSlide = 0;
     const ONBOARDING_SLIDE_COUNT = 3;
     let onboardingTouchStartX = 0;
+    let authFallbackTimer = null;
+
+    function isNoMainViewVisible() {
+      return authScreen.classList.contains("hidden") &&
+        appScreen.classList.contains("hidden") &&
+        (onboardingScreen?.classList.contains("hidden") ?? true);
+    }
+
+    function clearAuthFallbackTimer() {
+      if (authFallbackTimer) {
+        clearTimeout(authFallbackTimer);
+        authFallbackTimer = null;
+      }
+    }
+
+    function scheduleAuthFallback() {
+      clearAuthFallbackTimer();
+      authFallbackTimer = setTimeout(() => {
+        authFallbackTimer = null;
+        if (!currentUser) return;
+        if (!isNoMainViewVisible()) return;
+        console.warn("[BiznesHisob] Auth fallback — forcing home screen");
+        hideLoadingScreen();
+        navigateAfterAuth(currentUser);
+      }, 2000);
+    }
+
+    function showBriefAuthLoading(maxMs = 800) {
+      if (!loadingScreen) return Promise.resolve();
+      loadingScreenDismissed = false;
+      loadingScreen.style.display = "flex";
+      loadingScreen.classList.remove("hidden");
+      loadingScreen.style.opacity = "1";
+      loadingScreen.style.pointerEvents = "auto";
+      document.body.style.overflow = "hidden";
+      return new Promise(resolve => setTimeout(resolve, Math.min(maxMs, 1000)));
+    }
+
+    function navigateAfterAuth(user) {
+      console.log("[BiznesHisob] Showing main app");
+      clearAuthFallbackTimer();
+      hideLoadingScreen();
+      postOnboardingView = "app";
+
+      if (!isOnboarded()) {
+        console.log("[BiznesHisob] Not onboarded — showing onboarding");
+        showView("onboarding");
+        updateOnboardingSlide(0);
+        refreshIcons();
+        return;
+      }
+
+      console.log("[BiznesHisob] Onboarded — showing home screen");
+      showView("app");
+      refreshIcons();
+      if (user) initPinSecurity(user.uid);
+    }
 
     function isOnboarded() {
       return localStorage.getItem(ONBOARDING_KEY) === "true";
@@ -8278,9 +8335,13 @@
         if (authMode === "register") {
           const fullName = authFullName.value.trim();
           const cred = await createUserWithEmailAndPassword(auth, email, password);
+          console.log("[BiznesHisob] Registration successful");
+          authScreen.classList.add("hidden");
+          await showBriefAuthLoading(800);
           if (fullName) {
             await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
           }
+          scheduleAuthFallback();
         } else {
           await signInWithEmailAndPassword(auth, email, password);
         }
@@ -8869,6 +8930,8 @@
     }
 
     handleAuthState = async user => {
+      scheduleAuthFallback();
+
       if (unsubscribeTransactions) {
         unsubscribeTransactions();
         unsubscribeTransactions = null;
@@ -8912,12 +8975,9 @@
         renderProfileUI();
         updateSettingsUI();
         refreshIcons();
-        postOnboardingView = "app";
-        if (!showOnboardingIfNeeded()) {
-          showView("app");
-          initPinSecurity(user.uid);
-        }
+        navigateAfterAuth(user);
       } else {
+        clearAuthFallbackTimer();
         closeSettings();
         closeAllProfileModals();
         closeCurrencyDropdown();
@@ -8939,6 +8999,7 @@
         closePremiumModal();
         closeExportModal(true);
         postOnboardingView = "auth";
+        hideLoadingScreen();
         if (!showOnboardingIfNeeded()) {
           showView("auth");
         }
