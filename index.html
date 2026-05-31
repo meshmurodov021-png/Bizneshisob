@@ -403,10 +403,14 @@
       stroke: var(--income);
     }
 
+    .header-currency-wrap {
+      position: relative;
+    }
+
     .header-currency-btn {
       display: inline-flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 0.3rem;
       font-size: 0.7rem;
       font-weight: 700;
       font-family: inherit;
@@ -419,10 +423,96 @@
       transition: transform 0.2s var(--ease), background 0.2s, box-shadow 0.2s;
     }
 
-    .header-currency-btn:active {
-      transform: scale(0.94);
+    .header-currency-btn.open {
       background: rgba(124, 58, 237, 0.22);
       box-shadow: 0 0 14px rgba(124, 58, 237, 0.35);
+    }
+
+    .header-currency-btn [data-lucide] {
+      width: 12px;
+      height: 12px;
+      stroke: #c4b5fd;
+      transition: transform 0.25s var(--ease);
+    }
+
+    .header-currency-btn.open [data-lucide] {
+      transform: rotate(180deg);
+    }
+
+    .header-currency-btn:active {
+      transform: scale(0.94);
+    }
+
+    .currency-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 168px;
+      background: rgba(18, 18, 28, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 14px;
+      padding: 0.35rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 24px rgba(124, 58, 237, 0.12);
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+
+    .currency-dropdown.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .currency-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-align: left;
+    }
+
+    .currency-dropdown-item:active {
+      transform: scale(0.98);
+    }
+
+    .currency-dropdown-item.active {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.4), rgba(99, 102, 241, 0.28));
+      color: #ede9fe;
+      box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.35);
+    }
+
+    .currency-dropdown-symbol {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      flex-shrink: 0;
+    }
+
+    .currency-dropdown-item.active .currency-dropdown-symbol {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     .card-value.currency-animate,
@@ -436,37 +526,155 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .currency-pills {
-      display: flex;
-      gap: 0.5rem;
-      padding: 0.85rem 1rem;
+    .currency-list {
+      padding: 0.25rem 0;
     }
 
-    .currency-pill {
+    .currency-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .currency-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .currency-list-item.base {
+      background: rgba(124, 58, 237, 0.06);
+    }
+
+    .currency-list-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.88rem;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      flex-shrink: 0;
+    }
+
+    .currency-list-body {
       flex: 1;
-      min-height: 40px;
-      padding: 0.5rem 0.35rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text);
-      font-size: 0.78rem;
+      min-width: 0;
+    }
+
+    .currency-list-name {
       font-weight: 700;
+      font-size: 0.86rem;
+      line-height: 1.3;
+    }
+
+    .currency-list-rate {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.12rem;
+    }
+
+    .currency-list-actions {
+      display: flex;
+      gap: 0.2rem;
+      flex-shrink: 0;
+    }
+
+    .currency-action-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .currency-action-btn [data-lucide] {
+      width: 15px;
+      height: 15px;
+    }
+
+    .currency-action-btn:active {
+      transform: scale(0.92);
+      background: rgba(124, 58, 237, 0.22);
+      color: #c4b5fd;
+    }
+
+    .currency-action-btn.delete:active {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+    }
+
+    .currency-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      width: calc(100% - 2rem);
+      margin: 0.5rem 1rem 0.85rem;
+      padding: 0.72rem;
+      border: 1px dashed rgba(124, 58, 237, 0.45);
+      border-radius: 12px;
+      background: rgba(124, 58, 237, 0.08);
+      color: #c4b5fd;
+      font-weight: 700;
+      font-size: 0.84rem;
       font-family: inherit;
       cursor: pointer;
-      transition: transform 0.2s var(--ease), background 0.25s, border-color 0.25s, box-shadow 0.25s;
-      white-space: nowrap;
+      transition: transform 0.2s var(--ease), background 0.25s;
     }
 
-    .currency-pill:active {
-      transform: scale(0.96);
+    .currency-add-btn:active {
+      transform: scale(0.98);
+      background: rgba(124, 58, 237, 0.18);
     }
 
-    .currency-pill.active {
-      background: linear-gradient(135deg, #7C3AED, #6366f1);
-      border-color: transparent;
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+    .currency-form-group {
+      margin-bottom: 1rem;
+    }
+
+    .currency-form-group label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.45rem;
+    }
+
+    .currency-form-group input {
+      width: 100%;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .currency-form-group input:focus {
+      outline: none;
+      border-color: rgba(124, 58, 237, 0.55);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+    }
+
+    .currency-modal-error {
+      font-size: 0.78rem;
+      color: var(--expense);
+      margin-bottom: 0.75rem;
+      min-height: 1.1em;
     }
 
     .header-icon-btn {
@@ -3125,9 +3333,13 @@
       </div>
       <div class="app-header-actions">
         <span class="header-badge"><i data-lucide="cloud"></i> <span data-i18n="header.cloud">Bulut</span></span>
-        <button type="button" class="header-currency-btn" id="headerCurrencyBtn" data-i18n-aria="currency.switchAria">
-          <span id="headerCurrencyLabel">🇺🇿 UZS</span>
-        </button>
+        <div class="header-currency-wrap" id="headerCurrencyWrap">
+          <button type="button" class="header-currency-btn" id="headerCurrencyBtn" data-i18n-aria="currency.switchAria">
+            <span id="headerCurrencyLabel">🇺🇿 UZS</span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="currency-dropdown" id="currencyDropdown" role="menu"></div>
+        </div>
         <button type="button" class="header-icon-btn" id="settingsOpenBtn" data-i18n-aria="settings.openAria">
           <i data-lucide="settings"></i>
         </button>
@@ -3309,13 +3521,10 @@
         </section>
 
         <section class="settings-section">
-          <p class="settings-section-label" data-i18n="settings.currency">Valyuta</p>
+          <p class="settings-section-label" data-i18n="settings.currencies">💱 Valyutalar</p>
           <div class="settings-card">
-            <div class="currency-pills" id="settingsCurrencyPills">
-              <button type="button" class="currency-pill active" data-currency="UZS">🇺🇿 UZS</button>
-              <button type="button" class="currency-pill" data-currency="USD">🇺🇸 USD</button>
-              <button type="button" class="currency-pill" data-currency="RUB">🇷🇺 RUB</button>
-            </div>
+            <div class="currency-list" id="currencyList"></div>
+            <button type="button" class="currency-add-btn" id="currencyAddBtn" data-i18n="currency.add">➕ Valyuta qo'shish</button>
           </div>
         </section>
 
@@ -3457,6 +3666,30 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="currencyModal" role="dialog" aria-modal="true" aria-labelledby="currencyModalTitle">
+    <div class="profile-sheet profile-edit-sheet">
+      <button type="button" class="modal-close" id="currencyModalClose" data-i18n-aria="export.closeAria">×</button>
+      <h3 id="currencyModalTitle" data-i18n="currency.addTitle">Valyuta qo'shish</h3>
+      <p class="currency-modal-error" id="currencyModalError" aria-live="polite"></p>
+      <div class="currency-form-group">
+        <label for="currencyNameInput" data-i18n="currency.name">Valyuta nomi</label>
+        <input type="text" id="currencyNameInput" maxlength="40" data-i18n-placeholder="currency.namePh" placeholder="Masalan: Dollar" autocomplete="off">
+      </div>
+      <div class="currency-form-group">
+        <label for="currencySymbolInput" data-i18n="currency.symbol">Belgi</label>
+        <input type="text" id="currencySymbolInput" maxlength="8" data-i18n-placeholder="currency.symbolPh" placeholder="Masalan: $" autocomplete="off">
+      </div>
+      <div class="currency-form-group">
+        <label for="currencyRateInput" data-i18n="currency.rate">UZS ga nisbatan kurs</label>
+        <input type="text" id="currencyRateInput" inputmode="numeric" data-i18n-placeholder="currency.ratePh" placeholder="Masalan: 12800" autocomplete="off">
+      </div>
+      <div class="profile-sheet-actions">
+        <button type="button" class="profile-sheet-btn secondary" id="currencyModalCancel" data-i18n="profile.cancelEdit">Bekor qilish</button>
+        <button type="button" class="profile-sheet-btn primary" id="currencyModalSave" data-i18n="profile.save">Saqlash</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="logoutModal" role="dialog" aria-modal="true">
     <div class="profile-sheet">
       <h3 data-i18n="profile.logoutConfirmShort">Chiqmoqchimisiz?</h3>
@@ -3493,6 +3726,7 @@
       getDocsFromServer,
       getDocFromServer,
       setDoc,
+      updateDoc,
       onSnapshot,
       query,
       orderBy
@@ -3649,11 +3883,23 @@
         "settings.section.security": "Xavfsizlik",
         "settings.section.app": "Ilova",
         "settings.section.account": "Hisob",
-        "settings.currency": "💱 Valyuta",
-        "currency.switchAria": "Valyutani almashtirish",
-        "currency.uzs": "UZS",
-        "currency.usd": "USD",
-        "currency.rub": "RUB",
+        "settings.currencies": "💱 Valyutalar",
+        "currency.switchAria": "Valyutani tanlash",
+        "currency.add": "➕ Valyuta qo'shish",
+        "currency.addTitle": "Valyuta qo'shish",
+        "currency.editTitle": "Kursni tahrirlash",
+        "currency.name": "Valyuta nomi",
+        "currency.symbol": "Belgi",
+        "currency.rate": "UZS ga nisbatan kurs",
+        "currency.namePh": "Masalan: Dollar",
+        "currency.symbolPh": "Masalan: $",
+        "currency.ratePh": "Masalan: 12800",
+        "currency.baseTag": "asosiy",
+        "currency.rateLine": "1{{symbol}} = {{rate}} so'm",
+        "currency.deleteConfirm": "Bu valyutani o'chirishni xohlaysizmi?",
+        "currency.required": "Barcha maydonlarni to'ldiring",
+        "currency.invalidRate": "Kurs 0 dan katta bo'lishi kerak",
+        "currency.saveError": "Valyutani saqlab bo'lmadi",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -3843,11 +4089,23 @@
         "settings.section.security": "Безопасность",
         "settings.section.app": "Приложение",
         "settings.section.account": "Аккаунт",
-        "settings.currency": "💱 Валюта",
-        "currency.switchAria": "Сменить валюту",
-        "currency.uzs": "UZS",
-        "currency.usd": "USD",
-        "currency.rub": "RUB",
+        "settings.currencies": "💱 Валюты",
+        "currency.switchAria": "Выбрать валюту",
+        "currency.add": "➕ Добавить валюту",
+        "currency.addTitle": "Добавить валюту",
+        "currency.editTitle": "Изменить курс",
+        "currency.name": "Название валюты",
+        "currency.symbol": "Символ",
+        "currency.rate": "Курс к UZS",
+        "currency.namePh": "Например: Dollar",
+        "currency.symbolPh": "Например: $",
+        "currency.ratePh": "Например: 12800",
+        "currency.baseTag": "основная",
+        "currency.rateLine": "1{{symbol}} = {{rate}} so'm",
+        "currency.deleteConfirm": "Удалить эту валюту?",
+        "currency.required": "Заполните все поля",
+        "currency.invalidRate": "Курс должен быть больше 0",
+        "currency.saveError": "Не удалось сохранить валюту",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -4037,11 +4295,23 @@
         "settings.section.security": "Security",
         "settings.section.app": "App",
         "settings.section.account": "Account",
-        "settings.currency": "💱 Currency",
-        "currency.switchAria": "Switch currency",
-        "currency.uzs": "UZS",
-        "currency.usd": "USD",
-        "currency.rub": "RUB",
+        "settings.currencies": "💱 Currencies",
+        "currency.switchAria": "Select currency",
+        "currency.add": "➕ Add currency",
+        "currency.addTitle": "Add currency",
+        "currency.editTitle": "Edit rate",
+        "currency.name": "Currency name",
+        "currency.symbol": "Symbol",
+        "currency.rate": "Rate to UZS",
+        "currency.namePh": "e.g. Dollar",
+        "currency.symbolPh": "e.g. $",
+        "currency.ratePh": "e.g. 12800",
+        "currency.baseTag": "base",
+        "currency.rateLine": "1{{symbol}} = {{rate}} UZS",
+        "currency.deleteConfirm": "Delete this currency?",
+        "currency.required": "Fill in all fields",
+        "currency.invalidRate": "Rate must be greater than 0",
+        "currency.saveError": "Could not save currency",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -4262,23 +4532,28 @@
     const NOTIF_KEY = "bh-notifications";
     const THEME_KEY = "bh-theme";
     const CURRENCY_KEY = "bzh_currency";
+    const BASE_CURRENCY_ID = "UZS";
 
-    const EXCHANGE_RATES = {
-      UZS: 1,
-      USD: 12800,
-      RUB: 140
+    const UZS_CURRENCY = {
+      id: BASE_CURRENCY_ID,
+      name: "UZS",
+      symbol: "so'm",
+      rateToUZS: 1,
+      isBase: true
     };
 
-    const CURRENCIES = ["UZS", "USD", "RUB"];
-
-    const CURRENCY_META = {
-      UZS: { flag: "🇺🇿", decimals: 0 },
-      USD: { flag: "🇺🇸", decimals: 2 },
-      RUB: { flag: "🇷🇺", decimals: 0 }
-    };
-
-    let currentCurrency = localStorage.getItem(CURRENCY_KEY) || "UZS";
-    if (!CURRENCIES.includes(currentCurrency)) currentCurrency = "UZS";
+    let userCurrencies = [];
+    let currentCurrencyId = localStorage.getItem(CURRENCY_KEY) || BASE_CURRENCY_ID;
+    if (["USD", "RUB"].includes(currentCurrencyId)) {
+      currentCurrencyId = BASE_CURRENCY_ID;
+      localStorage.setItem(CURRENCY_KEY, BASE_CURRENCY_ID);
+    }
+    if (currentCurrencyId !== BASE_CURRENCY_ID && !/^[a-zA-Z0-9_-]+$/.test(currentCurrencyId)) {
+      currentCurrencyId = BASE_CURRENCY_ID;
+    }
+    let currencyModalMode = "add";
+    let editingCurrencyId = null;
+    let currencyDropdownOpen = false;
 
     const PRESET_AVATARS = [
       { id: "preset-1", icon: "user", bg: "linear-gradient(135deg,#6366f1,#a855f7)" },
@@ -4303,6 +4578,7 @@
     const tabScrollPos = { home: 0, add: 0, list: 0, profile: 0 };
     let unsubscribeTransactions = null;
     let unsubscribeUser = null;
+    let unsubscribeCurrencies = null;
     let busy = false;
 
     const loadingScreen = document.getElementById("loadingScreen");
@@ -4346,9 +4622,21 @@
     const profileTxStatValue = document.getElementById("profileTxStatValue");
     const settingsLangBtn = document.getElementById("settingsLangBtn");
     const settingsLangValue = document.getElementById("settingsLangValue");
-    const settingsCurrencyPills = document.getElementById("settingsCurrencyPills");
+    const currencyList = document.getElementById("currencyList");
+    const currencyAddBtn = document.getElementById("currencyAddBtn");
+    const headerCurrencyWrap = document.getElementById("headerCurrencyWrap");
     const headerCurrencyBtn = document.getElementById("headerCurrencyBtn");
     const headerCurrencyLabel = document.getElementById("headerCurrencyLabel");
+    const currencyDropdown = document.getElementById("currencyDropdown");
+    const currencyModal = document.getElementById("currencyModal");
+    const currencyModalClose = document.getElementById("currencyModalClose");
+    const currencyModalCancel = document.getElementById("currencyModalCancel");
+    const currencyModalSave = document.getElementById("currencyModalSave");
+    const currencyModalTitle = document.getElementById("currencyModalTitle");
+    const currencyModalError = document.getElementById("currencyModalError");
+    const currencyNameInput = document.getElementById("currencyNameInput");
+    const currencySymbolInput = document.getElementById("currencySymbolInput");
+    const currencyRateInput = document.getElementById("currencyRateInput");
     const settingsThemeToggle = document.getElementById("settingsThemeToggle");
     const settingsNotifToggle = document.getElementById("settingsNotifToggle");
     const profileEditModal = document.getElementById("profileEditModal");
@@ -4424,7 +4712,8 @@
         exportModal.classList.contains("open") ||
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
-        logoutModal?.classList.contains("open")
+        logoutModal?.classList.contains("open") ||
+        currencyModal?.classList.contains("open")
       );
     }
 
@@ -4817,6 +5106,7 @@
       if (!settingsScreen) return;
       settingsScreen.classList.remove("open");
       settingsScreen.setAttribute("aria-hidden", "true");
+      closeCurrencyDropdown();
     }
 
     function applyTheme(theme) {
@@ -5521,9 +5811,12 @@
       applyTheme(settingsThemeToggle.checked ? "dark" : "light");
     });
 
-    [profileEditModal, langModal, logoutModal].forEach(modal => {
+    [profileEditModal, langModal, logoutModal, currencyModal].forEach(modal => {
       modal?.addEventListener("click", e => {
-        if (e.target === modal) closeProfileModal(modal);
+        if (e.target === modal) {
+          if (modal === currencyModal) closeCurrencyModal();
+          else closeProfileModal(modal);
+        }
       });
     });
 
@@ -5638,6 +5931,10 @@
 
     function transactionsRef(uid) {
       return collection(db, "users", uid, "transactions");
+    }
+
+    function currenciesRef(uid) {
+      return collection(db, "users", uid, "currencies");
     }
 
     function transactionsCollectionPath(uid) {
@@ -5800,7 +6097,8 @@
         exportModal.classList.contains("open") ||
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
-        logoutModal?.classList.contains("open");
+        logoutModal?.classList.contains("open") ||
+        currencyModal?.classList.contains("open");
       document.body.style.overflow = locked ? "hidden" : "";
     }
 
@@ -5860,7 +6158,7 @@
     clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
 
     function closeAllProfileModals() {
-      [profileEditModal, langModal, logoutModal].forEach(modal => closeProfileModal(modal));
+      [profileEditModal, langModal, logoutModal, currencyModal].forEach(modal => closeProfileModal(modal));
     }
 
     document.addEventListener("keydown", e => {
@@ -5879,6 +6177,10 @@
       }
       if (langModal?.classList.contains("open")) {
         closeProfileModal(langModal);
+        return;
+      }
+      if (currencyModal?.classList.contains("open")) {
+        closeCurrencyModal();
         return;
       }
       if (settingsScreen?.classList.contains("open")) {
@@ -6110,7 +6412,7 @@
       doc.text(`Eksport sanasi: ${exportDate}`, 14, 26);
       doc.text(`Davr: ${periodLabel}`, 14, 32);
       doc.text(`Operatsiyalar: ${list.length} ta`, 14, 38);
-      doc.text(`Valyuta: ${currentCurrency}`, 14, 44);
+      doc.text(`Valyuta: ${getActiveCurrency().name}`, 14, 44);
 
       doc.setFontSize(11);
       doc.setTextColor(40, 40, 50);
@@ -6170,7 +6472,7 @@
         ["BiznesHisob — Hisobot"],
         ["Eksport sanasi", new Date().toLocaleDateString("uz-UZ")],
         ["Davr", getPeriodLabel(exportPeriod)],
-        ["Valyuta", currentCurrency],
+        ["Valyuta", getActiveCurrency().name],
         [],
         ["Sana", "Tavsif", "Tur", "Summa"]
       ];
@@ -6299,15 +6601,36 @@
       return i18n[currentLang]?.[key] ? t(key) : t("auth.err.default");
     }
 
-    function convertFromUzs(amountUzs, currency = currentCurrency) {
-      const rate = EXCHANGE_RATES[currency];
-      if (!rate || currency === "UZS") return Number(amountUzs) || 0;
+    function convertFromUzs(amountUzs, currencyId = currentCurrencyId) {
+      const currency = getCurrencyById(currencyId) || UZS_CURRENCY;
+      if (currency.id === BASE_CURRENCY_ID) return Number(amountUzs) || 0;
+      const rate = Number(currency.rateToUZS) || 1;
       return (Number(amountUzs) || 0) / rate;
+    }
+
+    function getCurrencyDecimals(currency) {
+      if (currency.id === BASE_CURRENCY_ID) return 0;
+      const rate = Number(currency.rateToUZS) || 1;
+      return rate >= 1000 ? 2 : 0;
+    }
+
+    function formatWithSymbol(value, symbol, decimals) {
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const sym = String(symbol).trim();
+      const formatted = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      }).format(decimals === 0 ? Math.round(value) : value);
+      const prefixSymbols = ["$", "€", "£", "¥", "₩"];
+      if (prefixSymbols.includes(sym) || (sym.length === 1 && !/[\u0400-\u04FF\u0600-\u06FF]/.test(sym))) {
+        return sym + formatted;
+      }
+      return formatted + " " + sym;
     }
 
     function formatConvertedValue(value, currency, short = false) {
       const locale = DATE_LOCALES[currentLang] || "uz-UZ";
-      if (currency === "UZS") {
+      if (currency.id === BASE_CURRENCY_ID) {
         const rounded = Math.round(value);
         if (short) {
           if (rounded >= 1e9) return (rounded / 1e9).toFixed(1) + " mlrd";
@@ -6316,22 +6639,14 @@
         }
         return new Intl.NumberFormat(locale).format(rounded) + t("currency.suffix");
       }
-      if (currency === "USD") {
-        return "$" + new Intl.NumberFormat("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(value);
-      }
-      if (currency === "RUB") {
-        return new Intl.NumberFormat(locale).format(Math.round(value)) + " ₽";
-      }
-      return String(value);
+      return formatWithSymbol(value, currency.symbol, getCurrencyDecimals(currency));
     }
 
     function formatMoney(amountUzs, options = {}) {
-      const currency = options.currency ?? currentCurrency;
+      const currencyId = options.currencyId ?? currentCurrencyId;
+      const currency = getCurrencyById(currencyId) || UZS_CURRENCY;
       const short = options.short ?? false;
-      const converted = convertFromUzs(amountUzs, currency);
+      const converted = convertFromUzs(amountUzs, currency.id);
       return formatConvertedValue(converted, currency, short);
     }
 
@@ -6343,28 +6658,136 @@
       return formatMoney(amount, { short: true });
     }
 
-    function getCurrencyHeaderLabel(currency = currentCurrency) {
-      const meta = CURRENCY_META[currency];
-      const codeKey = `currency.${currency.toLowerCase()}`;
-      const code = i18n[currentLang]?.[codeKey] || currency;
-      return `${meta.flag} ${code}`;
+    function getCurrencyById(id) {
+      if (id === BASE_CURRENCY_ID) return UZS_CURRENCY;
+      return userCurrencies.find(c => c.id === id) || null;
+    }
+
+    function getAllCurrencies() {
+      return [UZS_CURRENCY, ...userCurrencies];
+    }
+
+    function getActiveCurrency() {
+      return getCurrencyById(currentCurrencyId) || UZS_CURRENCY;
+    }
+
+    function formatCurrencyRateLine(currency) {
+      if (currency.id === BASE_CURRENCY_ID) return "";
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const rate = new Intl.NumberFormat(locale).format(Number(currency.rateToUZS) || 0);
+      return t("currency.rateLine")
+        .replace("{{symbol}}", currency.symbol)
+        .replace("{{rate}}", rate);
+    }
+
+    function getCurrencyHeaderLabel(currency = getActiveCurrency()) {
+      if (currency.id === BASE_CURRENCY_ID) return "🇺🇿 UZS";
+      return `${currency.symbol} ${currency.name}`;
+    }
+
+    function ensureActiveCurrencyValid() {
+      if (currentCurrencyId !== BASE_CURRENCY_ID && !getCurrencyById(currentCurrencyId)) {
+        currentCurrencyId = BASE_CURRENCY_ID;
+        localStorage.setItem(CURRENCY_KEY, BASE_CURRENCY_ID);
+      }
+    }
+
+    function renderCurrencyDropdown() {
+      if (!currencyDropdown) return;
+      currencyDropdown.innerHTML = getAllCurrencies().map(currency => {
+        const isActive = currency.id === currentCurrencyId;
+        const icon = currency.id === BASE_CURRENCY_ID ? "🇺🇿" : escapeHtml(currency.symbol);
+        return `
+          <button type="button" class="currency-dropdown-item${isActive ? " active" : ""}" data-currency-id="${escapeHtml(currency.id)}" role="menuitem">
+            <span class="currency-dropdown-symbol">${icon}</span>
+            <span>${escapeHtml(currency.name)}</span>
+          </button>
+        `;
+      }).join("");
+
+      currencyDropdown.querySelectorAll(".currency-dropdown-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          setActiveCurrency(btn.dataset.currencyId);
+          closeCurrencyDropdown();
+        });
+      });
+    }
+
+    function renderCurrencyList() {
+      if (!currencyList) return;
+      currencyList.innerHTML = getAllCurrencies().map(currency => {
+        if (currency.id === BASE_CURRENCY_ID) {
+          return `
+            <div class="currency-list-item base">
+              <div class="currency-list-icon">🇺🇿</div>
+              <div class="currency-list-body">
+                <div class="currency-list-name">UZS — so'm (${escapeHtml(t("currency.baseTag"))})</div>
+              </div>
+            </div>
+          `;
+        }
+        return `
+          <div class="currency-list-item">
+            <div class="currency-list-icon">${escapeHtml(currency.symbol)}</div>
+            <div class="currency-list-body">
+              <div class="currency-list-name">${escapeHtml(currency.name)} — ${escapeHtml(currency.symbol)}</div>
+              <div class="currency-list-rate">${escapeHtml(formatCurrencyRateLine(currency))}</div>
+            </div>
+            <div class="currency-list-actions">
+              <button type="button" class="currency-action-btn" data-edit-currency="${escapeHtml(currency.id)}" aria-label="Edit">
+                <i data-lucide="pencil"></i>
+              </button>
+              <button type="button" class="currency-action-btn delete" data-delete-currency="${escapeHtml(currency.id)}" aria-label="Delete">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      currencyList.querySelectorAll("[data-edit-currency]").forEach(btn => {
+        btn.addEventListener("click", () => openCurrencyModal("edit", btn.dataset.editCurrency));
+      });
+      currencyList.querySelectorAll("[data-delete-currency]").forEach(btn => {
+        btn.addEventListener("click", () => deleteCurrency(btn.dataset.deleteCurrency));
+      });
+      refreshIcons();
     }
 
     function updateCurrencyUI() {
+      ensureActiveCurrencyValid();
       if (headerCurrencyLabel) {
         headerCurrencyLabel.textContent = getCurrencyHeaderLabel();
       }
-      if (settingsCurrencyPills) {
-        settingsCurrencyPills.querySelectorAll(".currency-pill").forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.currency === currentCurrency);
-        });
-      }
+      renderCurrencyDropdown();
+      renderCurrencyList();
     }
 
-    function animateAmountEl(el, amountUzs, fromCurrency, toCurrency, isShort = false) {
+    function openCurrencyDropdown() {
+      if (!currencyDropdown || !headerCurrencyBtn) return;
+      renderCurrencyDropdown();
+      currencyDropdown.classList.add("open");
+      headerCurrencyBtn.classList.add("open");
+      currencyDropdownOpen = true;
+    }
+
+    function closeCurrencyDropdown() {
+      if (!currencyDropdown || !headerCurrencyBtn) return;
+      currencyDropdown.classList.remove("open");
+      headerCurrencyBtn.classList.remove("open");
+      currencyDropdownOpen = false;
+    }
+
+    function toggleCurrencyDropdown() {
+      if (currencyDropdownOpen) closeCurrencyDropdown();
+      else openCurrencyDropdown();
+    }
+
+    function animateAmountEl(el, amountUzs, fromCurrencyId, toCurrencyId, isShort = false) {
       if (!el) return;
-      const fromVal = convertFromUzs(amountUzs, fromCurrency);
-      const toVal = convertFromUzs(amountUzs, toCurrency);
+      const fromVal = convertFromUzs(amountUzs, fromCurrencyId);
+      const toVal = convertFromUzs(amountUzs, toCurrencyId);
+      const toCurrency = getCurrencyById(toCurrencyId) || UZS_CURRENCY;
       const duration = 420;
       const start = performance.now();
       el.classList.add("currency-animate");
@@ -6377,20 +6800,20 @@
         if (p < 1) {
           requestAnimationFrame(tick);
         } else {
-          el.textContent = formatMoney(amountUzs, { short: isShort, currency: toCurrency });
+          el.textContent = formatMoney(amountUzs, { short: isShort, currencyId: toCurrencyId });
           setTimeout(() => el.classList.remove("currency-animate"), 80);
         }
       }
       requestAnimationFrame(tick);
     }
 
-    function setCurrency(code, { animate = true } = {}) {
-      if (!CURRENCIES.includes(code)) code = "UZS";
-      const prev = currentCurrency;
-      if (prev === code) return;
+    function setActiveCurrency(currencyId, { animate = true } = {}) {
+      if (!getCurrencyById(currencyId)) currencyId = BASE_CURRENCY_ID;
+      const prev = currentCurrencyId;
+      if (prev === currencyId) return;
 
-      currentCurrency = code;
-      localStorage.setItem(CURRENCY_KEY, code);
+      currentCurrencyId = currencyId;
+      localStorage.setItem(CURRENCY_KEY, currencyId);
       updateCurrencyUI();
 
       let totalIncome = 0;
@@ -6403,9 +6826,9 @@
       const netProfit = totalIncome - totalExpense;
 
       if (animate) {
-        animateAmountEl(netProfitEl, netProfit, prev, code, false);
-        animateAmountEl(totalIncomeEl, totalIncome, prev, code, true);
-        animateAmountEl(totalExpenseEl, totalExpense, prev, code, true);
+        animateAmountEl(netProfitEl, netProfit, prev, currencyId, false);
+        animateAmountEl(totalIncomeEl, totalIncome, prev, currencyId, true);
+        animateAmountEl(totalExpenseEl, totalExpense, prev, currencyId, true);
         render({ skipHero: true });
         requestAnimationFrame(() => {
           document.querySelectorAll(".period-value, .transaction-amount").forEach(el => {
@@ -6418,19 +6841,141 @@
       }
     }
 
-    function cycleCurrency() {
-      const idx = CURRENCIES.indexOf(currentCurrency);
-      setCurrency(CURRENCIES[(idx + 1) % CURRENCIES.length]);
+    function openCurrencyModal(mode = "add", currencyId = null) {
+      if (!currencyModal) return;
+      currencyModalMode = mode;
+      editingCurrencyId = currencyId;
+      currencyModalError.textContent = "";
+
+      if (mode === "edit" && currencyId) {
+        const currency = getCurrencyById(currencyId);
+        if (!currency) return;
+        currencyModalTitle.textContent = t("currency.editTitle");
+        currencyNameInput.value = currency.name;
+        currencySymbolInput.value = currency.symbol;
+        currencyRateInput.value = String(Math.round(Number(currency.rateToUZS) || 0));
+        currencyNameInput.disabled = false;
+        currencySymbolInput.disabled = false;
+      } else {
+        currencyModalTitle.textContent = t("currency.addTitle");
+        currencyNameInput.value = "";
+        currencySymbolInput.value = "";
+        currencyRateInput.value = "";
+        currencyNameInput.disabled = false;
+        currencySymbolInput.disabled = false;
+      }
+
+      openProfileModal(currencyModal);
+      setTimeout(() => currencyNameInput?.focus(), 120);
+    }
+
+    function closeCurrencyModal() {
+      closeProfileModal(currencyModal);
+      currencyModalMode = "add";
+      editingCurrencyId = null;
+      currencyModalError.textContent = "";
+    }
+
+    async function saveCurrencyFromModal() {
+      if (!currentUser || !currencyModalSave) return;
+
+      const name = currencyNameInput.value.trim();
+      const symbol = currencySymbolInput.value.trim();
+      const rate = parseAmountDigits(currencyRateInput.value);
+
+      if (!name || !symbol || !rate || rate <= 0) {
+        currencyModalError.textContent = !rate || rate <= 0 ? t("currency.invalidRate") : t("currency.required");
+        return;
+      }
+
+      currencyModalSave.disabled = true;
+      currencyModalError.textContent = "";
+
+      try {
+        const payload = {
+          name,
+          symbol,
+          rateToUZS: Number(rate),
+          createdAt: new Date().toISOString()
+        };
+
+        if (currencyModalMode === "edit" && editingCurrencyId) {
+          await updateDoc(doc(db, "users", currentUser.uid, "currencies", editingCurrencyId), {
+            name,
+            symbol,
+            rateToUZS: Number(rate)
+          });
+        } else {
+          await addDoc(currenciesRef(currentUser.uid), payload);
+        }
+        closeCurrencyModal();
+      } catch (err) {
+        console.error("[BiznesHisob] Currency save failed:", err);
+        currencyModalError.textContent = t("currency.saveError");
+      } finally {
+        currencyModalSave.disabled = false;
+      }
+    }
+
+    async function deleteCurrency(currencyId) {
+      if (!currentUser || currencyId === BASE_CURRENCY_ID) return;
+      if (!confirm(t("currency.deleteConfirm"))) return;
+
+      try {
+        await deleteDoc(doc(db, "users", currentUser.uid, "currencies", currencyId));
+        if (currentCurrencyId === currencyId) {
+          setActiveCurrency(BASE_CURRENCY_ID, { animate: false });
+        }
+      } catch (err) {
+        console.error("[BiznesHisob] Currency delete failed:", err);
+        alert(t("currency.saveError"));
+      }
+    }
+
+    function subscribeCurrencies(uid) {
+      if (unsubscribeCurrencies) {
+        unsubscribeCurrencies();
+        unsubscribeCurrencies = null;
+      }
+
+      const q = query(currenciesRef(uid), orderBy("createdAt", "asc"));
+      unsubscribeCurrencies = onSnapshot(
+        q,
+        snapshot => {
+          userCurrencies = snapshot.docs.map(d => ({
+            id: d.id,
+            name: String(d.data().name || ""),
+            symbol: String(d.data().symbol || ""),
+            rateToUZS: Number(d.data().rateToUZS) || 0,
+            createdAt: d.data().createdAt || ""
+          }));
+          ensureActiveCurrencyValid();
+          updateCurrencyUI();
+          render();
+        },
+        err => {
+          console.error("[BiznesHisob] Currencies listener error:", err);
+        }
+      );
     }
 
     if (headerCurrencyBtn) {
-      headerCurrencyBtn.addEventListener("click", cycleCurrency);
-    }
-    if (settingsCurrencyPills) {
-      settingsCurrencyPills.querySelectorAll(".currency-pill").forEach(btn => {
-        btn.addEventListener("click", () => setCurrency(btn.dataset.currency));
+      headerCurrencyBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        toggleCurrencyDropdown();
       });
     }
+
+    document.addEventListener("click", e => {
+      if (currencyDropdownOpen && headerCurrencyWrap && !headerCurrencyWrap.contains(e.target)) {
+        closeCurrencyDropdown();
+      }
+    });
+
+    currencyAddBtn?.addEventListener("click", () => openCurrencyModal("add"));
+    currencyModalClose?.addEventListener("click", closeCurrencyModal);
+    currencyModalCancel?.addEventListener("click", closeCurrencyModal);
+    currencyModalSave?.addEventListener("click", saveCurrencyFromModal);
 
     const MAX_AMOUNT_DIGITS = 15;
 
@@ -6892,11 +7437,16 @@
         unsubscribeUser();
         unsubscribeUser = null;
       }
+      if (unsubscribeCurrencies) {
+        unsubscribeCurrencies();
+        unsubscribeCurrencies = null;
+      }
 
       currentUser = user;
 
       if (user) {
         transactions = [];
+        userCurrencies = [];
         userProfile = { isPremium: false };
         try {
           await ensureUserDocument(user);
@@ -6904,6 +7454,7 @@
           console.error("User doc:", err);
         }
         subscribeUserProfile(user.uid);
+        subscribeCurrencies(user.uid);
         switchTab("home");
         render();
         subscribeTransactions(user.uid);
@@ -6917,7 +7468,9 @@
       } else {
         closeSettings();
         closeAllProfileModals();
+        closeCurrencyDropdown();
         transactions = [];
+        userCurrencies = [];
         userProfile = { isPremium: false };
         appUnlocked = false;
         hidePinScreen();

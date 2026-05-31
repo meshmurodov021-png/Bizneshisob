@@ -10,6 +10,13 @@ service cloud.firestore {
         allow create: if isOwner(userId) && isValidTransaction();
         allow update, delete: if isOwner(userId);
       }
+
+      match /currencies/{currencyId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidCurrency();
+        allow update: if isOwner(userId) && isValidCurrency();
+        allow delete: if isOwner(userId);
+      }
     }
 
     function isOwner(userId) {
@@ -38,6 +45,17 @@ service cloud.firestore {
           'ijara', 'oziq_ovqat', 'transport', 'kommunal', 'telefon_internet',
           'ish_haqi_xodim', 'mahsulot', 'reklama', 'tamirlash', 'boshqa_xarajat'
         ]);
+    }
+
+    function isValidCurrency() {
+      return request.resource.data.keys().hasAll(['name', 'symbol', 'rateToUZS', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.symbol is string
+        && request.resource.data.symbol.size() > 0
+        && request.resource.data.rateToUZS is number
+        && request.resource.data.rateToUZS > 0
+        && request.resource.data.createdAt is string;
     }
   }
 }
