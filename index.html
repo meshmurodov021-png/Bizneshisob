@@ -1707,10 +1707,6 @@
       line-height: 1.5;
     }
 
-    .profile-bio-btn.hidden {
-      display: none;
-    }
-
     .profile-sheet {
       width: 100%;
       max-width: 400px;
@@ -1883,7 +1879,6 @@
     }
 
     .profile-pin-btn,
-    .profile-bio-btn,
     .install-btn {
       display: inline-flex;
       align-items: center;
@@ -1892,7 +1887,6 @@
     }
 
     .profile-pin-btn [data-lucide],
-    .profile-bio-btn [data-lucide],
     .install-btn [data-lucide] {
       width: 18px;
       height: 18px;
@@ -2623,12 +2617,6 @@
       stroke: #fff;
     }
 
-    .pin-bio-btn [data-lucide] {
-      width: 26px;
-      height: 26px;
-      stroke: #c4b5fd;
-    }
-
     .pin-key.back [data-lucide] {
       width: 22px;
       height: 22px;
@@ -2729,25 +2717,6 @@
     .pin-msg.error { color: #f87171; }
     .pin-msg.lockout { color: #fb923c; font-weight: 600; }
 
-    .pin-bio-btn {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 1rem;
-      border-radius: 50%;
-      border: 1px solid rgba(124, 58, 237, 0.4);
-      background: rgba(124, 58, 237, 0.12);
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .pin-bio-btn:active {
-      transform: scale(0.94);
-      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.35);
-    }
-
     .pin-keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -2806,29 +2775,6 @@
 
     .pin-forgot:hover { color: #c4b5fd; }
 
-    .pin-enable-bio {
-      width: 100%;
-      max-width: 280px;
-      min-height: 48px;
-      padding: 0.85rem;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #7C3AED, #4F46E5);
-      color: #fff;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .pin-skip-bio {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 0.85rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
     .profile-pin-btn {
       width: 100%;
       min-height: 44px;
@@ -2848,26 +2794,6 @@
     .profile-pin-btn:active {
       transform: scale(0.98);
       background: rgba(124, 58, 237, 0.2);
-    }
-
-    .profile-bio-btn {
-      width: 100%;
-      min-height: 44px;
-      margin-bottom: 0.65rem;
-      padding: 0.65rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text);
-      font-size: 0.88rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .profile-bio-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
     }
 
     /* PIN recovery (SMS) */
@@ -3029,7 +2955,6 @@
           <span class="pin-dot"></span>
         </div>
         <p class="pin-msg" id="pinMsg"></p>
-        <button type="button" class="pin-bio-btn hidden" id="pinBioBtn" aria-label="Biometrik"><i data-lucide="fingerprint"></i></button>
         <div class="pin-keypad" id="pinKeypad">
           <button type="button" class="pin-key" data-key="1">1</button>
           <button type="button" class="pin-key" data-key="2">2</button>
@@ -3045,8 +2970,6 @@
           <button type="button" class="pin-key back" data-key="back" aria-label="Oʻchirish"><i data-lucide="delete"></i></button>
         </div>
         <div class="pin-actions" id="pinActions">
-          <button type="button" class="pin-enable-bio hidden" id="pinEnableBio">Biometrikni yoqish</button>
-          <button type="button" class="pin-skip-bio hidden" id="pinSkipBio">Keyinroq</button>
           <button type="button" class="pin-forgot hidden" id="pinForgot">PIN kodini unutdim?</button>
         </div>
       </div>
@@ -3313,15 +3236,7 @@
               <span>🔒 <span data-i18n="settings.changePin">PIN kod o'zgartirish</span></span>
               <i data-lucide="chevron-right"></i>
             </button>
-            <div class="settings-row" id="settingsBioRow">
-              <span class="settings-row-label">👆 <span data-i18n="settings.biometric">Biometrik</span></span>
-              <label class="settings-toggle">
-                <input type="checkbox" id="settingsBioToggle">
-                <span class="settings-toggle-slider"></span>
-              </label>
-            </div>
           </div>
-          <button type="button" class="profile-bio-btn hidden" id="enableBioBtn" aria-hidden="true" tabindex="-1"></button>
         </section>
 
         <section class="settings-section">
@@ -4220,11 +4135,7 @@
       document.querySelectorAll("[data-i18n-aria]").forEach(el => {
         el.setAttribute("aria-label", t(el.dataset.i18nAria));
       });
-      const pinEnableBioEl = document.getElementById("pinEnableBio");
-      const pinSkipBioEl = document.getElementById("pinSkipBio");
       const pinForgotEl = document.getElementById("pinForgot");
-      if (pinEnableBioEl) pinEnableBioEl.textContent = t("pin.enableBio");
-      if (pinSkipBioEl) pinSkipBioEl.textContent = t("pin.skipBio");
       if (pinForgotEl) pinForgotEl.textContent = t("pin.forgot");
       setAuthMode(authMode);
       setType(currentType);
@@ -4320,8 +4231,6 @@
     const statsProgressFill = document.getElementById("statsProgressFill");
     const profileTxRow = document.getElementById("profileTxRow");
     const profileTxStatValue = document.getElementById("profileTxStatValue");
-    const settingsBioToggle = document.getElementById("settingsBioToggle");
-    const settingsBioRow = document.getElementById("settingsBioRow");
     const settingsLangBtn = document.getElementById("settingsLangBtn");
     const settingsLangValue = document.getElementById("settingsLangValue");
     const settingsThemeToggle = document.getElementById("settingsThemeToggle");
@@ -4681,11 +4590,9 @@
       });
     }
 
-    /* ——— PIN & biometric security ——— */
+    /* ——— PIN security ——— */
     const PIN_KEY = "bzh_pin";
     const PIN_UID_KEY = "bzh_pin_uid";
-    const BIO_ENABLED_KEY = "bzh_bio_enabled";
-    const BIO_CRED_KEY = "bzh_bio_cred";
     const PIN_LEN = 4;
     const MAX_PIN_ATTEMPTS = 3;
     const LOCKOUT_SEC = 30;
@@ -4699,7 +4606,6 @@
     let lockoutUntil = 0;
     let lockoutTimer = null;
     let backgroundHiddenAt = 0;
-    let bioOfferPending = false;
 
     const pinScreen = document.getElementById("pinScreen");
     const pinTitle = document.getElementById("pinTitle");
@@ -4707,9 +4613,6 @@
     const pinDots = document.querySelectorAll("#pinDots .pin-dot");
     const pinMsg = document.getElementById("pinMsg");
     const pinKeypad = document.getElementById("pinKeypad");
-    const pinBioBtn = document.getElementById("pinBioBtn");
-    const pinEnableBio = document.getElementById("pinEnableBio");
-    const pinSkipBio = document.getElementById("pinSkipBio");
     const pinForgot = document.getElementById("pinForgot");
     const pinMainView = document.getElementById("pinMainView");
     const pinPhoneView = document.getElementById("pinPhoneView");
@@ -4725,16 +4628,22 @@
     const pinOtpBackBtn = document.getElementById("pinOtpBackBtn");
     const otpInputs = document.querySelectorAll(".otp-box");
     const changePinBtn = document.getElementById("changePinBtn");
-    const enableBioBtn = document.getElementById("enableBioBtn");
 
     let recaptchaVerifier = null;
     let phoneConfirmationResult = null;
     let resendInterval = null;
     let resendSecondsLeft = 0;
 
-    function getBioCredKey(uid) {
-      return `${BIO_CRED_KEY}_${uid}`;
+    function purgeLegacyBiometricKeys() {
+      localStorage.removeItem("bzh_bio_enabled");
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith("bzh_bio_cred")) {
+          localStorage.removeItem(key);
+        }
+      }
     }
+    purgeLegacyBiometricKeys();
 
     async function hashPin(pin) {
       const data = new TextEncoder().encode(`${pin}:bizneshisob`);
@@ -4767,53 +4676,6 @@
       localStorage.removeItem(PIN_UID_KEY);
     }
 
-    function isBioEnabled(uid) {
-      return (
-        localStorage.getItem(BIO_ENABLED_KEY) === "1" &&
-        !!localStorage.getItem(getBioCredKey(uid))
-      );
-    }
-
-    function setBioEnabled(uid, credIdBase64) {
-      localStorage.setItem(BIO_ENABLED_KEY, "1");
-      localStorage.setItem(getBioCredKey(uid), credIdBase64);
-    }
-
-    function clearBioStorage(uid) {
-      localStorage.removeItem(BIO_ENABLED_KEY);
-      if (uid) localStorage.removeItem(getBioCredKey(uid));
-    }
-
-    function bufferToBase64(buf) {
-      return btoa(String.fromCharCode(...new Uint8Array(buf)));
-    }
-
-    function base64ToBuffer(b64) {
-      const bin = atob(b64);
-      const buf = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-      return buf;
-    }
-
-    function canUseWebAuthn() {
-      return !!(window.PublicKeyCredential && navigator.credentials);
-    }
-
-    function updateSettingsSecurityUI() {
-      if (!currentUser) return;
-      const bioOn = isBioEnabled(currentUser.uid);
-      const canBio = canUseWebAuthn();
-      const hasPin = hasPinForUser(currentUser.uid);
-
-      enableBioBtn.classList.toggle("hidden", true);
-
-      if (settingsBioRow) settingsBioRow.classList.toggle("hidden", !canBio);
-      if (settingsBioToggle) {
-        settingsBioToggle.checked = bioOn;
-        settingsBioToggle.disabled = !hasPin || !canBio;
-      }
-    }
-
     function updateSettingsUI() {
       if (settingsLangValue) {
         settingsLangValue.textContent = LANG_LABELS[currentLang] || LANG_LABELS.uz;
@@ -4824,7 +4686,6 @@
       if (settingsUserEmail && currentUser) {
         settingsUserEmail.textContent = currentUser.email || "—";
       }
-          updateSettingsSecurityUI();
     }
 
     function openSettings() {
@@ -5046,7 +4907,6 @@
 
       if (lockoutTimer) clearInterval(lockoutTimer);
       setKeypadEnabled(false);
-      pinBioBtn.disabled = true;
       const tick = () => {
         const left = Math.ceil((lockoutUntil - Date.now()) / 1000);
         if (left <= 0) {
@@ -5057,7 +4917,6 @@
           if (currentUser) clearPinSecurityState(currentUser.uid);
           setPinMsg("");
           setKeypadEnabled(true);
-          pinBioBtn.disabled = false;
           return;
         }
         setPinMsg(t("pin.lockout", { n: left }), "lockout");
@@ -5269,9 +5128,6 @@
       resetPinBuffer();
       setPinMsg("");
       pinForgot.classList.toggle("hidden", mode !== "unlock");
-      pinEnableBio.classList.add("hidden");
-      pinSkipBio.classList.add("hidden");
-      pinBioBtn.classList.add("hidden");
       pinKeypad.classList.remove("hidden");
 
       pinTitle.textContent = t(`pin.title.${mode}`) || "PIN";
@@ -5279,19 +5135,7 @@
       const subKey = `pin.sub.${mode}`;
       const subText = i18n[currentLang]?.[subKey] ?? i18n.uz[subKey] ?? "";
       pinSub.textContent = subText;
-      pinSub.style.display = (subText || mode === "bio-offer") ? "block" : "none";
-
-      if (mode === "bio-offer") {
-        pinKeypad.classList.add("hidden");
-        pinEnableBio.classList.remove("hidden");
-        pinSkipBio.classList.remove("hidden");
-        pinDots.forEach(d => d.classList.remove("filled"));
-        return;
-      }
-
-      if (mode === "unlock" && currentUser && isBioEnabled(currentUser.uid) && canUseWebAuthn()) {
-        pinBioBtn.classList.remove("hidden");
-      }
+      pinSub.style.display = subText ? "block" : "none";
 
       setKeypadEnabled(!isLockoutActive());
     }
@@ -5322,7 +5166,6 @@
       appUnlocked = false;
       if (!currentUser || !hasPinForUser(currentUser.uid)) return;
       showPinScreen("unlock");
-      setTimeout(() => tryBiometricUnlock(true), 400);
     }
 
     function unlockApp() {
@@ -5331,18 +5174,12 @@
       pinAttempts = 0;
       lockoutUntil = 0;
       if (currentUser) clearPinSecurityState(currentUser.uid);
-      updateSettingsSecurityUI();
     }
 
     async function finishPinSetup(pin) {
       await savePin(pin, currentUser.uid);
       pinSetupFirst = "";
-      if (canUseWebAuthn() && !isBioEnabled(currentUser.uid)) {
-        bioOfferPending = true;
-        showPinScreen("bio-offer");
-      } else {
-        unlockApp();
-      }
+      unlockApp();
     }
 
     async function verifyPinInput(pin) {
@@ -5351,7 +5188,7 @@
     }
 
     async function onPinComplete() {
-      if (isLockoutActive() || pinMode === "bio-offer") return;
+      if (isLockoutActive()) return;
 
       if (pinMode === "setup") {
         pinSetupFirst = pinBuffer;
@@ -5453,7 +5290,7 @@
     }
 
     function onPinKey(key) {
-      if (isLockoutActive() || pinMode === "bio-offer") return;
+      if (isLockoutActive()) return;
       if (key === "back") {
         pinBuffer = pinBuffer.slice(0, -1);
         updatePinDots();
@@ -5527,85 +5364,6 @@
       });
     });
 
-    async function registerBiometric() {
-      if (!currentUser || !canUseWebAuthn()) return false;
-      try {
-        const challenge = crypto.getRandomValues(new Uint8Array(32));
-        const userId = new TextEncoder().encode(currentUser.uid);
-        const cred = await navigator.credentials.create({
-          publicKey: {
-            challenge,
-            rp: { name: "BiznesHisob", id: window.location.hostname },
-            user: {
-              id: userId,
-              name: currentUser.email || currentUser.uid,
-              displayName: "BiznesHisob"
-            },
-            pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-            authenticatorSelection: {
-              authenticatorAttachment: "platform",
-              userVerification: "required",
-              residentKey: "preferred"
-            },
-            timeout: 60000
-          }
-        });
-        if (cred && cred.rawId) {
-          setBioEnabled(currentUser.uid, bufferToBase64(cred.rawId));
-          updateSettingsSecurityUI();
-          return true;
-        }
-      } catch (err) {
-        console.warn("Biometric register:", err);
-      }
-      return false;
-    }
-
-    async function tryBiometricUnlock(auto = false) {
-      if (!currentUser || appUnlocked || pinMode !== "unlock") return;
-      if (!isBioEnabled(currentUser.uid) || !canUseWebAuthn()) return;
-      const credId = localStorage.getItem(getBioCredKey(currentUser.uid));
-      if (!credId) return;
-      try {
-        const assertion = await navigator.credentials.get({
-          publicKey: {
-            challenge: crypto.getRandomValues(new Uint8Array(32)),
-            allowCredentials: [{
-              id: base64ToBuffer(credId),
-              type: "public-key",
-              transports: ["internal"]
-            }],
-            userVerification: "required",
-            timeout: 60000
-          }
-        });
-        if (assertion) {
-          unlockApp();
-          return true;
-        }
-      } catch (err) {
-        if (!auto) setPinMsg(t("pin.bioFail"), "error");
-      }
-      return false;
-    }
-
-    pinBioBtn.addEventListener("click", () => tryBiometricUnlock(false));
-
-    pinEnableBio.addEventListener("click", async () => {
-      const ok = await registerBiometric();
-      if (ok) {
-        bioOfferPending = false;
-        unlockApp();
-      } else {
-        setPinMsg(t("pin.bioEnableFail"), "error");
-      }
-    });
-
-    pinSkipBio.addEventListener("click", () => {
-      bioOfferPending = false;
-      unlockApp();
-    });
-
     changePinBtn.addEventListener("click", () => {
       closeSettings();
       if (!currentUser || !hasPinForUser(currentUser.uid)) {
@@ -5614,12 +5372,6 @@
       }
       pinSetupFirst = "";
       showPinScreen("change-old");
-    });
-
-    enableBioBtn.addEventListener("click", async () => {
-      const ok = await registerBiometric();
-      alert(ok ? t("pin.bioOk") : t("pin.bioNo"));
-      updateSettingsSecurityUI();
     });
 
     settingsOpenBtn?.addEventListener("click", openSettings);
@@ -5642,20 +5394,6 @@
         closeProfileModal(langModal);
         updateSettingsUI();
       });
-    });
-
-    settingsBioToggle?.addEventListener("change", async () => {
-      if (!currentUser) return;
-      if (settingsBioToggle.checked) {
-        const ok = await registerBiometric();
-        if (!ok) {
-          settingsBioToggle.checked = false;
-          alert(t("pin.bioNo"));
-        }
-      } else {
-        clearBioStorage(currentUser.uid);
-      }
-      updateSettingsSecurityUI();
     });
 
     settingsNotifToggle?.addEventListener("change", () => {
@@ -5715,7 +5453,6 @@
       } else if (document.visibilityState === "visible") {
         const away = backgroundHiddenAt ? Date.now() - backgroundHiddenAt : 0;
         if (appUnlocked && away >= BG_LOCK_MS) lockApp();
-        if (!appUnlocked) tryBiometricUnlock(true);
         handlePaymentReturn();
       }
     }
