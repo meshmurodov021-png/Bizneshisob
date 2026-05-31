@@ -1850,6 +1850,11 @@
     .chart-card {
       padding: 1rem;
       margin-bottom: 0.85rem;
+      background: rgba(20, 24, 32, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
     }
 
     .chart-card-title {
@@ -1864,9 +1869,195 @@
       height: 200px;
     }
 
+    .chart-wrap-donut {
+      height: 220px;
+    }
+
+    .chart-wrap-bar {
+      height: 220px;
+      min-height: 200px;
+    }
+
     .chart-wrap canvas {
       width: 100% !important;
       height: 100% !important;
+    }
+
+    .chart-donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+      padding: 0 2.5rem 1.5rem;
+      animation: chartFadeIn 0.45s var(--ease) both;
+    }
+
+    .chart-donut-center-value {
+      font-size: clamp(1.15rem, 4.5vw, 1.55rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      line-height: 1.15;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chart-donut-center-unit {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .chart-legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--muted);
+      animation: chartFadeIn 0.4s var(--ease) both;
+    }
+
+    .chart-legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .chart-legend-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chart-legend-text strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .chart-legend-empty {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 0.35rem 0;
+    }
+
+    .top-cats-card {
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      background: rgba(20, 24, 32, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+      animation: chartFadeIn 0.5s var(--ease) both;
+    }
+
+    .top-cats-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin: 0 0 0.85rem;
+      color: var(--text);
+    }
+
+    .top-cats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .top-cat-row {
+      animation: chartFadeIn 0.45s var(--ease) both;
+    }
+
+    .top-cat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .top-cat-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .top-cat-left .category-icon-wrap {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .top-cat-left .category-icon-wrap [data-lucide] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .top-cat-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-cat-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .top-cat-amount {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .top-cat-pct {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+
+    .top-cat-bar {
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .top-cat-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0;
+      transition: width 0.65s var(--ease);
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    @keyframes chartFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .chart-locked-wrap {
@@ -4134,12 +4325,32 @@
 
         <div class="card chart-card">
           <p class="chart-card-title" data-i18n="stats.expenseBreakdown">Xarajatlar boʻyicha</p>
-          <div class="chart-wrap"><canvas id="expenseDonutChart" aria-hidden="true"></canvas></div>
+          <div class="chart-wrap chart-wrap-donut">
+            <canvas id="expenseDonutChart" aria-hidden="true"></canvas>
+            <div class="chart-donut-center hidden" id="expenseDonutCenter">
+              <span class="chart-donut-center-value" id="expenseDonutCenterValue">0</span>
+              <span class="chart-donut-center-unit" id="expenseDonutCenterUnit">so'm</span>
+            </div>
+          </div>
+          <div class="chart-legend" id="expenseChartLegend"></div>
+        </div>
+
+        <div class="card top-cats-card hidden" id="topExpenseCard">
+          <p class="top-cats-title" data-i18n="stats.topExpense">🔥 Top xarajatlar</p>
+          <div class="top-cats-list" id="topExpenseList"></div>
         </div>
 
         <div class="card chart-card">
           <p class="chart-card-title" data-i18n="stats.incomeBreakdown">Daromadlar boʻyicha</p>
-          <div class="chart-wrap"><canvas id="incomeBarChart" aria-hidden="true"></canvas></div>
+          <div class="chart-wrap chart-wrap-bar" id="incomeBarChartWrap">
+            <canvas id="incomeBarChart" aria-hidden="true"></canvas>
+          </div>
+          <div class="chart-legend" id="incomeChartLegend"></div>
+        </div>
+
+        <div class="card top-cats-card hidden" id="topIncomeCard">
+          <p class="top-cats-title" data-i18n="stats.topIncome">💰 Top daromadlar</p>
+          <div class="top-cats-list" id="topIncomeList"></div>
         </div>
 
         <div class="premium-charts-grid" id="advancedChartsSection">
@@ -4803,6 +5014,9 @@
         "stats.period3months": "3 oy",
         "stats.trend": "Daromad/xarajat trendi",
         "stats.comparison": "Oylik taqqoslash",
+        "stats.topExpense": "🔥 Top xarajatlar",
+        "stats.topIncome": "💰 Top daromadlar",
+        "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "Yangi operatsiya",
         "add.desc": "Tavsif",
         "add.descPh": "Masalan: Mahsulot sotuvi",
@@ -5040,6 +5254,9 @@
         "stats.period3months": "3 месяца",
         "stats.trend": "Тренд доходов/расходов",
         "stats.comparison": "Сравнение по месяцам",
+        "stats.topExpense": "🔥 Топ расходов",
+        "stats.topIncome": "💰 Топ доходов",
+        "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "Новая операция",
         "add.desc": "Описание",
         "add.descPh": "Например: Продажа товара",
@@ -5277,6 +5494,9 @@
         "stats.period3months": "3 months",
         "stats.trend": "Income/expense trend",
         "stats.comparison": "Monthly comparison",
+        "stats.topExpense": "🔥 Top expenses",
+        "stats.topIncome": "💰 Top income",
+        "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "New transaction",
         "add.desc": "Description",
         "add.descPh": "e.g. Product sale",
@@ -8594,23 +8814,177 @@
       return null;
     }
 
-    function aggregateCategoryTotals(type) {
-      const list = filterTransactionsByPeriod("month");
-      const totals = new Map();
-      list.filter(tx => tx.type === type).forEach(tx => {
-        const cat = getCategoryForTx(tx);
-        totals.set(cat.label, (totals.get(cat.label) || 0) + (Number(tx.amount) || 0));
-      });
-      return {
-        labels: [...totals.keys()],
-        values: [...totals.values()]
-      };
-    }
-
     function chartPalette(count) {
       const palette = ["#7C3AED", "#6366f1", "#22C55E", "#3B82F6", "#F97316", "#EF4444", "#EAB308", "#06B6D4", "#EC4899", "#84CC16"];
       return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
     }
+
+    function formatDonutCenterValue(amountUzs) {
+      const currency = getActiveCurrency();
+      const converted = convertFromUzs(amountUzs, currency.id);
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const decimals = getCurrencyDecimals(currency);
+      const value = decimals === 0 ? Math.round(converted) : converted;
+      return new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals
+      }).format(value);
+    }
+
+    function formatCategoryPercent(amount, total) {
+      if (!total || total <= 0) return "0";
+      return (Math.round((amount / total) * 1000) / 10).toFixed(1);
+    }
+
+    function formatChartBarLabel(amount) {
+      const n = Number(amount) || 0;
+      if (n <= 0) return "";
+      const short = formatUZSShort(n);
+      const suffix = (t("currency.suffix") || "").trim();
+      if (suffix) {
+        const esc = suffix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const stripped = short.replace(new RegExp(`\\s*${esc}\\s*$`, "i"), "").trim();
+        if (stripped) return stripped;
+      }
+      return short.replace(/\s*so[''ʻ]?m\s*$/i, "").trim() || short;
+    }
+
+    function aggregateCategoryBreakdown(type) {
+      const list = filterTransactionsByPeriod("month");
+      const map = new Map();
+      list.filter(tx => tx.type === type).forEach(tx => {
+        const cat = getCategoryForTx(tx);
+        const entry = map.get(cat.id) || { cat, amount: 0 };
+        entry.amount += Number(tx.amount) || 0;
+        map.set(cat.id, entry);
+      });
+
+      const filtered = [...map.values()].filter(x => x.amount > 0).sort((a, b) => b.amount - a.amount);
+      const total = filtered.reduce((sum, x) => sum + x.amount, 0);
+      const colors = chartPalette(filtered.length);
+
+      const items = filtered.map((x, i) => ({
+        id: x.cat.id,
+        label: x.cat.label,
+        icon: x.cat.icon,
+        iconBg: x.cat.iconBg,
+        amount: x.amount,
+        percent: formatCategoryPercent(x.amount, total),
+        color: colors[i]
+      }));
+
+      return {
+        items,
+        total,
+        labels: items.map(x => x.label),
+        values: items.map(x => x.amount),
+        colors
+      };
+    }
+
+    function renderChartLegend(container, data, emptyKey) {
+      if (!container) return;
+      if (!data.items.length) {
+        container.innerHTML = `<p class="chart-legend-empty">${escapeHtml(t(emptyKey))}</p>`;
+        return;
+      }
+      container.innerHTML = data.items.map((item, i) => `
+          <div class="chart-legend-item" style="animation-delay:${i * 0.05}s">
+            <span class="chart-legend-dot" style="background:${item.color};color:${item.color}"></span>
+            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatUZS(item.amount))} (${escapeHtml(item.percent)}%)</span>
+          </div>
+        `).join("");
+    }
+
+    function updateDonutCenter(total) {
+      const center = document.getElementById("expenseDonutCenter");
+      const valueEl = document.getElementById("expenseDonutCenterValue");
+      const unitEl = document.getElementById("expenseDonutCenterUnit");
+      if (!center || !valueEl) return;
+      const currency = getActiveCurrency();
+      if (unitEl) unitEl.textContent = currency.symbol || "so'm";
+      if (total <= 0) {
+        center.classList.add("hidden");
+        return;
+      }
+      center.classList.remove("hidden");
+      valueEl.textContent = formatDonutCenterValue(total);
+    }
+
+    function renderTopCategoriesList(container, card, data) {
+      if (!container || !card) return;
+      if (!data.items.length) {
+        card.classList.add("hidden");
+        container.innerHTML = "";
+        return;
+      }
+      card.classList.remove("hidden");
+      const top = data.items.slice(0, 3);
+      container.innerHTML = top.map((item, i) => `
+        <div class="top-cat-row" style="animation-delay:${i * 0.08}s">
+          <div class="top-cat-head">
+            <div class="top-cat-left">
+              ${categoryIconHtml(item)}
+              <span class="top-cat-name">${escapeHtml(item.label)}</span>
+            </div>
+            <div class="top-cat-right">
+              <div class="top-cat-amount">${escapeHtml(formatUZS(item.amount))}</div>
+              <div class="top-cat-pct">${escapeHtml(item.percent)}%</div>
+            </div>
+          </div>
+          <div class="top-cat-bar">
+            <div class="top-cat-bar-fill" data-width="${item.percent}" style="background:${item.color};color:${item.color}"></div>
+          </div>
+        </div>
+      `).join("");
+      requestAnimationFrame(() => {
+        container.querySelectorAll(".top-cat-bar-fill").forEach(bar => {
+          bar.style.width = `${bar.dataset.width || 0}%`;
+        });
+      });
+      refreshIcons();
+    }
+
+    const centerSingleBarPlugin = {
+      id: "centerSingleBar",
+      afterLayout(chart) {
+        if (chart.config.type !== "bar") return;
+        const labels = chart.data?.labels;
+        if (!labels || labels.length !== 1) return;
+        const meta = chart.getDatasetMeta(0);
+        const bar = meta?.data?.[0];
+        if (!bar || typeof bar.x !== "number") return;
+        const { left, right } = chart.chartArea;
+        bar.x = (left + right) / 2;
+      }
+    };
+
+    const barValueLabelPlugin = {
+      id: "barValueLabels",
+      afterDatasetsDraw(chart) {
+        if (chart.config.type !== "bar") return;
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          if (!meta?.data?.length) return;
+          meta.data.forEach((bar, index) => {
+            const value = dataset.data[index];
+            if (!value || value <= 0) return;
+            const label = formatChartBarLabel(value);
+            if (!label) return;
+            const x = bar.x;
+            const y = bar.y - 6;
+            ctx.save();
+            ctx.font = "600 10px system-ui, sans-serif";
+            ctx.fillStyle = "#e8eaef";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillText(label, x, y);
+            ctx.restore();
+          });
+        });
+      }
+    };
 
     function getLast30DaysTrend() {
       const labels = [];
@@ -8675,61 +9049,121 @@
       }
       if (typeof Chart === "undefined") return;
 
-      const expenseData = aggregateCategoryTotals("expense");
-      const incomeData = aggregateCategoryTotals("income");
+      if (!Chart.registry.plugins.get("barValueLabels")) {
+        Chart.register(barValueLabelPlugin, centerSingleBarPlugin);
+      }
+
+      const expenseData = aggregateCategoryBreakdown("expense");
+      const incomeData = aggregateCategoryBreakdown("income");
       const donutEl = document.getElementById("expenseDonutChart");
       const barEl = document.getElementById("incomeBarChart");
+      const expenseLegendEl = document.getElementById("expenseChartLegend");
+      const incomeLegendEl = document.getElementById("incomeChartLegend");
+
+      updateDonutCenter(expenseData.total);
+      renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
+      renderChartLegend(incomeLegendEl, incomeData, "stats.noIncome");
+      renderTopCategoriesList(
+        document.getElementById("topExpenseList"),
+        document.getElementById("topExpenseCard"),
+        expenseData
+      );
+      renderTopCategoriesList(
+        document.getElementById("topIncomeList"),
+        document.getElementById("topIncomeCard"),
+        incomeData
+      );
 
       if (donutEl) {
         chartDonut = destroyChartInstance(chartDonut);
-        chartDonut = new Chart(donutEl, {
-          type: "doughnut",
-          data: {
-            labels: expenseData.labels.length ? expenseData.labels : [t("stats.noExpense")],
-            datasets: [{
-              data: expenseData.values.length ? expenseData.values : [1],
-              backgroundColor: expenseData.values.length ? chartPalette(expenseData.values.length) : ["#3f3f46"],
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: { color: "#a1a1aa", boxWidth: 10, font: { size: 10 } }
+        if (expenseData.items.length) {
+          chartDonut = new Chart(donutEl, {
+            type: "doughnut",
+            data: {
+              labels: expenseData.labels,
+              datasets: [{
+                data: expenseData.values,
+                backgroundColor: expenseData.colors,
+                borderWidth: 0,
+                hoverOffset: 6
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: "62%",
+              animation: { duration: 500, easing: "easeOutQuart" },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label(ctx) {
+                      const pct = formatCategoryPercent(ctx.raw, expenseData.total);
+                      return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+                    }
+                  }
+                }
               }
             }
-          }
-        });
+          });
+        }
       }
+
+      const barWrap = document.getElementById("incomeBarChartWrap");
+      if (barWrap) barWrap.classList.toggle("chart-wrap-bar-single", incomeData.items.length === 1);
 
       if (barEl) {
         chartIncomeBar = destroyChartInstance(chartIncomeBar);
-        chartIncomeBar = new Chart(barEl, {
-          type: "bar",
-          data: {
-            labels: incomeData.labels.length ? incomeData.labels : [t("stats.noIncome")],
-            datasets: [{
-              label: t("stats.total"),
-              data: incomeData.values.length ? incomeData.values : [0],
-              backgroundColor: incomeData.values.length ? chartPalette(incomeData.values.length) : ["#3f3f46"],
-              borderRadius: 6
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false }
+        const singleBar = incomeData.items.length === 1;
+        if (incomeData.items.length) {
+          chartIncomeBar = new Chart(barEl, {
+            type: "bar",
+            data: {
+              labels: incomeData.labels,
+              datasets: [{
+                label: t("stats.total"),
+                data: incomeData.values,
+                backgroundColor: incomeData.colors,
+                borderRadius: 8,
+                maxBarThickness: singleBar ? 56 : 42
+              }]
             },
-            scales: {
-              x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
-              y: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { color: "rgba(255,255,255,0.06)" } }
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              animation: { duration: 500, easing: "easeOutQuart" },
+              layout: { padding: { top: 22 } },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label(ctx) {
+                      const pct = formatCategoryPercent(ctx.raw, incomeData.total);
+                      return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  offset: true,
+                  ticks: {
+                    color: "#a1a1aa",
+                    font: { size: 9 },
+                    maxRotation: 45,
+                    minRotation: 0
+                  },
+                  grid: { display: false }
+                },
+                y: {
+                  beginAtZero: true,
+                  ticks: { color: "#71717a", font: { size: 9 }, display: false },
+                  grid: { color: "rgba(255,255,255,0.06)" }
+                }
+              }
             }
-          }
-        });
+          });
+        }
       }
 
       const trendEl = document.getElementById("trendChart");
