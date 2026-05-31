@@ -8952,9 +8952,23 @@
       return null;
     }
 
+    const CHART_COLORS = [
+      "#7C3AED", // purple
+      "#EF4444", // red
+      "#F59E0B", // amber/orange
+      "#10B981", // green
+      "#3B82F6", // blue
+      "#EC4899", // pink
+      "#06B6D4", // cyan
+      "#F97316", // orange
+      "#8B5CF6", // violet
+      "#84CC16", // lime
+      "#14B8A6", // teal
+      "#F43F5E"  // rose
+    ];
+
     function chartPalette(count) {
-      const palette = ["#7C3AED", "#6366f1", "#22C55E", "#3B82F6", "#F97316", "#EF4444", "#EAB308", "#06B6D4", "#EC4899", "#84CC16"];
-      return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
+      return Array.from({ length: count }, (_, i) => CHART_COLORS[i % CHART_COLORS.length]);
     }
 
     function formatDonutCenterValue(amountUzs) {
