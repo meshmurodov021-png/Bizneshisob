@@ -403,6 +403,72 @@
       stroke: var(--income);
     }
 
+    .header-currency-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: inherit;
+      color: #c4b5fd;
+      background: rgba(124, 58, 237, 0.12);
+      padding: 0.25rem 0.55rem;
+      border-radius: 20px;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), background 0.2s, box-shadow 0.2s;
+    }
+
+    .header-currency-btn:active {
+      transform: scale(0.94);
+      background: rgba(124, 58, 237, 0.22);
+      box-shadow: 0 0 14px rgba(124, 58, 237, 0.35);
+    }
+
+    .card-value.currency-animate,
+    .period-value.currency-animate,
+    .transaction-amount.currency-animate {
+      animation: currencyValueIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes currencyValueIn {
+      from { opacity: 0.35; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .currency-pills {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.85rem 1rem;
+    }
+
+    .currency-pill {
+      flex: 1;
+      min-height: 40px;
+      padding: 0.5rem 0.35rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), background 0.25s, border-color 0.25s, box-shadow 0.25s;
+      white-space: nowrap;
+    }
+
+    .currency-pill:active {
+      transform: scale(0.96);
+    }
+
+    .currency-pill.active {
+      background: linear-gradient(135deg, #7C3AED, #6366f1);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.4);
+    }
+
     .header-icon-btn {
       width: 36px;
       height: 36px;
@@ -3059,6 +3125,9 @@
       </div>
       <div class="app-header-actions">
         <span class="header-badge"><i data-lucide="cloud"></i> <span data-i18n="header.cloud">Bulut</span></span>
+        <button type="button" class="header-currency-btn" id="headerCurrencyBtn" data-i18n-aria="currency.switchAria">
+          <span id="headerCurrencyLabel">🇺🇿 UZS</span>
+        </button>
         <button type="button" class="header-icon-btn" id="settingsOpenBtn" data-i18n-aria="settings.openAria">
           <i data-lucide="settings"></i>
         </button>
@@ -3236,6 +3305,17 @@
               <span>🔒 <span data-i18n="settings.changePin">PIN kod o'zgartirish</span></span>
               <i data-lucide="chevron-right"></i>
             </button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <p class="settings-section-label" data-i18n="settings.currency">Valyuta</p>
+          <div class="settings-card">
+            <div class="currency-pills" id="settingsCurrencyPills">
+              <button type="button" class="currency-pill active" data-currency="UZS">🇺🇿 UZS</button>
+              <button type="button" class="currency-pill" data-currency="USD">🇺🇸 USD</button>
+              <button type="button" class="currency-pill" data-currency="RUB">🇷🇺 RUB</button>
+            </div>
           </div>
         </section>
 
@@ -3569,6 +3649,11 @@
         "settings.section.security": "Xavfsizlik",
         "settings.section.app": "Ilova",
         "settings.section.account": "Hisob",
+        "settings.currency": "💱 Valyuta",
+        "currency.switchAria": "Valyutani almashtirish",
+        "currency.uzs": "UZS",
+        "currency.usd": "USD",
+        "currency.rub": "RUB",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -3758,6 +3843,11 @@
         "settings.section.security": "Безопасность",
         "settings.section.app": "Приложение",
         "settings.section.account": "Аккаунт",
+        "settings.currency": "💱 Валюта",
+        "currency.switchAria": "Сменить валюту",
+        "currency.uzs": "UZS",
+        "currency.usd": "USD",
+        "currency.rub": "RUB",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -3947,6 +4037,11 @@
         "settings.section.security": "Security",
         "settings.section.app": "App",
         "settings.section.account": "Account",
+        "settings.currency": "💱 Currency",
+        "currency.switchAria": "Switch currency",
+        "currency.uzs": "UZS",
+        "currency.usd": "USD",
+        "currency.rub": "RUB",
         "settings.langUz": "UZ O'zbek",
         "settings.langRu": "RU Русский",
         "settings.langEn": "EN English",
@@ -4166,6 +4261,24 @@
     const CLICK_URL = "https://my.click.uz/services/bizneshisob";
     const NOTIF_KEY = "bh-notifications";
     const THEME_KEY = "bh-theme";
+    const CURRENCY_KEY = "bzh_currency";
+
+    const EXCHANGE_RATES = {
+      UZS: 1,
+      USD: 12800,
+      RUB: 140
+    };
+
+    const CURRENCIES = ["UZS", "USD", "RUB"];
+
+    const CURRENCY_META = {
+      UZS: { flag: "🇺🇿", decimals: 0 },
+      USD: { flag: "🇺🇸", decimals: 2 },
+      RUB: { flag: "🇷🇺", decimals: 0 }
+    };
+
+    let currentCurrency = localStorage.getItem(CURRENCY_KEY) || "UZS";
+    if (!CURRENCIES.includes(currentCurrency)) currentCurrency = "UZS";
 
     const PRESET_AVATARS = [
       { id: "preset-1", icon: "user", bg: "linear-gradient(135deg,#6366f1,#a855f7)" },
@@ -4233,6 +4346,9 @@
     const profileTxStatValue = document.getElementById("profileTxStatValue");
     const settingsLangBtn = document.getElementById("settingsLangBtn");
     const settingsLangValue = document.getElementById("settingsLangValue");
+    const settingsCurrencyPills = document.getElementById("settingsCurrencyPills");
+    const headerCurrencyBtn = document.getElementById("headerCurrencyBtn");
+    const headerCurrencyLabel = document.getElementById("headerCurrencyLabel");
     const settingsThemeToggle = document.getElementById("settingsThemeToggle");
     const settingsNotifToggle = document.getElementById("settingsNotifToggle");
     const profileEditModal = document.getElementById("profileEditModal");
@@ -4686,6 +4802,7 @@
       if (settingsUserEmail && currentUser) {
         settingsUserEmail.textContent = currentUser.email || "—";
       }
+      updateCurrencyUI();
     }
 
     function openSettings() {
@@ -5993,14 +6110,15 @@
       doc.text(`Eksport sanasi: ${exportDate}`, 14, 26);
       doc.text(`Davr: ${periodLabel}`, 14, 32);
       doc.text(`Operatsiyalar: ${list.length} ta`, 14, 38);
+      doc.text(`Valyuta: ${currentCurrency}`, 14, 44);
 
       doc.setFontSize(11);
       doc.setTextColor(40, 40, 50);
-      const summaryY = 48;
-      doc.text(`Daromad: ${formatUZS(summary.income)}`, 14, summaryY);
-      doc.text(`Xarajat: ${formatUZS(summary.expense)}`, 14, summaryY + 7);
+      const summaryY = 54;
+      doc.text(`Daromad: ${formatMoney(summary.income)}`, 14, summaryY);
+      doc.text(`Xarajat: ${formatMoney(summary.expense)}`, 14, summaryY + 7);
       doc.setFont(undefined, "bold");
-      doc.text(`Sof foyda: ${formatUZS(summary.net)}`, 14, summaryY + 14);
+      doc.text(`Sof foyda: ${formatMoney(summary.net)}`, 14, summaryY + 14);
       doc.setFont(undefined, "normal");
 
       const tableBody = list.length
@@ -6008,7 +6126,7 @@
             formatExportDate(tx.date),
             tx.description,
             tx.type === "income" ? t("tx.income") : t("tx.expense"),
-            (tx.type === "income" ? "+" : "−") + formatUZS(tx.amount)
+            (tx.type === "income" ? "+" : "−") + formatMoney(tx.amount)
           ])
         : [["—", t("export.noTx"), "—", "—"]];
 
@@ -6052,23 +6170,24 @@
         ["BiznesHisob — Hisobot"],
         ["Eksport sanasi", new Date().toLocaleDateString("uz-UZ")],
         ["Davr", getPeriodLabel(exportPeriod)],
+        ["Valyuta", currentCurrency],
         [],
         ["Sana", "Tavsif", "Tur", "Summa"]
       ];
 
-      list.forEach(t => {
+      list.forEach(tx => {
         rows.push([
-          formatExportDate(t.date),
-          t.description,
-          t.type === "income" ? "Daromad" : "Xarajat",
-          t.amount
+          formatExportDate(tx.date),
+          tx.description,
+          tx.type === "income" ? "Daromad" : "Xarajat",
+          formatMoney(tx.amount)
         ]);
       });
 
       rows.push([]);
-      rows.push(["Daromad", summary.income]);
-      rows.push(["Xarajat", summary.expense]);
-      rows.push(["Sof foyda", summary.net]);
+      rows.push(["Daromad", formatMoney(summary.income)]);
+      rows.push(["Xarajat", formatMoney(summary.expense)]);
+      rows.push(["Sof foyda", formatMoney(summary.net)]);
 
       const ws = XLSX.utils.aoa_to_sheet(rows);
       ws["!cols"] = [{ wch: 18 }, { wch: 28 }, { wch: 12 }, { wch: 16 }];
@@ -6180,8 +6299,137 @@
       return i18n[currentLang]?.[key] ? t(key) : t("auth.err.default");
     }
 
+    function convertFromUzs(amountUzs, currency = currentCurrency) {
+      const rate = EXCHANGE_RATES[currency];
+      if (!rate || currency === "UZS") return Number(amountUzs) || 0;
+      return (Number(amountUzs) || 0) / rate;
+    }
+
+    function formatConvertedValue(value, currency, short = false) {
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      if (currency === "UZS") {
+        const rounded = Math.round(value);
+        if (short) {
+          if (rounded >= 1e9) return (rounded / 1e9).toFixed(1) + " mlrd";
+          if (rounded >= 1e6) return (rounded / 1e6).toFixed(1) + " mln";
+          if (rounded >= 1e3) return (rounded / 1e3).toFixed(0) + " ming";
+        }
+        return new Intl.NumberFormat(locale).format(rounded) + t("currency.suffix");
+      }
+      if (currency === "USD") {
+        return "$" + new Intl.NumberFormat("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(value);
+      }
+      if (currency === "RUB") {
+        return new Intl.NumberFormat(locale).format(Math.round(value)) + " ₽";
+      }
+      return String(value);
+    }
+
+    function formatMoney(amountUzs, options = {}) {
+      const currency = options.currency ?? currentCurrency;
+      const short = options.short ?? false;
+      const converted = convertFromUzs(amountUzs, currency);
+      return formatConvertedValue(converted, currency, short);
+    }
+
     function formatUZS(amount) {
-      return new Intl.NumberFormat(DATE_LOCALES[currentLang] || "uz-UZ").format(amount) + t("currency.suffix");
+      return formatMoney(amount);
+    }
+
+    function formatUZSShort(amount) {
+      return formatMoney(amount, { short: true });
+    }
+
+    function getCurrencyHeaderLabel(currency = currentCurrency) {
+      const meta = CURRENCY_META[currency];
+      const codeKey = `currency.${currency.toLowerCase()}`;
+      const code = i18n[currentLang]?.[codeKey] || currency;
+      return `${meta.flag} ${code}`;
+    }
+
+    function updateCurrencyUI() {
+      if (headerCurrencyLabel) {
+        headerCurrencyLabel.textContent = getCurrencyHeaderLabel();
+      }
+      if (settingsCurrencyPills) {
+        settingsCurrencyPills.querySelectorAll(".currency-pill").forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.currency === currentCurrency);
+        });
+      }
+    }
+
+    function animateAmountEl(el, amountUzs, fromCurrency, toCurrency, isShort = false) {
+      if (!el) return;
+      const fromVal = convertFromUzs(amountUzs, fromCurrency);
+      const toVal = convertFromUzs(amountUzs, toCurrency);
+      const duration = 420;
+      const start = performance.now();
+      el.classList.add("currency-animate");
+
+      function tick(now) {
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const cur = fromVal + (toVal - fromVal) * eased;
+        el.textContent = formatConvertedValue(cur, toCurrency, isShort);
+        if (p < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = formatMoney(amountUzs, { short: isShort, currency: toCurrency });
+          setTimeout(() => el.classList.remove("currency-animate"), 80);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function setCurrency(code, { animate = true } = {}) {
+      if (!CURRENCIES.includes(code)) code = "UZS";
+      const prev = currentCurrency;
+      if (prev === code) return;
+
+      currentCurrency = code;
+      localStorage.setItem(CURRENCY_KEY, code);
+      updateCurrencyUI();
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      transactions.forEach(tx => {
+        const amount = Number(tx.amount) || 0;
+        if (tx.type === "income") totalIncome += amount;
+        else totalExpense += amount;
+      });
+      const netProfit = totalIncome - totalExpense;
+
+      if (animate) {
+        animateAmountEl(netProfitEl, netProfit, prev, code, false);
+        animateAmountEl(totalIncomeEl, totalIncome, prev, code, true);
+        animateAmountEl(totalExpenseEl, totalExpense, prev, code, true);
+        render({ skipHero: true });
+        requestAnimationFrame(() => {
+          document.querySelectorAll(".period-value, .transaction-amount").forEach(el => {
+            el.classList.add("currency-animate");
+            setTimeout(() => el.classList.remove("currency-animate"), 480);
+          });
+        });
+      } else {
+        render();
+      }
+    }
+
+    function cycleCurrency() {
+      const idx = CURRENCIES.indexOf(currentCurrency);
+      setCurrency(CURRENCIES[(idx + 1) % CURRENCIES.length]);
+    }
+
+    if (headerCurrencyBtn) {
+      headerCurrencyBtn.addEventListener("click", cycleCurrency);
+    }
+    if (settingsCurrencyPills) {
+      settingsCurrencyPills.querySelectorAll(".currency-pill").forEach(btn => {
+        btn.addEventListener("click", () => setCurrency(btn.dataset.currency));
+      });
     }
 
     const MAX_AMOUNT_DIGITS = 15;
@@ -6237,13 +6485,6 @@
         e.preventDefault();
       }
     });
-
-    function formatUZSShort(amount) {
-      if (amount >= 1e9) return (amount / 1e9).toFixed(1) + " mlrd";
-      if (amount >= 1e6) return (amount / 1e6).toFixed(1) + " mln";
-      if (amount >= 1e3) return (amount / 1e3).toFixed(0) + " ming";
-      return new Intl.NumberFormat("uz-UZ").format(amount);
-    }
 
     function formatDate(iso) {
       const d = new Date(iso);
@@ -6571,7 +6812,8 @@
       }
     }
 
-    function render() {
+    function render(options = {}) {
+      const skipHero = options.skipHero === true;
       let totalIncome = 0;
       let totalExpense = 0;
 
@@ -6583,9 +6825,11 @@
 
       const netProfit = totalIncome - totalExpense;
 
-      totalIncomeEl.textContent = formatUZSShort(totalIncome);
-      totalExpenseEl.textContent = formatUZSShort(totalExpense);
-      netProfitEl.textContent = formatUZS(netProfit);
+      if (!skipHero) {
+        totalIncomeEl.textContent = formatMoney(totalIncome, { short: true });
+        totalExpenseEl.textContent = formatMoney(totalExpense, { short: true });
+        netProfitEl.textContent = formatMoney(netProfit);
+      }
       profitCard.classList.toggle("negative", netProfit < 0);
 
       const countText = t("list.count", { n: transactions.length });
@@ -6610,7 +6854,7 @@
               <div class="transaction-meta">${typeLabel} · ${escapeHtml(cat.label)} · ${formatDate(tx.date)}</div>
             </div>
             <div class="transaction-right">
-              <span class="transaction-amount ${tx.type}">${sign}${formatUZS(tx.amount)}</span>
+              <span class="transaction-amount ${tx.type}">${sign}${formatMoney(tx.amount)}</span>
               <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="Oʻchirish"><i data-lucide="trash-2"></i></button>
             </div>
           </li>
@@ -6685,6 +6929,7 @@
 
     setupInstallUI();
     applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+    updateCurrencyUI();
     applyI18n();
     initPullToRefresh();
     showView("loading");
