@@ -3311,7 +3311,8 @@
     }
 
     #premiumModal .premium-modal {
-      overflow: hidden;
+      position: relative;
+      overflow: visible;
       max-height: none;
       padding: 1.2rem 1.2rem 1rem;
       background: rgba(18, 18, 28, 0.92);
@@ -3411,39 +3412,36 @@
     }
 
     #premiumModal .modal-close {
-      top: -12px;
-      right: -12px;
-      width: 28px;
-      height: 28px;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
       padding: 0;
+      border: none;
       border-radius: 50%;
-      background: #1a1a2e;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 18px;
+      font-weight: 400;
       line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
       z-index: 10;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      box-shadow: none;
     }
 
     #premiumModal .modal-close:hover {
-      background: #252542;
+      background: rgba(255, 255, 255, 0.18);
       color: #fff;
-      border-color: rgba(255, 255, 255, 0.32);
-    }
-
-    #premiumModal .premium-modal-host {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      overflow: hidden;
+      border-color: transparent;
     }
 
     #premiumModal .premium-modal-title {
       font-size: 1.15rem;
       margin-bottom: 0.25rem;
-      padding-right: 0;
+      padding-right: 2.5rem;
     }
 
     #premiumModal .premium-sub {
@@ -4722,9 +4720,8 @@
   </div>
 
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
-    <div class="premium-modal-host">
+    <div class="premium-modal">
       <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
-      <div class="premium-modal">
       <div class="premium-confetti" id="premiumConfetti" aria-hidden="true"></div>
       <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
@@ -4742,7 +4739,6 @@
       <div class="payment-btns hidden" id="premiumPaymentSection">
         <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> <span data-i18n="premium.payme">Payme orqali to'lash</span></button>
         <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> <span data-i18n="premium.click">Click orqali to'lash</span></button>
-      </div>
       </div>
     </div>
   </div>
