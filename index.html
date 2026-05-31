@@ -4453,8 +4453,8 @@
       linkWithPhoneNumber
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
     import {
-      getFirestore,
-      enableIndexedDbPersistence,
+      initializeFirestore,
+      persistentLocalCache,
       collection,
       addDoc,
       deleteDoc,
@@ -4470,6 +4470,11 @@
       orderBy
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
+    const PREMIUM_CACHE_KEY = "bzh_premium";
+    const CURRENCY_KEY = "bzh_currency";
+    const ONBOARDING_KEY = "bzh_onboarded";
+    const PIN_KEY = "bzh_pin";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBwn2AcEje5D0LelcocgYS12uHHh2OlZ4I",
       authDomain: "bizneshisob-886ab.firebaseapp.com",
@@ -4482,12 +4487,8 @@
 
     const app = initializeApp(firebaseConfig);
     const firebaseAuth = getAuth(app);
-    const db = getFirestore(app);
-
-    enableIndexedDbPersistence(db).catch(err => {
-      if (err.code !== "failed-precondition" && err.code !== "unimplemented") {
-        console.warn("Offline persistence:", err.code);
-      }
+    const db = initializeFirestore(app, {
+      localCache: persistentLocalCache()
     });
 
     const scriptLoadCache = new Map();
@@ -4547,7 +4548,6 @@
     void ensureLucide().then(() => refreshIcons()).catch(() => {});
 
     const FREE_TX_LIMIT = 50;
-    const ONBOARDING_KEY = "bzh_onboarded";
 
     const CAT_ICON_COLORS = {
       green: "#22C55E",
@@ -5428,7 +5428,6 @@
     const CLICK_URL = "https://my.click.uz/services/bizneshisob";
     const NOTIF_KEY = "bh-notifications";
     const THEME_KEY = "bh-theme";
-    const CURRENCY_KEY = "bzh_currency";
     const BASE_CURRENCY_ID = "UZS";
 
     const UZS_CURRENCY = {
@@ -5935,7 +5934,6 @@
     }
 
     /* ——— PIN security ——— */
-    const PIN_KEY = "bzh_pin";
     const PIN_UID_KEY = "bzh_pin_uid";
     const PIN_LEN = 4;
     const MAX_PIN_ATTEMPTS = 3;
