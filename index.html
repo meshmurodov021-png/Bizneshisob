@@ -726,62 +726,60 @@
       padding: 1rem 1rem 0;
     }
 
-    /* Pull to refresh */
+    /* Pull to refresh — iOS style */
     .ptr-indicator {
-      position: absolute;
-      top: 0.35rem;
+      position: fixed;
+      top: calc(var(--header-h) + env(safe-area-inset-top, 0px) + 6px);
       left: 50%;
-      z-index: 15;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      transform: translateX(-50%) translateY(-100%);
+      z-index: 90;
+      transform: translateX(-50%) translateY(-120px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s var(--ease);
+      transition:
+        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.35s var(--ease);
+      will-change: transform, opacity;
     }
 
     .ptr-indicator.visible {
       opacity: 1;
     }
 
+    .ptr-pill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.55rem 0.7rem;
+      background: rgba(14, 16, 24, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(124, 58, 237, 0.28);
+      border-radius: 999px;
+      box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.45),
+        0 0 24px rgba(124, 58, 237, 0.12);
+    }
+
     .ptr-spinner {
-      width: 28px;
-      height: 28px;
-      border: 3px solid rgba(124, 58, 237, 0.2);
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(124, 58, 237, 0.18);
       border-top-color: #7C3AED;
       border-right-color: #a855f7;
       border-radius: 50%;
-      box-shadow: 0 0 16px rgba(124, 58, 237, 0.35);
+      flex-shrink: 0;
     }
 
-    .ptr-indicator.pulling .ptr-spinner,
-    .ptr-indicator.refreshing .ptr-spinner {
-      animation: spin 0.65s linear infinite;
-    }
-
-    .ptr-text {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .ptr-indicator.ready .ptr-text {
-      color: #a78bfa;
-    }
-
-    .ptr-indicator.done .ptr-text {
-      color: #4ade80;
+    .ptr-indicator.spinning .ptr-spinner {
+      animation: spin 0.75s linear infinite;
     }
 
     .tab-panel.ptr-shift {
-      transition: transform 0.2s var(--ease);
+      transition: transform 0.08s linear;
     }
 
     .tab-panel.ptr-shift.ptr-spring {
-      transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Tab panels — each fills main and scrolls independently */
@@ -3145,9 +3143,10 @@
     </header>
 
     <main class="app-main">
-      <div class="ptr-indicator" id="ptrIndicator" aria-live="polite" aria-hidden="true">
-        <div class="ptr-spinner" aria-hidden="true"></div>
-        <span class="ptr-text" id="ptrText"></span>
+      <div class="ptr-indicator" id="ptrIndicator" aria-hidden="true">
+        <div class="ptr-pill">
+          <div class="ptr-spinner" aria-hidden="true"></div>
+        </div>
       </div>
       <!-- Bosh sahifa -->
       <section class="tab-panel active" id="tabHome" data-tab="home">
@@ -4376,19 +4375,23 @@
     const syncStatusText = document.getElementById("syncStatusText");
     const periodStatsGrid = document.getElementById("periodStatsGrid");
     const ptrIndicator = document.getElementById("ptrIndicator");
-    const ptrText = document.getElementById("ptrText");
 
     let deferredInstallPrompt = null;
 
-    /* ——— Pull to refresh ——— */
-    const PTR_THRESHOLD = 80;
-    const PTR_MAX_PULL = 140;
+    /* ——— Pull to refresh (iOS style) ——— */
+    const PTR_THRESHOLD = 60;
+    const PTR_MAX_PULL = 130;
+    const PTR_HOLD_Y = 52;
+    const PTR_SPIN_MS = 1500;
     let ptrRefreshing = false;
     let ptrPulling = false;
     let ptrStartY = 0;
     let ptrDistance = 0;
     let ptrActivePanel = null;
     let ptrPointerType = null;
+    let ptrWheelAccum = 0;
+    let ptrWheelEndTimer = null;
+    let ptrTouchTracking = false;
 
     function isModalOpen() {
       return (
@@ -4416,16 +4419,31 @@
       return document.querySelector(".tab-panel.active");
     }
 
+    function ptrContentOffset(pull) {
+      return Math.min(pull * 0.52, PTR_HOLD_Y + 12);
+    }
+
+    function ptrIndicatorY(pull) {
+      const hidden = -120;
+      const visible = 10;
+      const progress = Math.min(Math.max(pull, 0) / PTR_THRESHOLD, 1);
+      return hidden + (visible - hidden) * progress;
+    }
+
     function resetPtrVisuals() {
       ptrPulling = false;
+      ptrTouchTracking = false;
       ptrDistance = 0;
       ptrStartY = 0;
+      ptrWheelAccum = 0;
       ptrActivePanel = null;
       ptrPointerType = null;
+      clearTimeout(ptrWheelEndTimer);
       if (ptrIndicator) {
-        ptrIndicator.classList.remove("visible", "pulling", "ready", "refreshing", "done");
+        ptrIndicator.classList.remove("visible", "spinning", "refreshing");
         ptrIndicator.setAttribute("aria-hidden", "true");
-        ptrIndicator.style.transform = "translateX(-50%) translateY(-100%)";
+        ptrIndicator.style.transform = "translateX(-50%) translateY(-120px)";
+        ptrIndicator.style.opacity = "";
       }
       tabPanels.forEach(panel => {
         panel.classList.remove("ptr-shift", "ptr-spring");
@@ -4434,33 +4452,47 @@
     }
 
     function updatePtrUI(distance, state = "pulling") {
-      if (!ptrIndicator || !ptrText) return;
-      const clamped = Math.min(distance, PTR_MAX_PULL);
-      const progress = Math.min(clamped / PTR_THRESHOLD, 1);
-      const indicatorY = Math.max(-100 + clamped * 0.55, -100 + PTR_THRESHOLD * 0.55);
+      if (!ptrIndicator) return;
+      const pull = Math.min(Math.max(distance, 0), PTR_MAX_PULL);
+      const spinning = state === "refreshing" || pull >= PTR_THRESHOLD;
 
-      ptrIndicator.classList.add("visible");
-      ptrIndicator.classList.remove("ready", "refreshing", "done");
-      ptrIndicator.classList.toggle("pulling", state === "pulling");
-      ptrIndicator.setAttribute("aria-hidden", "false");
-      ptrIndicator.style.transform = `translateX(-50%) translateY(${indicatorY}px)`;
+      ptrIndicator.classList.toggle("visible", pull > 4 || state === "refreshing");
+      ptrIndicator.classList.toggle("spinning", spinning);
+      ptrIndicator.classList.toggle("refreshing", state === "refreshing");
+      ptrIndicator.setAttribute("aria-hidden", pull > 4 || state === "refreshing" ? "false" : "true");
 
       if (state === "refreshing") {
-        ptrText.textContent = t("ptr.refreshing");
-      } else if (state === "done") {
-        ptrIndicator.classList.add("done");
-        ptrText.textContent = t("ptr.done");
-      } else if (clamped >= PTR_THRESHOLD) {
-        ptrIndicator.classList.add("ready");
-        ptrText.textContent = t("ptr.release");
-      } else {
-        ptrText.textContent = "";
+        ptrIndicator.style.transform = "translateX(-50%) translateY(10px)";
+        ptrIndicator.style.opacity = "1";
+        if (ptrActivePanel) {
+          ptrActivePanel.style.transform = `translateY(${PTR_HOLD_Y}px)`;
+        }
+        return;
       }
 
-      if (ptrActivePanel && state === "pulling") {
-        const shift = clamped * 0.45 * progress;
-        ptrActivePanel.style.transform = `translateY(${shift}px)`;
+      const opacity = Math.min(pull / (PTR_THRESHOLD * 0.85), 1);
+      ptrIndicator.style.opacity = String(opacity);
+      ptrIndicator.style.transform = `translateX(-50%) translateY(${ptrIndicatorY(pull)}px)`;
+
+      if (ptrActivePanel) {
+        ptrActivePanel.style.transform = `translateY(${ptrContentOffset(pull)}px)`;
       }
+    }
+
+    function slidePtrAway() {
+      if (ptrActivePanel) {
+        ptrActivePanel.classList.add("ptr-spring");
+        ptrActivePanel.style.transform = "translateY(0)";
+      }
+      if (ptrIndicator) {
+        ptrIndicator.style.transform = "translateX(-50%) translateY(-120px)";
+        ptrIndicator.style.opacity = "0";
+        ptrIndicator.classList.remove("visible", "spinning", "refreshing");
+      }
+      setTimeout(() => {
+        resetPtrVisuals();
+        ptrRefreshing = false;
+      }, 520);
     }
 
     async function fetchTransactionsFromServer() {
@@ -4517,65 +4549,36 @@
       if (!canPullToRefresh() || ptrRefreshing) return;
       ptrRefreshing = true;
       ptrPulling = false;
+      ptrActivePanel = ptrActivePanel || getActiveTabPanel();
 
       if (ptrActivePanel) {
         ptrActivePanel.classList.add("ptr-shift", "ptr-spring");
-        ptrActivePanel.style.transform = `translateY(${PTR_THRESHOLD * 0.35}px)`;
       }
 
       updatePtrUI(PTR_THRESHOLD, "refreshing");
 
-      const minDelay = new Promise(resolve => setTimeout(resolve, 900));
+      const minSpin = new Promise(resolve => setTimeout(resolve, PTR_SPIN_MS));
 
       try {
-        await Promise.all([minDelay, runPullRefresh()]);
-        updatePtrUI(PTR_THRESHOLD, "done");
+        await Promise.all([minSpin, runPullRefresh()]);
       } catch (err) {
         console.error("[BiznesHisob] Pull refresh failed:", err);
-        if (ptrText) ptrText.textContent = t("alert.loadError");
       }
 
-      setTimeout(() => {
-        if (ptrActivePanel) {
-          ptrActivePanel.style.transform = "translateY(0)";
-        }
-        setTimeout(resetPtrVisuals, 280);
-        ptrRefreshing = false;
-      }, 1100);
-    }
-
-    function isInteractiveTarget(el) {
-      return !!el?.closest("button, a, input, textarea, select, label, .delete-btn, .category-option, .type-btn");
-    }
-
-    function onPtrStart(clientY, panel, type, target) {
-      if (!canPullToRefresh() || panel.scrollTop > 0 || isInteractiveTarget(target)) return;
-      ptrPulling = true;
-      ptrStartY = clientY;
-      ptrDistance = 0;
-      ptrActivePanel = panel;
-      ptrPointerType = type;
-      panel.classList.add("ptr-shift");
-    }
-
-    function onPtrMove(clientY, e) {
-      if (!ptrPulling || ptrRefreshing) return;
-      const delta = clientY - ptrStartY;
-      if (delta <= 0) {
-        ptrDistance = 0;
-        if (ptrActivePanel) ptrActivePanel.style.transform = "";
-        ptrIndicator?.classList.remove("visible", "ready");
-        return;
-      }
-      ptrDistance = Math.min(delta, PTR_MAX_PULL);
-      if (e?.cancelable) e.preventDefault();
-      updatePtrUI(ptrDistance, "pulling");
+      slidePtrAway();
     }
 
     function onPtrEnd() {
+      if (ptrPointerType === "touch" && !ptrPulling && !ptrRefreshing) {
+        ptrTouchTracking = false;
+        ptrPointerType = null;
+        return;
+      }
       if (!ptrPulling || ptrRefreshing) return;
       const shouldRefresh = ptrDistance >= PTR_THRESHOLD;
       ptrPulling = false;
+      ptrTouchTracking = false;
+      clearTimeout(ptrWheelEndTimer);
 
       if (shouldRefresh) {
         triggerPullRefresh();
@@ -4586,23 +4589,82 @@
         ptrActivePanel.classList.add("ptr-spring");
         ptrActivePanel.style.transform = "translateY(0)";
       }
-      setTimeout(resetPtrVisuals, 320);
+      if (ptrIndicator) {
+        ptrIndicator.style.transform = "translateX(-50%) translateY(-120px)";
+        ptrIndicator.style.opacity = "0";
+      }
+      setTimeout(resetPtrVisuals, 480);
+    }
+
+    function schedulePtrWheelEnd() {
+      clearTimeout(ptrWheelEndTimer);
+      ptrWheelEndTimer = setTimeout(() => {
+        if (ptrPointerType === "wheel" && ptrPulling) onPtrEnd();
+      }, 180);
+    }
+
+    function onPtrWheel(e, panel) {
+      if (!canPullToRefresh() || ptrRefreshing) return;
+      if (panel.scrollTop > 0) {
+        ptrWheelAccum = 0;
+        if (ptrPointerType === "wheel") resetPtrVisuals();
+        return;
+      }
+
+      if (e.deltaY >= 0) {
+        if (ptrPointerType === "wheel" && ptrPulling) {
+          ptrWheelAccum = Math.max(0, ptrWheelAccum - e.deltaY * 0.5);
+          ptrDistance = ptrWheelAccum;
+          if (ptrWheelAccum <= 2) {
+            resetPtrVisuals();
+            return;
+          }
+          updatePtrUI(ptrWheelAccum);
+          schedulePtrWheelEnd();
+        }
+        return;
+      }
+
+      e.preventDefault();
+      ptrPulling = true;
+      ptrPointerType = "wheel";
+      ptrActivePanel = panel;
+      panel.classList.add("ptr-shift");
+      panel.classList.remove("ptr-spring");
+
+      ptrWheelAccum = Math.min(ptrWheelAccum + Math.abs(e.deltaY) * 0.45, PTR_MAX_PULL);
+      ptrDistance = ptrWheelAccum;
+      updatePtrUI(ptrWheelAccum);
+      schedulePtrWheelEnd();
     }
 
     function initPullToRefresh() {
       tabPanels.forEach(panel => {
         panel.addEventListener("touchstart", e => {
-          if (e.touches.length !== 1) return;
-          onPtrStart(e.touches[0].clientY, panel, "touch", e.target);
+          if (e.touches.length !== 1 || ptrRefreshing) return;
+          if (!canPullToRefresh() || panel.scrollTop > 0) return;
+          ptrTouchTracking = true;
+          ptrStartY = e.touches[0].clientY;
+          ptrActivePanel = panel;
+          ptrPointerType = "touch";
         }, { passive: true });
 
         panel.addEventListener("touchmove", e => {
-          if (!ptrPulling || ptrPointerType !== "touch") return;
+          if (!ptrTouchTracking || ptrPointerType !== "touch" || ptrRefreshing) return;
           if (panel.scrollTop > 0) {
             resetPtrVisuals();
             return;
           }
-          onPtrMove(e.touches[0].clientY, e);
+          const delta = e.touches[0].clientY - ptrStartY;
+          if (delta <= 0) return;
+          e.preventDefault();
+          if (!ptrPulling) {
+            ptrPulling = true;
+            panel.classList.add("ptr-shift");
+            panel.classList.remove("ptr-spring");
+          }
+          ptrDistance = Math.min(delta, PTR_MAX_PULL);
+          updatePtrUI(ptrDistance);
         }, { passive: false });
 
         panel.addEventListener("touchend", () => {
@@ -4613,23 +4675,9 @@
           if (ptrPointerType === "touch") onPtrEnd();
         });
 
-        panel.addEventListener("mousedown", e => {
-          if (e.button !== 0 || panel.scrollTop > 0) return;
-          onPtrStart(e.clientY, panel, "mouse", e.target);
-        });
-      });
-
-      document.addEventListener("mousemove", e => {
-        if (!ptrPulling || ptrPointerType !== "mouse") return;
-        if (ptrActivePanel && ptrActivePanel.scrollTop > 0) {
-          resetPtrVisuals();
-          return;
-        }
-        onPtrMove(e.clientY, e);
-      });
-
-      document.addEventListener("mouseup", () => {
-        if (ptrPointerType === "mouse") onPtrEnd();
+        panel.addEventListener("wheel", e => {
+          onPtrWheel(e, panel);
+        }, { passive: false });
       });
     }
 
