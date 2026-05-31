@@ -3922,6 +3922,7 @@
       getDocFromServer,
       setDoc,
       updateDoc,
+      increment,
       onSnapshot,
       query,
       orderBy
@@ -4043,9 +4044,17 @@
     }
 
     /** Users who already exceed the cap keep adding (not blocked by the new limit). */
-    function isGrandfatheredOverTxLimit(count = transactions.length) {
-      return count > FREE_TX_LIMIT;
+    function getTotalTransactionsAdded() {
+      const v = userProfile.totalTransactionsAdded;
+      if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
+      return 0;
     }
+
+    function isGrandfatheredOverTxLimit() {
+      return getTotalTransactionsAdded() > FREE_TX_LIMIT || transactions.length > FREE_TX_LIMIT;
+    }
+
+    let txCounterSynced = false;
 
     /* ——— i18n ——— */
     let currentLang = localStorage.getItem("bh-lang") || "uz";
@@ -4795,6 +4804,7 @@
     let transactions = [];
     let userProfile = {
       isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
+      totalTransactionsAdded: undefined,
       email: "",
       displayName: "",
       avatar: "",
@@ -6250,7 +6260,32 @@
     function canAddTransaction() {
       if (isPremiumUser()) return true;
       if (isGrandfatheredOverTxLimit()) return true;
-      return transactions.length < FREE_TX_LIMIT;
+      return getTotalTransactionsAdded() < FREE_TX_LIMIT;
+    }
+
+    async function syncTxCounterBaseline() {
+      if (!currentUser || txCounterSynced) return;
+
+      const ref = userDocRef(currentUser.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      if (typeof data.totalTransactionsAdded === "number") {
+        userProfile.totalTransactionsAdded = data.totalTransactionsAdded;
+        txCounterSynced = true;
+        updatePremiumUI();
+        return;
+      }
+
+      // Field missing — backfill from current list; defer if empty (first add uses increment)
+      if (transactions.length === 0) return;
+
+      const baseline = transactions.length;
+      await setDoc(ref, { totalTransactionsAdded: baseline }, { merge: true });
+      userProfile.totalTransactionsAdded = baseline;
+      txCounterSynced = true;
+      updatePremiumUI();
     }
 
     async function ensureUserDocument(user) {
@@ -6261,6 +6296,7 @@
           email: user.email || "",
           createdAt: new Date().toISOString(),
           isPremium: false,
+          totalTransactionsAdded: 0,
           displayName: "",
           avatar: "",
           avatarType: "",
@@ -6296,14 +6332,28 @@
               email: data.email || "",
               createdAt: data.createdAt || null,
               isPremium: !!data.isPremium,
+              totalTransactionsAdded: typeof data.totalTransactionsAdded === "number"
+                ? data.totalTransactionsAdded
+                : undefined,
               displayName: data.displayName || "",
               avatar: data.avatar || data.avatarType || "",
               avatarType: data.avatarType || data.avatar || "",
               avatarData: data.avatarData || ""
             };
+            if (typeof data.totalTransactionsAdded === "number") {
+              txCounterSynced = true;
+            }
             cachePremiumStatus(userProfile.isPremium);
           } else {
-            userProfile = { isPremium: false, email: "", displayName: "", avatar: "", avatarType: "", avatarData: "" };
+            userProfile = {
+              isPremium: false,
+              totalTransactionsAdded: 0,
+              email: "",
+              displayName: "",
+              avatar: "",
+              avatarType: "",
+              avatarData: ""
+            };
             cachePremiumStatus(false);
           }
           updatePremiumUI();
@@ -6315,7 +6365,8 @@
 
     function updatePremiumUI() {
       const premium = isPremiumUser();
-      const count = transactions.length;
+      const activeCount = transactions.length;
+      const limitCount = getTotalTransactionsAdded();
 
       premiumBadge?.classList.toggle("hidden", true);
       freePlanBadge?.classList.toggle("hidden", true);
@@ -6334,8 +6385,8 @@
         profileTariffText.textContent = t("profile.tariffFree");
       }
 
-      if (profileTxStatValue) profileTxStatValue.textContent = count;
-      if (profileTxCount) profileTxCount.textContent = count;
+      if (profileTxStatValue) profileTxStatValue.textContent = activeCount;
+      if (profileTxCount) profileTxCount.textContent = activeCount;
 
       txLimitRow?.classList.toggle("hidden", premium);
 
@@ -6353,12 +6404,12 @@
       compareChartWrap?.classList.toggle("chart-locked", showLocks);
 
       if (!premium) {
-        if (txLimitText) txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
+        if (txLimitText) txLimitText.textContent = `${limitCount}/${FREE_TX_LIMIT}`;
         if (upgradeProgressLabel) {
-          upgradeProgressLabel.textContent = usageProgressLabel(count, FREE_TX_LIMIT);
+          upgradeProgressLabel.textContent = usageProgressLabel(limitCount, FREE_TX_LIMIT);
         }
-        setUsageProgressFill(upgradeProgressFill, count, FREE_TX_LIMIT);
-        setUsageProgressFill(statsProgressFill, count, FREE_TX_LIMIT);
+        setUsageProgressFill(upgradeProgressFill, limitCount, FREE_TX_LIMIT);
+        setUsageProgressFill(statsProgressFill, limitCount, FREE_TX_LIMIT);
       }
 
       renderCharts();
@@ -7419,6 +7470,9 @@
             transactions
           });
           render();
+          syncTxCounterBaseline().catch(err => {
+            console.warn("[BiznesHisob] tx counter sync failed:", err);
+          });
         },
         err => {
           console.error("[BiznesHisob] Transactions listener error:", {
@@ -7778,7 +7832,7 @@
         throw err;
       }
 
-      if (!isPremiumUser() && !isGrandfatheredOverTxLimit() && transactions.length >= FREE_TX_LIMIT) {
+      if (!isPremiumUser() && !isGrandfatheredOverTxLimit() && getTotalTransactionsAdded() >= FREE_TX_LIMIT) {
         const err = new Error("Transaction limit reached");
         err.code = "tx-limit";
         throw err;
@@ -7824,6 +7878,10 @@
       });
 
       const docRef = await addDoc(transactionsRef(user.uid), txData);
+      await updateDoc(userDocRef(user.uid), {
+        totalTransactionsAdded: increment(1)
+      });
+      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
       console.log("[BiznesHisob] Transaction saved:", { id: docRef.id, collectionPath });
       return docRef;
     }
@@ -7982,12 +8040,14 @@
         userCurrencies = [];
         userProfile = {
           isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
+          totalTransactionsAdded: undefined,
           email: "",
           displayName: "",
           avatar: "",
           avatarType: "",
           avatarData: ""
         };
+        txCounterSynced = false;
         try {
           await ensureUserDocument(user);
         } catch (err) {
@@ -8011,7 +8071,16 @@
         closeCurrencyDropdown();
         transactions = [];
         userCurrencies = [];
-        userProfile = { isPremium: false, email: "", displayName: "", avatar: "", avatarType: "", avatarData: "" };
+        userProfile = {
+          isPremium: false,
+          totalTransactionsAdded: undefined,
+          email: "",
+          displayName: "",
+          avatar: "",
+          avatarType: "",
+          avatarData: ""
+        };
+        txCounterSynced = false;
         cachePremiumStatus(false);
         appUnlocked = false;
         hidePinScreen();
