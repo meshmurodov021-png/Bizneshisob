@@ -3341,7 +3341,7 @@
       z-index: -1;
     }
 
-    #premiumModal .premium-modal > :not(.premium-confetti) {
+    #premiumModal .premium-modal > :not(.premium-confetti):not(.modal-close) {
       position: relative;
       z-index: 2;
     }
@@ -3398,6 +3398,35 @@
       color: var(--text);
       border-color: rgba(124, 58, 237, 0.4);
       background: rgba(124, 58, 237, 0.12);
+    }
+
+    #premiumModal .modal-close {
+      top: -12px;
+      right: -12px;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border-radius: 50%;
+      background: #1a1a2e;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      z-index: 10;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+
+    #premiumModal .modal-close:hover {
+      background: #252542;
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.32);
+    }
+
+    #premiumModal .premium-modal-host {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
     }
 
     /* Export modal */
@@ -4581,9 +4610,10 @@
   </div>
 
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
-    <div class="premium-modal">
-      <div class="premium-confetti" id="premiumConfetti" aria-hidden="true"></div>
+    <div class="premium-modal-host">
       <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
+      <div class="premium-modal">
+      <div class="premium-confetti" id="premiumConfetti" aria-hidden="true"></div>
       <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
       <h2 id="premiumModalTitle" class="premium-modal-title"><span id="premiumModalTitleText" class="premium-gradient-text">💎 Premium</span></h2>
@@ -4600,6 +4630,7 @@
       <div class="payment-btns hidden" id="premiumPaymentSection">
         <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> <span data-i18n="premium.payme">Payme orqali to'lash</span></button>
         <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> <span data-i18n="premium.click">Click orqali to'lash</span></button>
+      </div>
       </div>
     </div>
   </div>
