@@ -126,13 +126,16 @@
     .loading-screen {
       position: fixed;
       inset: 0;
-      z-index: 200;
+      z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       background: var(--bg);
       gap: 1rem;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      pointer-events: auto;
     }
 
     .spinner {
@@ -5345,6 +5348,7 @@
     let unsubscribeUser = null;
     let unsubscribeCurrencies = null;
     let busy = false;
+    let loadingScreenDismissed = false;
 
     const loadingScreen = document.getElementById("loadingScreen");
     const onboardingScreen = document.getElementById("onboardingScreen");
@@ -7570,12 +7574,22 @@
       else if (dx > 50) prevOnboardingSlide();
     }, { passive: true });
 
+    function hideLoadingScreen() {
+      if (loadingScreenDismissed || !loadingScreen) return;
+      loadingScreenDismissed = true;
+      loadingScreen.style.opacity = "0";
+      setTimeout(() => {
+        loadingScreen.style.display = "none";
+        loadingScreen.classList.add("hidden");
+      }, 300);
+    }
+
     function showView(view) {
-      loadingScreen.classList.toggle("hidden", view !== "loading");
+      if (view !== "loading") hideLoadingScreen();
       onboardingScreen?.classList.toggle("hidden", view !== "onboarding");
       authScreen.classList.toggle("hidden", view !== "auth");
       appScreen.classList.toggle("hidden", view !== "app");
-      document.body.style.overflow = (view === "loading" || view === "onboarding") ? "hidden" : "";
+      document.body.style.overflow = (view === "loading" && !loadingScreenDismissed) || view === "onboarding" ? "hidden" : "";
     }
 
     function setBusy(state) {
@@ -8659,6 +8673,8 @@
     }
 
     onAuthStateChanged(auth, async user => {
+      hideLoadingScreen();
+
       if (unsubscribeTransactions) {
         unsubscribeTransactions();
         unsubscribeTransactions = null;
@@ -8741,6 +8757,7 @@
     applyI18n();
     initPullToRefresh();
     showView("loading");
+    setTimeout(hideLoadingScreen, 3000);
 
     window.addEventListener("load", refreshIcons);
   </script>
