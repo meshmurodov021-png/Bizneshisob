@@ -726,6 +726,64 @@
       padding: 1rem 1rem 0;
     }
 
+    /* Pull to refresh */
+    .ptr-indicator {
+      position: absolute;
+      top: 0.35rem;
+      left: 50%;
+      z-index: 15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      transform: translateX(-50%) translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s var(--ease);
+    }
+
+    .ptr-indicator.visible {
+      opacity: 1;
+    }
+
+    .ptr-spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(124, 58, 237, 0.2);
+      border-top-color: #7C3AED;
+      border-right-color: #a855f7;
+      border-radius: 50%;
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.35);
+    }
+
+    .ptr-indicator.pulling .ptr-spinner,
+    .ptr-indicator.refreshing .ptr-spinner {
+      animation: spin 0.65s linear infinite;
+    }
+
+    .ptr-text {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .ptr-indicator.ready .ptr-text {
+      color: #a78bfa;
+    }
+
+    .ptr-indicator.done .ptr-text {
+      color: #4ade80;
+    }
+
+    .tab-panel.ptr-shift {
+      transition: transform 0.2s var(--ease);
+    }
+
+    .tab-panel.ptr-shift.ptr-spring {
+      transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+
     /* Tab panels — each fills main and scrolls independently */
     .tab-panel {
       position: absolute;
@@ -3087,6 +3145,10 @@
     </header>
 
     <main class="app-main">
+      <div class="ptr-indicator" id="ptrIndicator" aria-live="polite" aria-hidden="true">
+        <div class="ptr-spinner" aria-hidden="true"></div>
+        <span class="ptr-text" id="ptrText"></span>
+      </div>
       <!-- Bosh sahifa -->
       <section class="tab-panel active" id="tabHome" data-tab="home">
         <div class="card hero-card" id="profitCard">
@@ -3434,6 +3496,8 @@
       deleteDoc,
       doc,
       getDoc,
+      getDocsFromServer,
+      getDocFromServer,
       setDoc,
       onSnapshot,
       query,
@@ -3604,6 +3668,9 @@
         "home.income": "Daromad",
         "home.expense": "Xarajat",
         "home.quick": "Tezkor qoʻshish",
+        "ptr.release": "Qo'yib yuboring...",
+        "ptr.refreshing": "Yangilanmoqda...",
+        "ptr.done": "Yangilandi ✅",
         "stats.title": "Statistika",
         "stats.expenseBreakdown": "Xarajatlar boʻyicha",
         "stats.incomeBreakdown": "Daromadlar boʻyicha",
@@ -3790,6 +3857,9 @@
         "home.income": "Доход",
         "home.expense": "Расход",
         "home.quick": "Быстрое добавление",
+        "ptr.release": "Отпустите...",
+        "ptr.refreshing": "Обновление...",
+        "ptr.done": "Обновлено ✅",
         "stats.title": "Статистика",
         "stats.expenseBreakdown": "Расходы по категориям",
         "stats.incomeBreakdown": "Доходы по категориям",
@@ -3976,6 +4046,9 @@
         "home.income": "Income",
         "home.expense": "Expense",
         "home.quick": "Quick add",
+        "ptr.release": "Release to refresh...",
+        "ptr.refreshing": "Refreshing...",
+        "ptr.done": "Updated ✅",
         "stats.title": "Statistics",
         "stats.expenseBreakdown": "Expenses by category",
         "stats.incomeBreakdown": "Income by category",
@@ -4302,8 +4375,263 @@
     const syncStatusRow = document.getElementById("syncStatusRow");
     const syncStatusText = document.getElementById("syncStatusText");
     const periodStatsGrid = document.getElementById("periodStatsGrid");
+    const ptrIndicator = document.getElementById("ptrIndicator");
+    const ptrText = document.getElementById("ptrText");
 
     let deferredInstallPrompt = null;
+
+    /* ——— Pull to refresh ——— */
+    const PTR_THRESHOLD = 80;
+    const PTR_MAX_PULL = 140;
+    let ptrRefreshing = false;
+    let ptrPulling = false;
+    let ptrStartY = 0;
+    let ptrDistance = 0;
+    let ptrActivePanel = null;
+    let ptrPointerType = null;
+
+    function isModalOpen() {
+      return (
+        premiumModal.classList.contains("open") ||
+        exportModal.classList.contains("open") ||
+        profileEditModal?.classList.contains("open") ||
+        langModal?.classList.contains("open") ||
+        logoutModal?.classList.contains("open")
+      );
+    }
+
+    function canPullToRefresh() {
+      return !!(
+        currentUser &&
+        !appScreen.classList.contains("hidden") &&
+        !pinScreen.classList.contains("visible") &&
+        !settingsScreen?.classList.contains("open") &&
+        !isModalOpen() &&
+        !ptrRefreshing &&
+        !busy
+      );
+    }
+
+    function getActiveTabPanel() {
+      return document.querySelector(".tab-panel.active");
+    }
+
+    function resetPtrVisuals() {
+      ptrPulling = false;
+      ptrDistance = 0;
+      ptrStartY = 0;
+      ptrActivePanel = null;
+      ptrPointerType = null;
+      if (ptrIndicator) {
+        ptrIndicator.classList.remove("visible", "pulling", "ready", "refreshing", "done");
+        ptrIndicator.setAttribute("aria-hidden", "true");
+        ptrIndicator.style.transform = "translateX(-50%) translateY(-100%)";
+      }
+      tabPanels.forEach(panel => {
+        panel.classList.remove("ptr-shift", "ptr-spring");
+        panel.style.transform = "";
+      });
+    }
+
+    function updatePtrUI(distance, state = "pulling") {
+      if (!ptrIndicator || !ptrText) return;
+      const clamped = Math.min(distance, PTR_MAX_PULL);
+      const progress = Math.min(clamped / PTR_THRESHOLD, 1);
+      const indicatorY = Math.max(-100 + clamped * 0.55, -100 + PTR_THRESHOLD * 0.55);
+
+      ptrIndicator.classList.add("visible");
+      ptrIndicator.classList.remove("ready", "refreshing", "done");
+      ptrIndicator.classList.toggle("pulling", state === "pulling");
+      ptrIndicator.setAttribute("aria-hidden", "false");
+      ptrIndicator.style.transform = `translateX(-50%) translateY(${indicatorY}px)`;
+
+      if (state === "refreshing") {
+        ptrText.textContent = t("ptr.refreshing");
+      } else if (state === "done") {
+        ptrIndicator.classList.add("done");
+        ptrText.textContent = t("ptr.done");
+      } else if (clamped >= PTR_THRESHOLD) {
+        ptrIndicator.classList.add("ready");
+        ptrText.textContent = t("ptr.release");
+      } else {
+        ptrText.textContent = "";
+      }
+
+      if (ptrActivePanel && state === "pulling") {
+        const shift = clamped * 0.45 * progress;
+        ptrActivePanel.style.transform = `translateY(${shift}px)`;
+      }
+    }
+
+    async function fetchTransactionsFromServer() {
+      if (!currentUser) return;
+      const q = query(transactionsRef(currentUser.uid), orderBy("date", "desc"));
+      const snap = await getDocsFromServer(q);
+      transactions = snap.docs.map(d => normalizeTransactionDoc(d.id, d.data()));
+    }
+
+    async function fetchUserProfileFromServer() {
+      if (!currentUser) return;
+      const snap = await getDocFromServer(userDocRef(currentUser.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        userProfile = {
+          email: data.email || "",
+          createdAt: data.createdAt || null,
+          isPremium: !!data.isPremium,
+          displayName: data.displayName || "",
+          avatar: data.avatar || data.avatarType || "",
+          avatarType: data.avatarType || data.avatar || "",
+          avatarData: data.avatarData || ""
+        };
+      }
+    }
+
+    async function runPullRefresh() {
+      switch (currentTab) {
+        case "home":
+          await fetchTransactionsFromServer();
+          render();
+          renderPeriodStats();
+          break;
+        case "list":
+          await fetchTransactionsFromServer();
+          render();
+          break;
+        case "profile":
+          await fetchUserProfileFromServer();
+          renderProfileUI();
+          updateSettingsUI();
+          break;
+        case "add":
+          await fetchTransactionsFromServer();
+          render();
+          break;
+        default:
+          await fetchTransactionsFromServer();
+          render();
+      }
+    }
+
+    async function triggerPullRefresh() {
+      if (!canPullToRefresh() || ptrRefreshing) return;
+      ptrRefreshing = true;
+      ptrPulling = false;
+
+      if (ptrActivePanel) {
+        ptrActivePanel.classList.add("ptr-shift", "ptr-spring");
+        ptrActivePanel.style.transform = `translateY(${PTR_THRESHOLD * 0.35}px)`;
+      }
+
+      updatePtrUI(PTR_THRESHOLD, "refreshing");
+
+      const minDelay = new Promise(resolve => setTimeout(resolve, 900));
+
+      try {
+        await Promise.all([minDelay, runPullRefresh()]);
+        updatePtrUI(PTR_THRESHOLD, "done");
+      } catch (err) {
+        console.error("[BiznesHisob] Pull refresh failed:", err);
+        if (ptrText) ptrText.textContent = t("alert.loadError");
+      }
+
+      setTimeout(() => {
+        if (ptrActivePanel) {
+          ptrActivePanel.style.transform = "translateY(0)";
+        }
+        setTimeout(resetPtrVisuals, 280);
+        ptrRefreshing = false;
+      }, 1100);
+    }
+
+    function isInteractiveTarget(el) {
+      return !!el?.closest("button, a, input, textarea, select, label, .delete-btn, .category-option, .type-btn");
+    }
+
+    function onPtrStart(clientY, panel, type, target) {
+      if (!canPullToRefresh() || panel.scrollTop > 0 || isInteractiveTarget(target)) return;
+      ptrPulling = true;
+      ptrStartY = clientY;
+      ptrDistance = 0;
+      ptrActivePanel = panel;
+      ptrPointerType = type;
+      panel.classList.add("ptr-shift");
+    }
+
+    function onPtrMove(clientY, e) {
+      if (!ptrPulling || ptrRefreshing) return;
+      const delta = clientY - ptrStartY;
+      if (delta <= 0) {
+        ptrDistance = 0;
+        if (ptrActivePanel) ptrActivePanel.style.transform = "";
+        ptrIndicator?.classList.remove("visible", "ready");
+        return;
+      }
+      ptrDistance = Math.min(delta, PTR_MAX_PULL);
+      if (e?.cancelable) e.preventDefault();
+      updatePtrUI(ptrDistance, "pulling");
+    }
+
+    function onPtrEnd() {
+      if (!ptrPulling || ptrRefreshing) return;
+      const shouldRefresh = ptrDistance >= PTR_THRESHOLD;
+      ptrPulling = false;
+
+      if (shouldRefresh) {
+        triggerPullRefresh();
+        return;
+      }
+
+      if (ptrActivePanel) {
+        ptrActivePanel.classList.add("ptr-spring");
+        ptrActivePanel.style.transform = "translateY(0)";
+      }
+      setTimeout(resetPtrVisuals, 320);
+    }
+
+    function initPullToRefresh() {
+      tabPanels.forEach(panel => {
+        panel.addEventListener("touchstart", e => {
+          if (e.touches.length !== 1) return;
+          onPtrStart(e.touches[0].clientY, panel, "touch", e.target);
+        }, { passive: true });
+
+        panel.addEventListener("touchmove", e => {
+          if (!ptrPulling || ptrPointerType !== "touch") return;
+          if (panel.scrollTop > 0) {
+            resetPtrVisuals();
+            return;
+          }
+          onPtrMove(e.touches[0].clientY, e);
+        }, { passive: false });
+
+        panel.addEventListener("touchend", () => {
+          if (ptrPointerType === "touch") onPtrEnd();
+        });
+
+        panel.addEventListener("touchcancel", () => {
+          if (ptrPointerType === "touch") onPtrEnd();
+        });
+
+        panel.addEventListener("mousedown", e => {
+          if (e.button !== 0 || panel.scrollTop > 0) return;
+          onPtrStart(e.clientY, panel, "mouse", e.target);
+        });
+      });
+
+      document.addEventListener("mousemove", e => {
+        if (!ptrPulling || ptrPointerType !== "mouse") return;
+        if (ptrActivePanel && ptrActivePanel.scrollTop > 0) {
+          resetPtrVisuals();
+          return;
+        }
+        onPtrMove(e.clientY, e);
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (ptrPointerType === "mouse") onPtrEnd();
+      });
+    }
 
     /* ——— PIN & biometric security ——— */
     const PIN_KEY = "bzh_pin";
@@ -6573,6 +6901,7 @@
     setupInstallUI();
     applyTheme(localStorage.getItem(THEME_KEY) || "dark");
     applyI18n();
+    initPullToRefresh();
     showView("loading");
 
     window.addEventListener("load", refreshIcons);
