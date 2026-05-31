@@ -3912,13 +3912,13 @@
           el.style.display = "none";
           el.classList.add("hidden");
         }, 280);
-        var auth = document.getElementById("authScreen");
+        var authScreenEl = document.getElementById("authScreen");
         var app = document.getElementById("appScreen");
         var onboard = document.getElementById("onboardingScreen");
-        if (auth && auth.classList.contains("hidden") &&
+        if (authScreenEl && authScreenEl.classList.contains("hidden") &&
             app && app.classList.contains("hidden") &&
             (!onboard || onboard.classList.contains("hidden"))) {
-          auth.classList.remove("hidden");
+          authScreenEl.classList.remove("hidden");
         }
       }, 2000);
     })();
@@ -4481,7 +4481,7 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const firebaseAuth = getAuth(app);
     const db = getFirestore(app);
 
     enableIndexedDbPersistence(db).catch(err => {
@@ -4535,7 +4535,7 @@
     let loadingScreenDismissed = false;
     const loadingScreen = document.getElementById("loadingScreen");
 
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(firebaseAuth, user => {
       console.log("[BiznesHisob] Auth state changed", user ? user.uid : "signed out");
       if (handleAuthState) void handleAuthState(user);
       else {
@@ -5507,6 +5507,9 @@
     const authError = document.getElementById("authError");
     const authTabs = document.querySelectorAll(".auth-tab");
     const userEmailEl = document.getElementById("userEmail");
+
+    /* Auth listeners attached early so a later init error cannot leave login broken */
+    initAuthForm();
     const logoutBtn = document.getElementById("logoutBtn");
     const profileTxCount = document.getElementById("profileTxCount");
     const premiumBadge = document.getElementById("premiumBadge");
@@ -6763,7 +6766,7 @@
       setBusy(true);
       try {
         closeProfileModal(logoutModal);
-        await signOut(auth);
+        await signOut(firebaseAuth);
       } catch (err) {
         alert(authErrorMessage(err.code));
       } finally {
@@ -6845,7 +6848,7 @@
       }
     });
 
-    installBtn.addEventListener("click", async () => {
+    installBtn?.addEventListener("click", async () => {
       if (!deferredInstallPrompt) return;
       deferredInstallPrompt.prompt();
       await deferredInstallPrompt.userChoice;
@@ -8305,6 +8308,8 @@
         return;
       }
 
+      hideLoadingScreen();
+
       document.querySelectorAll(".password-field-wrap").forEach(wrap => {
         const input = wrap.querySelector("input");
         const btn = wrap.querySelector(".password-toggle");
@@ -8317,15 +8322,22 @@
         });
       });
 
-      authTabs.forEach(tab => {
+      document.querySelectorAll(".auth-tab").forEach(tab => {
         if (tab.dataset.bound === "1") return;
         tab.dataset.bound = "1";
         tab.addEventListener("click", () => {
           const mode = tab.dataset.mode;
           console.log("[BiznesHisob] Auth tab clicked:", mode);
-          setAuthMode(mode);
+          if (mode) setAuthMode(mode);
         });
       });
+
+      if (authSubmitBtn.dataset.boundClick !== "1") {
+        authSubmitBtn.dataset.boundClick = "1";
+        authSubmitBtn.addEventListener("click", () => {
+          console.log("[BiznesHisob] Auth submit button clicked, mode:", authMode);
+        });
+      }
 
       if (authForm.dataset.bound !== "1") {
         authForm.dataset.bound = "1";
@@ -8358,7 +8370,7 @@
             if (authMode === "register") {
               const fullName = authFullName?.value.trim() || "";
               console.log("[BiznesHisob] Register attempt:", email);
-              const cred = await createUserWithEmailAndPassword(auth, email, password);
+              const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
               console.log("[BiznesHisob] Registration successful");
               authScreen.classList.add("hidden");
               await showBriefAuthLoading(800);
@@ -8368,7 +8380,7 @@
               scheduleAuthFallback();
             } else {
               console.log("[BiznesHisob] Login attempt:", email);
-              await signInWithEmailAndPassword(auth, email, password);
+              await signInWithEmailAndPassword(firebaseAuth, email, password);
               console.log("[BiznesHisob] Login successful");
             }
             authForm.reset();
@@ -8721,7 +8733,7 @@
         code: err?.code,
         message: err?.message,
         name: err?.name,
-        authUid: auth.currentUser?.uid ?? null,
+        authUid: firebaseAuth.currentUser?.uid ?? null,
         currentUserUid: currentUser?.uid ?? null,
         online: navigator.onLine,
         ...context
@@ -8731,7 +8743,7 @@
     function getSaveErrorMessage(err) {
       if (err?.code === "tx-limit") return null;
 
-      if (!auth.currentUser || !currentUser) {
+      if (!firebaseAuth.currentUser || !currentUser) {
         return t("alert.notAuth");
       }
 
@@ -8762,7 +8774,7 @@
     }
 
     async function saveTransaction(rawTxData) {
-      const user = auth.currentUser;
+      const user = firebaseAuth.currentUser;
       if (!user) {
         const err = new Error("User not authenticated");
         err.code = "auth/not-authenticated";
@@ -8831,7 +8843,7 @@
     form.addEventListener("submit", async e => {
       e.preventDefault();
 
-      if (!auth.currentUser || !currentUser) {
+      if (!firebaseAuth.currentUser || !currentUser) {
         alert(t("alert.notAuth"));
         return;
       }
@@ -9040,20 +9052,28 @@
 
     if (pendingAuthReady) void handleAuthState(pendingAuthUser);
 
-    initAuthForm();
-    setupInstallUI();
-    applyTheme(localStorage.getItem(THEME_KEY) || "dark");
-    updateCurrencyUI();
-    applyI18n();
-    initPullToRefresh();
+    function bootstrapApp() {
+      initAuthForm();
+      setupInstallUI();
+      applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+      updateCurrencyUI();
+      applyI18n();
+      initPullToRefresh();
 
-    if (!pendingAuthReady) {
-      setTimeout(() => {
-        if (isNoMainViewVisible()) {
-          hideLoadingScreen();
-          showView("auth");
-        }
-      }, 2000);
+      if (!pendingAuthReady) {
+        setTimeout(() => {
+          if (isNoMainViewVisible()) {
+            hideLoadingScreen();
+            showView("auth");
+          }
+        }, 2000);
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bootstrapApp);
+    } else {
+      bootstrapApp();
     }
 
     window.addEventListener("load", refreshIcons);
