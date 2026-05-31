@@ -121,6 +121,11 @@
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
       }
+
+      .onboarding-dot-progress-fill.is-animating {
+        animation: none !important;
+        width: 100% !important;
+      }
     }
 
     /* Loading */
@@ -311,10 +316,17 @@
 
     .onboarding-dots {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      gap: 0.45rem;
+      gap: 0.55rem;
       margin-bottom: 0.5rem;
+    }
+
+    .onboarding-dot-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
     }
 
     .onboarding-dot {
@@ -325,10 +337,40 @@
       transition: transform 0.3s, background 0.3s, width 0.3s;
     }
 
-    .onboarding-dot.active {
+    .onboarding-dot-item.active .onboarding-dot {
       width: 22px;
       border-radius: 999px;
       background: #3B82F6;
+    }
+
+    .onboarding-dot-progress {
+      width: 8px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      transition: width 0.3s var(--ease);
+    }
+
+    .onboarding-dot-item.active .onboarding-dot-progress {
+      width: 22px;
+    }
+
+    .onboarding-dot-progress-fill {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3B82F6, #60a5fa);
+      border-radius: 999px;
+    }
+
+    .onboarding-dot-item.active .onboarding-dot-progress-fill.is-animating {
+      animation: onboardingDotProgress 3s linear forwards;
+    }
+
+    @keyframes onboardingDotProgress {
+      from { width: 0%; }
+      to { width: 100%; }
     }
 
     .onboarding-footer {
@@ -3959,9 +4001,18 @@
       </div>
     </div>
     <div class="onboarding-dots" id="onboardingDots" aria-hidden="true">
-      <span class="onboarding-dot active"></span>
-      <span class="onboarding-dot"></span>
-      <span class="onboarding-dot"></span>
+      <span class="onboarding-dot-item active">
+        <span class="onboarding-dot"></span>
+        <span class="onboarding-dot-progress"><span class="onboarding-dot-progress-fill"></span></span>
+      </span>
+      <span class="onboarding-dot-item">
+        <span class="onboarding-dot"></span>
+        <span class="onboarding-dot-progress"><span class="onboarding-dot-progress-fill"></span></span>
+      </span>
+      <span class="onboarding-dot-item">
+        <span class="onboarding-dot"></span>
+        <span class="onboarding-dot-progress"><span class="onboarding-dot-progress-fill"></span></span>
+      </span>
     </div>
     <div class="onboarding-footer">
       <button type="button" class="onboarding-next-btn" id="onboardingNext" data-i18n="onboarding.next">Keyingisi</button>
@@ -7647,7 +7698,12 @@
     let postOnboardingView = "auth";
     let onboardingSlide = 0;
     const ONBOARDING_SLIDE_COUNT = 3;
+    const ONBOARDING_AUTO_MS = 3000;
+    const ONBOARDING_RESUME_MS = 5000;
     let onboardingTouchStartX = 0;
+    let onboardingAutoTimer = null;
+    let onboardingResumeTimer = null;
+    let onboardingAutoPaused = false;
     let authFallbackTimer = null;
 
     function isNoMainViewVisible() {
@@ -7696,6 +7752,7 @@
         console.log("[BiznesHisob] Not onboarded — showing onboarding");
         showView("onboarding");
         updateOnboardingSlide(0);
+        startOnboardingAuto();
         refreshIcons();
         return;
       }
@@ -7711,6 +7768,7 @@
     }
 
     function completeOnboarding() {
+      stopOnboardingAuto();
       localStorage.setItem(ONBOARDING_KEY, "true");
       showView(postOnboardingView);
       refreshIcons();
@@ -7719,27 +7777,99 @@
       }
     }
 
-    function updateOnboardingSlide(index) {
+    function resetOnboardingProgress() {
+      if (!onboardingDots) return;
+      onboardingDots.querySelectorAll(".onboarding-dot-progress-fill").forEach((fill, i) => {
+        fill.classList.remove("is-animating");
+        fill.style.width = i === onboardingSlide ? "" : "0%";
+      });
+      const activeFill = onboardingDots.querySelectorAll(".onboarding-dot-item")[onboardingSlide]
+        ?.querySelector(".onboarding-dot-progress-fill");
+      if (activeFill && !onboardingAutoPaused) {
+        void activeFill.offsetWidth;
+        activeFill.classList.add("is-animating");
+      }
+    }
+
+    function stopOnboardingAuto() {
+      if (onboardingAutoTimer) {
+        clearInterval(onboardingAutoTimer);
+        onboardingAutoTimer = null;
+      }
+      if (onboardingResumeTimer) {
+        clearTimeout(onboardingResumeTimer);
+        onboardingResumeTimer = null;
+      }
+      onboardingAutoPaused = false;
+      onboardingDots?.querySelectorAll(".onboarding-dot-progress-fill").forEach(fill => {
+        fill.classList.remove("is-animating");
+      });
+    }
+
+    function startOnboardingAuto() {
+      if (onboardingScreen?.classList.contains("hidden")) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      if (onboardingAutoTimer) {
+        clearInterval(onboardingAutoTimer);
+        onboardingAutoTimer = null;
+      }
+      onboardingAutoPaused = false;
+      resetOnboardingProgress();
+
+      onboardingAutoTimer = setInterval(() => {
+        const next = (onboardingSlide + 1) % ONBOARDING_SLIDE_COUNT;
+        updateOnboardingSlide(next, { fromAuto: true });
+      }, ONBOARDING_AUTO_MS);
+    }
+
+    function pauseOnboardingAuto() {
+      if (onboardingScreen?.classList.contains("hidden")) return;
+
+      onboardingAutoPaused = true;
+      if (onboardingAutoTimer) {
+        clearInterval(onboardingAutoTimer);
+        onboardingAutoTimer = null;
+      }
+      onboardingDots?.querySelectorAll(".onboarding-dot-progress-fill").forEach(fill => {
+        fill.classList.remove("is-animating");
+      });
+
+      if (onboardingResumeTimer) clearTimeout(onboardingResumeTimer);
+      onboardingResumeTimer = setTimeout(() => {
+        onboardingResumeTimer = null;
+        if (onboardingScreen?.classList.contains("hidden")) return;
+        startOnboardingAuto();
+      }, ONBOARDING_RESUME_MS);
+    }
+
+    function updateOnboardingSlide(index, options = {}) {
       onboardingSlide = Math.max(0, Math.min(ONBOARDING_SLIDE_COUNT - 1, index));
       if (onboardingTrack) {
         onboardingTrack.style.transform = `translateX(-${onboardingSlide * 100}%)`;
       }
-      onboardingDots?.querySelectorAll(".onboarding-dot").forEach((dot, i) => {
-        dot.classList.toggle("active", i === onboardingSlide);
+      onboardingDots?.querySelectorAll(".onboarding-dot-item").forEach((item, i) => {
+        item.classList.toggle("active", i === onboardingSlide);
       });
       const isLast = onboardingSlide === ONBOARDING_SLIDE_COUNT - 1;
       onboardingNext?.classList.toggle("hidden", isLast);
       onboardingStart?.classList.toggle("hidden", !isLast);
       onboardingLoginWrap?.classList.toggle("hidden", !isLast);
+
+      if (!onboardingAutoPaused) {
+        resetOnboardingProgress();
+      }
     }
 
-    function nextOnboardingSlide() {
+    function nextOnboardingSlide(manual = true) {
+      if (manual) pauseOnboardingAuto();
       if (onboardingSlide < ONBOARDING_SLIDE_COUNT - 1) {
         updateOnboardingSlide(onboardingSlide + 1);
       }
     }
 
-    function prevOnboardingSlide() {
+    function prevOnboardingSlide(manual = true) {
+      if (manual) pauseOnboardingAuto();
       if (onboardingSlide > 0) {
         updateOnboardingSlide(onboardingSlide - 1);
       }
@@ -7752,12 +7882,13 @@
       }
       showView("onboarding");
       updateOnboardingSlide(0);
+      startOnboardingAuto();
       refreshIcons();
       return true;
     }
 
     onboardingSkip?.addEventListener("click", completeOnboarding);
-    onboardingNext?.addEventListener("click", nextOnboardingSlide);
+    onboardingNext?.addEventListener("click", () => nextOnboardingSlide(true));
     onboardingStart?.addEventListener("click", completeOnboarding);
     onboardingLogin?.addEventListener("click", completeOnboarding);
 
@@ -7767,8 +7898,8 @@
 
     onboardingScreen?.addEventListener("touchend", e => {
       const dx = e.changedTouches[0].screenX - onboardingTouchStartX;
-      if (dx < -50) nextOnboardingSlide();
-      else if (dx > 50) prevOnboardingSlide();
+      if (dx < -50) nextOnboardingSlide(true);
+      else if (dx > 50) prevOnboardingSlide(true);
     }, { passive: true });
 
     function hideLoadingScreen() {
