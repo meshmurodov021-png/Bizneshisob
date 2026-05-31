@@ -495,6 +495,33 @@
 
     .auth-error.visible { display: block; }
 
+    .auth-register-fields.hidden { display: none; }
+
+    .password-field-wrap {
+      position: relative;
+    }
+
+    .password-field-wrap input {
+      padding-right: 3.1rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 0.55rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.35rem;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .password-toggle:hover { opacity: 1; }
+
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-6px); }
@@ -3971,9 +3998,27 @@
           <label for="authEmail">Email</label>
           <input type="email" id="authEmail" placeholder="email@misol.uz" required autocomplete="email">
         </div>
+        <div class="auth-register-fields hidden" id="authRegisterFields">
+          <div class="form-row">
+            <label for="authFullName" data-i18n="auth.fullName">Ism Familiya</label>
+            <input type="text" id="authFullName" data-i18n-placeholder="auth.fullNamePh" placeholder="Masalan: Anvar Aliyev" maxlength="80" autocomplete="name">
+          </div>
+        </div>
         <div class="form-row">
           <label for="authPassword" data-i18n="auth.password">Parol</label>
-          <input type="password" id="authPassword" data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
+          <div class="password-field-wrap">
+            <input type="password" id="authPassword" data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
+            <button type="button" class="password-toggle" data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+          </div>
+        </div>
+        <div class="auth-register-fields hidden" id="authConfirmFields">
+          <div class="form-row">
+            <label for="authConfirmPassword" data-i18n="auth.confirmPassword">Parolni tasdiqlash</label>
+            <div class="password-field-wrap">
+              <input type="password" id="authConfirmPassword" data-i18n-placeholder="auth.confirmPasswordPh" placeholder="Parolni qayta kiriting" minlength="6" autocomplete="new-password">
+              <button type="button" class="password-toggle" data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+            </div>
+          </div>
         </div>
         <button type="submit" class="auth-btn" id="authSubmitBtn" data-i18n="auth.login">Kirish</button>
       </form>
@@ -4637,6 +4682,12 @@
         "auth.register": "Roʻyxatdan oʻtish",
         "auth.password": "Parol",
         "auth.passwordPh": "Kamida 6 ta belgi",
+        "auth.fullName": "Ism Familiya",
+        "auth.fullNamePh": "Masalan: Anvar Aliyev",
+        "auth.confirmPassword": "Parolni tasdiqlash",
+        "auth.confirmPasswordPh": "Parolni qayta kiriting",
+        "auth.showPassword": "Parolni ko'rsatish",
+        "auth.err.passwordMismatch": "Parollar mos kelmaydi",
         "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
         "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
         "auth.err.invalid-email": "Email notoʻgʻri.",
@@ -4868,6 +4919,12 @@
         "auth.register": "Регистрация",
         "auth.password": "Пароль",
         "auth.passwordPh": "Минимум 6 символов",
+        "auth.fullName": "Имя Фамилия",
+        "auth.fullNamePh": "Например: Anvar Aliyev",
+        "auth.confirmPassword": "Подтверждение пароля",
+        "auth.confirmPasswordPh": "Повторите пароль",
+        "auth.showPassword": "Показать пароль",
+        "auth.err.passwordMismatch": "Пароли не совпадают",
         "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
         "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
         "auth.err.invalid-email": "Неверный email.",
@@ -5099,6 +5156,12 @@
         "auth.register": "Sign up",
         "auth.password": "Password",
         "auth.passwordPh": "At least 6 characters",
+        "auth.fullName": "Full name",
+        "auth.fullNamePh": "e.g. Anvar Aliyev",
+        "auth.confirmPassword": "Confirm password",
+        "auth.confirmPasswordPh": "Re-enter password",
+        "auth.showPassword": "Show password",
+        "auth.err.passwordMismatch": "Passwords do not match",
         "auth.err.credentials": "Enter email and password (at least 6 characters).",
         "auth.err.email-already-in-use": "This email is already registered.",
         "auth.err.invalid-email": "Invalid email.",
@@ -5434,7 +5497,11 @@
     const appScreen = document.getElementById("appScreen");
     const authForm = document.getElementById("authForm");
     const authEmail = document.getElementById("authEmail");
+    const authFullName = document.getElementById("authFullName");
     const authPassword = document.getElementById("authPassword");
+    const authConfirmPassword = document.getElementById("authConfirmPassword");
+    const authRegisterFields = document.getElementById("authRegisterFields");
+    const authConfirmFields = document.getElementById("authConfirmFields");
     const authSubmitBtn = document.getElementById("authSubmitBtn");
     const authError = document.getElementById("authError");
     const authTabs = document.querySelectorAll(".auth-tab");
@@ -8138,6 +8205,27 @@
       return div.innerHTML;
     }
 
+    function resetPasswordToggles() {
+      document.querySelectorAll(".password-field-wrap").forEach(wrap => {
+        const input = wrap.querySelector("input");
+        const btn = wrap.querySelector(".password-toggle");
+        if (!input || !btn) return;
+        input.type = "password";
+        btn.textContent = "👁️";
+      });
+    }
+
+    document.querySelectorAll(".password-field-wrap").forEach(wrap => {
+      const input = wrap.querySelector("input");
+      const btn = wrap.querySelector(".password-toggle");
+      if (!input || !btn) return;
+      btn.addEventListener("click", () => {
+        const visible = input.type === "text";
+        input.type = visible ? "password" : "text";
+        btn.textContent = visible ? "👁️" : "👁️‍🗨️";
+      });
+    });
+
     function setAuthMode(mode) {
       authMode = mode;
       authTabs.forEach(tab => {
@@ -8145,6 +8233,16 @@
       });
       authSubmitBtn.textContent = mode === "login" ? t("auth.login") : t("auth.register");
       authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
+      authRegisterFields?.classList.toggle("hidden", mode !== "register");
+      authConfirmFields?.classList.toggle("hidden", mode !== "register");
+      if (authConfirmPassword) {
+        authConfirmPassword.required = mode === "register";
+      }
+      if (mode === "login") {
+        if (authFullName) authFullName.value = "";
+        if (authConfirmPassword) authConfirmPassword.value = "";
+        resetPasswordToggles();
+      }
       clearAuthError();
     }
 
@@ -8163,14 +8261,31 @@
         return;
       }
 
+      if (authMode === "register") {
+        const confirmPassword = authConfirmPassword.value;
+        if (confirmPassword.length < 6) {
+          showAuthError(t("auth.err.credentials"));
+          return;
+        }
+        if (password !== confirmPassword) {
+          showAuthError(t("auth.err.passwordMismatch"));
+          return;
+        }
+      }
+
       setBusy(true);
       try {
         if (authMode === "register") {
-          await createUserWithEmailAndPassword(auth, email, password);
+          const fullName = authFullName.value.trim();
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          if (fullName) {
+            await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
+          }
         } else {
           await signInWithEmailAndPassword(auth, email, password);
         }
         authForm.reset();
+        resetPasswordToggles();
       } catch (err) {
         showAuthError(authErrorMessage(err.code));
       } finally {
