@@ -2055,6 +2055,93 @@
       box-shadow: 0 0 12px currentColor;
     }
 
+    .income-breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .income-cat-row {
+      animation: chartFadeIn 0.45s var(--ease) both;
+    }
+
+    .income-cat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .income-cat-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .income-cat-left .category-icon-wrap {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .income-cat-left .category-icon-wrap [data-lucide] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .income-cat-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .income-cat-amount {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .income-cat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .income-cat-bar {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .income-cat-bar-fill {
+      height: 100%;
+      min-width: 8px;
+      border-radius: 999px;
+      width: 0;
+      transition: width 0.65s var(--ease);
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .income-cat-pct {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 2.75rem;
+      text-align: right;
+    }
+
     @keyframes chartFadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -4472,12 +4559,9 @@
           <div class="top-cats-list" id="topExpenseList"></div>
         </div>
 
-        <div class="card chart-card">
+        <div class="card chart-card hidden" id="incomeBreakdownCard">
           <p class="chart-card-title" data-i18n="stats.incomeBreakdown">Daromadlar boʻyicha</p>
-          <div class="chart-wrap chart-wrap-bar" id="incomeBarChartWrap">
-            <canvas id="incomeBarChart" aria-hidden="true"></canvas>
-          </div>
-          <div class="chart-legend" id="incomeChartLegend"></div>
+          <div class="income-breakdown-list" id="incomeBreakdownList"></div>
         </div>
 
         <div class="card top-cats-card hidden" id="topIncomeCard">
@@ -9038,17 +9122,10 @@
       return (Math.round((amount / total) * 1000) / 10).toFixed(1);
     }
 
-    function formatChartBarLabel(amount) {
-      const n = Number(amount) || 0;
-      if (n <= 0) return "";
-      const short = formatUZSShort(n);
-      const suffix = (t("currency.suffix") || "").trim();
-      if (suffix) {
-        const esc = suffix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const stripped = short.replace(new RegExp(`\\s*${esc}\\s*$`, "i"), "").trim();
-        if (stripped) return stripped;
-      }
-      return short.replace(/\s*so[''ʻ]?m\s*$/i, "").trim() || short;
+    function incomeProgressBarWidth(percentStr) {
+      const p = parseFloat(percentStr) || 0;
+      if (p <= 0) return 0;
+      return Math.max(p, 2);
     }
 
     function aggregateCategoryBreakdown(type) {
@@ -9147,46 +9224,41 @@
       refreshIcons();
     }
 
-    const centerSingleBarPlugin = {
-      id: "centerSingleBar",
-      afterLayout(chart) {
-        if (chart.config.type !== "bar") return;
-        const labels = chart.data?.labels;
-        if (!labels || labels.length !== 1) return;
-        const meta = chart.getDatasetMeta(0);
-        const bar = meta?.data?.[0];
-        if (!bar || typeof bar.x !== "number") return;
-        const { left, right } = chart.chartArea;
-        bar.x = (left + right) / 2;
+    function renderIncomeBreakdownList(container, card, data) {
+      if (!container || !card) return;
+      if (!data.items.length) {
+        card.classList.add("hidden");
+        container.innerHTML = "";
+        return;
       }
-    };
-
-    const barValueLabelPlugin = {
-      id: "barValueLabels",
-      afterDatasetsDraw(chart) {
-        if (chart.config.type !== "bar") return;
-        const { ctx } = chart;
-        chart.data.datasets.forEach((dataset, datasetIndex) => {
-          const meta = chart.getDatasetMeta(datasetIndex);
-          if (!meta?.data?.length) return;
-          meta.data.forEach((bar, index) => {
-            const value = dataset.data[index];
-            if (!value || value <= 0) return;
-            const label = formatChartBarLabel(value);
-            if (!label) return;
-            const x = bar.x;
-            const y = bar.y - 6;
-            ctx.save();
-            ctx.font = "600 10px system-ui, sans-serif";
-            ctx.fillStyle = "#e8eaef";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "bottom";
-            ctx.fillText(label, x, y);
-            ctx.restore();
-          });
+      card.classList.remove("hidden");
+      container.innerHTML = data.items.map((item, i) => {
+        const barW = incomeProgressBarWidth(item.percent);
+        return `
+        <div class="income-cat-row" style="animation-delay:${i * 0.05}s">
+          <div class="income-cat-head">
+            <div class="income-cat-left">
+              ${categoryIconHtml(item)}
+              <span class="income-cat-name">${escapeHtml(item.label)}</span>
+            </div>
+            <span class="income-cat-amount">${escapeHtml(formatUZS(item.amount))}</span>
+          </div>
+          <div class="income-cat-bar-row">
+            <div class="income-cat-bar">
+              <div class="income-cat-bar-fill" data-width="${barW}" style="background:${item.color};color:${item.color}"></div>
+            </div>
+            <span class="income-cat-pct">${escapeHtml(item.percent)}%</span>
+          </div>
+        </div>
+      `;
+      }).join("");
+      requestAnimationFrame(() => {
+        container.querySelectorAll(".income-cat-bar-fill").forEach(bar => {
+          bar.style.width = `${bar.dataset.width || 0}%`;
         });
-      }
-    };
+      });
+      refreshIcons();
+    }
 
     function getLast30DaysTrend() {
       const labels = [];
@@ -9251,20 +9323,18 @@
       }
       if (typeof Chart === "undefined") return;
 
-      if (!Chart.registry.plugins.get("barValueLabels")) {
-        Chart.register(barValueLabelPlugin, centerSingleBarPlugin);
-      }
-
       const expenseData = aggregateCategoryBreakdown("expense");
       const incomeData = aggregateCategoryBreakdown("income");
       const donutEl = document.getElementById("expenseDonutChart");
-      const barEl = document.getElementById("incomeBarChart");
       const expenseLegendEl = document.getElementById("expenseChartLegend");
-      const incomeLegendEl = document.getElementById("incomeChartLegend");
 
       updateDonutCenter(expenseData.total);
       renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
-      renderChartLegend(incomeLegendEl, incomeData, "stats.noIncome");
+      renderIncomeBreakdownList(
+        document.getElementById("incomeBreakdownList"),
+        document.getElementById("incomeBreakdownCard"),
+        incomeData
+      );
       renderTopCategoriesList(
         document.getElementById("topExpenseList"),
         document.getElementById("topExpenseCard"),
@@ -9275,6 +9345,8 @@
         document.getElementById("topIncomeCard"),
         incomeData
       );
+
+      chartIncomeBar = destroyChartInstance(chartIncomeBar);
 
       if (donutEl) {
         chartDonut = destroyChartInstance(chartDonut);
@@ -9304,63 +9376,6 @@
                       return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
                     }
                   }
-                }
-              }
-            }
-          });
-        }
-      }
-
-      const barWrap = document.getElementById("incomeBarChartWrap");
-      if (barWrap) barWrap.classList.toggle("chart-wrap-bar-single", incomeData.items.length === 1);
-
-      if (barEl) {
-        chartIncomeBar = destroyChartInstance(chartIncomeBar);
-        const singleBar = incomeData.items.length === 1;
-        if (incomeData.items.length) {
-          chartIncomeBar = new Chart(barEl, {
-            type: "bar",
-            data: {
-              labels: incomeData.labels,
-              datasets: [{
-                label: t("stats.total"),
-                data: incomeData.values,
-                backgroundColor: incomeData.colors,
-                borderRadius: 8,
-                maxBarThickness: singleBar ? 56 : 42
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              animation: { duration: 500, easing: "easeOutQuart" },
-              layout: { padding: { top: 22 } },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    label(ctx) {
-                      const pct = formatCategoryPercent(ctx.raw, incomeData.total);
-                      return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
-                    }
-                  }
-                }
-              },
-              scales: {
-                x: {
-                  offset: true,
-                  ticks: {
-                    color: "#a1a1aa",
-                    font: { size: 9 },
-                    maxRotation: 45,
-                    minRotation: 0
-                  },
-                  grid: { display: false }
-                },
-                y: {
-                  beginAtZero: true,
-                  ticks: { color: "#71717a", font: { size: 9 }, display: false },
-                  grid: { color: "rgba(255,255,255,0.06)" }
                 }
               }
             }
