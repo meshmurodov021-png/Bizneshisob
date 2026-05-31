@@ -1508,8 +1508,36 @@
       stroke: var(--muted);
     }
 
-    .export-btn .export-lock-icon {
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 10px rgba(124, 58, 237, 0.5); }
+      50% { box-shadow: 0 0 25px rgba(124, 58, 237, 0.9), 0 0 40px rgba(245, 158, 11, 0.3); }
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { opacity: 0.65; filter: hue-rotate(0deg); }
+      50% { opacity: 1; filter: hue-rotate(12deg); }
+    }
+
+    @keyframes lockPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.88; }
+    }
+
+    @keyframes sparkFall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translateY(120px) rotate(180deg); opacity: 0; }
+    }
+
+    .export-btn.locked .export-lock-icon {
       stroke: #fbbf24;
+      animation: lockPulse 2s ease-in-out infinite;
     }
 
     .chart-card {
@@ -1562,12 +1590,56 @@
       width: 28px;
       height: 28px;
       stroke: #fbbf24;
+      animation: lockPulse 2s ease-in-out infinite;
     }
 
     .premium-chart-lock span {
       font-size: 0.78rem;
       font-weight: 700;
-      color: #e9d5ff;
+      color: #F59E0B;
+    }
+
+    .premium-lock-tooltip {
+      position: relative;
+    }
+
+    .premium-lock-tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) scale(0.96);
+      min-width: 180px;
+      max-width: 240px;
+      padding: 0.45rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(18, 18, 28, 0.96);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fde68a;
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: center;
+      white-space: normal;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .export-btn.premium-lock-tooltip::after {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+
+    @media (hover: hover) {
+      .premium-lock-tooltip:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) scale(1);
+      }
     }
 
     .premium-charts-grid {
@@ -1618,20 +1690,27 @@
       min-height: 48px;
       margin-top: 0.5rem;
       padding: 0.85rem 1rem;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
-      background: linear-gradient(135deg, #7C3AED, #6366f1);
+      background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED);
+      background-size: 200% 200%;
+      animation: shimmer 3s ease infinite, glow 2.5s ease-in-out infinite;
       color: #fff;
       font-size: 1rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
-      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+      transition: transform 0.2s var(--ease);
     }
 
     .premium-go-btn:active {
       transform: scale(0.98);
+    }
+
+    @media (hover: hover) {
+      .premium-go-btn:hover {
+        transform: scale(1.03);
+      }
     }
 
     .premium-later-btn {
@@ -1940,11 +2019,36 @@
     .profile-block:nth-child(3) { animation-delay: 0.12s; }
 
     .profile-upgrade-card {
+      position: relative;
       padding: 1.1rem 1.15rem;
       border-radius: var(--radius);
       background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #6366f1 100%);
-      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.45), 0 0 40px rgba(124, 58, 237, 0.15);
-      border: 1px solid rgba(167, 139, 250, 0.35);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+      animation: glow 3s ease-in-out infinite;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .profile-upgrade-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED);
+      background-size: 200% 200%;
+      animation: shimmer 3s ease infinite, borderGlow 3s ease-in-out infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .profile-upgrade-card > * {
+      position: relative;
+      z-index: 1;
     }
 
     .upgrade-card-top {
@@ -1966,21 +2070,28 @@
     .profile-premium-btn {
       flex-shrink: 0;
       padding: 0.55rem 0.85rem;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.95);
-      color: #5b21b6;
+      background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED);
+      background-size: 200% 200%;
+      animation: shimmer 3s ease infinite, glow 2.5s ease-in-out infinite;
+      color: #fff;
       font-size: 0.78rem;
       font-weight: 800;
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
-      transition: transform 0.2s var(--ease), box-shadow 0.2s;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.45);
+      transition: transform 0.2s var(--ease);
     }
 
     .profile-premium-btn:active {
       transform: scale(0.97);
+    }
+
+    @media (hover: hover) {
+      .profile-premium-btn:hover {
+        transform: scale(1.03);
+      }
     }
 
     .upgrade-progress-label {
@@ -2680,6 +2791,68 @@
       transform: translateY(24px) scale(0.96);
       transition: transform 0.4s var(--ease);
       position: relative;
+    }
+
+    #premiumModal .premium-modal {
+      overflow-x: hidden;
+      background: rgba(18, 18, 28, 0.92);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(124, 58, 237, 0.25);
+      isolation: isolate;
+    }
+
+    #premiumModal .premium-modal::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED, #6366f1);
+      background-size: 200% 200%;
+      animation: shimmer 4s ease infinite;
+      z-index: -1;
+    }
+
+    #premiumModal .premium-modal::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: calc(20px - 2px);
+      background: rgba(18, 18, 28, 0.94);
+      z-index: -1;
+    }
+
+    #premiumModal .premium-modal > :not(.premium-confetti) {
+      position: relative;
+      z-index: 2;
+    }
+
+    .premium-confetti {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 3;
+      border-radius: inherit;
+    }
+
+    .premium-spark {
+      position: absolute;
+      top: -8px;
+      font-size: 0.85rem;
+      opacity: 0;
+      animation: sparkFall 2.2s ease-out forwards;
+    }
+
+    .premium-gradient-text {
+      background: linear-gradient(135deg, #c4b5fd, #F59E0B, #a78bfa, #fde68a);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 4s ease infinite;
     }
 
     .modal-overlay.open .premium-modal {
@@ -3550,7 +3723,7 @@
             <p class="chart-card-title" data-i18n="stats.trend">Daromad/xarajat trendi</p>
             <div class="chart-wrap chart-locked" id="trendChartWrap">
               <canvas id="trendChart" aria-hidden="true"></canvas>
-              <button type="button" class="premium-chart-lock hidden" id="trendChartLock" data-i18n-aria="premium.chartLockAria">
+              <button type="button" class="premium-chart-lock premium-lock-tooltip hidden" id="trendChartLock" data-i18n-aria="premium.chartLockAria" data-i18n-tooltip="premium.featureTooltip">
                 <i data-lucide="lock"></i>
                 <span data-i18n="premium.chartLock">Premium bilan ko'ring</span>
               </button>
@@ -3560,7 +3733,7 @@
             <p class="chart-card-title" data-i18n="stats.comparison">Oylik taqqoslash</p>
             <div class="chart-wrap chart-locked" id="compareChartWrap">
               <canvas id="compareChart" aria-hidden="true"></canvas>
-              <button type="button" class="premium-chart-lock hidden" id="compareChartLock" data-i18n-aria="premium.chartLockAria">
+              <button type="button" class="premium-chart-lock premium-lock-tooltip hidden" id="compareChartLock" data-i18n-aria="premium.chartLockAria" data-i18n-tooltip="premium.featureTooltip">
                 <i data-lucide="lock"></i>
                 <span data-i18n="premium.chartLock">Premium bilan ko'ring</span>
               </button>
@@ -3774,10 +3947,11 @@
 
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
     <div class="premium-modal">
+      <div class="premium-confetti" id="premiumConfetti" aria-hidden="true"></div>
       <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
       <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
-      <h2 id="premiumModalTitle" class="premium-modal-title"><span id="premiumModalTitleText" data-i18n="premium.title">Premium ga o'ting</span></h2>
+      <h2 id="premiumModalTitle" class="premium-modal-title"><span id="premiumModalTitleText" class="premium-gradient-text">💎 Premium</span></h2>
       <p class="premium-sub" id="premiumModalSub" data-i18n="premium.sub">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
       <p class="premium-price" id="premiumModalPrice" data-i18n="premium.price">29 900 so'm / oy</p>
       <ul class="premium-features">
@@ -4154,7 +4328,7 @@
         "profile.tariffFree": "Tarif: Bepul",
         "profile.tariffPremium": "Tarif: Premium 💎",
         "profile.premiumActive": "Premium faol ✅",
-        "profile.upgradePremium": "Premiumga o'tish →",
+        "profile.upgradePremium": "✨ Premiumga o'tish →",
         "profile.usageProgress": "{{count}}/{{limit}} operatsiya ishlatilgan",
         "profile.limitLabel": "Limit:",
         "profile.logoutConfirmShort": "Chiqmoqchimisiz?",
@@ -4210,14 +4384,15 @@
         "premium.activated": "Premium faollashtirildi! 🎉",
         "premium.pending": "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.",
         "premium.checkError": "Tekshirishda xatolik. Qayta urinib ko'ring.",
-        "premium.title": "Premium ga o'ting",
+        "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium kerak",
         "premium.sub": "50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.price": "29 900 so'm / oy",
-        "premium.goBtn": "Premiumga o'tish",
+        "premium.goBtn": "✨ Premiumga o'tish",
         "premium.later": "Keyinroq",
         "premium.chartLock": "Premium bilan ko'ring",
         "premium.chartLockAria": "Premium grafiklarni ochish",
+        "premium.featureTooltip": "Premiumga o'ting va bu funksiyani oching!",
         "premium.supportBadge": "Ustuvor qo'llab-quvvatlash 💎",
         "ads.banner": "BiznesHisob Pro — reklamsiz ishlang 💎",
         "premium.f1": "Cheksiz operatsiyalar",
@@ -4369,7 +4544,7 @@
         "profile.tariffFree": "Тариф: Бесплатно",
         "profile.tariffPremium": "Тариф: Premium 💎",
         "profile.premiumActive": "Premium активен ✅",
-        "profile.upgradePremium": "Перейти на Premium →",
+        "profile.upgradePremium": "✨ Перейти на Premium →",
         "profile.usageProgress": "{{count}}/{{limit}} операций использовано",
         "profile.limitLabel": "Лимит:",
         "profile.logoutConfirmShort": "Выйти?",
@@ -4425,14 +4600,15 @@
         "premium.activated": "Premium активирован! 🎉",
         "premium.pending": "Оплата ещё не подтверждена. Premium включится после проверки.",
         "premium.checkError": "Ошибка проверки. Попробуйте снова.",
-        "premium.title": "Перейти на Premium",
+        "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Нужен Premium",
         "premium.sub": "Для более 50 операций перейдите на Premium",
         "premium.price": "29 900 so'm / мес",
-        "premium.goBtn": "Перейти на Premium",
+        "premium.goBtn": "✨ Перейти на Premium",
         "premium.later": "Позже",
         "premium.chartLock": "Смотреть с Premium",
         "premium.chartLockAria": "Открыть Premium графики",
+        "premium.featureTooltip": "Перейдите на Premium и откройте эту функцию!",
         "premium.supportBadge": "Приоритетная поддержка 💎",
         "ads.banner": "BiznesHisob Pro — без рекламы 💎",
         "premium.f1": "Безлимитные операции",
@@ -4584,7 +4760,7 @@
         "profile.tariffFree": "Plan: Free",
         "profile.tariffPremium": "Plan: Premium 💎",
         "profile.premiumActive": "Premium active ✅",
-        "profile.upgradePremium": "Upgrade to Premium →",
+        "profile.upgradePremium": "✨ Upgrade to Premium →",
         "profile.usageProgress": "{{count}}/{{limit}} transactions used",
         "profile.limitLabel": "Limit:",
         "profile.logoutConfirmShort": "Log out?",
@@ -4640,14 +4816,15 @@
         "premium.activated": "Premium activated! 🎉",
         "premium.pending": "Payment not confirmed yet. Premium will activate after review.",
         "premium.checkError": "Verification error. Please try again.",
-        "premium.title": "Upgrade to Premium",
+        "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium required",
         "premium.sub": "Upgrade to Premium for more than 50 transactions",
         "premium.price": "29,900 UZS / month",
-        "premium.goBtn": "Go Premium",
+        "premium.goBtn": "✨ Go Premium",
         "premium.later": "Later",
         "premium.chartLock": "View with Premium",
         "premium.chartLockAria": "Unlock Premium charts",
+        "premium.featureTooltip": "Go Premium to unlock this feature!",
         "premium.supportBadge": "Priority support 💎",
         "ads.banner": "BiznesHisob Pro — ad-free 💎",
         "premium.f1": "Unlimited transactions",
@@ -4732,6 +4909,7 @@
       document.querySelectorAll("[data-i18n-aria]").forEach(el => {
         el.setAttribute("aria-label", t(el.dataset.i18nAria));
       });
+      applyPremiumTooltips();
       const pinForgotEl = document.getElementById("pinForgot");
       if (pinForgotEl) pinForgotEl.textContent = t("pin.forgot");
       setAuthMode(authMode);
@@ -4848,6 +5026,7 @@
     const premiumGoBtn = document.getElementById("premiumGoBtn");
     const premiumLaterBtn = document.getElementById("premiumLaterBtn");
     const premiumPaymentSection = document.getElementById("premiumPaymentSection");
+    const premiumConfetti = document.getElementById("premiumConfetti");
     const paymeBtn = document.getElementById("paymeBtn");
     const clickBtn = document.getElementById("clickBtn");
     const settingsOpenBtn = document.getElementById("settingsOpenBtn");
@@ -6402,6 +6581,7 @@
       compareChartLock?.classList.toggle("hidden", !showLocks);
       trendChartWrap?.classList.toggle("chart-locked", showLocks);
       compareChartWrap?.classList.toggle("chart-locked", showLocks);
+      applyPremiumTooltips();
 
       if (!premium) {
         if (txLimitText) txLimitText.textContent = `${limitCount}/${FREE_TX_LIMIT}`;
@@ -6426,6 +6606,37 @@
       document.body.style.overflow = locked ? "hidden" : "";
     }
 
+    function applyPremiumTooltips() {
+      const tip = t("premium.featureTooltip");
+      document.querySelectorAll("[data-i18n-tooltip]").forEach(el => {
+        el.dataset.tooltip = t(el.dataset.i18nTooltip);
+      });
+      if (exportOpenBtn) {
+        if (exportOpenBtn.classList.contains("locked")) {
+          exportOpenBtn.classList.add("premium-lock-tooltip");
+          exportOpenBtn.dataset.tooltip = tip;
+        } else {
+          exportOpenBtn.classList.remove("premium-lock-tooltip");
+          delete exportOpenBtn.dataset.tooltip;
+        }
+      }
+    }
+
+    function spawnPremiumConfetti() {
+      if (!premiumConfetti) return;
+      premiumConfetti.innerHTML = "";
+      const sparks = ["✨", "💎", "⭐", "✨", "💫"];
+      for (let i = 0; i < 28; i++) {
+        const spark = document.createElement("span");
+        spark.className = "premium-spark";
+        spark.textContent = sparks[i % sparks.length];
+        spark.style.left = `${4 + Math.random() * 92}%`;
+        spark.style.animationDelay = `${Math.random() * 0.6}s`;
+        spark.style.animationDuration = `${1.8 + Math.random() * 1.2}s`;
+        premiumConfetti.appendChild(spark);
+      }
+    }
+
     function showPremiumModal(options = {}) {
       const reason = options.reason || "default";
       const isFeature = reason === "feature";
@@ -6439,6 +6650,7 @@
         premiumModalTitleText.textContent = isFeature ? t("premium.requiredTitle") : t("premium.title");
       }
 
+      spawnPremiumConfetti();
       paymentChecking.textContent = t("premium.checking");
       paymentChecking.classList.add("hidden");
       premiumModal.classList.add("open");
@@ -6450,6 +6662,7 @@
       premiumModal.classList.remove("open");
       updateBodyScrollLock();
       premiumLimitAlert.classList.add("hidden");
+      if (premiumConfetti) premiumConfetti.innerHTML = "";
     }
 
     function openPayment(url) {
