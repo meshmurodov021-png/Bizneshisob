@@ -3907,6 +3907,7 @@
         var el = document.getElementById("loadingScreen");
         if (!el || el.classList.contains("hidden")) return;
         el.style.opacity = "0";
+        el.style.pointerEvents = "none";
         setTimeout(function () {
           el.style.display = "none";
           el.classList.add("hidden");
@@ -7777,6 +7778,7 @@
       }
       loadingScreenDismissed = true;
       loadingScreen.style.opacity = "0";
+      loadingScreen.style.pointerEvents = "none";
       setTimeout(() => {
         loadingScreen.style.display = "none";
         loadingScreen.classList.add("hidden");
@@ -8272,24 +8274,18 @@
       });
     }
 
-    document.querySelectorAll(".password-field-wrap").forEach(wrap => {
-      const input = wrap.querySelector("input");
-      const btn = wrap.querySelector(".password-toggle");
-      if (!input || !btn) return;
-      btn.addEventListener("click", () => {
-        const visible = input.type === "text";
-        input.type = visible ? "password" : "text";
-        btn.textContent = visible ? "👁️" : "👁️‍🗨️";
-      });
-    });
-
     function setAuthMode(mode) {
+      if (!mode) return;
       authMode = mode;
       authTabs.forEach(tab => {
         tab.classList.toggle("active", tab.dataset.mode === mode);
       });
-      authSubmitBtn.textContent = mode === "login" ? t("auth.login") : t("auth.register");
-      authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
+      if (authSubmitBtn) {
+        authSubmitBtn.textContent = mode === "login" ? t("auth.login") : t("auth.register");
+      }
+      if (authPassword) {
+        authPassword.autocomplete = mode === "login" ? "current-password" : "new-password";
+      }
       authRegisterFields?.classList.toggle("hidden", mode !== "register");
       authConfirmFields?.classList.toggle("hidden", mode !== "register");
       if (authConfirmPassword) {
@@ -8303,56 +8299,92 @@
       clearAuthError();
     }
 
-    authTabs.forEach(tab => {
-      tab.addEventListener("click", () => setAuthMode(tab.dataset.mode));
-    });
-
-    authForm.addEventListener("submit", async e => {
-      e.preventDefault();
-      clearAuthError();
-      const email = authEmail.value.trim();
-      const password = authPassword.value;
-
-      if (!email || password.length < 6) {
-        showAuthError(t("auth.err.credentials"));
+    function initAuthForm() {
+      if (!authForm || !authSubmitBtn || !authEmail || !authPassword) {
+        console.error("[BiznesHisob] Auth form elements not found — listeners not attached");
         return;
       }
 
-      if (authMode === "register") {
-        const confirmPassword = authConfirmPassword.value;
-        if (confirmPassword.length < 6) {
-          showAuthError(t("auth.err.credentials"));
-          return;
-        }
-        if (password !== confirmPassword) {
-          showAuthError(t("auth.err.passwordMismatch"));
-          return;
-        }
+      document.querySelectorAll(".password-field-wrap").forEach(wrap => {
+        const input = wrap.querySelector("input");
+        const btn = wrap.querySelector(".password-toggle");
+        if (!input || !btn || btn.dataset.bound === "1") return;
+        btn.dataset.bound = "1";
+        btn.addEventListener("click", () => {
+          const visible = input.type === "text";
+          input.type = visible ? "password" : "text";
+          btn.textContent = visible ? "👁️" : "👁️‍🗨️";
+        });
+      });
+
+      authTabs.forEach(tab => {
+        if (tab.dataset.bound === "1") return;
+        tab.dataset.bound = "1";
+        tab.addEventListener("click", () => {
+          const mode = tab.dataset.mode;
+          console.log("[BiznesHisob] Auth tab clicked:", mode);
+          setAuthMode(mode);
+        });
+      });
+
+      if (authForm.dataset.bound !== "1") {
+        authForm.dataset.bound = "1";
+        authForm.addEventListener("submit", async e => {
+          e.preventDefault();
+          console.log("[BiznesHisob] Auth form submit:", authMode);
+          clearAuthError();
+          const email = authEmail.value.trim();
+          const password = authPassword.value;
+
+          if (!email || password.length < 6) {
+            showAuthError(t("auth.err.credentials"));
+            return;
+          }
+
+          if (authMode === "register") {
+            const confirmPassword = authConfirmPassword?.value || "";
+            if (confirmPassword.length < 6) {
+              showAuthError(t("auth.err.credentials"));
+              return;
+            }
+            if (password !== confirmPassword) {
+              showAuthError(t("auth.err.passwordMismatch"));
+              return;
+            }
+          }
+
+          setBusy(true);
+          try {
+            if (authMode === "register") {
+              const fullName = authFullName?.value.trim() || "";
+              console.log("[BiznesHisob] Register attempt:", email);
+              const cred = await createUserWithEmailAndPassword(auth, email, password);
+              console.log("[BiznesHisob] Registration successful");
+              authScreen.classList.add("hidden");
+              await showBriefAuthLoading(800);
+              if (fullName) {
+                await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
+              }
+              scheduleAuthFallback();
+            } else {
+              console.log("[BiznesHisob] Login attempt:", email);
+              await signInWithEmailAndPassword(auth, email, password);
+              console.log("[BiznesHisob] Login successful");
+            }
+            authForm.reset();
+            resetPasswordToggles();
+          } catch (err) {
+            console.error("[BiznesHisob] Auth error:", err.code || err.message);
+            showAuthError(authErrorMessage(err.code));
+          } finally {
+            setBusy(false);
+          }
+        });
       }
 
-      setBusy(true);
-      try {
-        if (authMode === "register") {
-          const fullName = authFullName.value.trim();
-          const cred = await createUserWithEmailAndPassword(auth, email, password);
-          console.log("[BiznesHisob] Registration successful");
-          authScreen.classList.add("hidden");
-          await showBriefAuthLoading(800);
-          if (fullName) {
-            await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
-          }
-          scheduleAuthFallback();
-        } else {
-          await signInWithEmailAndPassword(auth, email, password);
-        }
-        authForm.reset();
-        resetPasswordToggles();
-      } catch (err) {
-        showAuthError(authErrorMessage(err.code));
-      } finally {
-        setBusy(false);
-      }
-    });
+      setAuthMode(authMode);
+      console.log("[BiznesHisob] Auth form initialized");
+    }
 
     function subscribeTransactions(uid) {
       if (unsubscribeTransactions) {
@@ -9008,13 +9040,21 @@
 
     if (pendingAuthReady) void handleAuthState(pendingAuthUser);
 
+    initAuthForm();
     setupInstallUI();
     applyTheme(localStorage.getItem(THEME_KEY) || "dark");
     updateCurrencyUI();
     applyI18n();
     initPullToRefresh();
-    showView("loading");
-    setTimeout(hideLoadingScreen, 600);
+
+    if (!pendingAuthReady) {
+      setTimeout(() => {
+        if (isNoMainViewVisible()) {
+          hideLoadingScreen();
+          showView("auth");
+        }
+      }, 2000);
+    }
 
     window.addEventListener("load", refreshIcons);
   </script>
