@@ -151,6 +151,240 @@
       font-size: 0.95rem;
     }
 
+    /* Onboarding carousel */
+    .onboarding-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 210;
+      display: flex;
+      flex-direction: column;
+      background: #0a0a0f;
+      padding: max(1rem, env(safe-area-inset-top)) 1.25rem max(1.25rem, env(safe-area-inset-bottom));
+      overflow: hidden;
+    }
+
+    .onboarding-screen.hidden {
+      display: none;
+    }
+
+    .onboarding-skip {
+      position: absolute;
+      top: max(1rem, env(safe-area-inset-top));
+      right: 1.25rem;
+      z-index: 3;
+      border: none;
+      background: none;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.82rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0.35rem 0.25rem;
+    }
+
+    .onboarding-skip:active {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .onboarding-header {
+      text-align: center;
+      padding-top: 2.25rem;
+      margin-bottom: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .onboarding-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .onboarding-logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #7C3AED, #6366f1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+    }
+
+    .onboarding-logo-icon [data-lucide] {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
+    }
+
+    .onboarding-brand-tagline {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.02em;
+    }
+
+    .onboarding-viewport {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    .onboarding-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.42s cubic-bezier(0.34, 1.1, 0.64, 1);
+      will-change: transform;
+    }
+
+    .onboarding-slide {
+      flex: 0 0 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0.25rem;
+      min-height: 100%;
+    }
+
+    .onboarding-hero-card {
+      width: 100%;
+      max-width: 320px;
+      height: 60vh;
+      max-height: 420px;
+      min-height: 280px;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+    }
+
+    .onboarding-hero-card.purple {
+      background: linear-gradient(145deg, #7C3AED 0%, #6366f1 50%, #5b21b6 100%);
+    }
+
+    .onboarding-hero-card.blue {
+      background: linear-gradient(145deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%);
+    }
+
+    .onboarding-hero-card.green {
+      background: linear-gradient(145deg, #22C55E 0%, #16A34A 50%, #15803D 100%);
+    }
+
+    .onboarding-card-label {
+      font-size: clamp(2.5rem, 10vw, 3.25rem);
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .onboarding-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+    }
+
+    .onboarding-subtitle {
+      margin: 0 0 1.5rem;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.55);
+      text-align: center;
+      line-height: 1.55;
+      max-width: 300px;
+    }
+
+    .onboarding-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .onboarding-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.22);
+      transition: transform 0.3s, background 0.3s, width 0.3s;
+    }
+
+    .onboarding-dot.active {
+      width: 22px;
+      border-radius: 999px;
+      background: #3B82F6;
+    }
+
+    .onboarding-footer {
+      flex-shrink: 0;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding-top: 0.75rem;
+    }
+
+    .onboarding-next-btn,
+    .onboarding-start-btn {
+      width: 100%;
+      min-height: 52px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(59, 130, 246, 0.4);
+      transition: transform 0.2s var(--ease), opacity 0.2s;
+    }
+
+    .onboarding-next-btn:active,
+    .onboarding-start-btn:active {
+      transform: scale(0.98);
+    }
+
+    .onboarding-start-btn.hidden,
+    .onboarding-next-btn.hidden,
+    .onboarding-login-wrap.hidden {
+      display: none;
+    }
+
+    .onboarding-login-wrap {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .onboarding-login-btn {
+      border: none;
+      background: none;
+      color: #60a5fa;
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 0.2rem;
+    }
+
+    .onboarding-login-btn:active {
+      color: #93c5fd;
+    }
+
     /* Auth — mobile first */
     .auth-screen {
       position: relative;
@@ -3618,6 +3852,55 @@
     <p class="loading-text" data-i18n="loading">Yuklanmoqda...</p>
   </div>
 
+  <div class="onboarding-screen hidden" id="onboardingScreen">
+    <button type="button" class="onboarding-skip" id="onboardingSkip" data-i18n="onboarding.skip">O'tkazib yuborish</button>
+    <div class="onboarding-header">
+      <div class="onboarding-logo">
+        <span class="onboarding-logo-icon"><i data-lucide="bar-chart-2"></i></span>
+        <span>BiznesHisob</span>
+      </div>
+      <p class="onboarding-brand-tagline" data-i18n="onboarding.brandTagline">Intelligent finance tracking</p>
+    </div>
+    <div class="onboarding-viewport" id="onboardingViewport">
+      <div class="onboarding-track" id="onboardingTrack">
+        <div class="onboarding-slide">
+          <div class="onboarding-hero-card purple">
+            <span class="onboarding-card-label" data-i18n="onboarding.slide1.card">Daromad</span>
+          </div>
+          <h2 class="onboarding-title" data-i18n="onboarding.slide1.title">Biznesingizni nazorat qiling</h2>
+          <p class="onboarding-subtitle" data-i18n="onboarding.slide1.sub">Daromad va xarajatlaringizni bir joyda kuzating</p>
+        </div>
+        <div class="onboarding-slide">
+          <div class="onboarding-hero-card blue">
+            <span class="onboarding-card-label" data-i18n="onboarding.slide2.card">Statistika</span>
+          </div>
+          <h2 class="onboarding-title" data-i18n="onboarding.slide2.title">Moliyaviy hisobotlar</h2>
+          <p class="onboarding-subtitle" data-i18n="onboarding.slide2.sub">Haftalik va oylik statistikani ko'ring</p>
+        </div>
+        <div class="onboarding-slide">
+          <div class="onboarding-hero-card green">
+            <span class="onboarding-card-label" data-i18n="onboarding.slide3.card">Xavfsiz</span>
+          </div>
+          <h2 class="onboarding-title" data-i18n="onboarding.slide3.title">100% Xavfsiz</h2>
+          <p class="onboarding-subtitle" data-i18n="onboarding.slide3.sub">Ma'lumotlaringiz shifrlangan va faqat sizga tegishli</p>
+        </div>
+      </div>
+    </div>
+    <div class="onboarding-dots" id="onboardingDots" aria-hidden="true">
+      <span class="onboarding-dot active"></span>
+      <span class="onboarding-dot"></span>
+      <span class="onboarding-dot"></span>
+    </div>
+    <div class="onboarding-footer">
+      <button type="button" class="onboarding-next-btn" id="onboardingNext" data-i18n="onboarding.next">Keyingisi</button>
+      <button type="button" class="onboarding-start-btn hidden" id="onboardingStart" data-i18n="onboarding.start">Boshlash 🚀</button>
+      <p class="onboarding-login-wrap hidden" id="onboardingLoginWrap">
+        <span data-i18n="onboarding.hasAccount">Hisobingiz bormi?</span>
+        <button type="button" class="onboarding-login-btn" id="onboardingLogin" data-i18n="onboarding.login">Kirish</button>
+      </p>
+    </div>
+  </div>
+
   <div class="auth-screen hidden" id="authScreen">
     <div class="auth-header">
       <div class="logo">
@@ -4123,7 +4406,7 @@
     });
 
     const FREE_TX_LIMIT = 50;
-    const PREMIUM_CACHE_KEY = "bzh_premium";
+    const ONBOARDING_KEY = "bzh_onboarded";
 
     const CAT_ICON_COLORS = {
       green: "#22C55E",
@@ -4239,6 +4522,21 @@
         "lang.aria": "Til",
         "offline": "Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi",
         "loading": "Yuklanmoqda...",
+        "onboarding.skip": "O'tkazib yuborish",
+        "onboarding.brandTagline": "Intelligent finance tracking",
+        "onboarding.slide1.card": "Daromad",
+        "onboarding.slide1.title": "Biznesingizni nazorat qiling",
+        "onboarding.slide1.sub": "Daromad va xarajatlaringizni bir joyda kuzating",
+        "onboarding.slide2.card": "Statistika",
+        "onboarding.slide2.title": "Moliyaviy hisobotlar",
+        "onboarding.slide2.sub": "Haftalik va oylik statistikani ko'ring",
+        "onboarding.slide3.card": "Xavfsiz",
+        "onboarding.slide3.title": "100% Xavfsiz",
+        "onboarding.slide3.sub": "Ma'lumotlaringiz shifrlangan va faqat sizga tegishli",
+        "onboarding.next": "Keyingisi",
+        "onboarding.start": "Boshlash 🚀",
+        "onboarding.hasAccount": "Hisobingiz bormi?",
+        "onboarding.login": "Kirish",
         "auth.tagline": "Hisobingizga kiring yoki roʻyxatdan oʻting",
         "auth.login": "Kirish",
         "auth.register": "Roʻyxatdan oʻtish",
@@ -4455,6 +4753,21 @@
         "lang.aria": "Язык",
         "offline": "Нет интернета — показаны сохранённые данные",
         "loading": "Загрузка...",
+        "onboarding.skip": "Пропустить",
+        "onboarding.brandTagline": "Intelligent finance tracking",
+        "onboarding.slide1.card": "Доход",
+        "onboarding.slide1.title": "Контролируйте бизнес",
+        "onboarding.slide1.sub": "Следите за доходами и расходами в одном месте",
+        "onboarding.slide2.card": "Статистика",
+        "onboarding.slide2.title": "Финансовые отчёты",
+        "onboarding.slide2.sub": "Смотрите недельную и месячную статистику",
+        "onboarding.slide3.card": "Безопасно",
+        "onboarding.slide3.title": "100% Безопасность",
+        "onboarding.slide3.sub": "Данные зашифрованы и доступны только вам",
+        "onboarding.next": "Далее",
+        "onboarding.start": "Начать 🚀",
+        "onboarding.hasAccount": "Уже есть аккаунт?",
+        "onboarding.login": "Войти",
         "auth.tagline": "Войдите или зарегистрируйтесь",
         "auth.login": "Вход",
         "auth.register": "Регистрация",
@@ -4671,6 +4984,21 @@
         "lang.aria": "Language",
         "offline": "No internet — showing saved data",
         "loading": "Loading...",
+        "onboarding.skip": "Skip",
+        "onboarding.brandTagline": "Intelligent finance tracking",
+        "onboarding.slide1.card": "Income",
+        "onboarding.slide1.title": "Control your business",
+        "onboarding.slide1.sub": "Track income and expenses in one place",
+        "onboarding.slide2.card": "Statistics",
+        "onboarding.slide2.title": "Financial reports",
+        "onboarding.slide2.sub": "View weekly and monthly statistics",
+        "onboarding.slide3.card": "Secure",
+        "onboarding.slide3.title": "100% Secure",
+        "onboarding.slide3.sub": "Your data is encrypted and belongs only to you",
+        "onboarding.next": "Next",
+        "onboarding.start": "Get started 🚀",
+        "onboarding.hasAccount": "Already have an account?",
+        "onboarding.login": "Sign in",
         "auth.tagline": "Sign in or create an account",
         "auth.login": "Sign in",
         "auth.register": "Sign up",
@@ -5000,6 +5328,14 @@
     let busy = false;
 
     const loadingScreen = document.getElementById("loadingScreen");
+    const onboardingScreen = document.getElementById("onboardingScreen");
+    const onboardingTrack = document.getElementById("onboardingTrack");
+    const onboardingDots = document.getElementById("onboardingDots");
+    const onboardingSkip = document.getElementById("onboardingSkip");
+    const onboardingNext = document.getElementById("onboardingNext");
+    const onboardingStart = document.getElementById("onboardingStart");
+    const onboardingLoginWrap = document.getElementById("onboardingLoginWrap");
+    const onboardingLogin = document.getElementById("onboardingLogin");
     const authScreen = document.getElementById("authScreen");
     const appScreen = document.getElementById("appScreen");
     const authForm = document.getElementById("authForm");
@@ -7145,11 +7481,82 @@
       });
     });
 
+    let postOnboardingView = "auth";
+    let onboardingSlide = 0;
+    const ONBOARDING_SLIDE_COUNT = 3;
+    let onboardingTouchStartX = 0;
+
+    function isOnboarded() {
+      return localStorage.getItem(ONBOARDING_KEY) === "true";
+    }
+
+    function completeOnboarding() {
+      localStorage.setItem(ONBOARDING_KEY, "true");
+      showView(postOnboardingView);
+      refreshIcons();
+      if (postOnboardingView === "app" && currentUser) {
+        initPinSecurity(currentUser.uid);
+      }
+    }
+
+    function updateOnboardingSlide(index) {
+      onboardingSlide = Math.max(0, Math.min(ONBOARDING_SLIDE_COUNT - 1, index));
+      if (onboardingTrack) {
+        onboardingTrack.style.transform = `translateX(-${onboardingSlide * 100}%)`;
+      }
+      onboardingDots?.querySelectorAll(".onboarding-dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === onboardingSlide);
+      });
+      const isLast = onboardingSlide === ONBOARDING_SLIDE_COUNT - 1;
+      onboardingNext?.classList.toggle("hidden", isLast);
+      onboardingStart?.classList.toggle("hidden", !isLast);
+      onboardingLoginWrap?.classList.toggle("hidden", !isLast);
+    }
+
+    function nextOnboardingSlide() {
+      if (onboardingSlide < ONBOARDING_SLIDE_COUNT - 1) {
+        updateOnboardingSlide(onboardingSlide + 1);
+      }
+    }
+
+    function prevOnboardingSlide() {
+      if (onboardingSlide > 0) {
+        updateOnboardingSlide(onboardingSlide - 1);
+      }
+    }
+
+    function showOnboardingIfNeeded() {
+      if (isOnboarded()) {
+        showView(postOnboardingView);
+        return false;
+      }
+      showView("onboarding");
+      updateOnboardingSlide(0);
+      refreshIcons();
+      return true;
+    }
+
+    onboardingSkip?.addEventListener("click", completeOnboarding);
+    onboardingNext?.addEventListener("click", nextOnboardingSlide);
+    onboardingStart?.addEventListener("click", completeOnboarding);
+    onboardingLogin?.addEventListener("click", completeOnboarding);
+
+    onboardingScreen?.addEventListener("touchstart", e => {
+      onboardingTouchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    onboardingScreen?.addEventListener("touchend", e => {
+      const dx = e.changedTouches[0].screenX - onboardingTouchStartX;
+      if (dx < -50) nextOnboardingSlide();
+      else if (dx > 50) prevOnboardingSlide();
+    }, { passive: true });
+
     function showView(view) {
       loadingScreen.classList.toggle("hidden", view !== "loading");
+      onboardingScreen?.classList.toggle("hidden", view !== "onboarding");
       authScreen.classList.toggle("hidden", view !== "auth");
       appScreen.classList.toggle("hidden", view !== "app");
-      document.body.style.overflow = view === "loading" ? "hidden" : "";
+      document.body.style.overflow = (view === "loading" || view === "onboarding") ? "hidden" : "";
     }
 
     function setBusy(state) {
@@ -8272,12 +8679,15 @@
         render();
         subscribeTransactions(user.uid);
         setupInstallUI();
-        showView("app");
-        initPinSecurity(user.uid);
         handlePaymentReturn();
         renderProfileUI();
         updateSettingsUI();
         refreshIcons();
+        postOnboardingView = "app";
+        if (!showOnboardingIfNeeded()) {
+          showView("app");
+          initPinSecurity(user.uid);
+        }
       } else {
         closeSettings();
         closeAllProfileModals();
@@ -8299,7 +8709,10 @@
         hidePinScreen();
         closePremiumModal();
         closeExportModal(true);
-        showView("auth");
+        postOnboardingView = "auth";
+        if (!showOnboardingIfNeeded()) {
+          showView("auth");
+        }
       }
     });
 
