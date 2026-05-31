@@ -4284,14 +4284,7 @@
           el.style.display = "none";
           el.classList.add("hidden");
         }, 280);
-        var authScreenEl = document.getElementById("authScreen");
-        var app = document.getElementById("appScreen");
-        var onboard = document.getElementById("onboardingScreen");
-        if (authScreenEl && authScreenEl.classList.contains("hidden") &&
-            app && app.classList.contains("hidden") &&
-            (!onboard || onboard.classList.contains("hidden"))) {
-          authScreenEl.classList.remove("hidden");
-        }
+        /* Auth fallback handled in bootstrapApp — do not reveal auth here (causes post-login flash) */
       }, 2000);
     })();
   </script>
@@ -4935,6 +4928,8 @@
     let pendingAuthUser = undefined;
     let pendingAuthReady = false;
     let loadingScreenDismissed = false;
+    /** false = logged-in session: never show auth until logout */
+    let authScreenShown = sessionStorage.getItem("bh_auth_dismissed") !== "1";
     const loadingScreen = document.getElementById("loadingScreen");
 
     onAuthStateChanged(firebaseAuth, user => {
@@ -8055,6 +8050,25 @@
 
     let postOnboardingView = "auth";
     let onboardingSlide = 0;
+
+    function suppressAuthScreen() {
+      authScreenShown = false;
+      try {
+        sessionStorage.setItem("bh_auth_dismissed", "1");
+      } catch (_) {}
+      authScreen.classList.add("hidden");
+    }
+
+    function allowAuthScreen() {
+      authScreenShown = true;
+      try {
+        sessionStorage.removeItem("bh_auth_dismissed");
+      } catch (_) {}
+    }
+
+    function hideAuthScreenNow() {
+      suppressAuthScreen();
+    }
     const ONBOARDING_SLIDE_COUNT = 3;
     const ONBOARDING_AUTO_MS = 3000;
     const ONBOARDING_RESUME_MS = 5000;
@@ -8081,7 +8095,7 @@
       clearAuthFallbackTimer();
       authFallbackTimer = setTimeout(() => {
         authFallbackTimer = null;
-        if (!currentUser) return;
+        if (!currentUser || authScreenShown) return;
         if (!isNoMainViewVisible()) return;
         console.warn("[BiznesHisob] Auth fallback — forcing home screen");
         hideLoadingScreen();
@@ -8104,6 +8118,7 @@
       console.log("[BiznesHisob] Showing main app");
       clearAuthFallbackTimer();
       hideLoadingScreen();
+      hideAuthScreenNow();
       postOnboardingView = "app";
 
       if (!isOnboarded()) {
@@ -8128,6 +8143,10 @@
     function completeOnboarding() {
       stopOnboardingAuto();
       localStorage.setItem(ONBOARDING_KEY, "true");
+      if (currentUser) {
+        hideAuthScreenNow();
+        postOnboardingView = "app";
+      }
       showView(postOnboardingView);
       refreshIcons();
       if (postOnboardingView === "app" && currentUser) {
@@ -8234,6 +8253,10 @@
     }
 
     function showOnboardingIfNeeded() {
+      if (currentUser) {
+        hideAuthScreenNow();
+        postOnboardingView = "app";
+      }
       if (isOnboarded()) {
         showView(postOnboardingView);
         return false;
@@ -8277,6 +8300,16 @@
 
     function showView(view) {
       if (view !== "loading") hideLoadingScreen();
+      if (view === "auth" && !authScreenShown) {
+        if (currentUser) {
+          view = isOnboarded() ? "app" : "onboarding";
+        } else {
+          return;
+        }
+      }
+      if (view === "app" || (view === "onboarding" && currentUser)) {
+        suppressAuthScreen();
+      }
       onboardingScreen?.classList.toggle("hidden", view !== "onboarding");
       authScreen.classList.toggle("hidden", view !== "auth");
       appScreen.classList.toggle("hidden", view !== "app");
@@ -8859,21 +8892,38 @@
               console.log("[BiznesHisob] Register attempt:", email);
               const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
               console.log("[BiznesHisob] Registration successful");
-              authScreen.classList.add("hidden");
-              await showBriefAuthLoading(800);
-              if (fullName) {
-                await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
+              hideAuthScreenNow();
+              try {
+                await showBriefAuthLoading(800);
+                if (fullName) {
+                  await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
+                }
+                scheduleAuthFallback();
+              } catch (regErr) {
+                allowAuthScreen();
+                showView("auth");
+                throw regErr;
               }
-              scheduleAuthFallback();
             } else {
               console.log("[BiznesHisob] Login attempt:", email);
-              await signInWithEmailAndPassword(firebaseAuth, email, password);
-              console.log("[BiznesHisob] Login successful");
+              hideAuthScreenNow();
+              try {
+                await signInWithEmailAndPassword(firebaseAuth, email, password);
+                console.log("[BiznesHisob] Login successful");
+              } catch (loginErr) {
+                allowAuthScreen();
+                showView("auth");
+                throw loginErr;
+              }
             }
             authForm.reset();
             resetPasswordToggles();
           } catch (err) {
             console.error("[BiznesHisob] Auth error:", err.code || err.message);
+            if (!firebaseAuth.currentUser) {
+              allowAuthScreen();
+              showView("auth");
+            }
             showAuthError(authErrorMessage(err.code));
           } finally {
             setBusy(false);
@@ -9689,8 +9739,6 @@
     }
 
     handleAuthState = async user => {
-      scheduleAuthFallback();
-
       if (unsubscribeTransactions) {
         unsubscribeTransactions();
         unsubscribeTransactions = null;
@@ -9707,6 +9755,10 @@
       currentUser = user;
 
       if (user) {
+        hideAuthScreenNow();
+        postOnboardingView = "app";
+        navigateAfterAuth(user);
+        scheduleAuthFallback();
         transactions = [];
         userCurrencies = [];
         userProfile = {
@@ -9734,8 +9786,9 @@
         renderProfileUI();
         updateSettingsUI();
         refreshIcons();
-        navigateAfterAuth(user);
       } else {
+        if (firebaseAuth.currentUser) return;
+        allowAuthScreen();
         clearAuthFallbackTimer();
         closeSettings();
         closeAllProfileModals();
@@ -9777,6 +9830,7 @@
 
       if (!pendingAuthReady) {
         setTimeout(() => {
+          if (!authScreenShown || currentUser) return;
           if (isNoMainViewVisible()) {
             hideLoadingScreen();
             showView("auth");
