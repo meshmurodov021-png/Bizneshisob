@@ -14,6 +14,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <title>BiznesHisob — Daromad va xarajatlar</title>
   <style>
     :root {
@@ -3873,6 +3874,27 @@
     <div class="spinner"></div>
     <p class="loading-text" data-i18n="loading">Yuklanmoqda...</p>
   </div>
+  <script>
+    (function () {
+      setTimeout(function () {
+        var el = document.getElementById("loadingScreen");
+        if (!el || el.classList.contains("hidden")) return;
+        el.style.opacity = "0";
+        setTimeout(function () {
+          el.style.display = "none";
+          el.classList.add("hidden");
+        }, 280);
+        var auth = document.getElementById("authScreen");
+        var app = document.getElementById("appScreen");
+        var onboard = document.getElementById("onboardingScreen");
+        if (auth && auth.classList.contains("hidden") &&
+            app && app.classList.contains("hidden") &&
+            (!onboard || onboard.classList.contains("hidden"))) {
+          auth.classList.remove("hidden");
+        }
+      }, 2000);
+    })();
+  </script>
 
   <div class="onboarding-screen hidden" id="onboardingScreen">
     <button type="button" class="onboarding-skip" id="onboardingSkip" data-i18n="onboarding.skip">O'tkazib yuborish</button>
@@ -4373,11 +4395,6 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import {
@@ -4426,6 +4443,62 @@
         console.warn("Offline persistence:", err.code);
       }
     });
+
+    const scriptLoadCache = new Map();
+    function loadScript(src) {
+      if (scriptLoadCache.has(src)) return scriptLoadCache.get(src);
+      const p = new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error("Script load failed: " + src));
+        document.head.appendChild(s);
+      });
+      scriptLoadCache.set(src, p);
+      return p;
+    }
+
+    const CHART_JS = "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js";
+    const JSPDF_CDN = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+    const AUTOTABLE_CDN = "https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js";
+    const XLSX_CDN = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+    const LUCIDE_CDN = "https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js";
+
+    function ensureChartJs() {
+      if (typeof Chart !== "undefined") return Promise.resolve();
+      return loadScript(CHART_JS);
+    }
+
+    function ensureLucide() {
+      if (window.lucide) return Promise.resolve();
+      return loadScript(LUCIDE_CDN);
+    }
+
+    function ensureExportLibs(format) {
+      if (format === "excel") {
+        if (typeof XLSX !== "undefined") return Promise.resolve();
+        return loadScript(XLSX_CDN);
+      }
+      if (window.jspdf?.jsPDF) return Promise.resolve();
+      return loadScript(JSPDF_CDN).then(() => loadScript(AUTOTABLE_CDN));
+    }
+
+    let handleAuthState = null;
+    let pendingAuthUser = undefined;
+    let pendingAuthReady = false;
+    let loadingScreenDismissed = false;
+    const loadingScreen = document.getElementById("loadingScreen");
+
+    onAuthStateChanged(auth, user => {
+      hideLoadingScreen();
+      if (handleAuthState) void handleAuthState(user);
+      else {
+        pendingAuthUser = user;
+        pendingAuthReady = true;
+      }
+    });
+
+    void ensureLucide().then(() => refreshIcons()).catch(() => {});
 
     const FREE_TX_LIMIT = 50;
     const ONBOARDING_KEY = "bzh_onboarded";
@@ -5348,9 +5421,7 @@
     let unsubscribeUser = null;
     let unsubscribeCurrencies = null;
     let busy = false;
-    let loadingScreenDismissed = false;
 
-    const loadingScreen = document.getElementById("loadingScreen");
     const onboardingScreen = document.getElementById("onboardingScreen");
     const onboardingTrack = document.getElementById("onboardingTrack");
     const onboardingDots = document.getElementById("onboardingDots");
@@ -7441,7 +7512,7 @@
 
       setExportLoading(true);
       try {
-        await new Promise(r => setTimeout(r, 80));
+        await ensureExportLibs(exportFormat);
         if (exportFormat === "excel") {
           generateExcelExport(list);
         } else {
@@ -7576,6 +7647,10 @@
 
     function hideLoadingScreen() {
       if (loadingScreenDismissed || !loadingScreen) return;
+      if (loadingScreen.classList.contains("hidden")) {
+        loadingScreenDismissed = true;
+        return;
+      }
       loadingScreenDismissed = true;
       loadingScreen.style.opacity = "0";
       setTimeout(() => {
@@ -8242,7 +8317,13 @@
       return { labels: months.map(m => m.label), income, expense };
     }
 
-    function renderCharts() {
+    async function renderCharts() {
+      try {
+        await ensureChartJs();
+      } catch (err) {
+        console.warn("Chart.js load failed:", err);
+        return;
+      }
       if (typeof Chart === "undefined") return;
 
       const expenseData = aggregateCategoryTotals("expense");
@@ -8672,9 +8753,7 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    onAuthStateChanged(auth, async user => {
-      hideLoadingScreen();
-
+    handleAuthState = async user => {
       if (unsubscribeTransactions) {
         unsubscribeTransactions();
         unsubscribeTransactions = null;
@@ -8749,7 +8828,9 @@
           showView("auth");
         }
       }
-    });
+    };
+
+    if (pendingAuthReady) void handleAuthState(pendingAuthUser);
 
     setupInstallUI();
     applyTheme(localStorage.getItem(THEME_KEY) || "dark");
@@ -8757,7 +8838,7 @@
     applyI18n();
     initPullToRefresh();
     showView("loading");
-    setTimeout(hideLoadingScreen, 3000);
+    setTimeout(hideLoadingScreen, 600);
 
     window.addEventListener("load", refreshIcons);
   </script>
