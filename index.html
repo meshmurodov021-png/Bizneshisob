@@ -1498,6 +1498,161 @@
       flex-shrink: 0;
     }
 
+    .export-btn.locked {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: rgba(148, 163, 184, 0.1);
+      color: var(--muted);
+    }
+
+    .export-btn.locked [data-lucide] {
+      stroke: var(--muted);
+    }
+
+    .export-btn .export-lock-icon {
+      stroke: #fbbf24;
+    }
+
+    .chart-card {
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .chart-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.75rem;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 200px;
+    }
+
+    .chart-wrap canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .chart-locked-wrap .chart-wrap.chart-locked canvas {
+      filter: blur(6px);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .premium-chart-lock {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      background: rgba(12, 12, 20, 0.45);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .premium-chart-lock:active {
+      background: rgba(124, 58, 237, 0.2);
+    }
+
+    .premium-chart-lock [data-lucide] {
+      width: 28px;
+      height: 28px;
+      stroke: #fbbf24;
+    }
+
+    .premium-chart-lock span {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #e9d5ff;
+    }
+
+    .premium-charts-grid {
+      display: grid;
+      gap: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .pro-ads-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin: 0.5rem 0 1rem;
+      padding: 0.65rem 1rem;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(99, 102, 241, 0.08));
+      color: #c4b5fd;
+      font-size: 0.78rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .pro-ads-banner:active {
+      transform: scale(0.98);
+      box-shadow: 0 0 16px rgba(124, 58, 237, 0.25);
+    }
+
+    .profile-support-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.5rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #86efac;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .premium-go-btn {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 0.5rem;
+      padding: 0.85rem 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #7C3AED, #6366f1);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.45);
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .premium-go-btn:active {
+      transform: scale(0.98);
+    }
+
+    .premium-later-btn {
+      display: block;
+      width: 100%;
+      margin-top: 0.65rem;
+      padding: 0.5rem;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .premium-later-btn:active {
+      color: var(--text);
+    }
+
     .export-btn {
       display: inline-flex;
       align-items: center;
@@ -3379,6 +3534,41 @@
         <div class="card period-stats-card">
           <div class="period-stats-grid" id="periodStatsGrid"></div>
         </div>
+
+        <div class="card chart-card">
+          <p class="chart-card-title" data-i18n="stats.expenseBreakdown">Xarajatlar boʻyicha</p>
+          <div class="chart-wrap"><canvas id="expenseDonutChart" aria-hidden="true"></canvas></div>
+        </div>
+
+        <div class="card chart-card">
+          <p class="chart-card-title" data-i18n="stats.incomeBreakdown">Daromadlar boʻyicha</p>
+          <div class="chart-wrap"><canvas id="incomeBarChart" aria-hidden="true"></canvas></div>
+        </div>
+
+        <div class="premium-charts-grid" id="advancedChartsSection">
+          <div class="card chart-card chart-locked-wrap" id="trendChartCard">
+            <p class="chart-card-title" data-i18n="stats.trend">Daromad/xarajat trendi</p>
+            <div class="chart-wrap chart-locked" id="trendChartWrap">
+              <canvas id="trendChart" aria-hidden="true"></canvas>
+              <button type="button" class="premium-chart-lock hidden" id="trendChartLock" data-i18n-aria="premium.chartLockAria">
+                <i data-lucide="lock"></i>
+                <span data-i18n="premium.chartLock">Premium bilan ko'ring</span>
+              </button>
+            </div>
+          </div>
+          <div class="card chart-card chart-locked-wrap" id="compareChartCard">
+            <p class="chart-card-title" data-i18n="stats.comparison">Oylik taqqoslash</p>
+            <div class="chart-wrap chart-locked" id="compareChartWrap">
+              <canvas id="compareChart" aria-hidden="true"></canvas>
+              <button type="button" class="premium-chart-lock hidden" id="compareChartLock" data-i18n-aria="premium.chartLockAria">
+                <i data-lucide="lock"></i>
+                <span data-i18n="premium.chartLock">Premium bilan ko'ring</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="pro-ads-banner hidden" id="proAdsBanner" data-i18n="ads.banner">BiznesHisob Pro — reklamsiz ishlang 💎</button>
       </section>
 
       <!-- Qo'shish -->
@@ -3414,7 +3604,8 @@
           <p class="section-title" style="margin:0" data-i18n="list.title">Operatsiyalar</p>
           <div class="list-header-actions">
             <button type="button" class="export-btn" id="exportOpenBtn" data-i18n-aria="list.exportAria">
-              <i data-lucide="upload"></i>
+              <i data-lucide="upload" id="exportIconUpload"></i>
+              <i data-lucide="lock" id="exportIconLock" class="export-lock-icon hidden"></i>
               <span data-i18n="list.export">Eksport</span>
             </button>
             <span class="count-badge" id="txCount">0 ta</span>
@@ -3438,6 +3629,7 @@
             <button type="button" class="profile-display-name" id="displayNameBtn">Ism Familiya</button>
             <p class="profile-email-text" id="userEmail">—</p>
             <span class="profile-plan-badge" id="profilePlanBadge">Bepul</span>
+            <span class="profile-support-badge hidden" id="profileSupportBadge" data-i18n="premium.supportBadge">Ustuvor qo'llab-quvvatlash 💎</span>
           </div>
 
           <div class="profile-block profile-upgrade-card" id="upgradeCard">
@@ -3445,7 +3637,7 @@
               <p class="profile-tariff-text" id="profileTariffText">Tarif: Bepul</p>
               <button type="button" class="profile-premium-btn" id="upgradeBtn" data-i18n="profile.upgradePremium">Premiumga o'tish →</button>
             </div>
-            <p class="upgrade-progress-label" id="upgradeProgressLabel">0/100 operatsiya ishlatilgan</p>
+            <p class="upgrade-progress-label" id="upgradeProgressLabel">0/50 operatsiya ishlatilgan</p>
             <div class="profile-progress-track">
               <div class="profile-progress-fill" id="upgradeProgressFill"></div>
             </div>
@@ -3461,7 +3653,7 @@
             <div class="profile-stat-row static" id="txLimitRow">
               <div class="profile-stat-row-top">
                 <span class="profile-stat-label" data-i18n="profile.limitLabel">Limit:</span>
-                <span class="profile-stat-value" id="txLimitText">0/100</span>
+                <span class="profile-stat-value" id="txLimitText">0/50</span>
               </div>
               <div class="profile-progress-track subtle">
                 <div class="profile-progress-fill" id="statsProgressFill"></div>
@@ -3583,18 +3775,20 @@
   <div class="modal-overlay" id="premiumModal" role="dialog" aria-modal="true" aria-labelledby="premiumModalTitle">
     <div class="premium-modal">
       <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
-      <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
+      <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
-      <h2 id="premiumModalTitle" class="premium-modal-title"><i data-lucide="crown"></i> <span data-i18n="premium.title">Premium ga o'ting</span></h2>
-      <p class="premium-sub" data-i18n="premium.sub">100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
-      <p class="premium-price" data-i18n="premium.price">29 900 so'm / oy</p>
+      <h2 id="premiumModalTitle" class="premium-modal-title"><span id="premiumModalTitleText" data-i18n="premium.title">Premium ga o'ting</span></h2>
+      <p class="premium-sub" id="premiumModalSub" data-i18n="premium.sub">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
+      <p class="premium-price" id="premiumModalPrice" data-i18n="premium.price">29 900 so'm / oy</p>
       <ul class="premium-features">
         <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f1">Cheksiz operatsiyalar</span></li>
-        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f2">Kengaytirilgan grafiklar (tez kunda)</span></li>
+        <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f2">Kengaytirilgan grafiklar</span></li>
         <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f3">Export PDF/Excel</span></li>
         <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f4">Reklamasiz</span></li>
       </ul>
-      <div class="payment-btns">
+      <button type="button" class="premium-go-btn" id="premiumGoBtn" data-i18n="premium.goBtn">Premiumga o'tish</button>
+      <button type="button" class="premium-later-btn" id="premiumLaterBtn" data-i18n="premium.later">Keyinroq</button>
+      <div class="payment-btns hidden" id="premiumPaymentSection">
         <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> <span data-i18n="premium.payme">Payme orqali to'lash</span></button>
         <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> <span data-i18n="premium.click">Click orqali to'lash</span></button>
       </div>
@@ -3700,6 +3894,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -3752,7 +3947,8 @@
       }
     });
 
-    const FREE_TX_LIMIT = 100;
+    const FREE_TX_LIMIT = 50;
+    const PREMIUM_CACHE_KEY = "bzh_premium";
 
     const CAT_ICON_COLORS = {
       green: "#22C55E",
@@ -3926,6 +4122,8 @@
         "stats.periodWeek": "Bu hafta",
         "stats.periodMonth": "Bu oy",
         "stats.period3months": "3 oy",
+        "stats.trend": "Daromad/xarajat trendi",
+        "stats.comparison": "Oylik taqqoslash",
         "add.title": "Yangi operatsiya",
         "add.desc": "Tavsif",
         "add.descPh": "Masalan: Mahsulot sotuvi",
@@ -3998,16 +4196,23 @@
         "nav.addAria": "Qoʻshish",
         "nav.listAria": "Roʻyxat",
         "nav.profileAria": "Profil",
-        "premium.limitAlert": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.limitAlert": "50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.checking": "To'lov tekshirilmoqda...",
         "premium.activated": "Premium faollashtirildi! 🎉",
         "premium.pending": "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.",
         "premium.checkError": "Tekshirishda xatolik. Qayta urinib ko'ring.",
         "premium.title": "Premium ga o'ting",
-        "premium.sub": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.requiredTitle": "💎 Premium kerak",
+        "premium.sub": "50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.price": "29 900 so'm / oy",
+        "premium.goBtn": "Premiumga o'tish",
+        "premium.later": "Keyinroq",
+        "premium.chartLock": "Premium bilan ko'ring",
+        "premium.chartLockAria": "Premium grafiklarni ochish",
+        "premium.supportBadge": "Ustuvor qo'llab-quvvatlash 💎",
+        "ads.banner": "BiznesHisob Pro — reklamsiz ishlang 💎",
         "premium.f1": "Cheksiz operatsiyalar",
-        "premium.f2": "Kengaytirilgan grafiklar (tez kunda)",
+        "premium.f2": "Kengaytirilgan grafiklar",
         "premium.f3": "Export PDF/Excel",
         "premium.f4": "Reklamasiz",
         "premium.payme": "Payme orqali to'lash",
@@ -4132,6 +4337,8 @@
         "stats.periodWeek": "Эта неделя",
         "stats.periodMonth": "Этот месяц",
         "stats.period3months": "3 месяца",
+        "stats.trend": "Тренд доходов/расходов",
+        "stats.comparison": "Сравнение по месяцам",
         "add.title": "Новая операция",
         "add.desc": "Описание",
         "add.descPh": "Например: Продажа товара",
@@ -4204,16 +4411,23 @@
         "nav.addAria": "Добавить",
         "nav.listAria": "Список",
         "nav.profileAria": "Профиль",
-        "premium.limitAlert": "Для более 100 операций перейдите на Premium",
+        "premium.limitAlert": "Для более 50 операций перейдите на Premium",
         "premium.checking": "Проверка оплаты...",
         "premium.activated": "Premium активирован! 🎉",
         "premium.pending": "Оплата ещё не подтверждена. Premium включится после проверки.",
         "premium.checkError": "Ошибка проверки. Попробуйте снова.",
         "premium.title": "Перейти на Premium",
-        "premium.sub": "Для более 100 операций перейдите на Premium",
+        "premium.requiredTitle": "💎 Нужен Premium",
+        "premium.sub": "Для более 50 операций перейдите на Premium",
         "premium.price": "29 900 so'm / мес",
+        "premium.goBtn": "Перейти на Premium",
+        "premium.later": "Позже",
+        "premium.chartLock": "Смотреть с Premium",
+        "premium.chartLockAria": "Открыть Premium графики",
+        "premium.supportBadge": "Приоритетная поддержка 💎",
+        "ads.banner": "BiznesHisob Pro — без рекламы 💎",
         "premium.f1": "Безлимитные операции",
-        "premium.f2": "Расширенные графики (скоро)",
+        "premium.f2": "Расширенные графики",
         "premium.f3": "Export PDF/Excel",
         "premium.f4": "Без рекламы",
         "premium.payme": "Оплатить через Payme",
@@ -4338,6 +4552,8 @@
         "stats.periodWeek": "This week",
         "stats.periodMonth": "This month",
         "stats.period3months": "3 months",
+        "stats.trend": "Income/expense trend",
+        "stats.comparison": "Monthly comparison",
         "add.title": "New transaction",
         "add.desc": "Description",
         "add.descPh": "e.g. Product sale",
@@ -4410,16 +4626,23 @@
         "nav.addAria": "Add",
         "nav.listAria": "List",
         "nav.profileAria": "Profile",
-        "premium.limitAlert": "Upgrade to Premium for more than 100 transactions",
+        "premium.limitAlert": "Upgrade to Premium for more than 50 transactions",
         "premium.checking": "Verifying payment...",
         "premium.activated": "Premium activated! 🎉",
         "premium.pending": "Payment not confirmed yet. Premium will activate after review.",
         "premium.checkError": "Verification error. Please try again.",
         "premium.title": "Upgrade to Premium",
-        "premium.sub": "Upgrade to Premium for more than 100 transactions",
+        "premium.requiredTitle": "💎 Premium required",
+        "premium.sub": "Upgrade to Premium for more than 50 transactions",
         "premium.price": "29,900 UZS / month",
+        "premium.goBtn": "Go Premium",
+        "premium.later": "Later",
+        "premium.chartLock": "View with Premium",
+        "premium.chartLockAria": "Unlock Premium charts",
+        "premium.supportBadge": "Priority support 💎",
+        "ads.banner": "BiznesHisob Pro — ad-free 💎",
         "premium.f1": "Unlimited transactions",
-        "premium.f2": "Advanced charts (coming soon)",
+        "premium.f2": "Advanced charts",
         "premium.f3": "Export PDF/Excel",
         "premium.f4": "Ad-free",
         "premium.payme": "Pay with Payme",
@@ -4570,7 +4793,14 @@
 
     let currentUser = null;
     let transactions = [];
-    let userProfile = { isPremium: false, email: "", displayName: "", avatar: "", avatarType: "", avatarData: "" };
+    let userProfile = {
+      isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
+      email: "",
+      displayName: "",
+      avatar: "",
+      avatarType: "",
+      avatarData: ""
+    };
     let currentType = "income";
     let selectedCategory = getDefaultCategoryId("income");
     let authMode = "login";
@@ -4602,6 +4832,12 @@
     const premiumModalClose = document.getElementById("premiumModalClose");
     const premiumLimitAlert = document.getElementById("premiumLimitAlert");
     const paymentChecking = document.getElementById("paymentChecking");
+    const premiumModalTitleText = document.getElementById("premiumModalTitleText");
+    const premiumModalSub = document.getElementById("premiumModalSub");
+    const premiumModalPrice = document.getElementById("premiumModalPrice");
+    const premiumGoBtn = document.getElementById("premiumGoBtn");
+    const premiumLaterBtn = document.getElementById("premiumLaterBtn");
+    const premiumPaymentSection = document.getElementById("premiumPaymentSection");
     const paymeBtn = document.getElementById("paymeBtn");
     const clickBtn = document.getElementById("clickBtn");
     const settingsOpenBtn = document.getElementById("settingsOpenBtn");
@@ -4612,6 +4848,7 @@
     const avatarEditBtn = document.getElementById("avatarEditBtn");
     const displayNameBtn = document.getElementById("displayNameBtn");
     const profilePlanBadge = document.getElementById("profilePlanBadge");
+    const profileSupportBadge = document.getElementById("profileSupportBadge");
     const profileTariffText = document.getElementById("profileTariffText");
     const upgradeCard = document.getElementById("upgradeCard");
     const profilePremiumBanner = document.getElementById("profilePremiumBanner");
@@ -4665,6 +4902,8 @@
     const profitCard = document.getElementById("profitCard");
     const txCountEl = document.getElementById("txCount");
     const exportOpenBtn = document.getElementById("exportOpenBtn");
+    const exportIconUpload = document.getElementById("exportIconUpload");
+    const exportIconLock = document.getElementById("exportIconLock");
     const exportModal = document.getElementById("exportModal");
     const exportModalClose = document.getElementById("exportModalClose");
     const exportPeriodGroup = document.getElementById("exportPeriodGroup");
@@ -4687,6 +4926,16 @@
     const syncStatusRow = document.getElementById("syncStatusRow");
     const syncStatusText = document.getElementById("syncStatusText");
     const periodStatsGrid = document.getElementById("periodStatsGrid");
+    const proAdsBanner = document.getElementById("proAdsBanner");
+    const trendChartLock = document.getElementById("trendChartLock");
+    const compareChartLock = document.getElementById("compareChartLock");
+    const trendChartWrap = document.getElementById("trendChartWrap");
+    const compareChartWrap = document.getElementById("compareChartWrap");
+
+    let chartDonut = null;
+    let chartIncomeBar = null;
+    let chartTrend = null;
+    let chartCompare = null;
     const ptrIndicator = document.getElementById("ptrIndicator");
 
     let deferredInstallPrompt = null;
@@ -5990,6 +6239,10 @@
       };
     }
 
+    function cachePremiumStatus(isPremium) {
+      localStorage.setItem(PREMIUM_CACHE_KEY, isPremium ? "1" : "0");
+    }
+
     function isPremiumUser() {
       return !!userProfile.isPremium;
     }
@@ -6048,9 +6301,12 @@
               avatarType: data.avatarType || data.avatar || "",
               avatarData: data.avatarData || ""
             };
+            cachePremiumStatus(userProfile.isPremium);
           } else {
             userProfile = { isPremium: false, email: "", displayName: "", avatar: "", avatarType: "", avatarData: "" };
+            cachePremiumStatus(false);
           }
+          updatePremiumUI();
           renderProfileUI();
         },
         err => console.error("User profile:", err)
@@ -6069,8 +6325,10 @@
         profilePlanBadge.classList.toggle("is-premium", premium);
       }
 
+      profileSupportBadge?.classList.toggle("hidden", !premium);
       upgradeCard?.classList.toggle("hidden", premium);
       profilePremiumBanner?.classList.toggle("hidden", !premium);
+      proAdsBanner?.classList.toggle("hidden", premium);
 
       if (profileTariffText) {
         profileTariffText.textContent = t("profile.tariffFree");
@@ -6081,6 +6339,19 @@
 
       txLimitRow?.classList.toggle("hidden", premium);
 
+      if (exportOpenBtn) {
+        exportOpenBtn.classList.toggle("locked", !premium);
+        if (!exportBusy) exportOpenBtn.disabled = false;
+      }
+      exportIconLock?.classList.toggle("hidden", premium);
+      exportIconUpload?.classList.toggle("hidden", !premium);
+
+      const showLocks = !premium;
+      trendChartLock?.classList.toggle("hidden", !showLocks);
+      compareChartLock?.classList.toggle("hidden", !showLocks);
+      trendChartWrap?.classList.toggle("chart-locked", showLocks);
+      compareChartWrap?.classList.toggle("chart-locked", showLocks);
+
       if (!premium) {
         if (txLimitText) txLimitText.textContent = `${count}/${FREE_TX_LIMIT}`;
         if (upgradeProgressLabel) {
@@ -6089,6 +6360,8 @@
         setUsageProgressFill(upgradeProgressFill, count, FREE_TX_LIMIT);
         setUsageProgressFill(statsProgressFill, count, FREE_TX_LIMIT);
       }
+
+      renderCharts();
     }
 
     function updateBodyScrollLock() {
@@ -6103,11 +6376,23 @@
     }
 
     function showPremiumModal(options = {}) {
-      premiumLimitAlert.classList.toggle("hidden", options.reason !== "limit");
+      const reason = options.reason || "default";
+      const isFeature = reason === "feature";
+
+      premiumLimitAlert.classList.toggle("hidden", reason !== "limit");
+      premiumModalSub?.classList.toggle("hidden", isFeature);
+      premiumModalPrice?.classList.toggle("hidden", isFeature);
+      premiumPaymentSection?.classList.add("hidden");
+
+      if (premiumModalTitleText) {
+        premiumModalTitleText.textContent = isFeature ? t("premium.requiredTitle") : t("premium.title");
+      }
+
       paymentChecking.textContent = t("premium.checking");
       paymentChecking.classList.add("hidden");
       premiumModal.classList.add("open");
       updateBodyScrollLock();
+      refreshIcons();
     }
 
     function closePremiumModal() {
@@ -6132,6 +6417,9 @@
       try {
         const snap = await getDoc(userDocRef(currentUser.uid));
         if (snap.exists() && snap.data().isPremium) {
+          userProfile.isPremium = true;
+          cachePremiumStatus(true);
+          updatePremiumUI();
           paymentChecking.textContent = t("premium.activated");
           setTimeout(() => {
             paymentChecking.classList.add("hidden");
@@ -6154,6 +6442,15 @@
       if (e.target === premiumModal) closePremiumModal();
     });
     upgradeBtn.addEventListener("click", () => showPremiumModal());
+    premiumGoBtn?.addEventListener("click", () => {
+      premiumPaymentSection?.classList.remove("hidden");
+      premiumPaymentSection?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      refreshIcons();
+    });
+    premiumLaterBtn?.addEventListener("click", closePremiumModal);
+    proAdsBanner?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
+    trendChartLock?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
+    compareChartLock?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
     paymeBtn.addEventListener("click", () => openPayment(PAYME_URL));
     clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
 
@@ -6354,10 +6651,20 @@
     }
 
     function openExportModal() {
-      if (!currentUser) return;
+      if (!currentUser || !isPremiumUser()) return;
       exportModal.classList.add("open");
       updateBodyScrollLock();
       refreshIcons();
+    }
+
+    function handleExportClick() {
+      if (!currentUser) return;
+      if (!isPremiumUser()) {
+        showPremiumModal({ reason: "feature" });
+        return;
+      }
+      if (!transactions.length) return;
+      openExportModal();
     }
 
     function closeExportModal(force = false) {
@@ -6384,7 +6691,7 @@
     bindExportOptionGroup(exportPeriodGroup, "period", v => { exportPeriod = v; });
     bindExportOptionGroup(exportFormatGroup, "format", v => { exportFormat = v; });
 
-    exportOpenBtn.addEventListener("click", openExportModal);
+    exportOpenBtn.addEventListener("click", handleExportClick);
     exportModalClose.addEventListener("click", closeExportModal);
     exportModal.addEventListener("click", e => {
       if (e.target === exportModal && !exportBusy) closeExportModal();
@@ -6500,6 +6807,11 @@
 
     exportSubmitBtn.addEventListener("click", async () => {
       if (exportBusy || !currentUser) return;
+      if (!isPremiumUser()) {
+        closeExportModal(true);
+        showPremiumModal({ reason: "feature" });
+        return;
+      }
 
       const list = filterTransactionsByPeriod(exportPeriod);
       const periodLabel = getPeriodLabel(exportPeriod);
@@ -7146,6 +7458,227 @@
       return calcExportSummary(list).net;
     }
 
+    function destroyChartInstance(chart) {
+      if (chart) chart.destroy();
+      return null;
+    }
+
+    function aggregateCategoryTotals(type) {
+      const list = filterTransactionsByPeriod("month");
+      const totals = new Map();
+      list.filter(tx => tx.type === type).forEach(tx => {
+        const cat = getCategoryForTx(tx);
+        totals.set(cat.label, (totals.get(cat.label) || 0) + (Number(tx.amount) || 0));
+      });
+      return {
+        labels: [...totals.keys()],
+        values: [...totals.values()]
+      };
+    }
+
+    function chartPalette(count) {
+      const palette = ["#7C3AED", "#6366f1", "#22C55E", "#3B82F6", "#F97316", "#EF4444", "#EAB308", "#06B6D4", "#EC4899", "#84CC16"];
+      return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
+    }
+
+    function getLast30DaysTrend() {
+      const labels = [];
+      const income = [];
+      const expense = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        labels.push(d.toLocaleDateString(DATE_LOCALES[currentLang] || "uz-UZ", { day: "numeric", month: "short" }));
+        const dayStart = startOfDay(d);
+        const dayEnd = endOfDay(d);
+        let inc = 0;
+        let exp = 0;
+        transactions.forEach(tx => {
+          const txDate = parseTxDate(tx);
+          if (!txDate || txDate < dayStart || txDate > dayEnd) return;
+          const amt = Number(tx.amount) || 0;
+          if (tx.type === "income") inc += amt;
+          else exp += amt;
+        });
+        income.push(inc);
+        expense.push(exp);
+      }
+      return { labels, income, expense };
+    }
+
+    function getMonthlyComparison() {
+      const now = new Date();
+      const months = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        months.push({
+          label: d.toLocaleDateString(DATE_LOCALES[currentLang] || "uz-UZ", { month: "short" }),
+          start: new Date(d.getFullYear(), d.getMonth(), 1),
+          end: endOfDay(new Date(d.getFullYear(), d.getMonth() + 1, 0))
+        });
+      }
+      const income = [];
+      const expense = [];
+      months.forEach(m => {
+        let inc = 0;
+        let exp = 0;
+        transactions.forEach(tx => {
+          const txDate = parseTxDate(tx);
+          if (!txDate || txDate < m.start || txDate > m.end) return;
+          const amt = Number(tx.amount) || 0;
+          if (tx.type === "income") inc += amt;
+          else exp += amt;
+        });
+        income.push(inc);
+        expense.push(exp);
+      });
+      return { labels: months.map(m => m.label), income, expense };
+    }
+
+    function renderCharts() {
+      if (typeof Chart === "undefined") return;
+
+      const expenseData = aggregateCategoryTotals("expense");
+      const incomeData = aggregateCategoryTotals("income");
+      const donutEl = document.getElementById("expenseDonutChart");
+      const barEl = document.getElementById("incomeBarChart");
+
+      if (donutEl) {
+        chartDonut = destroyChartInstance(chartDonut);
+        chartDonut = new Chart(donutEl, {
+          type: "doughnut",
+          data: {
+            labels: expenseData.labels.length ? expenseData.labels : [t("stats.noExpense")],
+            datasets: [{
+              data: expenseData.values.length ? expenseData.values : [1],
+              backgroundColor: expenseData.values.length ? chartPalette(expenseData.values.length) : ["#3f3f46"],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { color: "#a1a1aa", boxWidth: 10, font: { size: 10 } }
+              }
+            }
+          }
+        });
+      }
+
+      if (barEl) {
+        chartIncomeBar = destroyChartInstance(chartIncomeBar);
+        chartIncomeBar = new Chart(barEl, {
+          type: "bar",
+          data: {
+            labels: incomeData.labels.length ? incomeData.labels : [t("stats.noIncome")],
+            datasets: [{
+              label: t("stats.total"),
+              data: incomeData.values.length ? incomeData.values : [0],
+              backgroundColor: incomeData.values.length ? chartPalette(incomeData.values.length) : ["#3f3f46"],
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
+              y: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { color: "rgba(255,255,255,0.06)" } }
+            }
+          }
+        });
+      }
+
+      const trendEl = document.getElementById("trendChart");
+      const compareEl = document.getElementById("compareChart");
+      if (!trendEl || !compareEl) return;
+
+      const trend = getLast30DaysTrend();
+      const compare = getMonthlyComparison();
+      const axisStyle = {
+        ticks: { color: "#71717a", font: { size: 9 } },
+        grid: { color: "rgba(255,255,255,0.06)" }
+      };
+
+      chartTrend = destroyChartInstance(chartTrend);
+      chartTrend = new Chart(trendEl, {
+        type: "line",
+        data: {
+          labels: trend.labels,
+          datasets: [
+            {
+              label: t("home.income"),
+              data: trend.income,
+              borderColor: "#22C55E",
+              backgroundColor: "rgba(34,197,94,0.12)",
+              tension: 0.35,
+              fill: true,
+              pointRadius: 0
+            },
+            {
+              label: t("home.expense"),
+              data: trend.expense,
+              borderColor: "#EF4444",
+              backgroundColor: "rgba(239,68,68,0.08)",
+              tension: 0.35,
+              fill: true,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
+          },
+          scales: {
+            x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
+            y: axisStyle
+          }
+        }
+      });
+
+      chartCompare = destroyChartInstance(chartCompare);
+      chartCompare = new Chart(compareEl, {
+        type: "bar",
+        data: {
+          labels: compare.labels,
+          datasets: [
+            {
+              label: t("home.income"),
+              data: compare.income,
+              backgroundColor: "rgba(34,197,94,0.78)",
+              borderRadius: 6
+            },
+            {
+              label: t("home.expense"),
+              data: compare.expense,
+              backgroundColor: "rgba(239,68,68,0.78)",
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
+          },
+          scales: {
+            x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
+            y: axisStyle
+          }
+        }
+      });
+    }
+
     function renderPeriodStats() {
       if (!periodStatsGrid) return;
 
@@ -7417,7 +7950,7 @@
       }
 
       updatePremiumUI();
-      if (exportOpenBtn) {
+      if (exportOpenBtn && !exportBusy && isPremiumUser()) {
         exportOpenBtn.disabled = !hasItems;
       }
       renderPeriodStats();
@@ -7447,7 +7980,14 @@
       if (user) {
         transactions = [];
         userCurrencies = [];
-        userProfile = { isPremium: false };
+        userProfile = {
+          isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
+          email: "",
+          displayName: "",
+          avatar: "",
+          avatarType: "",
+          avatarData: ""
+        };
         try {
           await ensureUserDocument(user);
         } catch (err) {
@@ -7471,7 +8011,8 @@
         closeCurrencyDropdown();
         transactions = [];
         userCurrencies = [];
-        userProfile = { isPremium: false };
+        userProfile = { isPremium: false, email: "", displayName: "", avatar: "", avatarType: "", avatarData: "" };
+        cachePremiumStatus(false);
         appUnlocked = false;
         hidePinScreen();
         closePremiumModal();
