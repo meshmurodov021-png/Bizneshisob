@@ -1195,8 +1195,57 @@
     }
 
     .settings-row-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
       color: var(--text);
       font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .settings-row-label [data-lucide],
+    .settings-row-label svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .settings-row-leading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+      line-height: 1.25;
+    }
+
+    .settings-site-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      line-height: 1;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .settings-row-btn > span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      line-height: 1.25;
+    }
+
+    .settings-row-btn > span:first-child [data-lucide],
+    .settings-row-btn > span:first-child svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: block;
     }
 
     .settings-row-value {
@@ -4879,7 +4928,10 @@
               </label>
             </div>
             <a href="https://bizneshisob.vercel.app/landing.html" class="settings-row-btn" target="_blank" rel="noopener noreferrer">
-              <span><i data-lucide="globe"></i> <span data-i18n="profile.website">BiznesHisob sayti</span></span>
+              <span class="settings-row-leading">
+                <span class="settings-site-logo" aria-hidden="true">📊</span>
+                <span data-i18n="profile.website">BiznesHisob sayti</span>
+              </span>
               <i data-lucide="chevron-right"></i>
             </a>
             <button type="button" class="install-btn hidden settings-row-btn" id="installBtn">
@@ -4898,7 +4950,10 @@
               <span class="settings-row-value" id="settingsUserEmail">—</span>
             </div>
             <div class="settings-row settings-row-static sync-status online" id="syncStatusRow">
-              <span class="settings-row-label"><i data-lucide="cloud"></i> <span data-i18n="profile.status">Holat</span></span>
+              <span class="settings-row-label">
+                <i data-lucide="cloud" aria-hidden="true"></i>
+                <span data-i18n="profile.status">Holat</span>
+              </span>
               <span class="settings-row-value" id="syncStatusText" data-i18n="profile.online">Onlayn</span>
             </div>
           </div>
