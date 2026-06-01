@@ -5168,52 +5168,54 @@
 
     const FREE_TX_LIMIT = 50;
 
-    const CAT_ICON_COLORS = {
-      green: "#22C55E",
-      blue: "#3B82F6",
-      purple: "#7C3AED",
-      yellow: "#EAB308",
-      red: "#EF4444",
-      orange: "#F97316",
-      cyan: "#06B6D4",
-      brown: "#A16207",
-      pink: "#EC4899",
-      lime: "#84CC16",
-      indigo: "#6366F1",
-      amber: "#F59E0B",
-      rose: "#F43F5E",
-      violet: "#8B5CF6",
-      sky: "#0EA5E9"
+    /** Har bir kategoriya uchun grafik, donut va progress bar ranglari (dark mode). */
+    const kategoriyaRanglari = {
+      sotuv: "#22C55E",
+      xizmat: "#06B6D4",
+      ish_haqi: "#3B82F6",
+      investitsiya: "#EAB308",
+      boshqa_daromad: "#64748B",
+      transport: "#F97316",
+      ish_haqi_xodim: "#3B82F6",
+      ijara: "#8B5CF6",
+      oziq_ovqat: "#EF4444",
+      kommunal: "#84CC16",
+      telefon_internet: "#22D3EE",
+      mahsulot: "#EC4899",
+      reklama: "#0EA5E9",
+      tamirlash: "#D97706",
+      boshqa_xarajat: "#64748B"
     };
+    const KATEGORIYA_RANG_DEFAULT = "#A855F7";
 
-    function defineCategory(id, label, icon, colorKey) {
-      return {
-        id,
-        label,
-        icon,
-        iconBg: CAT_ICON_COLORS[colorKey] || CAT_ICON_COLORS.purple
-      };
+    function getCategoryChartColor(categoryId) {
+      return kategoriyaRanglari[categoryId] || KATEGORIYA_RANG_DEFAULT;
+    }
+
+    function defineCategory(id, label, icon) {
+      const color = getCategoryChartColor(id);
+      return { id, label, icon, iconBg: color, chartColor: color };
     }
 
     const CATEGORIES = {
       income: [
-        defineCategory("sotuv", "Sotuv", "shopping-cart", "green"),
-        defineCategory("xizmat", "Xizmat", "briefcase", "blue"),
-        defineCategory("ish_haqi", "Ish haqi", "briefcase", "blue"),
-        defineCategory("investitsiya", "Investitsiya", "trending-up", "purple"),
-        defineCategory("boshqa_daromad", "Boshqa daromad", "gift", "amber")
+        defineCategory("sotuv", "Sotuv", "shopping-cart"),
+        defineCategory("xizmat", "Xizmat", "briefcase"),
+        defineCategory("ish_haqi", "Ish haqi", "briefcase"),
+        defineCategory("investitsiya", "Investitsiya", "trending-up"),
+        defineCategory("boshqa_daromad", "Boshqa daromad", "gift")
       ],
       expense: [
-        defineCategory("ijara", "Ijara", "home", "yellow"),
-        defineCategory("oziq_ovqat", "Oziq-ovqat", "utensils", "orange"),
-        defineCategory("transport", "Transport", "car", "red"),
-        defineCategory("kommunal", "Kommunal", "zap", "lime"),
-        defineCategory("telefon_internet", "Telefon/Internet", "phone", "cyan"),
-        defineCategory("ish_haqi_xodim", "Ish haqi (xodim)", "briefcase", "blue"),
-        defineCategory("mahsulot", "Mahsulot", "package", "violet"),
-        defineCategory("reklama", "Reklama", "bar-chart", "sky"),
-        defineCategory("tamirlash", "Ta'mirlash", "wrench", "brown"),
-        defineCategory("boshqa_xarajat", "Boshqa xarajat", "alert-circle", "rose")
+        defineCategory("ijara", "Ijara", "home"),
+        defineCategory("oziq_ovqat", "Oziq-ovqat", "utensils"),
+        defineCategory("transport", "Transport", "car"),
+        defineCategory("kommunal", "Kommunal", "zap"),
+        defineCategory("telefon_internet", "Telefon/Internet", "phone"),
+        defineCategory("ish_haqi_xodim", "Ish haqi (xodim)", "briefcase"),
+        defineCategory("mahsulot", "Mahsulot", "package"),
+        defineCategory("reklama", "Reklama", "bar-chart"),
+        defineCategory("tamirlash", "Ta'mirlash", "wrench"),
+        defineCategory("boshqa_xarajat", "Boshqa xarajat", "alert-circle")
       ]
     };
 
@@ -5245,8 +5247,9 @@
       return CATEGORY_MAP[id] || CATEGORIES[type][CATEGORIES[type].length - 1];
     }
 
-    function categoryIconHtml(cat) {
-      return `<span class="category-icon-wrap" style="background:${cat.iconBg}"><i data-lucide="${cat.icon}"></i></span>`;
+    function categoryIconHtml(cat, colorOverride) {
+      const bg = colorOverride || cat.chartColor || cat.iconBg || getCategoryChartColor(cat.id);
+      return `<span class="category-icon-wrap" style="background:${bg}"><i data-lucide="${cat.icon}"></i></span>`;
     }
 
     function normalizeTransactionDoc(id, data) {
@@ -9415,25 +9418,6 @@
       return null;
     }
 
-    const CHART_COLORS = [
-      "#7C3AED", // purple
-      "#EF4444", // red
-      "#F59E0B", // amber/orange
-      "#10B981", // green
-      "#3B82F6", // blue
-      "#EC4899", // pink
-      "#06B6D4", // cyan
-      "#F97316", // orange
-      "#8B5CF6", // violet
-      "#84CC16", // lime
-      "#14B8A6", // teal
-      "#F43F5E"  // rose
-    ];
-
-    function chartPalette(count) {
-      return Array.from({ length: count }, (_, i) => CHART_COLORS[i % CHART_COLORS.length]);
-    }
-
     function formatDonutCenterValue(amountUzs) {
       const currency = getActiveCurrency();
       const converted = convertFromUzs(amountUzs, currency.id);
@@ -9469,17 +9453,20 @@
 
       const filtered = [...map.values()].filter(x => x.amount > 0).sort((a, b) => b.amount - a.amount);
       const total = filtered.reduce((sum, x) => sum + x.amount, 0);
-      const colors = chartPalette(filtered.length);
 
-      const items = filtered.map((x, i) => ({
-        id: x.cat.id,
-        label: x.cat.label,
-        icon: x.cat.icon,
-        iconBg: x.cat.iconBg,
-        amount: x.amount,
-        percent: formatCategoryPercent(x.amount, total),
-        color: colors[i]
-      }));
+      const items = filtered.map(x => {
+        const color = getCategoryChartColor(x.cat.id);
+        return {
+          id: x.cat.id,
+          label: x.cat.label,
+          icon: x.cat.icon,
+          iconBg: color,
+          amount: x.amount,
+          percent: formatCategoryPercent(x.amount, total),
+          color
+        };
+      });
+      const colors = items.map(x => x.color);
 
       return {
         items,
@@ -9532,7 +9519,7 @@
         <div class="top-cat-row" style="animation-delay:${i * 0.08}s">
           <div class="top-cat-head">
             <div class="top-cat-left">
-              ${categoryIconHtml(item)}
+              ${categoryIconHtml(item, item.color)}
               <span class="top-cat-name">${escapeHtml(item.label)}</span>
             </div>
             <div class="top-cat-right">
@@ -9567,7 +9554,7 @@
         <div class="income-cat-row" style="animation-delay:${i * 0.05}s">
           <div class="income-cat-head">
             <div class="income-cat-left">
-              ${categoryIconHtml(item)}
+              ${categoryIconHtml(item, item.color)}
               <span class="income-cat-name">${escapeHtml(item.label)}</span>
             </div>
             <span class="income-cat-amount">${escapeHtml(formatUZS(item.amount))}</span>
