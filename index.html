@@ -9706,6 +9706,16 @@
             chartDonut.config.type === "doughnut"
           ) {
             chartDonut.data = donutPayload;
+            if (chartDonut.options.datasets?.doughnut) {
+              chartDonut.options.datasets.doughnut.hoverOffset = 0;
+            }
+            if (chartDonut.options.elements?.arc) {
+              chartDonut.options.elements.arc.hoverOffset = 0;
+              chartDonut.options.elements.arc.hoverBorderWidth = 0;
+            }
+            if (chartDonut.options.plugins?.tooltip) {
+              chartDonut.options.plugins.tooltip.enabled = true;
+            }
             chartDonut.update("none");
           } else {
             chartDonut = destroyChartInstance(chartDonut);
@@ -9717,16 +9727,28 @@
                 maintainAspectRatio: false,
                 cutout: "62%",
                 animation: donutAnim,
+                datasets: {
+                  doughnut: {
+                    hoverOffset: 0
+                  }
+                },
                 elements: {
                   arc: {
                     borderWidth: 0,
                     hoverBorderWidth: 0,
+                    hoverOffset: 0,
                     borderAlign: "inner"
+                  }
+                },
+                transitions: {
+                  active: {
+                    animation: { duration: 0 }
                   }
                 },
                 plugins: {
                   legend: { display: false },
                   tooltip: {
+                    enabled: true,
                     callbacks: {
                       label(ctx) {
                         const pct = formatCategoryPercent(ctx.raw, expenseData.total);
