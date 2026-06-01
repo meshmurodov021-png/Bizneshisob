@@ -1563,19 +1563,26 @@
     }
 
     #tabAdd .form-row {
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.55rem;
     }
 
     #tabAdd .form-row label {
       font-size: 0.78rem;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.28rem;
     }
 
-    #tabAdd .form-row input {
-      min-height: 42px;
-      padding: 0.55rem 0.8rem;
+    #tabAdd .form-row input,
+    #tabAdd #description {
+      min-height: 40px;
+      height: 40px;
+      max-height: 40px;
+      padding: 0.5rem 0.75rem;
       font-size: 0.94rem;
+      line-height: 1.3;
       border-width: 1.5px;
+      resize: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     #tabAdd .amount-hint {
@@ -1628,6 +1635,19 @@
 
     #tabAdd .submit-btn.expense {
       box-shadow: 0 6px 20px rgba(239, 68, 68, 0.32);
+    }
+
+    #tabAdd .submit-btn.is-saving {
+      opacity: 0.75;
+      cursor: wait;
+    }
+
+    .transaction-item.is-pending {
+      opacity: 0.72;
+    }
+
+    .transaction-item.is-pending .transaction-meta::after {
+      content: " · …";
     }
 
     /* Form */
@@ -5362,6 +5382,7 @@
         "add.amount": "Summa (UZS)",
         "add.submitIncome": "Daromad qoʻshish",
         "add.submitExpense": "Xarajat qoʻshish",
+        "add.saving": "Saqlanmoqda…",
         "list.title": "Operatsiyalar",
         "list.export": "Eksport",
         "list.exportAria": "Hisobotni eksport qilish",
@@ -5602,6 +5623,7 @@
         "add.amount": "Сумма (UZS)",
         "add.submitIncome": "Добавить доход",
         "add.submitExpense": "Добавить расход",
+        "add.saving": "Сохранение…",
         "list.title": "Операции",
         "list.export": "Экспорт",
         "list.exportAria": "Экспорт отчёта",
@@ -5842,6 +5864,7 @@
         "add.amount": "Amount (UZS)",
         "add.submitIncome": "Add income",
         "add.submitExpense": "Add expense",
+        "add.saving": "Saving…",
         "list.title": "Transactions",
         "list.export": "Export",
         "list.exportAria": "Export report",
@@ -6092,6 +6115,12 @@
     let unsubscribeUser = null;
     let unsubscribeCurrencies = null;
     let busy = false;
+    let userDocEnsured = false;
+    let submitSaving = false;
+    let chartsRenderTimer = null;
+    let renderDebounceTimer = null;
+    let amountHintTimer = null;
+    let submitBtnDefaultText = "";
 
     const onboardingScreen = document.getElementById("onboardingScreen");
     const onboardingTrack = document.getElementById("onboardingTrack");
@@ -7602,6 +7631,7 @@
           await setDoc(ref, patch, { merge: true });
         }
       }
+      userDocEnsured = true;
     }
 
     function subscribeUserProfile(uid) {
@@ -7699,7 +7729,23 @@
         setUsageProgressFill(statsProgressFill, limitCount, FREE_TX_LIMIT);
       }
 
-      renderCharts();
+    }
+
+    function scheduleChartsRender() {
+      if (chartsRenderTimer) clearTimeout(chartsRenderTimer);
+      chartsRenderTimer = setTimeout(() => {
+        chartsRenderTimer = null;
+        void renderCharts();
+      }, 280);
+    }
+
+    function scheduleRender(options = {}) {
+      if (renderDebounceTimer) clearTimeout(renderDebounceTimer);
+      renderDebounceTimer = setTimeout(() => {
+        renderDebounceTimer = null;
+        render(options);
+        if (!options.skipCharts) scheduleChartsRender();
+      }, 32);
     }
 
     function updateBodyScrollLock() {
@@ -8521,12 +8567,29 @@
 
     function setBusy(state) {
       busy = state;
-      submitBtn.disabled = state;
+      if (!submitSaving) submitBtn.disabled = state;
       authSubmitBtn.disabled = state;
       logoutBtn.disabled = state;
       document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.disabled = state;
       });
+    }
+
+    function setSubmitSaving(state) {
+      submitSaving = state;
+      submitBtn.disabled = state;
+      submitBtn.classList.toggle("is-saving", state);
+      if (state) {
+        submitBtn.textContent = t("add.saving");
+      } else {
+        submitBtn.textContent = submitBtnDefaultText || (
+          currentType === "income" ? t("add.submitIncome") : t("add.submitExpense")
+        );
+      }
+    }
+
+    function removePendingTransactions() {
+      transactions = transactions.filter(tx => !String(tx.id).startsWith("pending_"));
     }
 
     function showAuthError(message) {
@@ -8934,7 +8997,11 @@
     }
 
     function updateAmountHint(amount) {
-      amountHint.textContent = amount > 0 ? formatUZS(amount) : "";
+      if (amountHintTimer) clearTimeout(amountHintTimer);
+      amountHintTimer = setTimeout(() => {
+        amountHintTimer = null;
+        amountHint.textContent = amount > 0 ? formatUZS(amount) : "";
+      }, 100);
     }
 
     function formatAmountInputField() {
@@ -9154,10 +9221,10 @@
           transactions = snapshot.docs.map(d => normalizeTransactionDoc(d.id, d.data()));
           console.log("[BiznesHisob] Transactions fetched:", {
             collectionPath,
-            count: transactions.length,
-            transactions
+            count: transactions.length
           });
-          render();
+          scheduleRender({ skipCharts: true });
+          scheduleChartsRender();
           syncTxCounterBaseline().catch(err => {
             console.warn("[BiznesHisob] tx counter sync failed:", err);
           });
@@ -9619,7 +9686,8 @@
         btn.classList.toggle("active", btn.dataset.type === type);
       });
       submitBtn.className = "submit-btn " + type;
-      submitBtn.textContent = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
+      submitBtnDefaultText = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
+      if (!submitSaving) submitBtn.textContent = submitBtnDefaultText;
       renderCategorySelector(type);
     }
 
@@ -9705,14 +9773,10 @@
         throw err;
       }
 
-      await ensureUserDocument(user).catch(ensureErr => {
-        console.warn("[BiznesHisob] ensureUserDocument before save failed (continuing):", ensureErr);
-      });
-
-      try {
-        await user.getIdToken(true);
-      } catch (tokenErr) {
-        console.warn("[BiznesHisob] Token refresh failed (continuing):", tokenErr);
+      if (!userDocEnsured) {
+        await ensureUserDocument(user).catch(ensureErr => {
+          console.warn("[BiznesHisob] ensureUserDocument before save failed (continuing):", ensureErr);
+        });
       }
 
       const collectionPath = transactionsCollectionPath(user.uid);
@@ -9739,7 +9803,7 @@
       return docRef;
     }
 
-    form.addEventListener("submit", async e => {
+    form.addEventListener("submit", e => {
       e.preventDefault();
 
       if (!firebaseAuth.currentUser || !currentUser) {
@@ -9747,7 +9811,7 @@
         return;
       }
 
-      if (busy || !appUnlocked) return;
+      if (busy || submitSaving || !appUnlocked) return;
 
       const description = descriptionInput.value.trim();
       const amount = parseAmountDigits(amountInput.value);
@@ -9763,33 +9827,56 @@
         return;
       }
 
-      setBusy(true);
-      try {
-        await saveTransaction({
-          type: currentType,
-          description,
-          amount: Number(amount),
-          category: selectedCategory
-        });
-        form.reset();
-        amountHint.textContent = "";
-        selectedCategory = getDefaultCategoryId(currentType);
-        renderCategorySelector(currentType);
-        switchTab("list");
-      } catch (err) {
-        logSaveError(err, { type: currentType, amount, description });
-        if (err.code === "tx-limit") {
-          showPremiumModal({ reason: "limit" });
-        } else {
-          alert(getSaveErrorMessage(err));
+      const saveType = currentType;
+      const saveCategory = selectedCategory;
+      const pendingId = `pending_${Date.now()}`;
+      const optimisticPayload = buildTransactionPayload({
+        type: saveType,
+        description,
+        amount: Number(amount),
+        userId: currentUser.uid,
+        category: saveCategory
+      });
+      const optimisticTx = normalizeTransactionDoc(pendingId, optimisticPayload);
+
+      transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
+      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
+
+      form.reset();
+      amountHint.textContent = "";
+      selectedCategory = getDefaultCategoryId(currentType);
+      renderCategorySelector(currentType);
+      render({ skipCharts: true });
+      switchTab("list");
+      setSubmitSaving(true);
+
+      void (async () => {
+        try {
+          await saveTransaction({
+            type: saveType,
+            description,
+            amount: Number(amount),
+            category: saveCategory
+          });
+          scheduleChartsRender();
+        } catch (err) {
+          removePendingTransactions();
+          userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
+          render({ skipCharts: true });
+          logSaveError(err, { type: saveType, amount, description });
+          if (err.code === "tx-limit") {
+            showPremiumModal({ reason: "limit" });
+          } else {
+            alert(getSaveErrorMessage(err));
+          }
+        } finally {
+          setSubmitSaving(false);
         }
-      } finally {
-        setBusy(false);
-      }
+      })();
     });
 
     async function deleteTransaction(id) {
-      if (!currentUser || busy || !appUnlocked) return;
+      if (!currentUser || busy || !appUnlocked || String(id).startsWith("pending_")) return;
       setBusy(true);
       try {
         await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
@@ -9803,6 +9890,7 @@
 
     function render(options = {}) {
       const skipHero = options.skipHero === true;
+      const skipCharts = options.skipCharts === true;
       let totalIncome = 0;
       let totalExpense = 0;
 
@@ -9835,8 +9923,9 @@
         const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
         const cat = getCategoryForTx(tx);
         const sign = isIncome ? "+" : "−";
+        const isPending = String(tx.id).startsWith("pending_");
         return `
-          <li class="transaction-item">
+          <li class="transaction-item${isPending ? " is-pending" : ""}">
             <div class="tx-icon tx-cat-icon">${categoryIconHtml(cat)}</div>
             <div class="transaction-info">
               <div class="transaction-desc">${escapeHtml(tx.description)}</div>
@@ -9844,7 +9933,7 @@
             </div>
             <div class="transaction-right">
               <span class="transaction-amount ${tx.type}">${sign}${formatMoney(tx.amount)}</span>
-              <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="Oʻchirish"><i data-lucide="trash-2"></i></button>
+              <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="Oʻchirish"${isPending ? " disabled" : ""}><i data-lucide="trash-2"></i></button>
             </div>
           </li>
         `;
@@ -9860,12 +9949,13 @@
         });
       }
 
+      renderPeriodStats();
       updatePremiumUI();
       if (exportOpenBtn && !exportBusy && isPremiumUser()) {
         exportOpenBtn.disabled = !hasItems;
       }
-      renderPeriodStats();
-      refreshIcons();
+      if (!skipCharts) scheduleChartsRender();
+      requestAnimationFrame(refreshIcons);
     }
 
     function refreshIcons() {
@@ -9895,6 +9985,7 @@
         scheduleAuthFallback();
         transactions = [];
         userCurrencies = [];
+        userDocEnsured = false;
         userProfile = {
           isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
           totalTransactionsAdded: undefined,
@@ -9922,6 +10013,7 @@
         refreshIcons();
       } else {
         if (firebaseAuth.currentUser) return;
+        userDocEnsured = false;
         allowAuthScreen();
         clearAuthFallbackTimer();
         closeSettings();
