@@ -1620,7 +1620,7 @@
       font-size: 0.55rem;
       line-height: 1.15;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -6122,6 +6122,13 @@
     let renderDebounceTimer = null;
     let amountHintTimer = null;
     let submitBtnDefaultText = "";
+    let lastChartsFingerprint = "";
+    let lastUiContentFingerprint = "";
+    let chartsRenderInFlight = false;
+    let chartsHaveRendered = false;
+    let chartsUpdatePending = false;
+    let chartDataBundleCache = null;
+    let periodNetsCache = { fingerprint: "", nets: null };
 
     const onboardingScreen = document.getElementById("onboardingScreen");
     const onboardingTrack = document.getElementById("onboardingTrack");
@@ -7732,12 +7739,141 @@
 
     }
 
-    function scheduleChartsRender() {
+    function getTransactionsFingerprint() {
+      let h = 2166136261;
+      const mix = str => {
+        for (let i = 0; i < str.length; i++) {
+          h ^= str.charCodeAt(i);
+          h = Math.imul(h, 16777619);
+        }
+      };
+      mix(String(transactions.length));
+      mix(currentLang || "");
+      for (const tx of transactions) {
+        mix(String(tx.type || ""));
+        mix(String(tx.amount || 0));
+        mix(String(tx.category || ""));
+        mix(String(tx.date || "").slice(0, 19));
+        mix(String(tx.description || "").slice(0, 120));
+      }
+      return String(h >>> 0);
+    }
+
+    function invalidateChartDataCache() {
+      chartDataBundleCache = null;
+      periodNetsCache = { fingerprint: "", nets: null };
+    }
+
+    function buildChartDataBundle() {
+      const fingerprint = getTransactionsFingerprint();
+      if (chartDataBundleCache && chartDataBundleCache.fingerprint === fingerprint) {
+        return chartDataBundleCache.bundle;
+      }
+
+      const dayBuckets = new Map();
+      const monthBuckets = new Map();
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+
+      for (const tx of transactions) {
+        const txDate = parseTxDate(tx);
+        if (!txDate) continue;
+        const amt = Number(tx.amount) || 0;
+        const isIncome = tx.type === "income";
+        const dayKey = `${txDate.getFullYear()}-${String(txDate.getMonth() + 1).padStart(2, "0")}-${String(txDate.getDate()).padStart(2, "0")}`;
+        const dayEntry = dayBuckets.get(dayKey) || { income: 0, expense: 0 };
+        if (isIncome) dayEntry.income += amt;
+        else dayEntry.expense += amt;
+        dayBuckets.set(dayKey, dayEntry);
+
+        const monthKey = `${txDate.getFullYear()}-${txDate.getMonth()}`;
+        const monthEntry = monthBuckets.get(monthKey) || { income: 0, expense: 0 };
+        if (isIncome) monthEntry.income += amt;
+        else monthEntry.expense += amt;
+        monthBuckets.set(monthKey, monthEntry);
+      }
+
+      const trendLabels = [];
+      const trendIncome = [];
+      const trendExpense = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        trendLabels.push(d.toLocaleDateString(locale, { day: "numeric", month: "short" }));
+        const dayKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        const bucket = dayBuckets.get(dayKey) || { income: 0, expense: 0 };
+        trendIncome.push(bucket.income);
+        trendExpense.push(bucket.expense);
+      }
+
+      const now = new Date();
+      const compareLabels = [];
+      const compareIncome = [];
+      const compareExpense = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        compareLabels.push(d.toLocaleDateString(locale, { month: "short" }));
+        const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
+        const bucket = monthBuckets.get(monthKey) || { income: 0, expense: 0 };
+        compareIncome.push(bucket.income);
+        compareExpense.push(bucket.expense);
+      }
+
+      const bundle = {
+        expense: aggregateCategoryBreakdown("expense"),
+        income: aggregateCategoryBreakdown("income"),
+        trend: { labels: trendLabels, income: trendIncome, expense: trendExpense },
+        compare: { labels: compareLabels, income: compareIncome, expense: compareExpense }
+      };
+
+      chartDataBundleCache = { fingerprint, bundle };
+      return bundle;
+    }
+
+    function computeAllPeriodNets() {
+      const fingerprint = getTransactionsFingerprint();
+      if (periodNetsCache.fingerprint === fingerprint && periodNetsCache.nets) {
+        return periodNetsCache.nets;
+      }
+      const nets = { today: 0, week: 0, month: 0, "3months": 0 };
+      for (const tx of transactions) {
+        const amt = Number(tx.amount) || 0;
+        const sign = tx.type === "income" ? 1 : -1;
+        for (const key of ["today", "week", "month", "3months"]) {
+          if (isTxInPeriod(tx, key)) nets[key] += sign * amt;
+        }
+      }
+      periodNetsCache = { fingerprint, nets };
+      return nets;
+    }
+
+    function scheduleChartsRender(options = {}) {
+      const force = options.force === true;
+      if (currentTab !== "home") {
+        chartsUpdatePending = true;
+        if (chartsRenderTimer) {
+          clearTimeout(chartsRenderTimer);
+          chartsRenderTimer = null;
+        }
+        return;
+      }
+      chartsUpdatePending = false;
+      const deferMs = options.deferMs ?? 450;
       if (chartsRenderTimer) clearTimeout(chartsRenderTimer);
       chartsRenderTimer = setTimeout(() => {
         chartsRenderTimer = null;
-        void renderCharts();
-      }, 280);
+        void renderChartsIfNeeded(force);
+      }, deferMs);
+    }
+
+    function updateChartInPlace(chart, labels, datasets, animate) {
+      if (!chart) return false;
+      chart.data.labels = labels;
+      datasets.forEach((ds, i) => {
+        if (!chart.data.datasets[i]) return;
+        Object.assign(chart.data.datasets[i], ds);
+      });
+      chart.update(animate ? "default" : "none");
+      return true;
     }
 
     function scheduleRender(options = {}) {
@@ -8287,6 +8423,9 @@
         categorySelectorNeedsRefresh = false;
         renderCategorySelector(currentType);
       }
+      if (tabName === "home" && chartsUpdatePending) {
+        scheduleChartsRender({ deferMs: 120 });
+      }
       requestAnimationFrame(refreshIcons);
     }
 
@@ -8582,6 +8721,7 @@
 
     function removePendingTransactions() {
       transactions = transactions.filter(tx => !String(tx.id).startsWith("pending_"));
+      invalidateChartDataCache();
     }
 
     function showAuthError(message) {
@@ -9211,12 +9351,24 @@
         q,
         snapshot => {
           transactions = snapshot.docs.map(d => normalizeTransactionDoc(d.id, d.data()));
+          invalidateChartDataCache();
           console.log("[BiznesHisob] Transactions fetched:", {
             collectionPath,
             count: transactions.length
           });
-          scheduleRender({ skipCharts: true });
-          scheduleChartsRender();
+          const contentFp = getTransactionsFingerprint();
+          const uiUnchanged = contentFp === lastUiContentFingerprint;
+          lastUiContentFingerprint = contentFp;
+          const listReconciled = reconcilePendingListRow();
+          scheduleRender({
+            skipCharts: true,
+            skipList: listReconciled,
+            skipHero: uiUnchanged,
+            skipPeriodStats: uiUnchanged
+          });
+          if (!uiUnchanged || !chartsHaveRendered) {
+            scheduleChartsRender({ deferMs: 500 });
+          }
           syncTxCounterBaseline().catch(err => {
             console.warn("[BiznesHisob] tx counter sync failed:", err);
           });
@@ -9255,8 +9407,7 @@
     }
 
     function calcPeriodNet(period) {
-      const list = filterTransactionsByPeriod(period);
-      return calcExportSummary(list).net;
+      return computeAllPeriodNets()[period] ?? 0;
     }
 
     function destroyChartInstance(chart) {
@@ -9399,7 +9550,7 @@
           bar.style.width = `${bar.dataset.width || 0}%`;
         });
       });
-      refreshIcons();
+      refreshIconsScoped(container);
     }
 
     function renderIncomeBreakdownList(container, card, data) {
@@ -9435,7 +9586,7 @@
           bar.style.width = `${bar.dataset.width || 0}%`;
         });
       });
-      refreshIcons();
+      refreshIconsScoped(container);
     }
 
     function getLast30DaysTrend() {
@@ -9492,7 +9643,26 @@
       return { labels: months.map(m => m.label), income, expense };
     }
 
-    async function renderCharts() {
+    async function renderChartsIfNeeded(force = false) {
+      const fingerprint = getTransactionsFingerprint();
+      if (!force && fingerprint === lastChartsFingerprint && chartsHaveRendered) {
+        return;
+      }
+      if (chartsRenderInFlight) {
+        scheduleChartsRender({ deferMs: 200, force: true });
+        return;
+      }
+      chartsRenderInFlight = true;
+      try {
+        await renderCharts(force);
+        lastChartsFingerprint = fingerprint;
+        chartsHaveRendered = true;
+      } finally {
+        chartsRenderInFlight = false;
+      }
+    }
+
+    async function renderCharts(forceRebuild = false) {
       try {
         await ensureChartJs();
       } catch (err) {
@@ -9501,10 +9671,10 @@
       }
       if (typeof Chart === "undefined") return;
 
-      const expenseData = aggregateCategoryBreakdown("expense");
-      const incomeData = aggregateCategoryBreakdown("income");
+      const { expense: expenseData, income: incomeData, trend, compare } = buildChartDataBundle();
       const donutEl = document.getElementById("expenseDonutChart");
       const expenseLegendEl = document.getElementById("expenseChartLegend");
+      const animateCharts = !chartsHaveRendered && !forceRebuild;
 
       updateDonutCenter(expenseData.total);
       renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
@@ -9526,38 +9696,53 @@
 
       chartIncomeBar = destroyChartInstance(chartIncomeBar);
 
+      const donutAnim = animateCharts ? { duration: 400, easing: "easeOutQuart" } : false;
+
       if (donutEl) {
-        chartDonut = destroyChartInstance(chartDonut);
         if (expenseData.items.length) {
-          chartDonut = new Chart(donutEl, {
-            type: "doughnut",
-            data: {
-              labels: expenseData.labels,
-              datasets: [{
-                data: expenseData.values,
-                backgroundColor: expenseData.colors,
-                borderWidth: 0,
-                hoverOffset: 6
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              cutout: "62%",
-              animation: { duration: 500, easing: "easeOutQuart" },
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  callbacks: {
-                    label(ctx) {
-                      const pct = formatCategoryPercent(ctx.raw, expenseData.total);
-                      return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+          const donutPayload = {
+            labels: expenseData.labels,
+            datasets: [{
+              data: expenseData.values,
+              backgroundColor: expenseData.colors,
+              borderWidth: 0,
+              hoverOffset: 6
+            }]
+          };
+          if (
+            !forceRebuild &&
+            chartDonut &&
+            chartDonut.canvas === donutEl &&
+            chartDonut.config.type === "doughnut"
+          ) {
+            chartDonut.data = donutPayload;
+            chartDonut.update("none");
+          } else {
+            chartDonut = destroyChartInstance(chartDonut);
+            chartDonut = new Chart(donutEl, {
+              type: "doughnut",
+              data: donutPayload,
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "62%",
+                animation: donutAnim,
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    callbacks: {
+                      label(ctx) {
+                        const pct = formatCategoryPercent(ctx.raw, expenseData.total);
+                        return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+                      }
                     }
                   }
                 }
               }
-            }
-          });
+            });
+          }
+        } else {
+          chartDonut = destroyChartInstance(chartDonut);
         }
       }
 
@@ -9565,89 +9750,106 @@
       const compareEl = document.getElementById("compareChart");
       if (!trendEl || !compareEl) return;
 
-      const trend = getLast30DaysTrend();
-      const compare = getMonthlyComparison();
       const axisStyle = {
         ticks: { color: "#71717a", font: { size: 9 } },
         grid: { color: "rgba(255,255,255,0.06)" }
       };
 
-      chartTrend = destroyChartInstance(chartTrend);
-      chartTrend = new Chart(trendEl, {
-        type: "line",
-        data: {
-          labels: trend.labels,
-          datasets: [
-            {
-              label: t("home.income"),
-              data: trend.income,
-              borderColor: "#22C55E",
-              backgroundColor: "rgba(34,197,94,0.12)",
-              tension: 0.35,
-              fill: true,
-              pointRadius: 0
-            },
-            {
-              label: t("home.expense"),
-              data: trend.expense,
-              borderColor: "#EF4444",
-              backgroundColor: "rgba(239,68,68,0.08)",
-              tension: 0.35,
-              fill: true,
-              pointRadius: 0
-            }
-          ]
+      const trendDatasets = [
+        {
+          label: t("home.income"),
+          data: trend.income,
+          borderColor: "#22C55E",
+          backgroundColor: "rgba(34,197,94,0.12)",
+          tension: 0.35,
+          fill: true,
+          pointRadius: 0
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
-          },
-          scales: {
-            x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
-            y: axisStyle
-          }
+        {
+          label: t("home.expense"),
+          data: trend.expense,
+          borderColor: "#EF4444",
+          backgroundColor: "rgba(239,68,68,0.08)",
+          tension: 0.35,
+          fill: true,
+          pointRadius: 0
         }
-      });
+      ];
 
-      chartCompare = destroyChartInstance(chartCompare);
-      chartCompare = new Chart(compareEl, {
-        type: "bar",
-        data: {
-          labels: compare.labels,
-          datasets: [
-            {
-              label: t("home.income"),
-              data: compare.income,
-              backgroundColor: "rgba(34,197,94,0.78)",
-              borderRadius: 6
+      if (
+        !forceRebuild &&
+        chartTrend &&
+        chartTrend.canvas === trendEl &&
+        updateChartInPlace(chartTrend, trend.labels, trendDatasets, animateCharts)
+      ) {
+        /* updated in place */
+      } else {
+        chartTrend = destroyChartInstance(chartTrend);
+        chartTrend = new Chart(trendEl, {
+          type: "line",
+          data: { labels: trend.labels, datasets: trendDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: animateCharts ? { duration: 400 } : false,
+            plugins: {
+              legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
             },
-            {
-              label: t("home.expense"),
-              data: compare.expense,
-              backgroundColor: "rgba(239,68,68,0.78)",
-              borderRadius: 6
+            scales: {
+              x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
+              y: axisStyle
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
-          },
-          scales: {
-            x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
-            y: axisStyle
           }
+        });
+      }
+
+      const compareDatasets = [
+        {
+          label: t("home.income"),
+          data: compare.income,
+          backgroundColor: "rgba(34,197,94,0.78)",
+          borderRadius: 6
+        },
+        {
+          label: t("home.expense"),
+          data: compare.expense,
+          backgroundColor: "rgba(239,68,68,0.78)",
+          borderRadius: 6
         }
-      });
+      ];
+
+      if (
+        !forceRebuild &&
+        chartCompare &&
+        chartCompare.canvas === compareEl &&
+        updateChartInPlace(chartCompare, compare.labels, compareDatasets, animateCharts)
+      ) {
+        /* updated in place */
+      } else {
+        chartCompare = destroyChartInstance(chartCompare);
+        chartCompare = new Chart(compareEl, {
+          type: "bar",
+          data: { labels: compare.labels, datasets: compareDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: animateCharts ? { duration: 400 } : false,
+            plugins: {
+              legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
+            },
+            scales: {
+              x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
+              y: axisStyle
+            }
+          }
+        });
+      }
     }
 
     function renderPeriodStats() {
       if (!periodStatsGrid) return;
 
+      const periodNets = computeAllPeriodNets();
       const periods = [
         { key: "today", labelKey: "stats.periodToday", className: "period-today" },
         { key: "week", labelKey: "stats.periodWeek", className: "period-week" },
@@ -9656,7 +9858,7 @@
       ];
 
       periodStatsGrid.innerHTML = periods.map(period => {
-        const net = calcPeriodNet(period.key);
+        const net = periodNets[period.key] ?? 0;
         const valueClass = net > 0 ? "positive" : net < 0 ? "negative" : "";
         const sign = net > 0 ? "+" : net < 0 ? "−" : "";
         const displayAmount = net === 0 ? formatUZS(0) : `${sign}${formatUZS(Math.abs(net))}`;
@@ -9818,6 +10020,7 @@
       const optimisticTx = normalizeTransactionDoc(pendingId, optimisticPayload);
 
       transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
+      invalidateChartDataCache();
       userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
 
       switchTab("list");
@@ -9838,8 +10041,10 @@
           });
         } catch (err) {
           removePendingTransactions();
+          invalidateChartDataCache();
           userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
           render({ skipCharts: true });
+          scheduleChartsRender({ deferMs: 300 });
           logSaveError(err, { type: saveType, amount, description });
           if (err.code === "tx-limit") {
             showPremiumModal({ reason: "limit" });
@@ -9910,7 +10115,29 @@
     }
 
     function bindDeleteButton(btn) {
-      btn.addEventListener("click", () => deleteTransaction(btn.dataset.id));
+      const id = btn.dataset.id;
+      btn.onclick = () => deleteTransaction(id);
+    }
+
+    function reconcilePendingListRow() {
+      if (!transactionList) return false;
+      const pendingRows = transactionList.querySelectorAll(".transaction-item.is-pending");
+      if (!pendingRows.length) return false;
+      if (transactions.some(tx => String(tx.id).startsWith("pending_"))) return false;
+
+      const topTx = transactions[0];
+      pendingRows.forEach(row => {
+        row.classList.remove("is-pending");
+        if (topTx && row === transactionList.firstElementChild) {
+          const delBtn = row.querySelector(".delete-btn");
+          if (delBtn) {
+            delBtn.dataset.id = topTx.id;
+            delBtn.disabled = busy;
+            bindDeleteButton(delBtn);
+          }
+        }
+      });
+      return true;
     }
 
     function prependTransactionRow(tx) {
@@ -9944,6 +10171,7 @@
     function applyQuickAddUI(optimisticTx) {
       updateTotalsFromTransactions();
       prependTransactionRow(optimisticTx);
+      lastUiContentFingerprint = getTransactionsFingerprint();
       const hasItems = transactions.length > 0;
       if (exportOpenBtn && !exportBusy && isPremiumUser()) {
         exportOpenBtn.disabled = !hasItems;
@@ -9952,7 +10180,6 @@
       requestAnimationFrame(() => {
         renderPeriodStats();
         refreshIconsScoped(transactionList);
-        scheduleChartsRender();
       });
     }
 
@@ -10002,6 +10229,7 @@
         exportOpenBtn.disabled = !hasItems;
       }
       if (!skipCharts) scheduleChartsRender();
+      lastUiContentFingerprint = getTransactionsFingerprint();
       requestAnimationFrame(refreshIcons);
     }
 
