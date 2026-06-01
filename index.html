@@ -1487,40 +1487,147 @@
       margin: 1.25rem 0 0.75rem;
     }
 
+    .section-title--compact {
+      margin: 0 0 0.5rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+    }
+
+    .quick-add-card {
+      padding: 0.75rem 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
     .quick-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .quick-btn {
-      min-height: 56px;
-      padding: 0.85rem;
+      min-height: 42px;
+      padding: 0.5rem 0.55rem;
       border: none;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
+      border-radius: 11px;
+      font-size: 0.82rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
+      gap: 0.35rem;
       transition: transform 0.2s var(--ease), box-shadow 0.2s;
     }
 
-    .quick-btn:active { transform: scale(0.96); }
+    .quick-btn:active { transform: scale(0.97); }
 
     .quick-btn.income {
       background: linear-gradient(135deg, #16a34a, var(--income));
       color: #fff;
-      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.35);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.28);
     }
 
     .quick-btn.expense {
       background: linear-gradient(135deg, #dc2626, var(--expense));
       color: #fff;
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.28);
+    }
+
+    /* Qo'shish — ixcham forma (Tezkor qo'shish orqali) */
+    #tabAdd .card {
+      padding: 0.85rem 0.9rem;
+      margin-bottom: 0.65rem;
+    }
+
+    #tabAdd .panel-title {
+      margin-bottom: 0.55rem;
+      font-size: 0.72rem;
+    }
+
+    #tabAdd .type-toggle {
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+
+    #tabAdd .type-btn {
+      min-height: 38px;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.86rem;
+      border-width: 1.5px;
+    }
+
+    #tabAdd .type-btn.active.income,
+    #tabAdd .type-btn.active.expense {
+      transform: none;
+    }
+
+    #tabAdd .form-row {
+      margin-bottom: 0.65rem;
+    }
+
+    #tabAdd .form-row label {
+      font-size: 0.78rem;
+      margin-bottom: 0.3rem;
+    }
+
+    #tabAdd .form-row input {
+      min-height: 42px;
+      padding: 0.55rem 0.8rem;
+      font-size: 0.94rem;
+      border-width: 1.5px;
+    }
+
+    #tabAdd .amount-hint {
+      margin-top: 0.25rem;
+      font-size: 0.78rem;
+    }
+
+    #tabAdd .category-grid {
+      grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+      gap: 0.35rem 0.3rem;
+      padding: 0 0 0.25rem;
+    }
+
+    #tabAdd .category-option {
+      gap: 0.22rem;
+      padding: 0.08rem;
+    }
+
+    #tabAdd .category-icon-wrap {
+      width: 32px;
+      height: 32px;
+    }
+
+    #tabAdd .category-icon-wrap [data-lucide] {
+      width: 16px;
+      height: 16px;
+    }
+
+    #tabAdd .category-option.active .category-icon-wrap {
+      transform: scale(1.08);
+      box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px rgba(124, 58, 237, 0.45);
+    }
+
+    #tabAdd .category-option-label {
+      font-size: 0.55rem;
+      line-height: 1.15;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    #tabAdd .submit-btn {
+      min-height: 44px;
+      padding: 0.65rem 0.85rem;
+      margin-top: 0.15rem;
+      font-size: 0.9rem;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.32);
+    }
+
+    #tabAdd .submit-btn.expense {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.32);
     }
 
     /* Form */
@@ -3119,8 +3226,18 @@
     }
 
     .quick-btn [data-lucide] {
-      width: 20px;
-      height: 20px;
+      width: 17px;
+      height: 17px;
+    }
+
+    #tabAdd .type-btn [data-lucide] {
+      width: 16px;
+      height: 16px;
+    }
+
+    #tabAdd .form-row label [data-lucide] {
+      width: 14px;
+      height: 14px;
     }
 
     .offline-banner {
@@ -4530,10 +4647,12 @@
             <div class="card-value" id="totalExpense">0</div>
           </div>
         </div>
-        <p class="section-title" data-i18n="home.quick">Tezkor qoʻshish</p>
-        <div class="quick-actions">
-          <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
-          <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
+        <div class="card quick-add-card">
+          <p class="section-title section-title--compact" data-i18n="home.quick">Tezkor qoʻshish</p>
+          <div class="quick-actions">
+            <button type="button" class="quick-btn income" data-goto-add="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
+            <button type="button" class="quick-btn expense" data-goto-add="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
+          </div>
         </div>
 
         <p class="section-title" data-i18n="stats.title">Statistika</p>
