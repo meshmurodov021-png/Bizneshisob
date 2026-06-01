@@ -6116,7 +6116,8 @@
     let unsubscribeCurrencies = null;
     let busy = false;
     let userDocEnsured = false;
-    let submitSaving = false;
+    let saveInFlight = false;
+    let categorySelectorNeedsRefresh = false;
     let chartsRenderTimer = null;
     let renderDebounceTimer = null;
     let amountHintTimer = null;
@@ -8282,6 +8283,10 @@
       });
 
       if (tabName === "profile") renderProfileUI();
+      if (tabName === "add" && categorySelectorNeedsRefresh) {
+        categorySelectorNeedsRefresh = false;
+        renderCategorySelector(currentType);
+      }
       requestAnimationFrame(refreshIcons);
     }
 
@@ -8567,25 +8572,12 @@
 
     function setBusy(state) {
       busy = state;
-      if (!submitSaving) submitBtn.disabled = state;
+      if (!saveInFlight) submitBtn.disabled = state;
       authSubmitBtn.disabled = state;
       logoutBtn.disabled = state;
       document.querySelectorAll(".delete-btn").forEach(btn => {
         btn.disabled = state;
       });
-    }
-
-    function setSubmitSaving(state) {
-      submitSaving = state;
-      submitBtn.disabled = state;
-      submitBtn.classList.toggle("is-saving", state);
-      if (state) {
-        submitBtn.textContent = t("add.saving");
-      } else {
-        submitBtn.textContent = submitBtnDefaultText || (
-          currentType === "income" ? t("add.submitIncome") : t("add.submitExpense")
-        );
-      }
     }
 
     function removePendingTransactions() {
@@ -9687,8 +9679,9 @@
       });
       submitBtn.className = "submit-btn " + type;
       submitBtnDefaultText = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
-      if (!submitSaving) submitBtn.textContent = submitBtnDefaultText;
+      if (!saveInFlight) submitBtn.textContent = submitBtnDefaultText;
       renderCategorySelector(type);
+      categorySelectorNeedsRefresh = false;
     }
 
     typeButtons.forEach(btn => {
@@ -9779,27 +9772,12 @@
         });
       }
 
-      const collectionPath = transactionsCollectionPath(user.uid);
-      console.log("[BiznesHisob] Firestore save attempt:", {
-        collectionPath,
-        payload: txData,
-        fieldTypes: {
-          type: typeof txData.type,
-          description: typeof txData.description,
-          amount: typeof txData.amount,
-          date: typeof txData.date,
-          userId: typeof txData.userId,
-          category: typeof txData.category
-        },
-        amountIsNumber: typeof txData.amount === "number" && Number.isFinite(txData.amount)
-      });
-
       const docRef = await addDoc(transactionsRef(user.uid), txData);
-      await updateDoc(userDocRef(user.uid), {
+      void updateDoc(userDocRef(user.uid), {
         totalTransactionsAdded: increment(1)
+      }).catch(err => {
+        console.warn("[BiznesHisob] Counter increment failed:", err);
       });
-      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
-      console.log("[BiznesHisob] Transaction saved:", { id: docRef.id, collectionPath });
       return docRef;
     }
 
@@ -9811,7 +9789,7 @@
         return;
       }
 
-      if (busy || submitSaving || !appUnlocked) return;
+      if (busy || saveInFlight || !appUnlocked) return;
 
       const description = descriptionInput.value.trim();
       const amount = parseAmountDigits(amountInput.value);
@@ -9842,14 +9820,14 @@
       transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
       userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
 
+      switchTab("list");
       form.reset();
       amountHint.textContent = "";
       selectedCategory = getDefaultCategoryId(currentType);
-      renderCategorySelector(currentType);
-      render({ skipCharts: true });
-      switchTab("list");
-      setSubmitSaving(true);
+      categorySelectorNeedsRefresh = true;
+      applyQuickAddUI(optimisticTx);
 
+      saveInFlight = true;
       void (async () => {
         try {
           await saveTransaction({
@@ -9858,7 +9836,6 @@
             amount: Number(amount),
             category: saveCategory
           });
-          scheduleChartsRender();
         } catch (err) {
           removePendingTransactions();
           userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
@@ -9870,7 +9847,7 @@
             alert(getSaveErrorMessage(err));
           }
         } finally {
-          setSubmitSaving(false);
+          saveInFlight = false;
         }
       })();
     });
@@ -9888,43 +9865,36 @@
       }
     }
 
-    function render(options = {}) {
-      const skipHero = options.skipHero === true;
-      const skipCharts = options.skipCharts === true;
+    function calcTotalsFromTransactions() {
       let totalIncome = 0;
       let totalExpense = 0;
-
       transactions.forEach(tx => {
         const amount = Number(tx.amount) || 0;
         if (tx.type === "income") totalIncome += amount;
         else totalExpense += amount;
       });
+      return { totalIncome, totalExpense, netProfit: totalIncome - totalExpense };
+    }
 
-      const netProfit = totalIncome - totalExpense;
-
-      if (!skipHero) {
-        totalIncomeEl.textContent = formatMoney(totalIncome, { short: true });
-        totalExpenseEl.textContent = formatMoney(totalExpense, { short: true });
-        netProfitEl.textContent = formatMoney(netProfit);
-      }
+    function updateTotalsFromTransactions() {
+      const { totalIncome, totalExpense, netProfit } = calcTotalsFromTransactions();
+      totalIncomeEl.textContent = formatMoney(totalIncome, { short: true });
+      totalExpenseEl.textContent = formatMoney(totalExpense, { short: true });
+      netProfitEl.textContent = formatMoney(netProfit);
       profitCard.classList.toggle("negative", netProfit < 0);
-
       const countText = t("list.count", { n: transactions.length });
       txCountEl.textContent = countText;
       profileTxCount.textContent = transactions.length;
       if (profileTxStatValue) profileTxStatValue.textContent = transactions.length;
+    }
 
-      const hasItems = transactions.length > 0;
-      emptyState.style.display = hasItems ? "none" : "block";
-      transactionList.style.display = hasItems ? "flex" : "none";
-
-      transactionList.innerHTML = transactions.map(tx => {
-        const isIncome = tx.type === "income";
-        const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
-        const cat = getCategoryForTx(tx);
-        const sign = isIncome ? "+" : "−";
-        const isPending = String(tx.id).startsWith("pending_");
-        return `
+    function buildTransactionRowHtml(tx) {
+      const isIncome = tx.type === "income";
+      const typeLabel = isIncome ? t("tx.income") : t("tx.expense");
+      const cat = getCategoryForTx(tx);
+      const sign = isIncome ? "+" : "−";
+      const isPending = String(tx.id).startsWith("pending_");
+      return `
           <li class="transaction-item${isPending ? " is-pending" : ""}">
             <div class="tx-icon tx-cat-icon">${categoryIconHtml(cat)}</div>
             <div class="transaction-info">
@@ -9937,19 +9907,96 @@
             </div>
           </li>
         `;
-      }).join("");
+    }
 
-      transactionList.querySelectorAll(".delete-btn").forEach(btn => {
-        btn.addEventListener("click", () => deleteTransaction(btn.dataset.id));
+    function bindDeleteButton(btn) {
+      btn.addEventListener("click", () => deleteTransaction(btn.dataset.id));
+    }
+
+    function prependTransactionRow(tx) {
+      const hasItems = transactions.length > 0;
+      emptyState.style.display = hasItems ? "none" : "block";
+      transactionList.style.display = hasItems ? "flex" : "none";
+      if (!hasItems || !transactionList) return;
+
+      const wrap = document.createElement("div");
+      wrap.innerHTML = buildTransactionRowHtml(tx).trim();
+      const row = wrap.firstElementChild;
+      if (!row) return;
+
+      transactionList.insertBefore(row, transactionList.firstChild);
+      const delBtn = row.querySelector(".delete-btn");
+      if (delBtn) bindDeleteButton(delBtn);
+      refreshIconsScoped(row);
+    }
+
+    function refreshIconsScoped(root) {
+      if (!window.lucide || !root) return;
+      if (typeof lucide.createIcons === "function") {
+        try {
+          lucide.createIcons({ root });
+          return;
+        } catch (_) {}
+      }
+      lucide.createIcons();
+    }
+
+    function applyQuickAddUI(optimisticTx) {
+      updateTotalsFromTransactions();
+      prependTransactionRow(optimisticTx);
+      const hasItems = transactions.length > 0;
+      if (exportOpenBtn && !exportBusy && isPremiumUser()) {
+        exportOpenBtn.disabled = !hasItems;
+      }
+      updatePremiumUI();
+      requestAnimationFrame(() => {
+        renderPeriodStats();
+        refreshIconsScoped(transactionList);
+        scheduleChartsRender();
       });
+    }
 
+    function renderTransactionList() {
+      const hasItems = transactions.length > 0;
+      emptyState.style.display = hasItems ? "none" : "block";
+      transactionList.style.display = hasItems ? "flex" : "none";
+      transactionList.innerHTML = transactions.map(tx => buildTransactionRowHtml(tx)).join("");
+      transactionList.querySelectorAll(".delete-btn").forEach(bindDeleteButton);
       if (busy) {
-        document.querySelectorAll(".delete-btn").forEach(btn => {
+        transactionList.querySelectorAll(".delete-btn").forEach(btn => {
           btn.disabled = true;
         });
       }
+    }
 
-      renderPeriodStats();
+    function render(options = {}) {
+      const skipHero = options.skipHero === true;
+      const skipCharts = options.skipCharts === true;
+      const skipList = options.skipList === true;
+      const skipPeriodStats = options.skipPeriodStats === true;
+
+      if (!skipHero) {
+        const { totalIncome, totalExpense, netProfit } = calcTotalsFromTransactions();
+        totalIncomeEl.textContent = formatMoney(totalIncome, { short: true });
+        totalExpenseEl.textContent = formatMoney(totalExpense, { short: true });
+        netProfitEl.textContent = formatMoney(netProfit);
+        profitCard.classList.toggle("negative", netProfit < 0);
+      }
+
+      const countText = t("list.count", { n: transactions.length });
+      txCountEl.textContent = countText;
+      profileTxCount.textContent = transactions.length;
+      if (profileTxStatValue) profileTxStatValue.textContent = transactions.length;
+
+      const hasItems = transactions.length > 0;
+
+      if (!skipList) {
+        renderTransactionList();
+      }
+
+      if (!skipPeriodStats) {
+        renderPeriodStats();
+      }
       updatePremiumUI();
       if (exportOpenBtn && !exportBusy && isPremiumUser()) {
         exportOpenBtn.disabled = !hasItems;
