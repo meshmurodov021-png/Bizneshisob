@@ -9693,7 +9693,10 @@
               data: expenseData.values,
               backgroundColor: expenseData.colors,
               borderWidth: 0,
-              hoverOffset: 6
+              hoverBorderWidth: 0,
+              borderColor: expenseData.colors,
+              hoverBorderColor: expenseData.colors,
+              hoverOffset: 0
             }]
           };
           if (
@@ -9714,6 +9717,13 @@
                 maintainAspectRatio: false,
                 cutout: "62%",
                 animation: donutAnim,
+                elements: {
+                  arc: {
+                    borderWidth: 0,
+                    hoverBorderWidth: 0,
+                    borderAlign: "inner"
+                  }
+                },
                 plugins: {
                   legend: { display: false },
                   tooltip: {
