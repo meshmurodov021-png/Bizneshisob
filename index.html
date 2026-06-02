@@ -70,6 +70,11 @@
       --scrollbar-thumb-1: #7C3AED;
       --scrollbar-thumb-2: #4F46E5;
       --scrollbar-thumb-3: #6366f1;
+      --pin-bg: #0a0a0f;
+      --pin-glow: rgba(124, 58, 237, 0.2);
+      --pin-key-bg: rgba(22, 22, 31, 0.72);
+      --pin-dot-empty: rgba(255, 255, 255, 0.04);
+      --pin-dot-border: rgba(124, 58, 237, 0.35);
     }
 
     /* Lucide icons */
@@ -686,6 +691,7 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+      box-shadow: none;
     }
 
     .app-header .logo {
@@ -2785,7 +2791,7 @@
       background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(99, 102, 241, 0.2));
       border-color: rgba(167, 139, 250, 0.45);
       color: #c4b5fd;
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.25);
+      box-shadow: none;
     }
 
     .profile-block {
@@ -2801,8 +2807,7 @@
       padding: 1.1rem 1.15rem;
       border-radius: var(--radius);
       background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #6366f1 100%);
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
-      animation: glow 3s ease-in-out infinite;
+      box-shadow: none;
       overflow: hidden;
       isolation: isolate;
     }
@@ -2815,7 +2820,7 @@
       border-radius: inherit;
       background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED);
       background-size: 200% 200%;
-      animation: shimmer 3s ease infinite, borderGlow 3s ease-in-out infinite;
+      animation: shimmer 3s ease infinite;
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
@@ -3175,7 +3180,7 @@
       --glass-border: rgba(99, 102, 241, 0.14);
       --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
       --bar-track: rgba(0, 0, 0, 0.08);
-      --panel-header: rgba(255, 255, 255, 0.92);
+      --panel-header: #ffffff;
       --panel-nav: rgba(255, 255, 255, 0.96);
       --stat-item-bg: #f9fafb;
       --settings-surface: #ffffff;
@@ -3196,6 +3201,11 @@
       --scrollbar-thumb-1: #6366f1;
       --scrollbar-thumb-2: #4f46e5;
       --scrollbar-thumb-3: #7c3aed;
+      --pin-bg: #f3f4f8;
+      --pin-glow: rgba(99, 102, 241, 0.08);
+      --pin-key-bg: #ffffff;
+      --pin-dot-empty: #e5e7eb;
+      --pin-dot-border: rgba(99, 102, 241, 0.35);
     }
 
     html.light-theme * {
@@ -3206,9 +3216,18 @@
       background: linear-gradient(to bottom, var(--scrollbar-thumb-1), var(--scrollbar-thumb-2), var(--scrollbar-thumb-3));
     }
 
+    html.light-theme body::before {
+      opacity: 0.45;
+    }
+
     html.light-theme .app-header,
     html.light-theme .settings-topbar {
       background: var(--panel-header);
+      box-shadow: none;
+    }
+
+    html.light-theme .logo-icon {
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.18);
     }
 
     html.light-theme .bottom-nav {
@@ -4148,11 +4167,12 @@
       align-items: center;
       justify-content: center;
       padding: 1.5rem;
-      background: #0a0a0f;
+      background: var(--pin-bg);
+      color: var(--text);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.4s var(--ease), visibility 0.4s;
+      transition: opacity 0.4s var(--ease), visibility 0.4s, background 0.25s var(--ease), color 0.25s var(--ease);
     }
 
     .pin-screen::before {
@@ -4160,7 +4180,7 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 50% 0%, rgba(124, 58, 237, 0.2), transparent 55%);
+        radial-gradient(ellipse 70% 50% at 50% 0%, var(--pin-glow), transparent 55%);
       pointer-events: none;
     }
 
@@ -4191,6 +4211,7 @@
       margin-bottom: 1.75rem;
       font-size: 1.15rem;
       font-weight: 800;
+      color: var(--text);
     }
 
     .pin-logo-icon {
@@ -4260,6 +4281,7 @@
       font-weight: 700;
       margin-bottom: 0.35rem;
       letter-spacing: -0.02em;
+      color: var(--text);
     }
 
     .pin-sub {
@@ -4279,8 +4301,8 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      border: 2px solid rgba(124, 58, 237, 0.35);
-      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--pin-dot-border);
+      background: var(--pin-dot-empty);
       transition: background 0.2s, border-color 0.2s, transform 0.2s;
     }
 
@@ -4322,7 +4344,7 @@
       aspect-ratio: 1.15;
       border: 1px solid var(--border);
       border-radius: 14px;
-      background: rgba(22, 22, 31, 0.72);
+      background: var(--pin-key-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: var(--text);
@@ -4330,7 +4352,7 @@
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: transform 0.15s, background 0.15s, border-color 0.15s;
+      transition: transform 0.15s, background 0.15s, border-color 0.15s, color 0.15s;
     }
 
     .pin-key:active:not(:disabled) {
@@ -4366,7 +4388,20 @@
       padding: 0.35rem;
     }
 
-    .pin-forgot:hover { color: #c4b5fd; }
+    .pin-forgot:hover { color: var(--accent-hover); }
+
+    html.light-theme .pin-logo-icon {
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.22);
+    }
+
+    html.light-theme .pin-dot.filled {
+      box-shadow: 0 0 8px rgba(99, 102, 241, 0.35);
+    }
+
+    html.light-theme .pin-key:active:not(:disabled) {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.35);
+    }
 
     .profile-pin-btn {
       width: 100%;
@@ -4410,7 +4445,7 @@
       padding: 0.95rem 1rem;
       border: 1px solid var(--border);
       border-radius: 14px;
-      background: rgba(22, 22, 31, 0.72);
+      background: var(--pin-key-bg);
       backdrop-filter: blur(12px);
       color: var(--text);
       font-size: 1.05rem;
