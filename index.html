@@ -2904,80 +2904,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .chart-locked-wrap {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chart-locked-wrap .chart-wrap.chart-locked canvas {
-      filter: blur(4px);
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    .premium-chart-lock {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      margin: 0;
-      padding: 0.75rem 0.65rem;
-      border: none;
-      background: var(--premium-lock-bg);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border-radius: inherit;
-      cursor: pointer;
-      z-index: 5;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-
-    .premium-chart-lock:active {
-      filter: brightness(0.96);
-    }
-
-    .premium-chart-lock [data-lucide] {
-      width: 32px;
-      height: 32px;
-      stroke: #F59E0B;
-      flex-shrink: 0;
-      animation: lockPulse 2s ease-in-out infinite;
-    }
-
-    .premium-chart-lock-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #F59E0B;
-      text-align: center;
-      line-height: 1.35;
-      margin: 0;
-    }
-
-    .premium-chart-lock-message {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--premium-msg-text);
-      text-align: center;
-      line-height: 1.4;
-      margin: 0;
-      max-width: 92%;
-      padding: 0.35rem 0.55rem;
-      border-radius: 10px;
-      background: var(--premium-msg-bg);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-    }
-
-    .premium-charts-grid {
-      display: grid;
-      gap: 0.85rem;
-      margin-bottom: 0.85rem;
-    }
-
     .pro-ads-banner {
       display: flex;
       align-items: center;
@@ -3853,18 +3779,6 @@
 
     html.light-theme .category-option.active .category-icon-wrap {
       box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--category-active-ring);
-    }
-
-    html.light-theme .premium-chart-lock {
-      background: var(--premium-lock-bg);
-      box-shadow: none;
-    }
-
-    html.light-theme .premium-chart-lock-message {
-      color: var(--premium-msg-text);
-      background: var(--premium-msg-bg);
-      border-color: rgba(245, 158, 11, 0.35);
-      box-shadow: none;
     }
 
     html.light-theme .ptr-pill {
@@ -5511,31 +5425,6 @@
         <div class="card top-cats-card hidden" id="topIncomeCard">
           <p class="top-cats-title" data-i18n="stats.topIncome">💰 Top daromadlar</p>
           <div class="top-cats-list" id="topIncomeList"></div>
-        </div>
-
-        <div class="premium-charts-grid" id="advancedChartsSection">
-          <div class="card chart-card chart-locked-wrap" id="trendChartCard">
-            <p class="chart-card-title" data-i18n="stats.trend">Daromad/xarajat trendi</p>
-            <div class="chart-wrap chart-locked" id="trendChartWrap">
-              <canvas id="trendChart" aria-hidden="true"></canvas>
-            </div>
-            <button type="button" class="premium-chart-lock hidden" id="trendChartLock" data-i18n-aria="premium.chartLockAria">
-              <i data-lucide="lock" aria-hidden="true"></i>
-              <span class="premium-chart-lock-title" data-i18n="premium.chartLock">Premium bilan ko'ring</span>
-              <p class="premium-chart-lock-message" data-i18n="premium.featureTooltip">Premiumga o'ting va bu funksiyani oching!</p>
-            </button>
-          </div>
-          <div class="card chart-card chart-locked-wrap" id="compareChartCard">
-            <p class="chart-card-title" data-i18n="stats.comparison">Oylik taqqoslash</p>
-            <div class="chart-wrap chart-locked" id="compareChartWrap">
-              <canvas id="compareChart" aria-hidden="true"></canvas>
-            </div>
-            <button type="button" class="premium-chart-lock hidden" id="compareChartLock" data-i18n-aria="premium.chartLockAria">
-              <i data-lucide="lock" aria-hidden="true"></i>
-              <span class="premium-chart-lock-title" data-i18n="premium.chartLock">Premium bilan ko'ring</span>
-              <p class="premium-chart-lock-message" data-i18n="premium.featureTooltip">Premiumga o'ting va bu funksiyani oching!</p>
-            </button>
-          </div>
         </div>
 
         <button type="button" class="pro-ads-banner hidden" id="proAdsBanner" data-i18n="ads.banner">BiznesHisob Pro — reklamsiz ishlang 💎</button>
@@ -7270,16 +7159,9 @@
     const syncStatusText = document.getElementById("syncStatusText");
     const periodStatsGrid = document.getElementById("periodStatsGrid");
     const proAdsBanner = document.getElementById("proAdsBanner");
-    const trendChartLock = document.getElementById("trendChartLock");
-    const compareChartLock = document.getElementById("compareChartLock");
-    const trendChartWrap = document.getElementById("trendChartWrap");
-    const compareChartWrap = document.getElementById("compareChartWrap");
-
     let chartDonut = null;
     let donutTooltipSegmentIndex = null;
     let chartIncomeBar = null;
-    let chartTrend = null;
-    let chartCompare = null;
     const ptrIndicator = document.getElementById("ptrIndicator");
 
     let deferredInstallPrompt = null;
@@ -8856,12 +8738,6 @@
       exportIconLock?.classList.toggle("hidden", premium);
       exportIconUpload?.classList.toggle("hidden", !premium);
 
-      const showLocks = !premium;
-      trendChartLock?.classList.toggle("hidden", !showLocks);
-      compareChartLock?.classList.toggle("hidden", !showLocks);
-      trendChartWrap?.classList.toggle("chart-locked", showLocks);
-      compareChartWrap?.classList.toggle("chart-locked", showLocks);
-
       if (!premium) {
         if (txLimitText) txLimitText.textContent = `${limitCount}/${FREE_TX_LIMIT}`;
         if (upgradeProgressLabel) {
@@ -8953,59 +8829,9 @@
         return chartDataBundleCache.bundle;
       }
 
-      const dayBuckets = new Map();
-      const monthBuckets = new Map();
-      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
-
-      for (const tx of transactions) {
-        const txDate = parseTxDate(tx);
-        if (!txDate) continue;
-        const amt = Number(tx.amount) || 0;
-        const isIncome = tx.type === "income";
-        const dayKey = `${txDate.getFullYear()}-${String(txDate.getMonth() + 1).padStart(2, "0")}-${String(txDate.getDate()).padStart(2, "0")}`;
-        const dayEntry = dayBuckets.get(dayKey) || { income: 0, expense: 0 };
-        if (isIncome) dayEntry.income += amt;
-        else dayEntry.expense += amt;
-        dayBuckets.set(dayKey, dayEntry);
-
-        const monthKey = `${txDate.getFullYear()}-${txDate.getMonth()}`;
-        const monthEntry = monthBuckets.get(monthKey) || { income: 0, expense: 0 };
-        if (isIncome) monthEntry.income += amt;
-        else monthEntry.expense += amt;
-        monthBuckets.set(monthKey, monthEntry);
-      }
-
-      const trendLabels = [];
-      const trendIncome = [];
-      const trendExpense = [];
-      for (let i = 29; i >= 0; i--) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        trendLabels.push(d.toLocaleDateString(locale, { day: "numeric", month: "short" }));
-        const dayKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-        const bucket = dayBuckets.get(dayKey) || { income: 0, expense: 0 };
-        trendIncome.push(bucket.income);
-        trendExpense.push(bucket.expense);
-      }
-
-      const now = new Date();
-      const compareLabels = [];
-      const compareIncome = [];
-      const compareExpense = [];
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        compareLabels.push(d.toLocaleDateString(locale, { month: "short" }));
-        const monthKey = `${d.getFullYear()}-${d.getMonth()}`;
-        const bucket = monthBuckets.get(monthKey) || { income: 0, expense: 0 };
-        compareIncome.push(bucket.income);
-        compareExpense.push(bucket.expense);
-      }
-
       const bundle = {
         expense: aggregateCategoryBreakdown("expense"),
-        income: aggregateCategoryBreakdown("income"),
-        trend: { labels: trendLabels, income: trendIncome, expense: trendExpense },
-        compare: { labels: compareLabels, income: compareIncome, expense: compareExpense }
+        income: aggregateCategoryBreakdown("income")
       };
 
       chartDataBundleCache = { fingerprint, bundle };
@@ -9046,17 +8872,6 @@
         chartsRenderTimer = null;
         void renderChartsIfNeeded(force);
       }, deferMs);
-    }
-
-    function updateChartInPlace(chart, labels, datasets, animate) {
-      if (!chart) return false;
-      chart.data.labels = labels;
-      datasets.forEach((ds, i) => {
-        if (!chart.data.datasets[i]) return;
-        Object.assign(chart.data.datasets[i], ds);
-      });
-      chart.update(animate ? "default" : "none");
-      return true;
     }
 
     function scheduleRender(options = {}) {
@@ -9169,8 +8984,6 @@
     });
     premiumLaterBtn?.addEventListener("click", closePremiumModal);
     proAdsBanner?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
-    trendChartLock?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
-    compareChartLock?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
     paymeBtn.addEventListener("click", () => openPayment(PAYME_URL));
     clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
 
