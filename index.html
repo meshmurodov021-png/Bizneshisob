@@ -5001,6 +5001,7 @@
           <button type="button" class="auth-tab" data-mode="register" data-i18n="auth.register">Roʻyxatdan oʻtish</button>
         </div>
         <div class="auth-error" id="authError"></div>
+        <p class="auth-forgot-success hidden" id="authVerifyNotice" data-i18n="auth.verifySent">Emailingizga tasdiqlash xati yuborildi. Spam papkasini ham tekshiring.</p>
         <form id="authForm">
           <div class="form-row">
             <label for="authEmail"><i data-lucide="mail"></i> Email</label>
@@ -5501,6 +5502,7 @@
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
       sendPasswordResetEmail,
+      sendEmailVerification,
       signOut,
       onAuthStateChanged,
       RecaptchaVerifier,
@@ -5541,6 +5543,7 @@
 
     const app = initializeApp(firebaseConfig);
     const firebaseAuth = getAuth(app);
+    firebaseAuth.languageCode = "uz";
     const db = initializeFirestore(app, {
       localCache: persistentLocalCache()
     });
@@ -5827,6 +5830,8 @@
         "auth.resetSend": "Havola yuborish",
         "auth.resetBack": "← Orqaga",
         "auth.resetSuccess": "✅ Email yuborildi! Pochtangizni tekshiring",
+        "auth.verifySent": "Emailingizga tasdiqlash xati yuborildi. Spam papkasini ham tekshiring.",
+        "auth.verifyFailed": "Hisob yaratildi, lekin tasdiqlash xati yuborilmadi. Keyinroq qayta urinib ko'ring.",
         "reset.err.user-not-found": "Bu email ro'yxatdan o'tmagan",
         "reset.err.invalid-email": "Email noto'g'ri kiritilgan",
         "reset.err.too-many-requests": "Ko'p urinish, keyinroq uring",
@@ -6085,6 +6090,8 @@
         "auth.resetSend": "Отправить ссылку",
         "auth.resetBack": "← Назад",
         "auth.resetSuccess": "✅ Email отправлен! Проверьте почту",
+        "auth.verifySent": "Письмо для подтверждения отправлено. Проверьте также папку «Спам».",
+        "auth.verifyFailed": "Аккаунт создан, но письмо не отправлено. Попробуйте позже.",
         "reset.err.user-not-found": "Этот email не зарегистрирован",
         "reset.err.invalid-email": "Некорректный email",
         "reset.err.too-many-requests": "Слишком много попыток, попробуйте позже",
@@ -6343,6 +6350,8 @@
         "auth.resetSend": "Send link",
         "auth.resetBack": "← Back",
         "auth.resetSuccess": "✅ Email sent! Check your inbox",
+        "auth.verifySent": "A verification email was sent. Please check your spam folder too.",
+        "auth.verifyFailed": "Account created, but verification email could not be sent. Try again later.",
         "reset.err.user-not-found": "This email is not registered",
         "reset.err.invalid-email": "Invalid email address",
         "reset.err.too-many-requests": "Too many attempts, try again later",
@@ -6713,6 +6722,7 @@
     const authForgotBack = document.getElementById("authForgotBack");
     const authForgotError = document.getElementById("authForgotError");
     const authForgotSuccess = document.getElementById("authForgotSuccess");
+    const authVerifyNotice = document.getElementById("authVerifyNotice");
     const userEmailEl = document.getElementById("userEmail");
 
     /* Auth listeners attached early so a later init error cannot leave login broken */
@@ -9371,6 +9381,33 @@
       authError.classList.remove("visible");
     }
 
+    function hideAuthVerifyNotice() {
+      authVerifyNotice?.classList.add("hidden");
+    }
+
+    function showAuthVerifyNotice(message) {
+      clearAuthError();
+      hideAuthVerifyNotice();
+      if (!authVerifyNotice) return;
+      authVerifyNotice.textContent = message || t("auth.verifySent");
+      authVerifyNotice.classList.remove("hidden");
+    }
+
+    async function sendUserEmailVerification(user) {
+      if (!user?.email) {
+        console.warn("[BiznesHisob] sendEmailVerification skipped: no user email");
+        return false;
+      }
+      try {
+        await sendEmailVerification(user);
+        console.log("Verification email sent to:", user.email);
+        return true;
+      } catch (error) {
+        console.error("Email send error:", error?.code, error?.message);
+        return false;
+      }
+    }
+
     function authErrorMessage(code) {
       const key = `auth.err.${code?.replace("auth/", "")}`;
       return i18n[currentLang]?.[key] ? t(key) : t("auth.err.default");
@@ -9879,8 +9916,10 @@
 
     function showAuthLoginView() {
       authForgotSuccess?.classList.add("hidden");
+      hideAuthVerifyNotice();
       clearAuthForgotError();
       if (authForgotForm) authForgotForm.classList.remove("hidden");
+      authForm?.classList.remove("hidden");
       authForgotView?.classList.add("hidden");
       authLoginView?.classList.remove("hidden");
       refreshIcons();
@@ -9910,6 +9949,9 @@
         resetPasswordToggles();
       }
       clearAuthError();
+      hideAuthVerifyNotice();
+      authForm?.classList.remove("hidden");
+      document.querySelector(".auth-tabs")?.classList.remove("hidden");
     }
 
     function initAuthForm() {
@@ -9981,7 +10023,19 @@
               const fullName = authFullName?.value.trim() || "";
               console.log("[BiznesHisob] Register attempt:", email);
               const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
-              console.log("[BiznesHisob] Registration successful");
+              console.log("[BiznesHisob] Registration successful, uid:", cred.user.uid);
+
+              const verifySent = await sendUserEmailVerification(cred.user);
+              authForm?.classList.add("hidden");
+              authForgotWrap?.classList.add("hidden");
+              document.querySelector(".auth-tabs")?.classList.add("hidden");
+              if (verifySent) {
+                showAuthVerifyNotice(t("auth.verifySent"));
+              } else {
+                showAuthVerifyNotice(t("auth.verifyFailed"));
+              }
+              await new Promise(resolve => setTimeout(resolve, 3500));
+
               hideAuthScreenNow();
               try {
                 await showBriefAuthLoading(800);
@@ -9992,6 +10046,9 @@
               } catch (regErr) {
                 allowAuthScreen();
                 showView("auth");
+                authForm?.classList.remove("hidden");
+                authForgotWrap?.classList.toggle("hidden", authMode !== "login");
+                document.querySelector(".auth-tabs")?.classList.remove("hidden");
                 throw regErr;
               }
             } else {

@@ -47,7 +47,9 @@ function isFirebaseCdn(url) {
 function isFirebaseApi(url) {
   return url.hostname.includes("googleapis.com") ||
     url.hostname.includes("firebaseio.com") ||
-    url.hostname.includes("firebaseapp.com") && url.pathname.includes("__");
+    url.hostname.includes("firebasestorage.app") ||
+    url.hostname.includes("cloudusersettings") ||
+    (url.hostname.includes("firebaseapp.com") && url.pathname.includes("__"));
 }
 
 self.addEventListener("fetch", event => {
