@@ -2646,29 +2646,31 @@
       position: absolute;
       inset: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       pointer-events: none;
       text-align: center;
-      padding: 0 2.25rem;
-      transform: translateY(5px);
+      padding: 0 2.5rem 1.5rem;
       animation: chartFadeIn 0.45s var(--ease) both;
     }
 
     .chart-donut-center-value {
-      font-size: clamp(1.05rem, 4.2vw, 1.45rem);
+      font-size: clamp(1.15rem, 4.5vw, 1.55rem);
       font-weight: 800;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
       color: var(--text);
-      line-height: 1.2;
+      line-height: 1.15;
       max-width: 100%;
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .chart-donut-center-unit {
-      display: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 0.2rem;
     }
 
     .chart-legend {
@@ -9817,43 +9819,6 @@
       return formatMoney(amount, { short: true });
     }
 
-    function formatSum(amountUzs) {
-      const currency = getActiveCurrency();
-      const converted = Math.abs(Number(convertFromUzs(amountUzs, currency.id)) || 0);
-      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
-      const decimals = getCurrencyDecimals(currency);
-      let core;
-
-      if (converted >= 1000000000) {
-        core = (converted / 1000000000).toFixed(1) + " mlrd";
-      } else if (converted >= 1000000) {
-        core = (converted / 1000000).toFixed(1) + " mln";
-      } else if (converted >= 1000) {
-        core = (converted / 1000).toFixed(0) + " ming";
-      } else {
-        core = new Intl.NumberFormat(locale, {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: decimals
-        }).format(converted);
-      }
-
-      if (currency.id === BASE_CURRENCY_ID) {
-        return `${core} so'm`;
-      }
-
-      const sym = String(currency.symbol || "").trim();
-      const prefixSymbols = ["$", "€", "£", "¥", "₽", "₺", "₸"];
-      if (prefixSymbols.includes(sym) || (sym.length <= 2 && !/[\u0400-\u04FF\u0600-\u06FF]/.test(sym))) {
-        if (converted >= 1000) return sym + core;
-        return formatWithSymbol(converted, sym, decimals);
-      }
-      return `${core} ${sym}`;
-    }
-
-    function formatSumFull(amountUzs) {
-      return formatMoney(amountUzs);
-    }
-
     function getCurrencyById(id) {
       if (id === BASE_CURRENCY_ID) return UZS_CURRENCY;
       return userCurrencies.find(c => c.id === id) || null;
@@ -11022,7 +10987,7 @@
             callbacks: {
               label(ctx) {
                 const pct = formatCategoryPercent(ctx.raw, expenseTotal);
-                return `${ctx.label}: ${formatSumFull(ctx.raw)} (${pct}%)`;
+                return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
               }
             }
           }
@@ -11031,7 +10996,15 @@
     }
 
     function formatDonutCenterValue(amountUzs) {
-      return formatSum(amountUzs);
+      const currency = getActiveCurrency();
+      const converted = convertFromUzs(amountUzs, currency.id);
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const decimals = getCurrencyDecimals(currency);
+      const value = decimals === 0 ? Math.round(converted) : converted;
+      return new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals
+      }).format(value);
     }
 
     function formatCategoryPercent(amount, total) {
@@ -11090,7 +11063,7 @@
       container.innerHTML = data.items.map((item, i) => `
           <div class="chart-legend-item" style="animation-delay:${i * 0.05}s">
             <span class="chart-legend-dot" style="background:${item.color};color:${item.color}"></span>
-            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatSum(item.amount))} (${escapeHtml(item.percent)}%)</span>
+            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatUZS(item.amount))} (${escapeHtml(item.percent)}%)</span>
           </div>
         `).join("");
     }
@@ -11100,7 +11073,12 @@
       const valueEl = document.getElementById("expenseDonutCenterValue");
       const unitEl = document.getElementById("expenseDonutCenterUnit");
       if (!center || !valueEl) return;
-      if (unitEl) unitEl.textContent = "";
+      const currency = getActiveCurrency();
+      if (unitEl) {
+        unitEl.textContent = currency.id === BASE_CURRENCY_ID
+          ? "so'm"
+          : (currency.symbol || getActiveCurrencyCode());
+      }
       if (total <= 0) {
         center.classList.add("hidden");
         return;
@@ -11323,7 +11301,7 @@
               chartDonut.options.plugins.tooltip.callbacks = {
                 label(ctx) {
                   const pct = formatCategoryPercent(ctx.raw, expenseData.total);
-                  return `${ctx.label}: ${formatSumFull(ctx.raw)} (${pct}%)`;
+                  return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
                 }
               };
             }
