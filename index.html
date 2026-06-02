@@ -1677,59 +1677,230 @@
       stroke: currentColor;
     }
 
-    .toggle-switch {
+    /* ——— iOS 26 Liquid Glass Toggle ——— */
+    .lg-toggle {
+      --lg-w: 58px;
+      --lg-h: 32px;
+      --lg-thumb: 26px;
+      --lg-pad: 3px;
+      --lg-travel: calc(var(--lg-w) - var(--lg-thumb) - var(--lg-pad) * 2);
+      --lg-spring: cubic-bezier(0.34, 1.28, 0.64, 1);
+      --lg-duration: 320ms;
       position: relative;
       display: inline-block;
-      width: 56px;
-      height: 30px;
+      width: var(--lg-w);
+      height: var(--lg-h);
       flex-shrink: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 180ms var(--lg-spring);
+      will-change: transform;
     }
 
-    .toggle-switch input {
+    .lg-toggle:hover {
+      transform: scale(1.03);
+    }
+
+    .lg-toggle.is-pressing,
+    .lg-toggle:active {
+      transform: scale(0.97);
+      transition-duration: 120ms;
+    }
+
+    .lg-toggle.is-releasing {
+      animation: lg-toggle-release 340ms var(--lg-spring);
+    }
+
+    @keyframes lg-toggle-release {
+      0% { transform: scale(0.97); }
+      55% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .lg-toggle input {
+      position: absolute;
       opacity: 0;
       width: 0;
       height: 0;
-      position: absolute;
+      pointer-events: none;
     }
 
-    .toggle-slider {
+    .lg-toggle-track {
       position: absolute;
-      cursor: pointer;
       inset: 0;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 30px;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      transition: 0.3s ease;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.12),
+        0 8px 24px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
     }
 
-    .toggle-slider::before {
-      content: "";
+    .lg-toggle-glass {
       position: absolute;
-      width: 24px;
-      height: 24px;
-      left: 3px;
-      top: 2px;
-      background: white;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 42%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      transition:
+        background var(--lg-duration) var(--lg-spring),
+        border-color var(--lg-duration) var(--lg-spring),
+        box-shadow var(--lg-duration) var(--lg-spring);
+    }
+
+    .lg-toggle-reflection {
+      position: absolute;
+      top: -20%;
+      left: -40%;
+      width: 55%;
+      height: 140%;
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: linear-gradient(
+        105deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 45%,
+        rgba(255, 255, 255, 0.12) 58%,
+        transparent 72%
+      );
+      filter: blur(1px);
+      opacity: 0.45;
+      transform: translateX(-120%) skewX(-12deg);
+      transition: opacity var(--lg-duration) ease, transform 0ms;
+      pointer-events: none;
     }
 
-    .toggle-switch input:checked + .toggle-slider {
-      background: #34C759;
-      border-color: #34C759;
-      box-shadow: 0 0 12px rgba(52, 199, 89, 0.5);
+    .lg-toggle-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(
+        circle at var(--lg-glow-x, 18%) 50%,
+        rgba(52, 199, 89, 0.55) 0%,
+        rgba(52, 199, 89, 0.15) 38%,
+        transparent 68%
+      );
+      opacity: 0;
+      transition: opacity var(--lg-duration) var(--lg-spring);
+      pointer-events: none;
     }
 
-    .toggle-switch input:checked + .toggle-slider::before {
-      transform: translateX(26px);
+    .lg-toggle-thumb {
+      position: absolute;
+      top: var(--lg-pad);
+      left: var(--lg-pad);
+      width: var(--lg-thumb);
+      height: var(--lg-thumb);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 28%, #ffffff 0%, #f4f4f6 55%, #d8d8de 100%);
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.28),
+        0 10px 18px rgba(0, 0, 0, 0.18),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      transform: translateX(0);
+      transition:
+        transform var(--lg-duration) var(--lg-spring),
+        box-shadow var(--lg-duration) var(--lg-spring);
+      will-change: transform;
+      z-index: 2;
     }
 
-    .toggle-switch input:disabled + .toggle-slider {
-      opacity: 0.55;
+    .lg-toggle-thumb-shine {
+      position: absolute;
+      inset: 2px 4px auto 4px;
+      height: 42%;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+      pointer-events: none;
+    }
+
+    .lg-toggle.is-pressing .lg-toggle-thumb,
+    .lg-toggle:active .lg-toggle-thumb {
+      transform: translateX(var(--lg-thumb-x, 0)) scaleX(1.08) scaleY(0.9);
+      transition-duration: 140ms;
+    }
+
+    .lg-toggle input:checked ~ .lg-toggle-track .lg-toggle-glass {
+      background:
+        linear-gradient(145deg, rgba(120, 255, 170, 0.35) 0%, rgba(52, 199, 89, 0.55) 38%, rgba(34, 160, 70, 0.72) 100%);
+      border-color: rgba(130, 255, 185, 0.45);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 0 20px rgba(52, 199, 89, 0.35);
+    }
+
+    .lg-toggle input:checked ~ .lg-toggle-track {
+      --lg-glow-x: 78%;
+    }
+
+    .lg-toggle input:checked ~ .lg-toggle-track .lg-toggle-glow {
+      opacity: 1;
+    }
+
+    .lg-toggle input:checked ~ .lg-toggle-track .lg-toggle-thumb {
+      --lg-thumb-x: var(--lg-travel);
+      transform: translateX(var(--lg-travel));
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.22),
+        0 12px 22px rgba(52, 199, 89, 0.35),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
+    }
+
+    .lg-toggle.is-pressing input:checked ~ .lg-toggle-track .lg-toggle-thumb,
+    .lg-toggle:active input:checked ~ .lg-toggle-track .lg-toggle-thumb {
+      transform: translateX(var(--lg-travel)) scaleX(1.08) scaleY(0.9);
+    }
+
+    .lg-toggle-track.reflection-pulse .lg-toggle-reflection {
+      animation: lg-reflection-sweep 520ms var(--lg-spring);
+    }
+
+    @keyframes lg-reflection-sweep {
+      0% {
+        opacity: 0.35;
+        transform: translateX(-130%) skewX(-12deg);
+      }
+      45% {
+        opacity: 0.85;
+      }
+      100% {
+        opacity: 0.5;
+        transform: translateX(220%) skewX(-12deg);
+      }
+    }
+
+    .lg-toggle:hover .lg-toggle-reflection {
+      opacity: 0.62;
+    }
+
+    .lg-toggle input:disabled ~ .lg-toggle-track {
+      opacity: 0.5;
       cursor: not-allowed;
+    }
+
+    .lg-toggle:has(input:disabled) {
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lg-toggle,
+      .lg-toggle-thumb,
+      .lg-toggle-glass,
+      .lg-toggle-glow,
+      .lg-toggle-reflection {
+        transition-duration: 0.01ms !important;
+        animation: none !important;
+      }
+      .lg-toggle:hover,
+      .lg-toggle:active {
+        transform: none;
+      }
     }
 
     .settings-logout-btn {
@@ -3662,15 +3833,22 @@
       border-color: rgba(139, 92, 246, 0.35);
     }
 
-    html.light-theme .toggle-slider {
-      background: rgba(0, 0, 0, 0.08);
-      border-color: rgba(0, 0, 0, 0.12);
+    html.light-theme .lg-toggle-track {
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.06),
+        0 8px 20px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85);
     }
 
-    html.light-theme .toggle-switch input:checked + .toggle-slider {
-      background: #34C759;
-      border-color: #34C759;
-      box-shadow: 0 0 12px rgba(52, 199, 89, 0.35);
+    html.light-theme .lg-toggle-glass {
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.55) 45%, rgba(240, 240, 245, 0.35) 100%);
+      border-color: rgba(255, 255, 255, 0.9);
+    }
+
+    html.light-theme .lg-toggle input:checked ~ .lg-toggle-track .lg-toggle-glass {
+      background:
+        linear-gradient(145deg, rgba(170, 255, 205, 0.65) 0%, rgba(52, 199, 89, 0.75) 42%, rgba(40, 170, 85, 0.85) 100%);
     }
 
     html.light-theme .category-option.active .category-icon-wrap {
@@ -5521,16 +5699,26 @@
             </button>
             <div class="settings-row">
               <span class="settings-row-label">🎨 <span data-i18n="profile.theme">Mavzu</span></span>
-              <label class="toggle-switch">
+              <label class="lg-toggle" for="settingsThemeToggle">
                 <input type="checkbox" id="settingsThemeToggle" checked>
-                <span class="toggle-slider"></span>
+                <span class="lg-toggle-track">
+                  <span class="lg-toggle-glass"></span>
+                  <span class="lg-toggle-reflection"></span>
+                  <span class="lg-toggle-glow"></span>
+                  <span class="lg-toggle-thumb"><span class="lg-toggle-thumb-shine"></span></span>
+                </span>
               </label>
             </div>
             <div class="settings-row">
               <span class="settings-row-label">🔔 <span data-i18n="settings.notifications">Bildirishnomalar</span></span>
-              <label class="toggle-switch">
+              <label class="lg-toggle" for="settingsNotifToggle">
                 <input type="checkbox" id="settingsNotifToggle" checked>
-                <span class="toggle-slider"></span>
+                <span class="lg-toggle-track">
+                  <span class="lg-toggle-glass"></span>
+                  <span class="lg-toggle-reflection"></span>
+                  <span class="lg-toggle-glow"></span>
+                  <span class="lg-toggle-thumb"><span class="lg-toggle-thumb-shine"></span></span>
+                </span>
               </label>
             </div>
             <a href="https://bizneshisob.vercel.app/landing.html" class="settings-row-btn" target="_blank" rel="noopener noreferrer">
@@ -8305,6 +8493,39 @@
     settingsThemeToggle?.addEventListener("change", () => {
       applyTheme(settingsThemeToggle.checked ? "dark" : "light");
     });
+
+    /** iOS 26 Liquid Glass toggle — press/release + reflection sweep */
+    function initLiquidGlassToggles() {
+      document.querySelectorAll(".lg-toggle").forEach(label => {
+        const input = label.querySelector('input[type="checkbox"]');
+        const track = label.querySelector(".lg-toggle-track");
+        if (!input || !track || label.dataset.lgBound === "1") return;
+        label.dataset.lgBound = "1";
+
+        const endPress = () => {
+          if (!label.classList.contains("is-pressing")) return;
+          label.classList.remove("is-pressing");
+          label.classList.add("is-releasing");
+          window.setTimeout(() => label.classList.remove("is-releasing"), 360);
+        };
+
+        label.addEventListener("pointerdown", e => {
+          if (input.disabled) return;
+          label.setPointerCapture?.(e.pointerId);
+          label.classList.add("is-pressing");
+        });
+        label.addEventListener("pointerup", endPress);
+        label.addEventListener("pointercancel", endPress);
+        label.addEventListener("lostpointercapture", endPress);
+
+        input.addEventListener("change", () => {
+          track.classList.remove("reflection-pulse");
+          void track.offsetWidth;
+          track.classList.add("reflection-pulse");
+          window.setTimeout(() => track.classList.remove("reflection-pulse"), 560);
+        });
+      });
+    }
 
     [profileEditModal, langModal, logoutModal, currencyModal].forEach(modal => {
       modal?.addEventListener("click", e => {
@@ -11953,6 +12174,7 @@
       applyTheme(localStorage.getItem(THEME_KEY) || "dark");
       updateCurrencyUI();
       applyI18n();
+      initLiquidGlassToggles();
       initPullToRefresh();
       void ensureExchangeRatesLoaded().catch(() => {});
 
