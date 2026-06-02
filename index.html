@@ -1249,34 +1249,59 @@
       max-height: 220px;
       overflow-y: auto;
       margin: 0;
-      padding: 0.35rem 0;
+      padding: 0.4rem;
       list-style: none;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--card);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .currency-picker-list.hidden {
       display: none;
     }
 
+    .currency-picker-list > li {
+      margin: 0;
+      padding: 0.15rem 0.2rem;
+    }
+
+    .currency-picker-empty {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
     .currency-picker-option {
       width: 100%;
       padding: 0.65rem 0.85rem;
-      border: none;
+      border: 1px solid transparent;
+      border-radius: 10px;
       background: transparent;
       color: var(--text);
       font-size: 0.9rem;
       text-align: left;
       cursor: pointer;
       font-family: inherit;
+      transition: all 0.2s ease;
     }
 
-    .currency-picker-option:hover,
-    .currency-picker-option:focus {
-      background: rgba(124, 58, 237, 0.12);
+    .currency-picker-option:hover:not([disabled]),
+    .currency-picker-option:focus-visible:not([disabled]) {
+      background: rgba(255, 255, 255, 0.08);
       outline: none;
+    }
+
+    .currency-picker-option.is-selected {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+
+    .currency-picker-option.is-selected:hover:not([disabled]) {
+      background: rgba(139, 92, 246, 0.28);
+      border-color: rgba(139, 92, 246, 0.5);
     }
 
     .currency-picker-option[disabled] {
@@ -3619,6 +3644,22 @@
     html.light-theme .chart-card,
     html.light-theme .top-cats-card {
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    html.light-theme .currency-picker-list {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    html.light-theme .currency-picker-option:hover:not([disabled]),
+    html.light-theme .currency-picker-option:focus-visible:not([disabled]) {
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    html.light-theme .currency-picker-option.is-selected {
+      background: rgba(139, 92, 246, 0.15);
+      border-color: rgba(139, 92, 246, 0.35);
     }
 
     html.light-theme .category-option.active .category-icon-wrap {
@@ -8598,6 +8639,15 @@
 
     }
 
+    function getCurrencyFingerprint() {
+      const active = getActiveCurrency();
+      let parts = `${currentCurrencyId}:${Number(active.rateToUZS) || 1}`;
+      for (const c of userCurrencies) {
+        parts += `|${c.id}:${Number(c.rateToUZS) || 0}`;
+      }
+      return parts;
+    }
+
     function getTransactionsFingerprint() {
       let h = 2166136261;
       const mix = str => {
@@ -8608,6 +8658,7 @@
       };
       mix(String(transactions.length));
       mix(currentLang || "");
+      mix(getCurrencyFingerprint());
       for (const tx of transactions) {
         mix(String(tx.type || ""));
         mix(String(tx.amount || 0));
@@ -8616,6 +8667,43 @@
         mix(String(tx.description || "").slice(0, 120));
       }
       return String(h >>> 0);
+    }
+
+    function invalidateCurrencyDisplayCache() {
+      invalidateChartDataCache();
+      lastChartsFingerprint = "";
+      lastUiContentFingerprint = "";
+    }
+
+    function refreshCurrencyDisplays({ animate = false, prevCurrencyId = null, skipHero = false } = {}) {
+      invalidateCurrencyDisplayCache();
+
+      const { totalIncome, totalExpense, netProfit } = calcTotalsFromTransactions();
+
+      if (!skipHero) {
+        if (animate && prevCurrencyId != null && prevCurrencyId !== currentCurrencyId) {
+          animateAmountEl(netProfitEl, netProfit, prevCurrencyId, currentCurrencyId, false);
+          animateAmountEl(totalIncomeEl, totalIncome, prevCurrencyId, currentCurrencyId, true);
+          animateAmountEl(totalExpenseEl, totalExpense, prevCurrencyId, currentCurrencyId, true);
+        } else {
+          totalIncomeEl.textContent = formatMoney(totalIncome, { short: true });
+          totalExpenseEl.textContent = formatMoney(totalExpense, { short: true });
+          netProfitEl.textContent = formatMoney(netProfit);
+        }
+        profitCard.classList.toggle("negative", netProfit < 0);
+      }
+
+      renderPeriodStats();
+
+      if (transactionList && transactions.length) {
+        renderTransactionList();
+      }
+
+      if (currentTab === "home") {
+        scheduleChartsRender({ force: true, deferMs: 80 });
+      } else {
+        chartsUpdatePending = true;
+      }
     }
 
     function invalidateChartDataCache() {
@@ -9913,14 +10001,17 @@
         return;
       }
 
-      currencyPickerList.innerHTML = options.map(({ preset, label, taken }) => `
+      currencyPickerList.innerHTML = options.map(({ preset, label, taken }) => {
+        const isSelected = selectedPresetCode === preset.code;
+        return `
         <li>
-          <button type="button" class="currency-picker-option" role="option"
-            data-code="${escapeHtml(preset.code)}" ${taken ? "disabled" : ""}>
+          <button type="button" class="currency-picker-option${isSelected ? " is-selected" : ""}" role="option"
+            data-code="${escapeHtml(preset.code)}" aria-selected="${isSelected ? "true" : "false"}" ${taken ? "disabled" : ""}>
             ${escapeHtml(label)}${taken ? ` (${escapeHtml(t("currency.alreadyAdded"))})` : ""}
           </button>
         </li>
-      `).join("");
+      `;
+      }).join("");
 
       currencyPickerList.querySelectorAll(".currency-picker-option:not([disabled])").forEach(btn => {
         btn.addEventListener("click", () => selectPresetCurrency(btn.dataset.code));
@@ -10080,30 +10171,14 @@
       currentCurrencyId = currencyId;
       localStorage.setItem(CURRENCY_KEY, currencyId);
       updateCurrencyUI();
+      refreshCurrencyDisplays({ animate, prevCurrencyId: prev });
 
-      let totalIncome = 0;
-      let totalExpense = 0;
-      transactions.forEach(tx => {
-        const amount = Number(tx.amount) || 0;
-        if (tx.type === "income") totalIncome += amount;
-        else totalExpense += amount;
+      render({
+        skipHero: true,
+        skipPeriodStats: true,
+        skipList: false,
+        skipCharts: true
       });
-      const netProfit = totalIncome - totalExpense;
-
-      if (animate) {
-        animateAmountEl(netProfitEl, netProfit, prev, currencyId, false);
-        animateAmountEl(totalIncomeEl, totalIncome, prev, currencyId, true);
-        animateAmountEl(totalExpenseEl, totalExpense, prev, currencyId, true);
-        render({ skipHero: true });
-        requestAnimationFrame(() => {
-          document.querySelectorAll(".period-value, .transaction-amount").forEach(el => {
-            el.classList.add("currency-animate");
-            setTimeout(() => el.classList.remove("currency-animate"), 480);
-          });
-        });
-      } else {
-        render();
-      }
     }
 
     function openCurrencyModal(mode = "add", currencyId = null) {
@@ -10259,7 +10334,12 @@
           }));
           ensureActiveCurrencyValid();
           updateCurrencyUI();
-          render();
+          refreshCurrencyDisplays({ animate: false });
+          render({
+            skipHero: true,
+            skipPeriodStats: true,
+            skipCharts: true
+          });
         },
         err => {
           console.error("[BiznesHisob] Currencies listener error:", err);
@@ -11026,7 +11106,25 @@
         titleColor: chartTheme.tooltip.titleColor,
         bodyColor: chartTheme.tooltip.bodyColor,
         borderColor: chartTheme.tooltip.borderColor,
-        borderWidth: 1
+        borderWidth: 1,
+        callbacks: {
+          label(ctx) {
+            const raw = ctx.parsed?.y ?? ctx.raw ?? 0;
+            return `${ctx.dataset.label}: ${formatUZS(raw)}`;
+          }
+        }
+      };
+
+      const chartYAxisTickCallback = value => {
+        const currency = getActiveCurrency();
+        const converted = convertFromUzs(value, currency.id);
+        if (currency.id === BASE_CURRENCY_ID) {
+          const rounded = Math.round(converted);
+          if (rounded >= 1e6) return (rounded / 1e6).toFixed(1) + "M";
+          if (rounded >= 1e3) return (rounded / 1e3).toFixed(0) + "K";
+          return String(rounded);
+        }
+        return formatWithSymbol(converted, currency.symbol, getCurrencyDecimals(currency));
       };
 
       updateDonutCenter(expenseData.total);
@@ -11112,6 +11210,14 @@
         ticks: { color: chartTheme.axisTick, font: { size: 9 } },
         grid: { color: chartTheme.grid }
       };
+      const yAxisStyle = {
+        ticks: {
+          color: chartTheme.axisTick,
+          font: { size: 9 },
+          callback: chartYAxisTickCallback
+        },
+        grid: { color: chartTheme.grid }
+      };
 
       const trendDatasets = [
         {
@@ -11156,7 +11262,7 @@
             },
             scales: {
               x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
-              y: axisStyle
+              y: yAxisStyle
             }
           }
         });
@@ -11199,7 +11305,7 @@
             },
             scales: {
               x: { ticks: { color: chartTheme.axisTick, font: { size: 9 } }, grid: { display: false } },
-              y: axisStyle
+              y: yAxisStyle
             }
           }
         });
