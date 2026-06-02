@@ -5383,7 +5383,7 @@
               <div class="category-grid" id="categorySelector" role="listbox" aria-label="Kategoriya"></div>
             </div>
             <div class="form-row">
-              <label for="amount"><i data-lucide="banknote"></i> <span data-i18n="add.amount">Summa (UZS)</span></label>
+              <label for="amount"><i data-lucide="banknote"></i> <span id="amountLabel">Summa (UZS)</span></label>
               <input type="text" id="amount" placeholder="0" inputmode="numeric" autocomplete="off" required>
               <p class="amount-hint" id="amountHint" aria-live="polite"></p>
             </div>
@@ -6115,7 +6115,8 @@
         "add.descPh": "Masalan: Mahsulot sotuvi",
         "add.category": "Kategoriya",
         "add.categoryRequired": "Iltimos, kategoriyani tanlang",
-        "add.amount": "Summa (UZS)",
+        "add.amount": "Summa ({{code}})",
+        "add.amountHintUzs": "≈ {{amount}} so'm",
         "add.submitIncome": "Daromad qoʻshish",
         "add.submitExpense": "Xarajat qoʻshish",
         "add.saving": "Saqlanmoqda…",
@@ -6376,7 +6377,8 @@
         "add.descPh": "Например: Продажа товара",
         "add.category": "Категория",
         "add.categoryRequired": "Выберите категорию",
-        "add.amount": "Сумма (UZS)",
+        "add.amount": "Сумма ({{code}})",
+        "add.amountHintUzs": "≈ {{amount}} so'm",
         "add.submitIncome": "Добавить доход",
         "add.submitExpense": "Добавить расход",
         "add.saving": "Сохранение…",
@@ -6637,7 +6639,8 @@
         "add.descPh": "e.g. Product sale",
         "add.category": "Category",
         "add.categoryRequired": "Please select a category",
-        "add.amount": "Amount (UZS)",
+        "add.amount": "Amount ({{code}})",
+        "add.amountHintUzs": "≈ {{amount}} UZS",
         "add.submitIncome": "Add income",
         "add.submitExpense": "Add expense",
         "add.saving": "Saving…",
@@ -6821,6 +6824,7 @@
         renderProfileUI();
         updateSettingsUI();
       }
+      updateAmountLabel();
       render();
     }
 
@@ -6853,13 +6857,11 @@
     };
 
     let userCurrencies = [];
+    let currenciesHydrated = false;
     let currentCurrencyId = localStorage.getItem(CURRENCY_KEY) || BASE_CURRENCY_ID;
-    if (["USD", "RUB"].includes(currentCurrencyId)) {
-      currentCurrencyId = BASE_CURRENCY_ID;
-      localStorage.setItem(CURRENCY_KEY, BASE_CURRENCY_ID);
-    }
     if (currentCurrencyId !== BASE_CURRENCY_ID && !/^[a-zA-Z0-9_-]+$/.test(currentCurrencyId)) {
       currentCurrencyId = BASE_CURRENCY_ID;
+      localStorage.setItem(CURRENCY_KEY, BASE_CURRENCY_ID);
     }
     let currencyModalMode = "add";
     let editingCurrencyId = null;
@@ -8712,6 +8714,8 @@
         renderTransactionList();
       }
 
+      updateAmountLabel();
+
       if (currentTab === "home") {
         scheduleChartsRender({ force: true, deferMs: 80 });
       } else {
@@ -9700,10 +9704,44 @@
     }
 
     function convertFromUzs(amountUzs, currencyId = currentCurrencyId) {
-      const currency = getCurrencyById(currencyId) || UZS_CURRENCY;
+      const currency = getActiveCurrencyForId(currencyId);
       if (currency.id === BASE_CURRENCY_ID) return Number(amountUzs) || 0;
       const rate = Number(currency.rateToUZS) || 1;
       return (Number(amountUzs) || 0) / rate;
+    }
+
+    function convertToUzs(amountInCurrency, currencyId = currentCurrencyId) {
+      const n = Number(amountInCurrency) || 0;
+      const currency = getActiveCurrencyForId(currencyId);
+      if (currency.id === BASE_CURRENCY_ID) return Math.round(n);
+      const rate = Number(currency.rateToUZS) || 1;
+      return Math.round(n * rate);
+    }
+
+    function getActiveCurrencyForId(currencyId) {
+      if (currencyId === BASE_CURRENCY_ID) return UZS_CURRENCY;
+      const found = getCurrencyById(currencyId);
+      if (found) return found;
+      const preset = PRESET_BY_CODE[currencyId];
+      return {
+        id: currencyId,
+        code: preset?.code || currencyId,
+        name: preset ? getPresetCurrencyName(preset) : currencyId,
+        symbol: preset?.symbol || currencyId,
+        rateToUZS: 0
+      };
+    }
+
+    function getActiveCurrencyCode() {
+      const currency = getActiveCurrency();
+      if (currency.id === BASE_CURRENCY_ID && currentCurrencyId === BASE_CURRENCY_ID) return "UZS";
+      return getCurrencyCode(currency) || currency.code || currency.id || "UZS";
+    }
+
+    function updateAmountLabel() {
+      const el = document.getElementById("amountLabel");
+      if (!el) return;
+      el.textContent = t("add.amount").replace("{{code}}", getActiveCurrencyCode());
     }
 
     function getCurrencyDecimals(currency) {
@@ -9766,7 +9804,7 @@
     }
 
     function getActiveCurrency() {
-      return getCurrencyById(currentCurrencyId) || UZS_CURRENCY;
+      return getActiveCurrencyForId(currentCurrencyId);
     }
 
     function formatCurrencyRateLine(currency) {
@@ -10055,9 +10093,22 @@
     }
 
     function ensureActiveCurrencyValid() {
+      if (!currenciesHydrated) return;
       if (currentCurrencyId !== BASE_CURRENCY_ID && !getCurrencyById(currentCurrencyId)) {
         currentCurrencyId = BASE_CURRENCY_ID;
         localStorage.setItem(CURRENCY_KEY, BASE_CURRENCY_ID);
+      }
+    }
+
+    function restoreSavedCurrencyPreference() {
+      const saved = localStorage.getItem(CURRENCY_KEY);
+      if (!saved) return;
+      if (saved === BASE_CURRENCY_ID) {
+        currentCurrencyId = BASE_CURRENCY_ID;
+        return;
+      }
+      if (getCurrencyById(saved)) {
+        currentCurrencyId = saved;
       }
     }
 
@@ -10128,6 +10179,7 @@
       if (headerCurrencyLabel) {
         headerCurrencyLabel.textContent = getCurrencyHeaderLabel();
       }
+      updateAmountLabel();
       renderCurrencyDropdown();
       renderCurrencyList();
     }
@@ -10345,6 +10397,8 @@
             rateToUZS: Number(d.data().rateToUZS) || 0,
             createdAt: d.data().createdAt || ""
           }));
+          currenciesHydrated = true;
+          restoreSavedCurrencyPreference();
           ensureActiveCurrencyValid();
           updateCurrencyUI();
           refreshCurrencyDisplays({ animate: false });
@@ -10420,11 +10474,22 @@
       return digits.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-    function updateAmountHint(amount) {
+    function updateAmountHint(amountInCurrency) {
       if (amountHintTimer) clearTimeout(amountHintTimer);
       amountHintTimer = setTimeout(() => {
         amountHintTimer = null;
-        amountHint.textContent = amount > 0 ? formatUZS(amount) : "";
+        if (!amountInCurrency || amountInCurrency <= 0) {
+          amountHint.textContent = "";
+          return;
+        }
+        const currency = getActiveCurrency();
+        if (currency.id === BASE_CURRENCY_ID) {
+          amountHint.textContent = "";
+          return;
+        }
+        const uzs = convertToUzs(amountInCurrency);
+        const uzsFormatted = new Intl.NumberFormat(DATE_LOCALES[currentLang] || "uz-UZ").format(uzs);
+        amountHint.textContent = t("add.amountHintUzs").replace("{{amount}}", uzsFormatted);
       }, 100);
     }
 
@@ -11473,8 +11538,9 @@
       if (busy || saveInFlight || !appUnlocked) return;
 
       const description = descriptionInput.value.trim();
-      const amount = parseAmountDigits(amountInput.value);
-      if (!description || !amount || amount <= 0) return;
+      const amountEntered = parseAmountDigits(amountInput.value);
+      if (!description || !amountEntered || amountEntered <= 0) return;
+      const amount = convertToUzs(amountEntered);
 
       if (!selectedCategory) {
         alert(t("add.categoryRequired"));
@@ -11741,6 +11807,7 @@
         scheduleAuthFallback();
         transactions = [];
         userCurrencies = [];
+        currenciesHydrated = false;
         userDocEnsured = false;
         userProfile = {
           isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
@@ -11777,6 +11844,7 @@
         closeCurrencyDropdown();
         transactions = [];
         userCurrencies = [];
+        currenciesHydrated = false;
         userProfile = {
           isPremium: false,
           totalTransactionsAdded: undefined,
