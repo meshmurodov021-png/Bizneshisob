@@ -5516,10 +5516,10 @@
         <div class="premium-charts-grid" id="advancedChartsSection">
           <div class="card chart-card chart-locked-wrap" id="trendChartCard">
             <p class="chart-card-title" data-i18n="stats.trend">Daromad/xarajat trendi</p>
-            <div class="chart-wrap" id="trendChartWrap">
+            <div class="chart-wrap chart-locked" id="trendChartWrap">
               <canvas id="trendChart" aria-hidden="true"></canvas>
             </div>
-            <button type="button" class="premium-chart-lock hidden" id="trendChartLock" hidden data-i18n-aria="premium.chartLockAria">
+            <button type="button" class="premium-chart-lock hidden" id="trendChartLock" data-i18n-aria="premium.chartLockAria">
               <i data-lucide="lock" aria-hidden="true"></i>
               <span class="premium-chart-lock-title" data-i18n="premium.chartLock">Premium bilan ko'ring</span>
               <p class="premium-chart-lock-message" data-i18n="premium.featureTooltip">Premiumga o'ting va bu funksiyani oching!</p>
@@ -5527,10 +5527,10 @@
           </div>
           <div class="card chart-card chart-locked-wrap" id="compareChartCard">
             <p class="chart-card-title" data-i18n="stats.comparison">Oylik taqqoslash</p>
-            <div class="chart-wrap" id="compareChartWrap">
+            <div class="chart-wrap chart-locked" id="compareChartWrap">
               <canvas id="compareChart" aria-hidden="true"></canvas>
             </div>
-            <button type="button" class="premium-chart-lock hidden" id="compareChartLock" hidden data-i18n-aria="premium.chartLockAria">
+            <button type="button" class="premium-chart-lock hidden" id="compareChartLock" data-i18n-aria="premium.chartLockAria">
               <i data-lucide="lock" aria-hidden="true"></i>
               <span class="premium-chart-lock-title" data-i18n="premium.chartLock">Premium bilan ko'ring</span>
               <p class="premium-chart-lock-message" data-i18n="premium.featureTooltip">Premiumga o'ting va bu funksiyani oching!</p>
@@ -8856,13 +8856,11 @@
       exportIconLock?.classList.toggle("hidden", premium);
       exportIconUpload?.classList.toggle("hidden", !premium);
 
-      trendChartLock?.classList.add("hidden");
-      compareChartLock?.classList.add("hidden");
-      trendChartWrap?.classList.remove("chart-locked");
-      compareChartWrap?.classList.remove("chart-locked");
-      if (currentTab === "home") {
-        scheduleChartsRender({ force: true, deferMs: 80 });
-      }
+      const showLocks = !premium;
+      trendChartLock?.classList.toggle("hidden", !showLocks);
+      compareChartLock?.classList.toggle("hidden", !showLocks);
+      trendChartWrap?.classList.toggle("chart-locked", showLocks);
+      compareChartWrap?.classList.toggle("chart-locked", showLocks);
 
       if (!premium) {
         if (txLimitText) txLimitText.textContent = `${limitCount}/${FREE_TX_LIMIT}`;
