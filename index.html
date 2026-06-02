@@ -6180,8 +6180,6 @@
         "stats.periodWeek": "Bu hafta",
         "stats.periodMonth": "Bu oy",
         "stats.period3months": "3 oy",
-        "stats.trend": "Daromad/xarajat trendi",
-        "stats.comparison": "Oylik taqqoslash",
         "stats.topExpense": "🔥 Top xarajatlar",
         "stats.topIncome": "💰 Top daromadlar",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -6270,9 +6268,6 @@
         "premium.price": "29 900 so'm / oy",
         "premium.goBtn": "✨ Premiumga o'tish",
         "premium.later": "Keyinroq",
-        "premium.chartLock": "Premium bilan ko'ring",
-        "premium.chartLockAria": "Premium grafiklarni ochish",
-        "premium.featureTooltip": "Premiumga o'ting va bu funksiyani oching!",
         "premium.supportBadge": "Ustuvor qo'llab-quvvatlash 💎",
         "ads.banner": "BiznesHisob Pro — reklamsiz ishlang 💎",
         "premium.f1": "Cheksiz operatsiyalar",
@@ -6442,8 +6437,6 @@
         "stats.periodWeek": "Эта неделя",
         "stats.periodMonth": "Этот месяц",
         "stats.period3months": "3 месяца",
-        "stats.trend": "Тренд доходов/расходов",
-        "stats.comparison": "Сравнение по месяцам",
         "stats.topExpense": "🔥 Топ расходов",
         "stats.topIncome": "💰 Топ доходов",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -6532,9 +6525,6 @@
         "premium.price": "29 900 so'm / мес",
         "premium.goBtn": "✨ Перейти на Premium",
         "premium.later": "Позже",
-        "premium.chartLock": "Смотреть с Premium",
-        "premium.chartLockAria": "Открыть Premium графики",
-        "premium.featureTooltip": "Перейдите на Premium и откройте эту функцию!",
         "premium.supportBadge": "Приоритетная поддержка 💎",
         "ads.banner": "BiznesHisob Pro — без рекламы 💎",
         "premium.f1": "Безлимитные операции",
@@ -6704,8 +6694,6 @@
         "stats.periodWeek": "This week",
         "stats.periodMonth": "This month",
         "stats.period3months": "3 months",
-        "stats.trend": "Income/expense trend",
-        "stats.comparison": "Monthly comparison",
         "stats.topExpense": "🔥 Top expenses",
         "stats.topIncome": "💰 Top income",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -6794,9 +6782,6 @@
         "premium.price": "29,900 UZS / month",
         "premium.goBtn": "✨ Go Premium",
         "premium.later": "Later",
-        "premium.chartLock": "View with Premium",
-        "premium.chartLockAria": "Unlock Premium charts",
-        "premium.featureTooltip": "Go Premium to unlock this feature!",
         "premium.supportBadge": "Priority support 💎",
         "ads.banner": "BiznesHisob Pro — ad-free 💎",
         "premium.f1": "Unlimited transactions",
@@ -11276,37 +11261,11 @@
       }
       if (typeof Chart === "undefined") return;
 
-      const { expense: expenseData, income: incomeData, trend, compare } = buildChartDataBundle();
+      const { expense: expenseData, income: incomeData } = buildChartDataBundle();
       const donutEl = document.getElementById("expenseDonutChart");
       const expenseLegendEl = document.getElementById("expenseChartLegend");
       const animateCharts = !chartsHaveRendered && !forceRebuild;
       const chartTheme = getChartTheme();
-      const chartTooltipDefaults = {
-        enabled: true,
-        backgroundColor: chartTheme.tooltip.backgroundColor,
-        titleColor: chartTheme.tooltip.titleColor,
-        bodyColor: chartTheme.tooltip.bodyColor,
-        borderColor: chartTheme.tooltip.borderColor,
-        borderWidth: 1,
-        callbacks: {
-          label(ctx) {
-            const raw = ctx.parsed?.y ?? ctx.raw ?? 0;
-            return `${ctx.dataset.label}: ${formatUZS(raw)}`;
-          }
-        }
-      };
-
-      const chartYAxisTickCallback = value => {
-        const currency = getActiveCurrency();
-        const converted = convertFromUzs(value, currency.id);
-        if (currency.id === BASE_CURRENCY_ID) {
-          const rounded = Math.round(converted);
-          if (rounded >= 1e6) return (rounded / 1e6).toFixed(1) + "M";
-          if (rounded >= 1e3) return (rounded / 1e3).toFixed(0) + "K";
-          return String(rounded);
-        }
-        return formatWithSymbol(converted, currency.symbol, getCurrencyDecimals(currency));
-      };
 
       updateDonutCenter(expenseData.total);
       renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
@@ -11387,115 +11346,6 @@
           chartDonut = destroyChartInstance(chartDonut);
           donutTooltipSegmentIndex = null;
         }
-      }
-
-      const trendEl = document.getElementById("trendChart");
-      const compareEl = document.getElementById("compareChart");
-      if (!trendEl || !compareEl) return;
-
-      const axisStyle = {
-        ticks: { color: chartTheme.axisTick, font: { size: 9 } },
-        grid: { color: chartTheme.grid }
-      };
-      const yAxisStyle = {
-        ticks: {
-          color: chartTheme.axisTick,
-          font: { size: 9 },
-          callback: chartYAxisTickCallback
-        },
-        grid: { color: chartTheme.grid }
-      };
-
-      const trendDatasets = [
-        {
-          label: t("home.income"),
-          data: trend.income,
-          borderColor: chartTheme.incomeLine,
-          backgroundColor: chartTheme.incomeFill,
-          tension: 0.35,
-          fill: true,
-          pointRadius: 0
-        },
-        {
-          label: t("home.expense"),
-          data: trend.expense,
-          borderColor: chartTheme.expenseLine,
-          backgroundColor: chartTheme.expenseFill,
-          tension: 0.35,
-          fill: true,
-          pointRadius: 0
-        }
-      ];
-
-      if (
-        !forceRebuild &&
-        chartTrend &&
-        chartTrend.canvas === trendEl &&
-        updateChartInPlace(chartTrend, trend.labels, trendDatasets, animateCharts)
-      ) {
-        /* updated in place */
-      } else {
-        chartTrend = destroyChartInstance(chartTrend);
-        chartTrend = new Chart(trendEl, {
-          type: "line",
-          data: { labels: trend.labels, datasets: trendDatasets },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: animateCharts ? { duration: 400 } : false,
-            plugins: {
-              legend: { labels: { color: chartTheme.legend, font: { size: 10 } } },
-              tooltip: chartTooltipDefaults
-            },
-            scales: {
-              x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
-              y: yAxisStyle
-            }
-          }
-        });
-      }
-
-      const compareDatasets = [
-        {
-          label: t("home.income"),
-          data: compare.income,
-          backgroundColor: chartTheme.incomeBar,
-          borderRadius: 6
-        },
-        {
-          label: t("home.expense"),
-          data: compare.expense,
-          backgroundColor: chartTheme.expenseBar,
-          borderRadius: 6
-        }
-      ];
-
-      if (
-        !forceRebuild &&
-        chartCompare &&
-        chartCompare.canvas === compareEl &&
-        updateChartInPlace(chartCompare, compare.labels, compareDatasets, animateCharts)
-      ) {
-        /* updated in place */
-      } else {
-        chartCompare = destroyChartInstance(chartCompare);
-        chartCompare = new Chart(compareEl, {
-          type: "bar",
-          data: { labels: compare.labels, datasets: compareDatasets },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: animateCharts ? { duration: 400 } : false,
-            plugins: {
-              legend: { labels: { color: chartTheme.legend, font: { size: 10 } } },
-              tooltip: chartTooltipDefaults
-            },
-            scales: {
-              x: { ticks: { color: chartTheme.axisTick, font: { size: 9 } }, grid: { display: false } },
-              y: yAxisStyle
-            }
-          }
-        });
       }
     }
 
