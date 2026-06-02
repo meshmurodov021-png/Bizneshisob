@@ -18,6 +18,7 @@
   <title>BiznesHisob — Daromad va xarajatlar</title>
   <style>
     :root {
+      color-scheme: dark;
       --bg: #0c0e14;
       --surface: #141820;
       --surface-2: #1a1f2b;
@@ -44,6 +45,31 @@
       --icon-input: 18px;
       --icon-inactive: #6b7280;
       --icon-active: #7C3AED;
+      --glass-card: rgba(20, 24, 32, 0.72);
+      --glass-border: rgba(124, 58, 237, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+      --bar-track: rgba(255, 255, 255, 0.06);
+      --panel-header: rgba(12, 14, 20, 0.85);
+      --panel-nav: rgba(20, 24, 32, 0.95);
+      --stat-item-bg: rgba(255, 255, 255, 0.04);
+      --settings-surface: rgba(255, 255, 255, 0.04);
+      --body-glow-1: rgba(99, 102, 241, 0.2);
+      --body-glow-2: rgba(34, 197, 94, 0.07);
+      --body-glow-3: rgba(239, 68, 68, 0.06);
+      --chart-axis: #71717a;
+      --chart-grid: rgba(255, 255, 255, 0.06);
+      --chart-legend: #a1a1aa;
+      --chart-tooltip-bg: rgba(18, 18, 28, 0.96);
+      --chart-tooltip-title: #f3f4f6;
+      --chart-tooltip-body: #e5e7eb;
+      --chart-tooltip-border: rgba(255, 255, 255, 0.1);
+      --premium-lock-bg: rgba(0, 0, 0, 0.72);
+      --premium-msg-bg: rgba(18, 18, 28, 0.88);
+      --premium-msg-text: #fde68a;
+      --category-active-ring: rgba(124, 58, 237, 0.45);
+      --scrollbar-thumb-1: #7C3AED;
+      --scrollbar-thumb-2: #4F46E5;
+      --scrollbar-thumb-3: #6366f1;
     }
 
     /* Lucide icons */
@@ -83,9 +109,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(99, 102, 241, 0.2), transparent),
-        radial-gradient(ellipse 50% 40% at 100% 60%, rgba(34, 197, 94, 0.07), transparent),
-        radial-gradient(ellipse 40% 30% at 0% 90%, rgba(239, 68, 68, 0.06), transparent);
+        radial-gradient(ellipse 90% 60% at 50% -10%, var(--body-glow-1), transparent),
+        radial-gradient(ellipse 50% 40% at 100% 60%, var(--body-glow-2), transparent),
+        radial-gradient(ellipse 40% 30% at 0% 90%, var(--body-glow-3), transparent);
       pointer-events: none;
       z-index: 0;
     }
@@ -656,7 +682,7 @@
       gap: 0.75rem;
       min-height: var(--header-h);
       padding: max(0.5rem, env(safe-area-inset-top)) 1rem 0.5rem;
-      background: rgba(12, 14, 20, 0.85);
+      background: var(--panel-header);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
@@ -1038,7 +1064,7 @@
       gap: 0.75rem;
       min-height: var(--header-h);
       padding: max(0.5rem, env(safe-area-inset-top)) 1rem 0.5rem;
-      background: rgba(12, 14, 20, 0.92);
+      background: var(--panel-header);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
@@ -1098,7 +1124,7 @@
     }
 
     .settings-card {
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--settings-surface);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
@@ -1829,7 +1855,7 @@
 
     .category-option.active .category-icon-wrap {
       transform: scale(1.12);
-      box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(124, 58, 237, 0.45);
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--category-active-ring);
     }
 
     .category-option-label {
@@ -1879,7 +1905,7 @@
       gap: 0.55rem;
       padding: 0.85rem 0.75rem;
       border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--stat-item-bg);
       border: 1px solid var(--border);
       animation: statFadeUp 0.45s var(--ease) backwards;
     }
@@ -2026,11 +2052,11 @@
     .chart-card {
       padding: 1rem;
       margin-bottom: 0.85rem;
-      background: rgba(20, 24, 32, 0.72);
+      background: var(--glass-card);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(124, 58, 237, 0.12);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
     }
 
     .chart-card-title {
@@ -2138,11 +2164,11 @@
     .top-cats-card {
       padding: 1rem;
       margin-bottom: 0.85rem;
-      background: rgba(20, 24, 32, 0.72);
+      background: var(--glass-card);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(124, 58, 237, 0.12);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
       animation: chartFadeIn 0.5s var(--ease) both;
     }
 
@@ -2219,7 +2245,7 @@
     .top-cat-bar {
       height: 5px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--bar-track);
       overflow: hidden;
     }
 
@@ -2295,7 +2321,7 @@
       flex: 1;
       height: 6px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
+      background: var(--bar-track);
       overflow: hidden;
       min-width: 0;
     }
@@ -2345,7 +2371,7 @@
       margin: 0;
       padding: 0.75rem 0.65rem;
       border: none;
-      background: rgba(0, 0, 0, 0.72);
+      background: var(--premium-lock-bg);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border-radius: inherit;
@@ -2356,7 +2382,7 @@
     }
 
     .premium-chart-lock:active {
-      background: rgba(0, 0, 0, 0.8);
+      filter: brightness(0.96);
     }
 
     .premium-chart-lock [data-lucide] {
@@ -2379,16 +2405,16 @@
     .premium-chart-lock-message {
       font-size: 0.72rem;
       font-weight: 600;
-      color: #fde68a;
+      color: var(--premium-msg-text);
       text-align: center;
       line-height: 1.4;
       margin: 0;
       max-width: 92%;
       padding: 0.35rem 0.55rem;
       border-radius: 10px;
-      background: rgba(18, 18, 28, 0.88);
+      background: var(--premium-msg-bg);
       border: 1px solid rgba(245, 158, 11, 0.4);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 
     .premium-charts-grid {
@@ -3131,13 +3157,77 @@
     }
 
     html.light-theme {
+      color-scheme: light;
       --bg: #f3f4f8;
       --surface: #ffffff;
-      --surface-2: #eef0f6;
-      --surface-3: #e2e6ef;
-      --border: rgba(0, 0, 0, 0.08);
+      --surface-2: #f3f4f6;
+      --surface-3: #e5e7eb;
+      --border: rgba(0, 0, 0, 0.1);
       --text: #111827;
       --muted: #6b7280;
+      --income-dim: rgba(22, 163, 74, 0.12);
+      --expense-dim: rgba(220, 38, 38, 0.1);
+      --accent-hover: #4f46e5;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      --icon-inactive: #9ca3af;
+      --icon-active: #6366f1;
+      --glass-card: #ffffff;
+      --glass-border: rgba(99, 102, 241, 0.14);
+      --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      --bar-track: rgba(0, 0, 0, 0.08);
+      --panel-header: rgba(255, 255, 255, 0.92);
+      --panel-nav: rgba(255, 255, 255, 0.96);
+      --stat-item-bg: #f9fafb;
+      --settings-surface: #ffffff;
+      --body-glow-1: rgba(99, 102, 241, 0.1);
+      --body-glow-2: rgba(22, 163, 74, 0.06);
+      --body-glow-3: rgba(220, 38, 38, 0.05);
+      --chart-axis: #6b7280;
+      --chart-grid: rgba(0, 0, 0, 0.08);
+      --chart-legend: #4b5563;
+      --chart-tooltip-bg: #ffffff;
+      --chart-tooltip-title: #111827;
+      --chart-tooltip-body: #374151;
+      --chart-tooltip-border: rgba(0, 0, 0, 0.1);
+      --premium-lock-bg: rgba(255, 255, 255, 0.9);
+      --premium-msg-bg: #fffbeb;
+      --premium-msg-text: #92400e;
+      --category-active-ring: rgba(99, 102, 241, 0.45);
+      --scrollbar-thumb-1: #6366f1;
+      --scrollbar-thumb-2: #4f46e5;
+      --scrollbar-thumb-3: #7c3aed;
+    }
+
+    html.light-theme * {
+      scrollbar-color: var(--scrollbar-thumb-1) transparent;
+    }
+
+    html.light-theme *::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, var(--scrollbar-thumb-1), var(--scrollbar-thumb-2), var(--scrollbar-thumb-3));
+    }
+
+    html.light-theme .app-header,
+    html.light-theme .settings-topbar {
+      background: var(--panel-header);
+    }
+
+    html.light-theme .bottom-nav {
+      background: var(--panel-nav);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    html.light-theme .category-option.active .category-icon-wrap {
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--category-active-ring);
+    }
+
+    html.light-theme .premium-chart-lock {
+      background: var(--premium-lock-bg);
+    }
+
+    html.light-theme .premium-chart-lock-message {
+      color: var(--premium-msg-text);
+      background: var(--premium-msg-bg);
+      border-color: rgba(245, 158, 11, 0.35);
     }
 
     .plan-badge [data-lucide] {
@@ -3307,12 +3397,12 @@
       display: flex;
       align-items: stretch;
       justify-content: space-around;
-      background: rgba(20, 24, 32, 0.95);
+      background: var(--panel-nav);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
       z-index: 100;
-      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--glass-shadow);
     }
 
     .nav-item {
@@ -5197,13 +5287,12 @@
 
     const FREE_TX_LIMIT = 50;
 
-    /** Har bir kategoriya uchun grafik, donut va progress bar ranglari (dark mode). */
-    const kategoriyaRanglari = {
+    const kategoriyaRanglariDark = {
       sotuv: "#22C55E",
       xizmat: "#06B6D4",
       ish_haqi: "#3B82F6",
       investitsiya: "#EAB308",
-      boshqa_daromad: "#64748B",
+      boshqa_daromad: "#94A3B8",
       transport: "#F97316",
       ish_haqi_xodim: "#3B82F6",
       ijara: "#8B5CF6",
@@ -5213,17 +5302,81 @@
       mahsulot: "#EC4899",
       reklama: "#0EA5E9",
       tamirlash: "#D97706",
+      boshqa_xarajat: "#94A3B8"
+    };
+
+    const kategoriyaRanglariLight = {
+      sotuv: "#16A34A",
+      xizmat: "#0891B2",
+      ish_haqi: "#2563EB",
+      investitsiya: "#CA8A04",
+      boshqa_daromad: "#64748B",
+      transport: "#EA580C",
+      ish_haqi_xodim: "#2563EB",
+      ijara: "#7C3AED",
+      oziq_ovqat: "#DC2626",
+      kommunal: "#65A30D",
+      telefon_internet: "#0E7490",
+      mahsulot: "#DB2777",
+      reklama: "#0284C7",
+      tamirlash: "#B45309",
       boshqa_xarajat: "#64748B"
     };
-    const KATEGORIYA_RANG_DEFAULT = "#A855F7";
 
-    function getCategoryChartColor(categoryId) {
-      return kategoriyaRanglari[categoryId] || KATEGORIYA_RANG_DEFAULT;
+    function getAppTheme() {
+      return document.documentElement.classList.contains("light-theme") ? "light" : "dark";
+    }
+
+    function getCategoryColorMap(theme = getAppTheme()) {
+      return theme === "light" ? kategoriyaRanglariLight : kategoriyaRanglariDark;
+    }
+
+    function getCategoryChartColor(categoryId, theme = getAppTheme()) {
+      const map = getCategoryColorMap(theme);
+      const fallback = theme === "light" ? "#7C3AED" : "#A855F7";
+      return map[categoryId] || fallback;
+    }
+
+    function getChartTheme(theme = getAppTheme()) {
+      const light = theme === "light";
+      return {
+        axisTick: light ? "#6b7280" : "#71717a",
+        grid: light ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.06)",
+        legend: light ? "#4b5563" : "#a1a1aa",
+        incomeLine: light ? "#16A34A" : "#22C55E",
+        incomeFill: light ? "rgba(22,163,74,0.18)" : "rgba(34,197,94,0.12)",
+        incomeBar: light ? "rgba(22,163,74,0.85)" : "rgba(34,197,94,0.78)",
+        expenseLine: light ? "#DC2626" : "#EF4444",
+        expenseFill: light ? "rgba(220,38,38,0.12)" : "rgba(239,68,68,0.08)",
+        expenseBar: light ? "rgba(220,38,38,0.85)" : "rgba(239,68,68,0.78)",
+        tooltip: {
+          backgroundColor: light ? "#ffffff" : "rgba(18,18,28,0.96)",
+          titleColor: light ? "#111827" : "#f3f4f6",
+          bodyColor: light ? "#374151" : "#e5e7eb",
+          borderColor: light ? "rgba(0,0,0,0.1)" : "rgba(255,255,255,0.1)"
+        }
+      };
+    }
+
+    function refreshCategoryThemeColors() {
+      const color = id => getCategoryChartColor(id);
+      Object.values(CATEGORY_MAP).forEach(cat => {
+        const c = color(cat.id);
+        cat.iconBg = c;
+        cat.chartColor = c;
+      });
+      for (const list of Object.values(CATEGORIES)) {
+        list.forEach(cat => {
+          const c = color(cat.id);
+          cat.iconBg = c;
+          cat.chartColor = c;
+        });
+      }
     }
 
     function defineCategory(id, label, icon) {
-      const color = getCategoryChartColor(id);
-      return { id, label, icon, iconBg: color, chartColor: color };
+      const chartColor = getCategoryChartColor(id);
+      return { id, label, icon, iconBg: chartColor, chartColor };
     }
 
     const CATEGORIES = {
@@ -6725,8 +6878,21 @@
     function applyTheme(theme) {
       const isDark = theme !== "light";
       document.documentElement.classList.toggle("light-theme", !isDark);
+      document.documentElement.classList.toggle("dark-theme", isDark);
       localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
       if (settingsThemeToggle) settingsThemeToggle.checked = isDark;
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#7C3AED" : "#f3f4f8");
+      refreshCategoryThemeColors();
+      invalidateChartDataCache();
+      lastChartsFingerprint = "";
+      if (currentTab === "add" || categorySelectorNeedsRefresh) {
+        renderCategorySelector(currentType);
+      }
+      scheduleChartsRender({ deferMs: 80, force: true });
+      if (currentUser && appScreen && !appScreen.classList.contains("hidden")) {
+        scheduleRender({ skipCharts: true });
+      }
     }
 
     function usageProgressLabel(count, limit) {
@@ -9673,6 +9839,15 @@
       const donutEl = document.getElementById("expenseDonutChart");
       const expenseLegendEl = document.getElementById("expenseChartLegend");
       const animateCharts = !chartsHaveRendered && !forceRebuild;
+      const chartTheme = getChartTheme();
+      const chartTooltipDefaults = {
+        enabled: true,
+        backgroundColor: chartTheme.tooltip.backgroundColor,
+        titleColor: chartTheme.tooltip.titleColor,
+        bodyColor: chartTheme.tooltip.bodyColor,
+        borderColor: chartTheme.tooltip.borderColor,
+        borderWidth: 1
+      };
 
       updateDonutCenter(expenseData.total);
       renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
@@ -9759,7 +9934,7 @@
                 plugins: {
                   legend: { display: false },
                   tooltip: {
-                    enabled: true,
+                    ...chartTooltipDefaults,
                     callbacks: {
                       label(ctx) {
                         const pct = formatCategoryPercent(ctx.raw, expenseData.total);
@@ -9781,16 +9956,16 @@
       if (!trendEl || !compareEl) return;
 
       const axisStyle = {
-        ticks: { color: "#71717a", font: { size: 9 } },
-        grid: { color: "rgba(255,255,255,0.06)" }
+        ticks: { color: chartTheme.axisTick, font: { size: 9 } },
+        grid: { color: chartTheme.grid }
       };
 
       const trendDatasets = [
         {
           label: t("home.income"),
           data: trend.income,
-          borderColor: "#22C55E",
-          backgroundColor: "rgba(34,197,94,0.12)",
+          borderColor: chartTheme.incomeLine,
+          backgroundColor: chartTheme.incomeFill,
           tension: 0.35,
           fill: true,
           pointRadius: 0
@@ -9798,8 +9973,8 @@
         {
           label: t("home.expense"),
           data: trend.expense,
-          borderColor: "#EF4444",
-          backgroundColor: "rgba(239,68,68,0.08)",
+          borderColor: chartTheme.expenseLine,
+          backgroundColor: chartTheme.expenseFill,
           tension: 0.35,
           fill: true,
           pointRadius: 0
@@ -9823,7 +9998,8 @@
             maintainAspectRatio: false,
             animation: animateCharts ? { duration: 400 } : false,
             plugins: {
-              legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
+              legend: { labels: { color: chartTheme.legend, font: { size: 10 } } },
+              tooltip: chartTooltipDefaults
             },
             scales: {
               x: { ...axisStyle, ticks: { ...axisStyle.ticks, maxTicksLimit: 6 }, grid: { display: false } },
@@ -9837,13 +10013,13 @@
         {
           label: t("home.income"),
           data: compare.income,
-          backgroundColor: "rgba(34,197,94,0.78)",
+          backgroundColor: chartTheme.incomeBar,
           borderRadius: 6
         },
         {
           label: t("home.expense"),
           data: compare.expense,
-          backgroundColor: "rgba(239,68,68,0.78)",
+          backgroundColor: chartTheme.expenseBar,
           borderRadius: 6
         }
       ];
@@ -9865,10 +10041,11 @@
             maintainAspectRatio: false,
             animation: animateCharts ? { duration: 400 } : false,
             plugins: {
-              legend: { labels: { color: "#a1a1aa", font: { size: 10 } } }
+              legend: { labels: { color: chartTheme.legend, font: { size: 10 } } },
+              tooltip: chartTooltipDefaults
             },
             scales: {
-              x: { ticks: { color: "#71717a", font: { size: 9 } }, grid: { display: false } },
+              x: { ticks: { color: chartTheme.axisTick, font: { size: 9 } }, grid: { display: false } },
               y: axisStyle
             }
           }
