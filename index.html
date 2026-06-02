@@ -9721,21 +9721,27 @@
     function getActiveCurrencyForId(currencyId) {
       if (currencyId === BASE_CURRENCY_ID) return UZS_CURRENCY;
       const found = getCurrencyById(currencyId);
-      if (found) return found;
+      if (found) {
+        const code = getCurrencyCode(found);
+        return code ? { ...found, code } : found;
+      }
       const preset = PRESET_BY_CODE[currencyId];
-      return {
-        id: currencyId,
-        code: preset?.code || currencyId,
-        name: preset ? getPresetCurrencyName(preset) : currencyId,
-        symbol: preset?.symbol || currencyId,
-        rateToUZS: 0
-      };
+      if (preset) {
+        return {
+          id: currencyId,
+          code: preset.code,
+          name: getPresetCurrencyName(preset),
+          symbol: preset.symbol,
+          rateToUZS: 0
+        };
+      }
+      return UZS_CURRENCY;
     }
 
     function getActiveCurrencyCode() {
+      if (currentCurrencyId === BASE_CURRENCY_ID) return "UZS";
       const currency = getActiveCurrency();
-      if (currency.id === BASE_CURRENCY_ID && currentCurrencyId === BASE_CURRENCY_ID) return "UZS";
-      return getCurrencyCode(currency) || currency.code || currency.id || "UZS";
+      return getCurrencyCode(currency) || "UZS";
     }
 
     function updateAmountLabel() {
@@ -9853,15 +9859,43 @@
       return `${preset.flag} ${preset.code} - ${getPresetCurrencyName(preset)}`;
     }
 
-    function getCurrencyCode(currency) {
+    function isIsoCurrencyCode(value) {
+      return /^[A-Z]{3}$/i.test(String(value || "").trim());
+    }
+
+    function inferCurrencyCode(currency) {
       if (!currency) return null;
-      if (currency.code) return String(currency.code).toUpperCase();
-      if (PRESET_BY_CODE[currency.id]) return currency.id;
-      const preset = PRESET_CURRENCIES.find(p =>
-        p.symbol === currency.symbol &&
-        [p.nameUz, p.nameRu, p.nameEn].includes(currency.name)
-      );
-      return preset?.code || null;
+      const stored = String(currency.code || "").trim().toUpperCase();
+      if (isIsoCurrencyCode(stored)) return stored;
+
+      const idUp = String(currency.id || "").trim().toUpperCase();
+      if (isIsoCurrencyCode(idUp)) return idUp;
+      if (PRESET_BY_CODE[idUp]) return idUp;
+
+      const sym = String(currency.symbol || "").trim();
+      const nameStr = String(currency.name || "").trim().toLowerCase();
+
+      const preset = PRESET_CURRENCIES.find(p => {
+        if (sym && p.symbol === sym) return true;
+        const names = [p.nameUz, p.nameRu, p.nameEn].map(n => n.toLowerCase());
+        return names.some(n => nameStr === n || nameStr.includes(n) || n.includes(nameStr));
+      });
+      if (preset) return preset.code;
+
+      if (nameStr.includes("dollar") || nameStr.includes("dollor") || nameStr.includes("aqsh")) return "USD";
+      if (nameStr.includes("yevro") || nameStr.includes("evro") || nameStr.includes("euro")) return "EUR";
+      if (nameStr.includes("rubl") || nameStr.includes("rub")) return "RUB";
+      if (nameStr.includes("funt") || nameStr.includes("pound")) return "GBP";
+      if (nameStr.includes("yuan") || nameStr.includes("xitoy")) return "CNY";
+      if (nameStr.includes("tenge") || nameStr.includes("qozog")) return "KZT";
+      if (nameStr.includes("lira") || nameStr.includes("turk")) return "TRY";
+      if (nameStr.includes("dirham") || nameStr.includes("baa")) return "AED";
+
+      return null;
+    }
+
+    function getCurrencyCode(currency) {
+      return inferCurrencyCode(currency);
     }
 
     function findUserCurrencyByCode(code) {
@@ -10389,14 +10423,23 @@
       unsubscribeCurrencies = onSnapshot(
         q,
         snapshot => {
-          userCurrencies = snapshot.docs.map(d => ({
-            id: d.id,
-            code: String(d.data().code || "").toUpperCase() || null,
-            name: String(d.data().name || ""),
-            symbol: String(d.data().symbol || ""),
-            rateToUZS: Number(d.data().rateToUZS) || 0,
-            createdAt: d.data().createdAt || ""
-          }));
+          userCurrencies = snapshot.docs.map(d => {
+            const data = d.data();
+            const row = {
+              id: d.id,
+              name: String(data.name || ""),
+              symbol: String(data.symbol || ""),
+              rateToUZS: Number(data.rateToUZS) || 0,
+              createdAt: data.createdAt || ""
+            };
+            const code = inferCurrencyCode({
+              id: d.id,
+              code: data.code,
+              name: row.name,
+              symbol: row.symbol
+            });
+            return { ...row, code: code || null };
+          });
           currenciesHydrated = true;
           restoreSavedCurrencyPreference();
           ensureActiveCurrencyValid();
