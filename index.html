@@ -9798,6 +9798,43 @@
       return formatMoney(amount, { short: true });
     }
 
+    function formatSum(amountUzs) {
+      const currency = getActiveCurrency();
+      const converted = Math.abs(Number(convertFromUzs(amountUzs, currency.id)) || 0);
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const decimals = getCurrencyDecimals(currency);
+      let core;
+
+      if (converted >= 1000000000) {
+        core = (converted / 1000000000).toFixed(1) + " mlrd";
+      } else if (converted >= 1000000) {
+        core = (converted / 1000000).toFixed(1) + " mln";
+      } else if (converted >= 1000) {
+        core = (converted / 1000).toFixed(0) + " ming";
+      } else {
+        core = new Intl.NumberFormat(locale, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: decimals
+        }).format(converted);
+      }
+
+      if (currency.id === BASE_CURRENCY_ID) {
+        return `${core} so'm`;
+      }
+
+      const sym = String(currency.symbol || "").trim();
+      const prefixSymbols = ["$", "€", "£", "¥", "₽", "₺", "₸"];
+      if (prefixSymbols.includes(sym) || (sym.length <= 2 && !/[\u0400-\u04FF\u0600-\u06FF]/.test(sym))) {
+        if (converted >= 1000) return sym + core;
+        return formatWithSymbol(converted, sym, decimals);
+      }
+      return `${core} ${sym}`;
+    }
+
+    function formatSumFull(amountUzs) {
+      return formatMoney(amountUzs);
+    }
+
     function getCurrencyById(id) {
       if (id === BASE_CURRENCY_ID) return UZS_CURRENCY;
       return userCurrencies.find(c => c.id === id) || null;
@@ -10966,7 +11003,7 @@
             callbacks: {
               label(ctx) {
                 const pct = formatCategoryPercent(ctx.raw, expenseTotal);
-                return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+                return `${ctx.label}: ${formatSumFull(ctx.raw)} (${pct}%)`;
               }
             }
           }
@@ -10975,11 +11012,7 @@
     }
 
     function formatDonutCenterValue(amountUzs) {
-      const currency = getActiveCurrency();
-      const converted = convertFromUzs(amountUzs, currency.id);
-      const decimals = getCurrencyDecimals(currency);
-      const value = decimals === 0 ? Math.round(converted) : converted;
-      return formatWithSymbol(value, currency.symbol || "so'm", decimals);
+      return formatSum(amountUzs);
     }
 
     function formatCategoryPercent(amount, total) {
@@ -11038,7 +11071,7 @@
       container.innerHTML = data.items.map((item, i) => `
           <div class="chart-legend-item" style="animation-delay:${i * 0.05}s">
             <span class="chart-legend-dot" style="background:${item.color};color:${item.color}"></span>
-            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatUZS(item.amount))} (${escapeHtml(item.percent)}%)</span>
+            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatSum(item.amount))} (${escapeHtml(item.percent)}%)</span>
           </div>
         `).join("");
     }
@@ -11294,6 +11327,12 @@
             if (chartDonut.options.plugins?.tooltip) {
               chartDonut.options.plugins.tooltip.enabled = true;
               chartDonut.options.plugins.tooltip.events = [];
+              chartDonut.options.plugins.tooltip.callbacks = {
+                label(ctx) {
+                  const pct = formatCategoryPercent(ctx.raw, expenseData.total);
+                  return `${ctx.label}: ${formatSumFull(ctx.raw)} (${pct}%)`;
+                }
+              };
             }
             hideDonutTooltip(chartDonut);
             chartDonut.update("none");
