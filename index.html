@@ -5764,15 +5764,20 @@
       };
     }
 
-    /** Users who already exceed the cap keep adding (not blocked by the new limit). */
+    /** Lifetime counter on user doc (may lag until sync). */
     function getTotalTransactionsAdded() {
       const v = userProfile.totalTransactionsAdded;
       if (typeof v === "number" && Number.isFinite(v) && v >= 0) return v;
       return 0;
     }
 
+    /** Limit UI and checks: max of stored counter and live Firestore transaction count. */
+    function getEffectiveTransactionLimitCount() {
+      return Math.max(getTotalTransactionsAdded(), transactions.length);
+    }
+
     function isGrandfatheredOverTxLimit() {
-      return getTotalTransactionsAdded() > FREE_TX_LIMIT || transactions.length > FREE_TX_LIMIT;
+      return getEffectiveTransactionLimitCount() > FREE_TX_LIMIT;
     }
 
     let txCounterSynced = false;
@@ -8238,32 +8243,33 @@
     function canAddTransaction() {
       if (isPremiumUser()) return true;
       if (isGrandfatheredOverTxLimit()) return true;
-      return getTotalTransactionsAdded() < FREE_TX_LIMIT;
+      return getEffectiveTransactionLimitCount() < FREE_TX_LIMIT;
     }
 
     async function syncTxCounterBaseline() {
-      if (!currentUser || txCounterSynced) return;
+      if (!currentUser) return;
 
       const ref = userDocRef(currentUser.uid);
       const snap = await getDoc(ref);
       if (!snap.exists()) return;
 
       const data = snap.data();
-      if (typeof data.totalTransactionsAdded === "number") {
-        userProfile.totalTransactionsAdded = data.totalTransactionsAdded;
-        txCounterSynced = true;
-        updatePremiumUI();
-        return;
+      const stored = typeof data.totalTransactionsAdded === "number"
+        ? data.totalTransactionsAdded
+        : null;
+      const liveCount = transactions.length;
+
+      if (liveCount === 0 && stored === null) return;
+
+      const baseline = Math.max(stored ?? 0, liveCount);
+      if (stored !== baseline) {
+        await setDoc(ref, { totalTransactionsAdded: baseline }, { merge: true });
       }
-
-      // Field missing — backfill from current list; defer if empty (first add uses increment)
-      if (transactions.length === 0) return;
-
-      const baseline = transactions.length;
-      await setDoc(ref, { totalTransactionsAdded: baseline }, { merge: true });
-      userProfile.totalTransactionsAdded = baseline;
+      if (userProfile.totalTransactionsAdded !== baseline) {
+        userProfile.totalTransactionsAdded = baseline;
+        updatePremiumUI();
+      }
       txCounterSynced = true;
-      updatePremiumUI();
     }
 
     async function ensureUserDocument(user) {
@@ -8345,7 +8351,7 @@
     function updatePremiumUI() {
       const premium = isPremiumUser();
       const activeCount = transactions.length;
-      const limitCount = getTotalTransactionsAdded();
+      const limitCount = getEffectiveTransactionLimitCount();
 
       premiumBadge?.classList.toggle("hidden", true);
       freePlanBadge?.classList.toggle("hidden", true);
@@ -10099,6 +10105,7 @@
           if (!uiUnchanged || !chartsHaveRendered) {
             scheduleChartsRender({ deferMs: 500 });
           }
+          updatePremiumUI();
           syncTxCounterBaseline().catch(err => {
             console.warn("[BiznesHisob] tx counter sync failed:", err);
           });
@@ -10705,7 +10712,7 @@
         throw err;
       }
 
-      if (!isPremiumUser() && !isGrandfatheredOverTxLimit() && getTotalTransactionsAdded() >= FREE_TX_LIMIT) {
+      if (!isPremiumUser() && !isGrandfatheredOverTxLimit() && getEffectiveTransactionLimitCount() >= FREE_TX_LIMIT) {
         const err = new Error("Transaction limit reached");
         err.code = "tx-limit";
         throw err;
@@ -10778,7 +10785,8 @@
 
       transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
       invalidateChartDataCache();
-      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
+      userProfile.totalTransactionsAdded = getEffectiveTransactionLimitCount() + 1;
+      updatePremiumUI();
 
       switchTab("list");
       form.reset();
@@ -10799,7 +10807,8 @@
         } catch (err) {
           removePendingTransactions();
           invalidateChartDataCache();
-          userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
+          userProfile.totalTransactionsAdded = Math.max(0, getEffectiveTransactionLimitCount() - 1);
+          updatePremiumUI();
           render({ skipCharts: true });
           scheduleChartsRender({ deferMs: 300 });
           logSaveError(err, { type: saveType, amount, description });
