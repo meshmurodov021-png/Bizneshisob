@@ -49,8 +49,8 @@
       --glass-border: rgba(124, 58, 237, 0.12);
       --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
       --bar-track: rgba(255, 255, 255, 0.06);
-      --panel-header: rgba(12, 14, 20, 0.85);
-      --panel-nav: rgba(20, 24, 32, 0.95);
+      --panel-header: #0c0e14;
+      --panel-nav: #141820;
       --stat-item-bg: rgba(255, 255, 255, 0.04);
       --settings-surface: rgba(255, 255, 255, 0.04);
       --body-glow-1: rgba(99, 102, 241, 0.2);
@@ -114,7 +114,6 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 90% 60% at 50% -10%, var(--body-glow-1), transparent),
         radial-gradient(ellipse 50% 40% at 100% 60%, var(--body-glow-2), transparent),
         radial-gradient(ellipse 40% 30% at 0% 90%, var(--body-glow-3), transparent);
       pointer-events: none;
@@ -688,9 +687,23 @@
       min-height: var(--header-h);
       padding: max(0.5rem, env(safe-area-inset-top)) 1rem 0.5rem;
       background: var(--panel-header);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+      box-shadow: none;
+      isolation: isolate;
+    }
+
+    .app-header::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100%;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--panel-header);
+      pointer-events: none;
+    }
+
+    .app-header .logo-icon {
       box-shadow: none;
     }
 
@@ -1064,6 +1077,7 @@
     }
 
     .settings-topbar {
+      position: relative;
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -1071,9 +1085,20 @@
       min-height: var(--header-h);
       padding: max(0.5rem, env(safe-area-inset-top)) 1rem 0.5rem;
       background: var(--panel-header);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+      box-shadow: none;
+      isolation: isolate;
+    }
+
+    .settings-topbar::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100%;
+      height: env(safe-area-inset-top, 0px);
+      background: var(--panel-header);
+      pointer-events: none;
     }
 
     .settings-back-btn {
@@ -3216,18 +3241,10 @@
       background: linear-gradient(to bottom, var(--scrollbar-thumb-1), var(--scrollbar-thumb-2), var(--scrollbar-thumb-3));
     }
 
-    html.light-theme body::before {
-      opacity: 0.45;
-    }
-
     html.light-theme .app-header,
     html.light-theme .settings-topbar {
       background: var(--panel-header);
       box-shadow: none;
-    }
-
-    html.light-theme .logo-icon {
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.18);
     }
 
     html.light-theme .bottom-nav {
