@@ -6836,6 +6836,7 @@
     const compareChartWrap = document.getElementById("compareChartWrap");
 
     let chartDonut = null;
+    let donutTooltipSegmentIndex = null;
     let chartIncomeBar = null;
     let chartTrend = null;
     let chartCompare = null;
@@ -10152,6 +10153,90 @@
       return null;
     }
 
+    function hideDonutTooltip(chart) {
+      if (!chart) return;
+      donutTooltipSegmentIndex = null;
+      chart.setActiveElements([]);
+      if (chart.tooltip) {
+        chart.tooltip.setActiveElements([], { x: 0, y: 0 });
+      }
+      chart.update("none");
+    }
+
+    function handleDonutChartClick(evt, activeElements, chart) {
+      if (!activeElements.length) {
+        hideDonutTooltip(chart);
+        return;
+      }
+      const { datasetIndex, index } = activeElements[0];
+      if (donutTooltipSegmentIndex === index) {
+        hideDonutTooltip(chart);
+        return;
+      }
+      donutTooltipSegmentIndex = index;
+      chart.setActiveElements([{ datasetIndex, index }]);
+      chart.tooltip.setActiveElements([{ datasetIndex, index }], { x: evt.x, y: evt.y });
+      chart.update("none");
+    }
+
+    function ensureDonutClickOutsideDismiss() {
+      if (document.documentElement.dataset.donutOutsideBound === "1") return;
+      document.documentElement.dataset.donutOutsideBound = "1";
+      document.addEventListener("click", e => {
+        if (!chartDonut?.canvas) return;
+        const wrap = chartDonut.canvas.closest(".chart-wrap-donut");
+        if (wrap && wrap.contains(e.target)) return;
+        hideDonutTooltip(chartDonut);
+      });
+    }
+
+    function buildExpenseDonutChartOptions(chartTooltipDefaults, expenseTotal) {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "62%",
+        interaction: {
+          mode: "nearest",
+          intersect: true
+        },
+        hover: {
+          mode: false
+        },
+        datasets: {
+          doughnut: {
+            hoverOffset: 0
+          }
+        },
+        elements: {
+          arc: {
+            borderWidth: 0,
+            hoverBorderWidth: 0,
+            hoverOffset: 0,
+            borderAlign: "inner"
+          }
+        },
+        transitions: {
+          active: {
+            animation: { duration: 0 }
+          }
+        },
+        onClick: handleDonutChartClick,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            ...chartTooltipDefaults,
+            events: [],
+            callbacks: {
+              label(ctx) {
+                const pct = formatCategoryPercent(ctx.raw, expenseTotal);
+                return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
+              }
+            }
+          }
+        }
+      };
+    }
+
     function formatDonutCenterValue(amountUzs) {
       const currency = getActiveCurrency();
       const converted = convertFromUzs(amountUzs, currency.id);
@@ -10458,53 +10543,26 @@
             }
             if (chartDonut.options.plugins?.tooltip) {
               chartDonut.options.plugins.tooltip.enabled = true;
+              chartDonut.options.plugins.tooltip.events = [];
             }
+            hideDonutTooltip(chartDonut);
             chartDonut.update("none");
           } else {
             chartDonut = destroyChartInstance(chartDonut);
+            donutTooltipSegmentIndex = null;
+            ensureDonutClickOutsideDismiss();
             chartDonut = new Chart(donutEl, {
               type: "doughnut",
               data: donutPayload,
               options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: "62%",
-                animation: donutAnim,
-                datasets: {
-                  doughnut: {
-                    hoverOffset: 0
-                  }
-                },
-                elements: {
-                  arc: {
-                    borderWidth: 0,
-                    hoverBorderWidth: 0,
-                    hoverOffset: 0,
-                    borderAlign: "inner"
-                  }
-                },
-                transitions: {
-                  active: {
-                    animation: { duration: 0 }
-                  }
-                },
-                plugins: {
-                  legend: { display: false },
-                  tooltip: {
-                    ...chartTooltipDefaults,
-                    callbacks: {
-                      label(ctx) {
-                        const pct = formatCategoryPercent(ctx.raw, expenseData.total);
-                        return `${ctx.label}: ${formatUZS(ctx.raw)} (${pct}%)`;
-                      }
-                    }
-                  }
-                }
+                ...buildExpenseDonutChartOptions(chartTooltipDefaults, expenseData.total),
+                animation: donutAnim
               }
             });
           }
         } else {
           chartDonut = destroyChartInstance(chartDonut);
+          donutTooltipSegmentIndex = null;
         }
       }
 
