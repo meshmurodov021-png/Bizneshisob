@@ -1208,6 +1208,153 @@
       min-height: 1.1em;
     }
 
+    .currency-picker {
+      position: relative;
+    }
+
+    .currency-picker-input-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0.35rem;
+    }
+
+    .currency-picker-input-wrap input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .currency-picker-toggle {
+      flex-shrink: 0;
+      width: 42px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .currency-picker-toggle:active {
+      color: var(--accent-hover);
+      border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    .currency-picker-list {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 20;
+      max-height: 220px;
+      overflow-y: auto;
+      margin: 0;
+      padding: 0.35rem 0;
+      list-style: none;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    .currency-picker-list.hidden {
+      display: none;
+    }
+
+    .currency-picker-option {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.9rem;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .currency-picker-option:hover,
+    .currency-picker-option:focus {
+      background: rgba(124, 58, 237, 0.12);
+      outline: none;
+    }
+
+    .currency-picker-option[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .currency-edit-readonly {
+      padding: 0.75rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .currency-form-group input:read-only {
+      opacity: 0.92;
+      cursor: default;
+    }
+
+    .currency-rate-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.45rem;
+    }
+
+    .currency-rate-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .currency-rate-refresh {
+      flex-shrink: 0;
+      width: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .currency-rate-refresh:active:not(:disabled) {
+      transform: scale(0.94);
+      border-color: rgba(124, 58, 237, 0.45);
+    }
+
+    .currency-rate-refresh:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
+
+    .currency-rate-refresh.spinning {
+      animation: currency-spin 0.8s linear infinite;
+    }
+
+    @keyframes currency-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .currency-rate-meta {
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      color: var(--muted);
+      min-height: 1.05em;
+    }
+
+    .currency-rate-meta.is-error {
+      color: var(--expense);
+    }
+
+    .currency-rate-loading input {
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
     .header-icon-btn {
       width: 36px;
       height: 36px;
@@ -5465,17 +5612,31 @@
       <button type="button" class="modal-close" id="currencyModalClose" data-i18n-aria="export.closeAria">×</button>
       <h3 id="currencyModalTitle" data-i18n="currency.addTitle">Valyuta qo'shish</h3>
       <p class="currency-modal-error" id="currencyModalError" aria-live="polite"></p>
-      <div class="currency-form-group">
-        <label for="currencyNameInput" data-i18n="currency.name">Valyuta nomi</label>
-        <input type="text" id="currencyNameInput" maxlength="40" data-i18n-placeholder="currency.namePh" placeholder="Masalan: Dollar" autocomplete="off">
+      <div class="currency-form-group" id="currencyPickerWrap">
+        <label for="currencyPickerSearch" data-i18n="currency.select">Valyuta</label>
+        <div class="currency-picker">
+          <div class="currency-picker-input-wrap">
+            <input type="text" id="currencyPickerSearch" data-i18n-placeholder="currency.selectPh" placeholder="Valyutani qidiring..." autocomplete="off" aria-autocomplete="list" aria-controls="currencyPickerList" aria-expanded="false">
+            <button type="button" class="currency-picker-toggle" id="currencyPickerToggle" aria-label="▼">▼</button>
+          </div>
+          <ul class="currency-picker-list hidden" id="currencyPickerList" role="listbox"></ul>
+        </div>
+      </div>
+      <div class="currency-form-group hidden" id="currencyEditDisplay">
+        <label data-i18n="currency.select">Valyuta</label>
+        <div class="currency-edit-readonly" id="currencyEditLabel"></div>
       </div>
       <div class="currency-form-group">
         <label for="currencySymbolInput" data-i18n="currency.symbol">Belgi</label>
-        <input type="text" id="currencySymbolInput" maxlength="8" data-i18n-placeholder="currency.symbolPh" placeholder="Masalan: $" autocomplete="off">
+        <input type="text" id="currencySymbolInput" maxlength="8" readonly autocomplete="off">
       </div>
-      <div class="currency-form-group">
+      <div class="currency-form-group" id="currencyRateGroup">
         <label for="currencyRateInput" data-i18n="currency.rate">UZS ga nisbatan kurs</label>
-        <input type="text" id="currencyRateInput" inputmode="numeric" data-i18n-placeholder="currency.ratePh" placeholder="Masalan: 12800" autocomplete="off">
+        <div class="currency-rate-row">
+          <input type="text" id="currencyRateInput" inputmode="numeric" data-i18n-placeholder="currency.ratePh" placeholder="Masalan: 12800" autocomplete="off">
+          <button type="button" class="currency-rate-refresh" id="currencyRateRefresh" aria-label="🔄">🔄</button>
+        </div>
+        <p class="currency-rate-meta" id="currencyRateMeta" aria-live="polite"></p>
       </div>
       <div class="profile-sheet-actions">
         <button type="button" class="profile-sheet-btn secondary" id="currencyModalCancel" data-i18n="profile.cancelEdit">Bekor qilish</button>
@@ -5849,12 +6010,15 @@
         "currency.add": "➕ Valyuta qo'shish",
         "currency.addTitle": "Valyuta qo'shish",
         "currency.editTitle": "Kursni tahrirlash",
-        "currency.name": "Valyuta nomi",
+        "currency.select": "Valyuta",
+        "currency.selectPh": "Valyutani qidiring...",
         "currency.symbol": "Belgi",
         "currency.rate": "UZS ga nisbatan kurs",
-        "currency.namePh": "Masalan: Dollar",
-        "currency.symbolPh": "Masalan: $",
         "currency.ratePh": "Masalan: 12800",
+        "currency.rateSource": "Manba: O'zbekiston Markaziy Banki · {{date}}",
+        "currency.rateLoadFailed": "Kurs yuklanmadi, qo'lda kiriting",
+        "currency.rateLoading": "Kurs yuklanmoqda...",
+        "currency.alreadyAdded": "Bu valyuta allaqachon qo'shilgan",
         "currency.baseTag": "asosiy",
         "currency.rateLine": "1{{symbol}} = {{rate}} so'm",
         "currency.deleteConfirm": "Bu valyutani o'chirishni xohlaysizmi?",
@@ -6107,12 +6271,15 @@
         "currency.add": "➕ Добавить валюту",
         "currency.addTitle": "Добавить валюту",
         "currency.editTitle": "Изменить курс",
-        "currency.name": "Название валюты",
+        "currency.select": "Валюта",
+        "currency.selectPh": "Поиск валюты...",
         "currency.symbol": "Символ",
         "currency.rate": "Курс к UZS",
-        "currency.namePh": "Например: Dollar",
-        "currency.symbolPh": "Например: $",
         "currency.ratePh": "Например: 12800",
+        "currency.rateSource": "Источник: Центральный банк Узбекистана · {{date}}",
+        "currency.rateLoadFailed": "Курс не загружен, введите вручную",
+        "currency.rateLoading": "Загрузка курса...",
+        "currency.alreadyAdded": "Эта валюта уже добавлена",
         "currency.baseTag": "основная",
         "currency.rateLine": "1{{symbol}} = {{rate}} so'm",
         "currency.deleteConfirm": "Удалить эту валюту?",
@@ -6365,12 +6532,15 @@
         "currency.add": "➕ Add currency",
         "currency.addTitle": "Add currency",
         "currency.editTitle": "Edit rate",
-        "currency.name": "Currency name",
+        "currency.select": "Currency",
+        "currency.selectPh": "Search currency...",
         "currency.symbol": "Symbol",
         "currency.rate": "Rate to UZS",
-        "currency.namePh": "e.g. Dollar",
-        "currency.symbolPh": "e.g. $",
         "currency.ratePh": "e.g. 12800",
+        "currency.rateSource": "Source: Central Bank of Uzbekistan · {{date}}",
+        "currency.rateLoadFailed": "Rate could not load, enter manually",
+        "currency.rateLoading": "Loading rate...",
+        "currency.alreadyAdded": "This currency is already added",
         "currency.baseTag": "base",
         "currency.rateLine": "1{{symbol}} = {{rate}} UZS",
         "currency.deleteConfirm": "Delete this currency?",
@@ -6640,6 +6810,26 @@
     let currencyModalMode = "add";
     let editingCurrencyId = null;
     let currencyDropdownOpen = false;
+    let selectedPresetCode = null;
+    let currencyPickerListOpen = false;
+    let fxRatesMap = null;
+    let fxRatesFetchedAt = null;
+    let fxCbuDate = null;
+
+    const CBU_RATES_CACHE_KEY = "bh-cbu-rates";
+    const CBU_RATES_API = "https://cbu.uz/uz/arkhiv-kursov-valyut/json/";
+
+    const PRESET_CURRENCIES = [
+      { code: "USD", flag: "🇺🇸", symbol: "$", nameUz: "Dollar", nameRu: "Доллар", nameEn: "Dollar" },
+      { code: "EUR", flag: "🇪🇺", symbol: "€", nameUz: "Yevro", nameRu: "Евро", nameEn: "Euro" },
+      { code: "RUB", flag: "🇷🇺", symbol: "₽", nameUz: "Rubl", nameRu: "Рубль", nameEn: "Ruble" },
+      { code: "GBP", flag: "🇬🇧", symbol: "£", nameUz: "Funt", nameRu: "Фунт", nameEn: "Pound" },
+      { code: "CNY", flag: "🇨🇳", symbol: "¥", nameUz: "Yuan", nameRu: "Юань", nameEn: "Yuan" },
+      { code: "KZT", flag: "🇰🇿", symbol: "₸", nameUz: "Tenge", nameRu: "Тенге", nameEn: "Tenge" },
+      { code: "TRY", flag: "🇹🇷", symbol: "₺", nameUz: "Lira", nameRu: "Лира", nameEn: "Lira" },
+      { code: "AED", flag: "🇦🇪", symbol: "د.إ", nameUz: "Dirham", nameRu: "Дирхам", nameEn: "Dirham" }
+    ];
+    const PRESET_BY_CODE = Object.fromEntries(PRESET_CURRENCIES.map(p => [p.code, p]));
 
     const PRESET_AVATARS = [
       { id: "preset-1", icon: "user", bg: "linear-gradient(135deg,#6366f1,#a855f7)" },
@@ -6774,9 +6964,17 @@
     const currencyModalSave = document.getElementById("currencyModalSave");
     const currencyModalTitle = document.getElementById("currencyModalTitle");
     const currencyModalError = document.getElementById("currencyModalError");
-    const currencyNameInput = document.getElementById("currencyNameInput");
+    const currencyPickerWrap = document.getElementById("currencyPickerWrap");
+    const currencyPickerSearch = document.getElementById("currencyPickerSearch");
+    const currencyPickerToggle = document.getElementById("currencyPickerToggle");
+    const currencyPickerList = document.getElementById("currencyPickerList");
+    const currencyEditDisplay = document.getElementById("currencyEditDisplay");
+    const currencyEditLabel = document.getElementById("currencyEditLabel");
     const currencySymbolInput = document.getElementById("currencySymbolInput");
     const currencyRateInput = document.getElementById("currencyRateInput");
+    const currencyRateRefresh = document.getElementById("currencyRateRefresh");
+    const currencyRateMeta = document.getElementById("currencyRateMeta");
+    const currencyRateGroup = document.getElementById("currencyRateGroup");
     const settingsThemeToggle = document.getElementById("settingsThemeToggle");
     const settingsNotifToggle = document.getElementById("settingsNotifToggle");
     const profileEditModal = document.getElementById("profileEditModal");
@@ -9479,6 +9677,274 @@
         .replace("{{rate}}", rate);
     }
 
+    function getPresetCurrencyName(preset) {
+      if (currentLang === "ru") return preset.nameRu;
+      if (currentLang === "en") return preset.nameEn;
+      return preset.nameUz;
+    }
+
+    function getTodayCacheKey() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function formatCbuRateDisplay(rate) {
+      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
+      const formatted = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(Math.round(rate));
+      return `${formatted} so'm`;
+    }
+
+    function getCbuRateForCode(code, rates) {
+      const map = rates || fxRatesMap;
+      const v = Number(map?.[code]);
+      return Number.isFinite(v) && v > 0 ? v : null;
+    }
+
+    function getPresetCurrencyPickerLabel(preset) {
+      const name = getPresetCurrencyName(preset);
+      const rate = getCbuRateForCode(preset.code);
+      const ratePart = rate ? ` — ${formatCbuRateDisplay(rate)}` : "";
+      return `${preset.flag} ${preset.code} - ${name}${ratePart}`;
+    }
+
+    function getPresetCurrencyLabel(preset) {
+      return `${preset.flag} ${preset.code} - ${getPresetCurrencyName(preset)}`;
+    }
+
+    function getCurrencyCode(currency) {
+      if (!currency) return null;
+      if (currency.code) return String(currency.code).toUpperCase();
+      if (PRESET_BY_CODE[currency.id]) return currency.id;
+      const preset = PRESET_CURRENCIES.find(p =>
+        p.symbol === currency.symbol &&
+        [p.nameUz, p.nameRu, p.nameEn].includes(currency.name)
+      );
+      return preset?.code || null;
+    }
+
+    function findUserCurrencyByCode(code) {
+      const upper = String(code || "").toUpperCase();
+      if (!upper) return null;
+      return userCurrencies.find(c => getCurrencyCode(c) === upper || c.id === upper) || null;
+    }
+
+    function readFxCache() {
+      try {
+        const raw = localStorage.getItem(CBU_RATES_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.rates || !parsed.cacheDate) return null;
+        return parsed;
+      } catch {
+        return null;
+      }
+    }
+
+    function isFxCacheForToday(cache) {
+      return !!cache && cache.cacheDate === getTodayCacheKey();
+    }
+
+    function writeFxCache(rates, cbuDate, fetchedAt = Date.now()) {
+      const payload = {
+        cacheDate: getTodayCacheKey(),
+        cbuDate: cbuDate || "",
+        fetchedAt,
+        rates
+      };
+      localStorage.setItem(CBU_RATES_CACHE_KEY, JSON.stringify(payload));
+      fxRatesMap = rates;
+      fxCbuDate = cbuDate || "";
+      fxRatesFetchedAt = fetchedAt;
+      return payload;
+    }
+
+    function applyFxCacheToState(cache) {
+      if (!cache) return;
+      fxRatesMap = cache.rates;
+      fxCbuDate = cache.cbuDate || "";
+      fxRatesFetchedAt = cache.fetchedAt || Date.now();
+    }
+
+    function updateFxRateMetaLabel() {
+      if (!currencyRateMeta) return;
+      if (!fxCbuDate && !fxRatesFetchedAt) {
+        currencyRateMeta.textContent = "";
+        currencyRateMeta.classList.remove("is-error");
+        return;
+      }
+      const dateLabel = fxCbuDate || getTodayCacheKey();
+      currencyRateMeta.textContent = t("currency.rateSource").replace("{{date}}", dateLabel);
+      currencyRateMeta.classList.remove("is-error");
+    }
+
+    function parseCbuRatesResponse(items) {
+      const allowed = new Set(PRESET_CURRENCIES.map(p => p.code));
+      const rates = {};
+      let cbuDate = "";
+      if (!Array.isArray(items)) return { rates, cbuDate };
+
+      for (const item of items) {
+        const code = String(item?.Ccy || "").toUpperCase();
+        if (!allowed.has(code)) continue;
+        const nominal = Number(item.Nominal) || 1;
+        const rate = Number(String(item.Rate || "").replace(/\s/g, "").replace(",", "."));
+        if (!Number.isFinite(rate) || rate <= 0) continue;
+        rates[code] = rate / nominal;
+        if (item.Date) cbuDate = String(item.Date);
+      }
+      return { rates, cbuDate };
+    }
+
+    function setCurrencyRateLoading(loading) {
+      currencyRateGroup?.classList.toggle("currency-rate-loading", loading);
+      if (currencyRateRefresh) {
+        currencyRateRefresh.disabled = loading;
+        currencyRateRefresh.classList.toggle("spinning", loading);
+      }
+      if (loading && currencyRateMeta) {
+        currencyRateMeta.textContent = t("currency.rateLoading");
+        currencyRateMeta.classList.remove("is-error");
+      } else if (!loading) {
+        updateFxRateMetaLabel();
+      }
+    }
+
+    function showFxLoadFailed() {
+      if (currencyRateMeta) {
+        currencyRateMeta.textContent = t("currency.rateLoadFailed");
+        currencyRateMeta.classList.add("is-error");
+      }
+    }
+
+    function onFxRatesReady() {
+      updateFxRateMetaLabel();
+      if (currencyPickerListOpen || currencyModal?.classList.contains("open")) {
+        renderCurrencyPickerList(currencyPickerSearch?.value || "");
+      }
+    }
+
+    async function fetchExchangeRates(force = false) {
+      const cached = readFxCache();
+      if (!force && isFxCacheForToday(cached)) {
+        applyFxCacheToState(cached);
+        onFxRatesReady();
+        return cached;
+      }
+
+      const res = await fetch(CBU_RATES_API);
+      if (!res.ok) throw new Error(`CBU HTTP ${res.status}`);
+      const items = await res.json();
+      const { rates, cbuDate } = parseCbuRatesResponse(items);
+      if (!Object.keys(rates).length) throw new Error("CBU API: no supported rates");
+      const payload = writeFxCache(rates, cbuDate);
+      onFxRatesReady();
+      return payload;
+    }
+
+    async function ensureExchangeRatesLoaded(force = false) {
+      try {
+        return await fetchExchangeRates(force);
+      } catch (err) {
+        console.warn("[BiznesHisob] CBU fetch failed:", err);
+        const cached = readFxCache();
+        if (isFxCacheForToday(cached)) {
+          applyFxCacheToState(cached);
+          onFxRatesReady();
+          return cached;
+        }
+        throw err;
+      }
+    }
+
+    function setCurrencyRateInputValue(rate) {
+      if (!currencyRateInput || rate == null) return;
+      const rounded = Math.max(1, Math.round(rate));
+      currencyRateInput.value = formatAmountSpaces(String(rounded));
+    }
+
+    async function applyFxRateForCode(code, { forceFetch = false } = {}) {
+      if (!code) return;
+      setCurrencyRateLoading(true);
+      try {
+        const data = await ensureExchangeRatesLoaded(forceFetch);
+        const rate = getCbuRateForCode(code, data?.rates);
+        if (rate) {
+          setCurrencyRateInputValue(rate);
+          updateFxRateMetaLabel();
+        } else {
+          showFxLoadFailed();
+        }
+      } catch {
+        showFxLoadFailed();
+      } finally {
+        setCurrencyRateLoading(false);
+      }
+    }
+
+    function closeCurrencyPickerList() {
+      currencyPickerList?.classList.add("hidden");
+      currencyPickerSearch?.setAttribute("aria-expanded", "false");
+      currencyPickerListOpen = false;
+    }
+
+    function openCurrencyPickerList() {
+      renderCurrencyPickerList(currencyPickerSearch?.value || "");
+      currencyPickerList?.classList.remove("hidden");
+      currencyPickerSearch?.setAttribute("aria-expanded", "true");
+      currencyPickerListOpen = true;
+    }
+
+    function renderCurrencyPickerList(filterText = "") {
+      if (!currencyPickerList) return;
+      const q = String(filterText).trim().toLowerCase();
+      const options = PRESET_CURRENCIES.map(preset => {
+        const label = getPresetCurrencyPickerLabel(preset);
+        const hay = `${preset.code} ${getPresetCurrencyName(preset)} ${preset.symbol} ${preset.flag}`.toLowerCase();
+        const visible = !q || hay.includes(q);
+        const taken = !!findUserCurrencyByCode(preset.code);
+        return { preset, label, visible, taken };
+      }).filter(o => o.visible);
+
+      if (!options.length) {
+        currencyPickerList.innerHTML = `<li class="currency-picker-empty">${escapeHtml(t("currency.selectPh"))}</li>`;
+        return;
+      }
+
+      currencyPickerList.innerHTML = options.map(({ preset, label, taken }) => `
+        <li>
+          <button type="button" class="currency-picker-option" role="option"
+            data-code="${escapeHtml(preset.code)}" ${taken ? "disabled" : ""}>
+            ${escapeHtml(label)}${taken ? ` (${escapeHtml(t("currency.alreadyAdded"))})` : ""}
+          </button>
+        </li>
+      `).join("");
+
+      currencyPickerList.querySelectorAll(".currency-picker-option:not([disabled])").forEach(btn => {
+        btn.addEventListener("click", () => selectPresetCurrency(btn.dataset.code));
+      });
+    }
+
+    function selectPresetCurrency(code) {
+      const preset = PRESET_BY_CODE[code];
+      if (!preset) return;
+      if (findUserCurrencyByCode(code)) {
+        currencyModalError.textContent = t("currency.alreadyAdded");
+        return;
+      }
+      selectedPresetCode = code;
+      currencyModalError.textContent = "";
+      if (currencyPickerSearch) currencyPickerSearch.value = getPresetCurrencyPickerLabel(preset);
+      if (currencySymbolInput) {
+        currencySymbolInput.value = preset.symbol;
+        currencySymbolInput.readOnly = true;
+      }
+      closeCurrencyPickerList();
+      void applyFxRateForCode(code);
+    }
+
     function getCurrencyHeaderLabel(currency = getActiveCurrency()) {
       if (currency.id === BASE_CURRENCY_ID) return "🇺🇿 UZS";
       return `${currency.symbol} ${currency.name}`;
@@ -9645,45 +10111,83 @@
       currencyModalMode = mode;
       editingCurrencyId = currencyId;
       currencyModalError.textContent = "";
+      closeCurrencyPickerList();
+      selectedPresetCode = null;
 
       if (mode === "edit" && currencyId) {
         const currency = getCurrencyById(currencyId);
         if (!currency) return;
+        const code = getCurrencyCode(currency);
+        selectedPresetCode = code;
         currencyModalTitle.textContent = t("currency.editTitle");
-        currencyNameInput.value = currency.name;
-        currencySymbolInput.value = currency.symbol;
-        currencyRateInput.value = String(Math.round(Number(currency.rateToUZS) || 0));
-        currencyNameInput.disabled = false;
-        currencySymbolInput.disabled = false;
+        currencyPickerWrap?.classList.add("hidden");
+        currencyEditDisplay?.classList.remove("hidden");
+        if (currencyEditLabel) {
+          currencyEditLabel.textContent = code
+            ? getPresetCurrencyLabel(PRESET_BY_CODE[code] || { code, symbol: currency.symbol, nameUz: currency.name, nameRu: currency.name, nameEn: currency.name })
+            : `${currency.name} — ${currency.symbol}`;
+        }
+        if (currencySymbolInput) {
+          currencySymbolInput.value = currency.symbol;
+          currencySymbolInput.readOnly = true;
+        }
+        setCurrencyRateInputValue(Number(currency.rateToUZS) || 0);
       } else {
         currencyModalTitle.textContent = t("currency.addTitle");
-        currencyNameInput.value = "";
-        currencySymbolInput.value = "";
-        currencyRateInput.value = "";
-        currencyNameInput.disabled = false;
-        currencySymbolInput.disabled = false;
+        currencyPickerWrap?.classList.remove("hidden");
+        currencyEditDisplay?.classList.add("hidden");
+        if (currencyPickerSearch) currencyPickerSearch.value = "";
+        if (currencySymbolInput) {
+          currencySymbolInput.value = "";
+          currencySymbolInput.readOnly = true;
+        }
+        if (currencyRateInput) currencyRateInput.value = "";
+        renderCurrencyPickerList("");
+        void ensureExchangeRatesLoaded().catch(() => {});
+      }
+
+      if (currencyRateMeta && (fxCbuDate || fxRatesFetchedAt)) {
+        updateFxRateMetaLabel();
+      } else if (currencyRateMeta) {
+        currencyRateMeta.textContent = "";
+        currencyRateMeta.classList.remove("is-error");
       }
 
       openProfileModal(currencyModal);
-      setTimeout(() => currencyNameInput?.focus(), 120);
+      setTimeout(() => {
+        if (mode === "edit") currencyRateInput?.focus();
+        else currencyPickerSearch?.focus();
+      }, 120);
     }
 
     function closeCurrencyModal() {
       closeProfileModal(currencyModal);
+      closeCurrencyPickerList();
       currencyModalMode = "add";
       editingCurrencyId = null;
+      selectedPresetCode = null;
       currencyModalError.textContent = "";
+      setCurrencyRateLoading(false);
     }
 
     async function saveCurrencyFromModal() {
       if (!currentUser || !currencyModalSave) return;
 
-      const name = currencyNameInput.value.trim();
-      const symbol = currencySymbolInput.value.trim();
-      const rate = parseAmountDigits(currencyRateInput.value);
+      const symbol = currencySymbolInput?.value.trim() || "";
+      const rate = parseAmountDigits(currencyRateInput?.value || "");
 
-      if (!name || !symbol || !rate || rate <= 0) {
+      if (!symbol || !rate || rate <= 0) {
         currencyModalError.textContent = !rate || rate <= 0 ? t("currency.invalidRate") : t("currency.required");
+        return;
+      }
+
+      if (currencyModalMode === "add" && !selectedPresetCode) {
+        currencyModalError.textContent = t("currency.required");
+        return;
+      }
+
+      if (currencyModalMode === "add" && findUserCurrencyByCode(selectedPresetCode)) {
+        currencyModalError.textContent = t("currency.alreadyAdded");
         return;
       }
 
@@ -9691,21 +10195,25 @@
       currencyModalError.textContent = "";
 
       try {
-        const payload = {
-          name,
-          symbol,
-          rateToUZS: Number(rate),
-          createdAt: new Date().toISOString()
-        };
-
         if (currencyModalMode === "edit" && editingCurrencyId) {
+          const currency = getCurrencyById(editingCurrencyId);
+          const code = getCurrencyCode(currency) || editingCurrencyId;
           await updateDoc(doc(db, "users", currentUser.uid, "currencies", editingCurrencyId), {
-            name,
+            code,
+            name: currency?.name || getPresetCurrencyName(PRESET_BY_CODE[code] || { nameUz: symbol, nameRu: symbol, nameEn: symbol }),
             symbol,
             rateToUZS: Number(rate)
           });
         } else {
-          await addDoc(currenciesRef(currentUser.uid), payload);
+          const preset = PRESET_BY_CODE[selectedPresetCode];
+          const payload = {
+            code: selectedPresetCode,
+            name: getPresetCurrencyName(preset),
+            symbol: preset.symbol,
+            rateToUZS: Number(rate),
+            createdAt: new Date().toISOString()
+          };
+          await setDoc(doc(db, "users", currentUser.uid, "currencies", selectedPresetCode), payload);
         }
         closeCurrencyModal();
       } catch (err) {
@@ -9743,6 +10251,7 @@
         snapshot => {
           userCurrencies = snapshot.docs.map(d => ({
             id: d.id,
+            code: String(d.data().code || "").toUpperCase() || null,
             name: String(d.data().name || ""),
             symbol: String(d.data().symbol || ""),
             rateToUZS: Number(d.data().rateToUZS) || 0,
@@ -9775,6 +10284,35 @@
     currencyModalClose?.addEventListener("click", closeCurrencyModal);
     currencyModalCancel?.addEventListener("click", closeCurrencyModal);
     currencyModalSave?.addEventListener("click", saveCurrencyFromModal);
+
+    currencyPickerSearch?.addEventListener("input", () => {
+      renderCurrencyPickerList(currencyPickerSearch.value);
+      openCurrencyPickerList();
+    });
+    currencyPickerSearch?.addEventListener("focus", () => openCurrencyPickerList());
+    currencyPickerToggle?.addEventListener("click", e => {
+      e.stopPropagation();
+      if (currencyPickerListOpen) closeCurrencyPickerList();
+      else openCurrencyPickerList();
+    });
+    currencyRateRefresh?.addEventListener("click", () => {
+      const code = selectedPresetCode || (editingCurrencyId && getCurrencyCode(getCurrencyById(editingCurrencyId)));
+      if (!code) {
+        showFxLoadFailed();
+        return;
+      }
+      void applyFxRateForCode(code, { forceFetch: true });
+    });
+    document.addEventListener("click", e => {
+      if (!currencyPickerWrap?.contains(e.target)) closeCurrencyPickerList();
+    });
+
+    const cachedFx = readFxCache();
+    if (isFxCacheForToday(cachedFx)) {
+      applyFxCacheToState(cachedFx);
+      updateFxRateMetaLabel();
+    }
+    void ensureExchangeRatesLoaded().catch(() => {});
 
     const MAX_AMOUNT_DIGITS = 15;
 
@@ -11152,6 +11690,7 @@
       updateCurrencyUI();
       applyI18n();
       initPullToRefresh();
+      void ensureExchangeRatesLoaded().catch(() => {});
 
       if (!pendingAuthReady) {
         setTimeout(() => {
