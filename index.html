@@ -620,6 +620,185 @@
     .auth-btn:active:not(:disabled) { transform: scale(0.98); }
     .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+    .auth-forgot-wrap {
+      margin-top: 0.85rem;
+      text-align: center;
+    }
+
+    .auth-forgot-link {
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0.25rem 0.5rem;
+      transition: color 0.2s var(--ease);
+    }
+
+    .auth-forgot-link:hover { color: var(--accent-hover); }
+
+    .auth-forgot-view {
+      animation: pinFadeIn 0.35s var(--ease) both;
+    }
+
+    .auth-forgot-view.hidden { display: none; }
+
+    .auth-login-view.hidden { display: none; }
+
+    .auth-forgot-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.45rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+
+    .auth-forgot-title [data-lucide] {
+      width: 20px;
+      height: 20px;
+      stroke: var(--accent-hover);
+    }
+
+    .auth-forgot-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
+      margin-bottom: 1.1rem;
+    }
+
+    .auth-forgot-success {
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+      padding: 0.75rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.45;
+      margin-bottom: 0.85rem;
+      animation: pinFadeIn 0.35s var(--ease) both;
+    }
+
+    html.light-theme .auth-forgot-success {
+      color: #15803d;
+      background: rgba(22, 163, 74, 0.1);
+    }
+
+    .auth-forgot-success.hidden { display: none; }
+
+    .auth-forgot-error {
+      background: var(--expense-dim);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      margin-bottom: 0.85rem;
+      display: none;
+    }
+
+    .auth-forgot-error.visible { display: block; }
+
+    .auth-back-link {
+      display: block;
+      width: 100%;
+      margin-top: 0.85rem;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: center;
+      padding: 0.5rem;
+      transition: color 0.2s var(--ease);
+    }
+
+    .auth-back-link:hover { color: var(--accent-hover); }
+
+    .recovery-glass-card {
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      padding: 1.25rem 1.1rem;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+      animation: pinFadeIn 0.4s var(--ease) both;
+    }
+
+    html.light-theme .recovery-glass-card {
+      background: #ffffff;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .recovery-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 0.85rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(124, 58, 237, 0.2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .recovery-icon [data-lucide] {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent-hover);
+    }
+
+    .pin-masked-email {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      margin: 0 0 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .pin-recovery-success {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #4ade80;
+      text-align: center;
+      line-height: 1.45;
+      margin-bottom: 0.65rem;
+      animation: pinFadeIn 0.35s var(--ease) both;
+    }
+
+    html.light-theme .pin-recovery-success {
+      color: #15803d;
+    }
+
+    .pin-recovery-success.hidden { display: none; }
+
+    .pin-recovery-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
+      margin-bottom: 1rem;
+    }
+
+    .pin-recovery-hint.hidden { display: none; }
+
     .lang-switcher {
       display: inline-flex;
       background: var(--surface-2);
@@ -4670,6 +4849,21 @@
         </div>
       </div>
 
+      <div class="pin-view hidden-view" id="pinEmailResetView">
+        <div class="recovery-glass-card">
+          <div class="recovery-icon"><i data-lucide="mail"></i></div>
+          <h2 class="pin-title" data-i18n="pin.resetEmail.title">PIN kodni tiklash</h2>
+          <p class="pin-sub" data-i18n="pin.resetEmail.desc">Hisobingiz emailiga tasdiqlash havolasi yuboriladi</p>
+          <p class="pin-masked-email" id="pinMaskedEmail">—</p>
+          <p class="pin-recovery-success hidden" id="pinEmailSuccess" data-i18n="pin.resetEmail.sent">✅ Email yuborildi!</p>
+          <p class="pin-recovery-hint hidden" id="pinEmailHint" data-i18n="pin.resetEmail.hint">Pochtangizni tekshiring, havolani bosib parolingizni yangilang</p>
+          <p class="pin-recovery-error" id="pinEmailError"></p>
+          <button type="button" class="pin-recovery-btn" id="pinEmailSendBtn" data-i18n="pin.resetEmail.send">Email yuborish</button>
+          <button type="button" class="pin-recovery-btn hidden" id="pinEmailLogoutBtn" data-i18n="pin.resetEmail.logout">Chiqish va qayta kirish</button>
+          <button type="button" class="pin-recovery-btn secondary" id="pinEmailCancelBtn" data-i18n="pin.resetEmail.cancel">Bekor qilish</button>
+        </div>
+      </div>
+
       <div class="pin-view hidden-view" id="pinPhoneView">
         <h2 class="pin-title">Telefon raqamingizni kiriting</h2>
         <p class="pin-sub">SMS orqali tasdiqlash kodi yuboriladi</p>
@@ -4801,40 +4995,60 @@
       </div>
     </div>
     <div class="auth-card">
-      <div class="auth-tabs">
-        <button type="button" class="auth-tab active" data-mode="login" data-i18n="auth.login">Kirish</button>
-        <button type="button" class="auth-tab" data-mode="register" data-i18n="auth.register">Roʻyxatdan oʻtish</button>
-      </div>
-      <div class="auth-error" id="authError"></div>
-      <form id="authForm">
-        <div class="form-row">
-          <label for="authEmail">Email</label>
-          <input type="email" id="authEmail" placeholder="email@misol.uz" required autocomplete="email">
+      <div id="authLoginView" class="auth-login-view">
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab active" data-mode="login" data-i18n="auth.login">Kirish</button>
+          <button type="button" class="auth-tab" data-mode="register" data-i18n="auth.register">Roʻyxatdan oʻtish</button>
         </div>
-        <div class="auth-register-fields hidden" id="authRegisterFields">
+        <div class="auth-error" id="authError"></div>
+        <form id="authForm">
           <div class="form-row">
-            <label for="authFullName" data-i18n="auth.fullName">Ism Familiya</label>
-            <input type="text" id="authFullName" data-i18n-placeholder="auth.fullNamePh" placeholder="Masalan: Anvar Aliyev" maxlength="80" autocomplete="name">
+            <label for="authEmail"><i data-lucide="mail"></i> Email</label>
+            <input type="email" id="authEmail" placeholder="email@misol.uz" required autocomplete="email">
           </div>
-        </div>
-        <div class="form-row">
-          <label for="authPassword" data-i18n="auth.password">Parol</label>
-          <div class="password-field-wrap">
-            <input type="password" id="authPassword" data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
-            <button type="button" class="password-toggle" data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+          <div class="auth-register-fields hidden" id="authRegisterFields">
+            <div class="form-row">
+              <label for="authFullName" data-i18n="auth.fullName">Ism Familiya</label>
+              <input type="text" id="authFullName" data-i18n-placeholder="auth.fullNamePh" placeholder="Masalan: Anvar Aliyev" maxlength="80" autocomplete="name">
+            </div>
           </div>
-        </div>
-        <div class="auth-register-fields hidden" id="authConfirmFields">
           <div class="form-row">
-            <label for="authConfirmPassword" data-i18n="auth.confirmPassword">Parolni tasdiqlash</label>
+            <label for="authPassword" data-i18n="auth.password">Parol</label>
             <div class="password-field-wrap">
-              <input type="password" id="authConfirmPassword" data-i18n-placeholder="auth.confirmPasswordPh" placeholder="Parolni qayta kiriting" minlength="6" autocomplete="new-password">
+              <input type="password" id="authPassword" data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi" required minlength="6" autocomplete="current-password">
               <button type="button" class="password-toggle" data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
             </div>
           </div>
-        </div>
-        <button type="submit" class="auth-btn" id="authSubmitBtn" data-i18n="auth.login">Kirish</button>
-      </form>
+          <div class="auth-register-fields hidden" id="authConfirmFields">
+            <div class="form-row">
+              <label for="authConfirmPassword" data-i18n="auth.confirmPassword">Parolni tasdiqlash</label>
+              <div class="password-field-wrap">
+                <input type="password" id="authConfirmPassword" data-i18n-placeholder="auth.confirmPasswordPh" placeholder="Parolni qayta kiriting" minlength="6" autocomplete="new-password">
+                <button type="button" class="password-toggle" data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="auth-btn" id="authSubmitBtn" data-i18n="auth.login">Kirish</button>
+        </form>
+        <p class="auth-forgot-wrap" id="authForgotWrap">
+          <button type="button" class="auth-forgot-link" id="authForgotLink" data-i18n="auth.forgotPassword">Parolni unutdim?</button>
+        </p>
+      </div>
+
+      <div id="authForgotView" class="auth-forgot-view hidden">
+        <h2 class="auth-forgot-title"><i data-lucide="key-round"></i> <span data-i18n="auth.resetTitle">Parolni tiklash</span></h2>
+        <p class="auth-forgot-desc" data-i18n="auth.resetDesc">Email manzilingizga tiklash havolasi yuboramiz</p>
+        <p class="auth-forgot-success hidden" id="authForgotSuccess" data-i18n="auth.resetSuccess">✅ Email yuborildi! Pochtangizni tekshiring</p>
+        <div class="auth-forgot-error" id="authForgotError"></div>
+        <form id="authForgotForm">
+          <div class="form-row">
+            <label for="authForgotEmail"><i data-lucide="mail"></i> Email</label>
+            <input type="email" id="authForgotEmail" placeholder="email@misol.uz" required autocomplete="email">
+          </div>
+          <button type="submit" class="auth-btn" id="authForgotSubmit" data-i18n="auth.resetSend">Havola yuborish</button>
+        </form>
+        <button type="button" class="auth-back-link" id="authForgotBack" data-i18n="auth.resetBack">← Orqaga</button>
+      </div>
     </div>
   </div>
 
@@ -5286,6 +5500,7 @@
       getAuth,
       createUserWithEmailAndPassword,
       signInWithEmailAndPassword,
+      sendPasswordResetEmail,
       signOut,
       onAuthStateChanged,
       RecaptchaVerifier,
@@ -5606,6 +5821,15 @@
         "auth.err.too-many-requests": "Juda koʻp urinish. Biroz kuting.",
         "auth.err.network-request-failed": "Internet aloqasini tekshiring.",
         "auth.err.default": "Xatolik yuz berdi. Qayta urinib koʻring.",
+        "auth.forgotPassword": "Parolni unutdim?",
+        "auth.resetTitle": "Parolni tiklash",
+        "auth.resetDesc": "Email manzilingizga tiklash havolasi yuboramiz",
+        "auth.resetSend": "Havola yuborish",
+        "auth.resetBack": "← Orqaga",
+        "auth.resetSuccess": "✅ Email yuborildi! Pochtangizni tekshiring",
+        "reset.err.user-not-found": "Bu email ro'yxatdan o'tmagan",
+        "reset.err.invalid-email": "Email noto'g'ri kiritilgan",
+        "reset.err.too-many-requests": "Ko'p urinish, keyinroq uring",
         "header.cloud": "Bulut",
         "settings.title": "Sozlamalar",
         "settings.openAria": "Sozlamalar",
@@ -5805,6 +6029,14 @@
         "pin.enableBio": "Biometrikni yoqish",
         "pin.skipBio": "Keyinroq",
         "pin.forgot": "PIN kodini unutdim?",
+        "pin.resetEmail.title": "PIN kodni tiklash",
+        "pin.resetEmail.desc": "Hisobingiz emailiga tasdiqlash havolasi yuboriladi",
+        "pin.resetEmail.send": "Email yuborish",
+        "pin.resetEmail.cancel": "Bekor qilish",
+        "pin.resetEmail.sent": "✅ Email yuborildi!",
+        "pin.resetEmail.hint": "Pochtangizni tekshiring, havolani bosib parolingizni yangilang",
+        "pin.resetEmail.logout": "Chiqish va qayta kirish",
+        "pin.resetEmail.noEmail": "Email topilmadi. Qayta kiring.",
         "currency.suffix": " soʻm"
       },
       ru: {
@@ -5847,6 +6079,15 @@
         "auth.err.too-many-requests": "Слишком много попыток. Подождите.",
         "auth.err.network-request-failed": "Проверьте подключение к интернету.",
         "auth.err.default": "Ошибка. Попробуйте снова.",
+        "auth.forgotPassword": "Забыли пароль?",
+        "auth.resetTitle": "Сброс пароля",
+        "auth.resetDesc": "Мы отправим ссылку для сброса на ваш email",
+        "auth.resetSend": "Отправить ссылку",
+        "auth.resetBack": "← Назад",
+        "auth.resetSuccess": "✅ Email отправлен! Проверьте почту",
+        "reset.err.user-not-found": "Этот email не зарегистрирован",
+        "reset.err.invalid-email": "Некорректный email",
+        "reset.err.too-many-requests": "Слишком много попыток, попробуйте позже",
         "header.cloud": "Облако",
         "settings.title": "Настройки",
         "settings.openAria": "Настройки",
@@ -6046,6 +6287,14 @@
         "pin.enableBio": "Включить биометрию",
         "pin.skipBio": "Позже",
         "pin.forgot": "Забыли PIN?",
+        "pin.resetEmail.title": "Сброс PIN",
+        "pin.resetEmail.desc": "На email аккаунта будет отправлена ссылка для сброса",
+        "pin.resetEmail.send": "Отправить email",
+        "pin.resetEmail.cancel": "Отмена",
+        "pin.resetEmail.sent": "✅ Email отправлен!",
+        "pin.resetEmail.hint": "Проверьте почту, перейдите по ссылке и обновите пароль",
+        "pin.resetEmail.logout": "Выйти и войти снова",
+        "pin.resetEmail.noEmail": "Email не найден. Войдите снова.",
         "currency.suffix": " so'm"
       },
       en: {
@@ -6088,6 +6337,15 @@
         "auth.err.too-many-requests": "Too many attempts. Please wait.",
         "auth.err.network-request-failed": "Check your internet connection.",
         "auth.err.default": "Something went wrong. Try again.",
+        "auth.forgotPassword": "Forgot password?",
+        "auth.resetTitle": "Reset password",
+        "auth.resetDesc": "We'll send a reset link to your email",
+        "auth.resetSend": "Send link",
+        "auth.resetBack": "← Back",
+        "auth.resetSuccess": "✅ Email sent! Check your inbox",
+        "reset.err.user-not-found": "This email is not registered",
+        "reset.err.invalid-email": "Invalid email address",
+        "reset.err.too-many-requests": "Too many attempts, try again later",
         "header.cloud": "Cloud",
         "settings.title": "Settings",
         "settings.openAria": "Settings",
@@ -6287,6 +6545,14 @@
         "pin.enableBio": "Enable biometrics",
         "pin.skipBio": "Later",
         "pin.forgot": "Forgot PIN?",
+        "pin.resetEmail.title": "Reset PIN",
+        "pin.resetEmail.desc": "A verification link will be sent to your account email",
+        "pin.resetEmail.send": "Send email",
+        "pin.resetEmail.cancel": "Cancel",
+        "pin.resetEmail.sent": "✅ Email sent!",
+        "pin.resetEmail.hint": "Check your inbox, open the link and update your password",
+        "pin.resetEmail.logout": "Sign out and sign in again",
+        "pin.resetEmail.noEmail": "Email not found. Please sign in again.",
         "currency.suffix": " UZS"
       }
     };
@@ -6437,6 +6703,16 @@
     const authSubmitBtn = document.getElementById("authSubmitBtn");
     const authError = document.getElementById("authError");
     const authTabs = document.querySelectorAll(".auth-tab");
+    const authLoginView = document.getElementById("authLoginView");
+    const authForgotView = document.getElementById("authForgotView");
+    const authForgotWrap = document.getElementById("authForgotWrap");
+    const authForgotLink = document.getElementById("authForgotLink");
+    const authForgotForm = document.getElementById("authForgotForm");
+    const authForgotEmail = document.getElementById("authForgotEmail");
+    const authForgotSubmit = document.getElementById("authForgotSubmit");
+    const authForgotBack = document.getElementById("authForgotBack");
+    const authForgotError = document.getElementById("authForgotError");
+    const authForgotSuccess = document.getElementById("authForgotSuccess");
     const userEmailEl = document.getElementById("userEmail");
 
     /* Auth listeners attached early so a later init error cannot leave login broken */
@@ -6900,6 +7176,14 @@
     const pinResendBtn = document.getElementById("pinResendBtn");
     const pinConfirmOtpBtn = document.getElementById("pinConfirmOtpBtn");
     const pinOtpBackBtn = document.getElementById("pinOtpBackBtn");
+    const pinEmailResetView = document.getElementById("pinEmailResetView");
+    const pinMaskedEmail = document.getElementById("pinMaskedEmail");
+    const pinEmailSuccess = document.getElementById("pinEmailSuccess");
+    const pinEmailHint = document.getElementById("pinEmailHint");
+    const pinEmailError = document.getElementById("pinEmailError");
+    const pinEmailSendBtn = document.getElementById("pinEmailSendBtn");
+    const pinEmailLogoutBtn = document.getElementById("pinEmailLogoutBtn");
+    const pinEmailCancelBtn = document.getElementById("pinEmailCancelBtn");
     const otpInputs = document.querySelectorAll(".otp-box");
     const changePinBtn = document.getElementById("changePinBtn");
 
@@ -7225,6 +7509,68 @@
       pinMainView.classList.toggle("hidden-view", view !== "main");
       pinPhoneView.classList.toggle("hidden-view", view !== "phone");
       pinOtpView.classList.toggle("hidden-view", view !== "otp");
+      if (pinEmailResetView) pinEmailResetView.classList.toggle("hidden-view", view !== "email");
+    }
+
+    function resetPinEmailResetUI() {
+      setRecoveryError(pinEmailError, "");
+      pinEmailSuccess?.classList.add("hidden");
+      pinEmailHint?.classList.add("hidden");
+      pinEmailSendBtn?.classList.remove("hidden");
+      pinEmailLogoutBtn?.classList.add("hidden");
+      if (pinEmailSendBtn) pinEmailSendBtn.disabled = false;
+    }
+
+    function showPinEmailReset() {
+      const email = firebaseAuth.currentUser?.email || currentUser?.email || "";
+      if (!email) {
+        setPinMsg(t("pin.resetEmail.noEmail"), "error");
+        return;
+      }
+      resetPinEmailResetUI();
+      if (pinMaskedEmail) pinMaskedEmail.textContent = maskEmail(email);
+      showPinSubview("email");
+      pinScreen.classList.add("visible");
+      pinScreen.setAttribute("aria-hidden", "false");
+      refreshIcons();
+    }
+
+    async function sendPinEmailReset() {
+      const email = firebaseAuth.currentUser?.email || currentUser?.email || "";
+      if (!email) {
+        setRecoveryError(pinEmailError, t("pin.resetEmail.noEmail"));
+        return;
+      }
+      setRecoveryError(pinEmailError, "");
+      if (pinEmailSendBtn) pinEmailSendBtn.disabled = true;
+      try {
+        await sendPasswordResetEmail(firebaseAuth, email);
+        pinEmailSuccess?.classList.remove("hidden");
+        pinEmailHint?.classList.remove("hidden");
+        pinEmailSendBtn?.classList.add("hidden");
+        pinEmailLogoutBtn?.classList.remove("hidden");
+      } catch (err) {
+        console.error("[BiznesHisob] PIN email reset failed:", err);
+        setRecoveryError(pinEmailError, passwordResetErrorMessage(err?.code));
+        if (pinEmailSendBtn) pinEmailSendBtn.disabled = false;
+      }
+    }
+
+    async function pinLogoutAndRelogin() {
+      setBusy(true);
+      try {
+        clearPinStorage();
+        appUnlocked = false;
+        await signOut(firebaseAuth);
+        hidePinScreen();
+        allowAuthScreen();
+        showView("auth");
+        showAuthLoginView();
+      } catch (err) {
+        setRecoveryError(pinEmailError, authErrorMessage(err?.code));
+      } finally {
+        setBusy(false);
+      }
     }
 
     function setRecoveryError(el, msg) {
@@ -7601,8 +7947,16 @@
     });
 
     pinForgot.addEventListener("click", () => {
-      showPhoneRecovery();
+      showPinEmailReset();
     });
+
+    pinEmailSendBtn?.addEventListener("click", () => sendPinEmailReset());
+    pinEmailCancelBtn?.addEventListener("click", () => {
+      resetPinEmailResetUI();
+      configurePinUI("unlock");
+      pinScreen.classList.add("visible");
+    });
+    pinEmailLogoutBtn?.addEventListener("click", () => pinLogoutAndRelogin());
 
     pinPhoneInput.addEventListener("input", () => {
       const formatted = formatPhoneUZDisplay(pinPhoneInput.value);
@@ -9022,6 +9376,22 @@
       return i18n[currentLang]?.[key] ? t(key) : t("auth.err.default");
     }
 
+    function passwordResetErrorMessage(code) {
+      const key = `reset.err.${code?.replace("auth/", "")}`;
+      return i18n[currentLang]?.[key] ? t(key) : authErrorMessage(code);
+    }
+
+    function maskEmail(email) {
+      const raw = String(email || "").trim();
+      const at = raw.indexOf("@");
+      if (at <= 0) return "—";
+      const local = raw.slice(0, at);
+      const domain = raw.slice(at + 1);
+      if (!domain) return "—";
+      const stars = "*".repeat(Math.max(3, Math.min(local.length - 1, 5)));
+      return `${local[0]}${stars}@${domain}`;
+    }
+
     function convertFromUzs(amountUzs, currencyId = currentCurrencyId) {
       const currency = getCurrencyById(currencyId) || UZS_CURRENCY;
       if (currency.id === BASE_CURRENCY_ID) return Number(amountUzs) || 0;
@@ -9482,6 +9852,40 @@
       });
     }
 
+    function clearAuthForgotError() {
+      if (!authForgotError) return;
+      authForgotError.textContent = "";
+      authForgotError.classList.remove("visible");
+    }
+
+    function showAuthForgotError(message) {
+      if (!authForgotError) return;
+      authForgotError.textContent = message;
+      authForgotError.classList.add("visible");
+    }
+
+    function showAuthForgotView() {
+      authForgotSuccess?.classList.add("hidden");
+      clearAuthForgotError();
+      if (authForgotForm) authForgotForm.classList.remove("hidden");
+      if (authForgotEmail && authEmail) {
+        authForgotEmail.value = authEmail.value.trim();
+      }
+      authLoginView?.classList.add("hidden");
+      authForgotView?.classList.remove("hidden");
+      refreshIcons();
+      setTimeout(() => authForgotEmail?.focus(), 200);
+    }
+
+    function showAuthLoginView() {
+      authForgotSuccess?.classList.add("hidden");
+      clearAuthForgotError();
+      if (authForgotForm) authForgotForm.classList.remove("hidden");
+      authForgotView?.classList.add("hidden");
+      authLoginView?.classList.remove("hidden");
+      refreshIcons();
+    }
+
     function setAuthMode(mode) {
       if (!mode) return;
       authMode = mode;
@@ -9496,6 +9900,7 @@
       }
       authRegisterFields?.classList.toggle("hidden", mode !== "register");
       authConfirmFields?.classList.toggle("hidden", mode !== "register");
+      authForgotWrap?.classList.toggle("hidden", mode !== "login");
       if (authConfirmPassword) {
         authConfirmPassword.required = mode === "register";
       }
@@ -9612,6 +10017,46 @@
             showAuthError(authErrorMessage(err.code));
           } finally {
             setBusy(false);
+          }
+        });
+      }
+
+      if (authForgotLink && authForgotLink.dataset.bound !== "1") {
+        authForgotLink.dataset.bound = "1";
+        authForgotLink.addEventListener("click", () => {
+          if (authMode !== "login") setAuthMode("login");
+          showAuthForgotView();
+        });
+      }
+
+      if (authForgotBack && authForgotBack.dataset.bound !== "1") {
+        authForgotBack.dataset.bound = "1";
+        authForgotBack.addEventListener("click", showAuthLoginView);
+      }
+
+      if (authForgotForm && authForgotForm.dataset.bound !== "1") {
+        authForgotForm.dataset.bound = "1";
+        authForgotForm.addEventListener("submit", async e => {
+          e.preventDefault();
+          clearAuthForgotError();
+          authForgotSuccess?.classList.add("hidden");
+          const email = authForgotEmail?.value.trim() || "";
+          if (!email) {
+            showAuthForgotError(t("reset.err.invalid-email"));
+            return;
+          }
+          setBusy(true);
+          if (authForgotSubmit) authForgotSubmit.disabled = true;
+          try {
+            await sendPasswordResetEmail(firebaseAuth, email);
+            authForgotForm.classList.add("hidden");
+            authForgotSuccess?.classList.remove("hidden");
+          } catch (err) {
+            console.error("[BiznesHisob] Password reset failed:", err);
+            showAuthForgotError(passwordResetErrorMessage(err?.code));
+          } finally {
+            setBusy(false);
+            if (authForgotSubmit) authForgotSubmit.disabled = false;
           }
         });
       }
