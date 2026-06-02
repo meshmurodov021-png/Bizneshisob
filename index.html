@@ -2475,31 +2475,29 @@
       position: absolute;
       inset: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       pointer-events: none;
       text-align: center;
-      padding: 0 2.5rem 1.5rem;
+      padding: 0 2.25rem;
+      transform: translateY(5px);
       animation: chartFadeIn 0.45s var(--ease) both;
     }
 
     .chart-donut-center-value {
-      font-size: clamp(1.15rem, 4.5vw, 1.55rem);
+      font-size: clamp(1.05rem, 4.2vw, 1.45rem);
       font-weight: 800;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.02em;
       color: var(--text);
-      line-height: 1.15;
+      line-height: 1.2;
       max-width: 100%;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .chart-donut-center-unit {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--muted);
-      margin-top: 0.2rem;
+      display: none;
     }
 
     .chart-legend {
@@ -10979,13 +10977,9 @@
     function formatDonutCenterValue(amountUzs) {
       const currency = getActiveCurrency();
       const converted = convertFromUzs(amountUzs, currency.id);
-      const locale = DATE_LOCALES[currentLang] || "uz-UZ";
       const decimals = getCurrencyDecimals(currency);
       const value = decimals === 0 ? Math.round(converted) : converted;
-      return new Intl.NumberFormat(locale, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: decimals
-      }).format(value);
+      return formatWithSymbol(value, currency.symbol || "so'm", decimals);
     }
 
     function formatCategoryPercent(amount, total) {
@@ -11054,8 +11048,7 @@
       const valueEl = document.getElementById("expenseDonutCenterValue");
       const unitEl = document.getElementById("expenseDonutCenterUnit");
       if (!center || !valueEl) return;
-      const currency = getActiveCurrency();
-      if (unitEl) unitEl.textContent = currency.symbol || "so'm";
+      if (unitEl) unitEl.textContent = "";
       if (total <= 0) {
         center.classList.add("hidden");
         return;
