@@ -11266,6 +11266,14 @@
       const expenseLegendEl = document.getElementById("expenseChartLegend");
       const animateCharts = !chartsHaveRendered && !forceRebuild;
       const chartTheme = getChartTheme();
+      const chartTooltipDefaults = {
+        enabled: true,
+        backgroundColor: chartTheme.tooltip.backgroundColor,
+        titleColor: chartTheme.tooltip.titleColor,
+        bodyColor: chartTheme.tooltip.bodyColor,
+        borderColor: chartTheme.tooltip.borderColor,
+        borderWidth: 1
+      };
 
       updateDonutCenter(expenseData.total);
       renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
