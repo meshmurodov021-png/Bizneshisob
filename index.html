@@ -3160,6 +3160,42 @@
     #tabProfile {
       display: flex;
       flex-direction: column;
+      overscroll-behavior: none;
+    }
+
+    #txLimitRow.is-loading .profile-stat-value#txLimitText,
+    #upgradeCard.is-limit-loading .upgrade-progress-label {
+      visibility: hidden;
+    }
+
+    .tx-limit-loading {
+      display: none;
+      width: 1.1rem;
+      height: 1.1rem;
+      border: 2px solid rgba(148, 163, 184, 0.35);
+      border-top-color: var(--accent, #7c3aed);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      vertical-align: middle;
+    }
+
+    #txLimitRow.is-loading .tx-limit-loading,
+    #upgradeCard.is-limit-loading .tx-limit-loading {
+      display: inline-block;
+    }
+
+    .tx-limit-value-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.35rem;
+      min-width: 3.5rem;
+    }
+
+    #upgradeCard .upgrade-limit-loading-wrap {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.1rem;
     }
 
     .profile-page {
@@ -5496,7 +5532,10 @@
               <p class="profile-tariff-text" id="profileTariffText">Tarif: Bepul</p>
               <button type="button" class="profile-premium-btn" id="upgradeBtn" data-i18n="profile.upgradePremium">Premiumga o'tish →</button>
             </div>
-            <p class="upgrade-progress-label" id="upgradeProgressLabel">0/50 operatsiya ishlatilgan</p>
+            <p class="upgrade-limit-loading-wrap">
+              <span class="tx-limit-loading hidden" id="upgradeLimitLoading" aria-hidden="true"></span>
+              <span class="upgrade-progress-label" id="upgradeProgressLabel">0/50 operatsiya ishlatilgan</span>
+            </p>
             <div class="profile-progress-track">
               <div class="profile-progress-fill" id="upgradeProgressFill"></div>
             </div>
@@ -5512,7 +5551,10 @@
             <div class="profile-stat-row static" id="txLimitRow">
               <div class="profile-stat-row-top">
                 <span class="profile-stat-label" data-i18n="profile.limitLabel">Limit:</span>
-                <span class="profile-stat-value" id="txLimitText">0/50</span>
+                <span class="profile-stat-value tx-limit-value-wrap">
+                  <span class="tx-limit-loading hidden" id="txLimitLoading" aria-hidden="true"></span>
+                  <span id="txLimitText">0/50</span>
+                </span>
               </div>
               <div class="profile-progress-track subtle">
                 <div class="profile-progress-fill" id="statsProgressFill"></div>
@@ -5895,6 +5937,9 @@
     void ensureLucide().then(() => refreshIcons()).catch(() => {});
 
     const FREE_TX_LIMIT = 50;
+    const TX_LIMIT_CACHE_PREFIX = "bh-tx-limit-";
+    let userProfileLimitReady = false;
+    let lastKnownLimitCount = null;
 
     const kategoriyaRanglariDark = {
       sotuv: "#22C55E",
@@ -6064,6 +6109,68 @@
     /** Limit UI and checks: lifetime add counter only (deletes do not lower it). */
     function getEffectiveTransactionLimitCount() {
       return getTotalTransactionsAdded();
+    }
+
+    function txLimitCacheKey(uid) {
+      return `${TX_LIMIT_CACHE_PREFIX}${uid || "guest"}`;
+    }
+
+    function readCachedLimitCount(uid) {
+      if (!uid) return null;
+      const raw = localStorage.getItem(txLimitCacheKey(uid));
+      const n = parseInt(raw, 10);
+      return Number.isFinite(n) && n >= 0 ? n : null;
+    }
+
+    function writeCachedLimitCount(uid, count) {
+      if (!uid || typeof count !== "number" || !Number.isFinite(count) || count < 0) return;
+      localStorage.setItem(txLimitCacheKey(uid), String(count));
+    }
+
+    function rememberLimitCount(count) {
+      if (typeof count !== "number" || !Number.isFinite(count) || count < 0) return;
+      lastKnownLimitCount =
+        typeof lastKnownLimitCount === "number" ? Math.max(lastKnownLimitCount, count) : count;
+      if (currentUser?.uid) writeCachedLimitCount(currentUser.uid, lastKnownLimitCount);
+    }
+
+    function isLimitCountReady() {
+      return userProfileLimitReady && typeof userProfile.totalTransactionsAdded === "number";
+    }
+
+    /** Profile limit display: cache first, then Firestore; never flicker down to 0. */
+    function getProfileLimitDisplayCount() {
+      if (isLimitCountReady()) {
+        const n = getTotalTransactionsAdded();
+        rememberLimitCount(n);
+        return n;
+      }
+      const cached = currentUser?.uid ? readCachedLimitCount(currentUser.uid) : null;
+      if (typeof lastKnownLimitCount === "number") {
+        return Math.max(lastKnownLimitCount, cached ?? 0);
+      }
+      if (cached !== null) return cached;
+      return null;
+    }
+
+    function setProfileLimitLoading(loading) {
+      txLimitRow?.classList.toggle("is-loading", loading);
+      upgradeCard?.classList.toggle("is-limit-loading", loading);
+    }
+
+    function setProfilePullToRefreshLock(active) {
+      const tabProfile = document.getElementById("tabProfile");
+      if (active) {
+        if (document.body.dataset.ptrOverscrollPrev === undefined) {
+          document.body.dataset.ptrOverscrollPrev = document.body.style.overscrollBehavior || "";
+        }
+        document.body.style.overscrollBehavior = "none";
+        if (tabProfile) tabProfile.style.overscrollBehavior = "none";
+      } else {
+        document.body.style.overscrollBehavior = document.body.dataset.ptrOverscrollPrev || "";
+        delete document.body.dataset.ptrOverscrollPrev;
+        if (tabProfile) tabProfile.style.overscrollBehavior = "";
+      }
     }
 
     function isGrandfatheredOverTxLimit() {
@@ -7180,6 +7287,7 @@
     function canPullToRefresh() {
       return !!(
         currentUser &&
+        currentTab !== "profile" &&
         !appScreen.classList.contains("hidden") &&
         !pinScreen.classList.contains("visible") &&
         !settingsScreen?.classList.contains("open") &&
@@ -7281,15 +7389,24 @@
       const snap = await getDocFromServer(userDocRef(currentUser.uid));
       if (snap.exists()) {
         const data = snap.data();
+        const totalAdded = typeof data.totalTransactionsAdded === "number"
+          ? data.totalTransactionsAdded
+          : userProfile.totalTransactionsAdded;
         userProfile = {
+          ...userProfile,
           email: data.email || "",
           createdAt: data.createdAt || null,
           isPremium: !!data.isPremium,
+          totalTransactionsAdded: totalAdded,
           displayName: data.displayName || "",
           avatar: data.avatar || data.avatarType || "",
           avatarType: data.avatarType || data.avatar || "",
           avatarData: data.avatarData || ""
         };
+        if (typeof totalAdded === "number") {
+          userProfileLimitReady = true;
+          rememberLimitCount(totalAdded);
+        }
       }
     }
 
@@ -7305,9 +7422,6 @@
           render();
           break;
         case "profile":
-          await fetchUserProfileFromServer();
-          renderProfileUI();
-          updateSettingsUI();
           break;
         case "add":
           await fetchTransactionsFromServer();
@@ -8608,6 +8722,8 @@
       await setDoc(ref, { totalTransactionsAdded: liveCount }, { merge: true });
       if (userProfile.totalTransactionsAdded !== liveCount) {
         userProfile.totalTransactionsAdded = liveCount;
+        userProfileLimitReady = true;
+        rememberLimitCount(liveCount);
         updatePremiumUI();
       }
       txCounterSynced = true;
@@ -8666,11 +8782,14 @@
               avatarType: data.avatarType || data.avatar || "",
               avatarData: data.avatarData || ""
             };
+            userProfileLimitReady = true;
             if (typeof data.totalTransactionsAdded === "number") {
               txCounterSynced = true;
+              rememberLimitCount(data.totalTransactionsAdded);
             }
             cachePremiumStatus(userProfile.isPremium);
           } else {
+            userProfileLimitReady = true;
             userProfile = {
               isPremium: false,
               totalTransactionsAdded: 0,
@@ -8681,6 +8800,7 @@
               avatarData: ""
             };
             cachePremiumStatus(false);
+            rememberLimitCount(0);
           }
           updatePremiumUI();
           renderProfileUI();
@@ -8693,6 +8813,9 @@
       const premium = isPremiumUser();
       const activeCount = transactions.length;
       const limitCount = getEffectiveTransactionLimitCount();
+      const profileLimitDisplay = getProfileLimitDisplayCount();
+      const limitLoading = !premium && profileLimitDisplay === null;
+      setProfileLimitLoading(limitLoading);
 
       premiumBadge?.classList.toggle("hidden", true);
       freePlanBadge?.classList.toggle("hidden", true);
@@ -8724,12 +8847,27 @@
       exportIconUpload?.classList.toggle("hidden", !premium);
 
       if (!premium) {
-        if (txLimitText) txLimitText.textContent = `${limitCount}/${FREE_TX_LIMIT}`;
-        if (upgradeProgressLabel) {
-          upgradeProgressLabel.textContent = usageProgressLabel(limitCount, FREE_TX_LIMIT);
+        if (!limitLoading) {
+          let displayCount = profileLimitDisplay ?? limitCount;
+          if (typeof lastKnownLimitCount === "number") {
+            displayCount = Math.max(displayCount, lastKnownLimitCount);
+          }
+          if (displayCount === 0 && typeof lastKnownLimitCount === "number" && lastKnownLimitCount > 0) {
+            displayCount = lastKnownLimitCount;
+          }
+          rememberLimitCount(displayCount);
+          if (txLimitText) txLimitText.textContent = `${displayCount}/${FREE_TX_LIMIT}`;
+          if (upgradeProgressLabel) {
+            upgradeProgressLabel.textContent = usageProgressLabel(displayCount, FREE_TX_LIMIT);
+          }
+          setUsageProgressFill(upgradeProgressFill, displayCount, FREE_TX_LIMIT);
+          setUsageProgressFill(statsProgressFill, displayCount, FREE_TX_LIMIT);
+        } else if (typeof lastKnownLimitCount === "number") {
+          setUsageProgressFill(upgradeProgressFill, lastKnownLimitCount, FREE_TX_LIMIT);
+          setUsageProgressFill(statsProgressFill, lastKnownLimitCount, FREE_TX_LIMIT);
         }
-        setUsageProgressFill(upgradeProgressFill, limitCount, FREE_TX_LIMIT);
-        setUsageProgressFill(statsProgressFill, limitCount, FREE_TX_LIMIT);
+      } else {
+        setProfileLimitLoading(false);
       }
 
     }
@@ -9365,6 +9503,7 @@
       }
 
       currentTab = tabName;
+      setProfilePullToRefreshLock(tabName === "profile");
 
       tabPanels.forEach(panel => {
         panel.classList.remove("active");
@@ -11533,7 +11672,9 @@
 
       transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
       invalidateChartDataCache();
-      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
+      const nextLimit = getTotalTransactionsAdded() + 1;
+      userProfile.totalTransactionsAdded = nextLimit;
+      rememberLimitCount(nextLimit);
       updatePremiumUI();
 
       switchTab("list");
@@ -11555,7 +11696,9 @@
         } catch (err) {
           removePendingTransactions();
           invalidateChartDataCache();
-          userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
+          const rolledBack = Math.max(0, getTotalTransactionsAdded() - 1);
+          userProfile.totalTransactionsAdded = rolledBack;
+          rememberLimitCount(rolledBack);
           updatePremiumUI();
           render({ skipCharts: true });
           scheduleChartsRender({ deferMs: 300 });
@@ -11776,6 +11919,8 @@
         userCurrencies = [];
         currenciesHydrated = false;
         userDocEnsured = false;
+        userProfileLimitReady = false;
+        lastKnownLimitCount = readCachedLimitCount(user.uid);
         userProfile = {
           isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
           totalTransactionsAdded: undefined,
@@ -11792,6 +11937,7 @@
           console.error("User doc:", err);
         }
         subscribeUserProfile(user.uid);
+        if (typeof lastKnownLimitCount === "number") updatePremiumUI();
         subscribeCurrencies(user.uid);
         switchTab("home");
         render();
@@ -11812,6 +11958,9 @@
         transactions = [];
         userCurrencies = [];
         currenciesHydrated = false;
+        userProfileLimitReady = false;
+        lastKnownLimitCount = null;
+        setProfilePullToRefreshLock(false);
         userProfile = {
           isPremium: false,
           totalTransactionsAdded: undefined,
