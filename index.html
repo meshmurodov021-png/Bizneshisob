@@ -6061,9 +6061,9 @@
       return 0;
     }
 
-    /** Limit UI and checks: max of stored counter and live Firestore transaction count. */
+    /** Limit UI and checks: lifetime add counter only (deletes do not lower it). */
     function getEffectiveTransactionLimitCount() {
-      return Math.max(getTotalTransactionsAdded(), transactions.length);
+      return getTotalTransactionsAdded();
     }
 
     function isGrandfatheredOverTxLimit() {
@@ -8597,17 +8597,17 @@
       const data = snap.data();
       const stored = typeof data.totalTransactionsAdded === "number"
         ? data.totalTransactionsAdded
-        : null;
+        : 0;
       const liveCount = transactions.length;
 
-      if (liveCount === 0 && stored === null) return;
+      if (liveCount === 0 && stored === 0) return;
 
-      const baseline = Math.max(stored ?? 0, liveCount);
-      if (stored !== baseline) {
-        await setDoc(ref, { totalTransactionsAdded: baseline }, { merge: true });
-      }
-      if (userProfile.totalTransactionsAdded !== baseline) {
-        userProfile.totalTransactionsAdded = baseline;
+      // Only raise counter for legacy/missed increments — never lower when user deletes txs.
+      if (liveCount <= stored) return;
+
+      await setDoc(ref, { totalTransactionsAdded: liveCount }, { merge: true });
+      if (userProfile.totalTransactionsAdded !== liveCount) {
+        userProfile.totalTransactionsAdded = liveCount;
         updatePremiumUI();
       }
       txCounterSynced = true;
@@ -11533,7 +11533,7 @@
 
       transactions = [optimisticTx, ...transactions.filter(tx => !String(tx.id).startsWith("pending_"))];
       invalidateChartDataCache();
-      userProfile.totalTransactionsAdded = getEffectiveTransactionLimitCount() + 1;
+      userProfile.totalTransactionsAdded = getTotalTransactionsAdded() + 1;
       updatePremiumUI();
 
       switchTab("list");
@@ -11555,7 +11555,7 @@
         } catch (err) {
           removePendingTransactions();
           invalidateChartDataCache();
-          userProfile.totalTransactionsAdded = Math.max(0, getEffectiveTransactionLimitCount() - 1);
+          userProfile.totalTransactionsAdded = Math.max(0, getTotalTransactionsAdded() - 1);
           updatePremiumUI();
           render({ skipCharts: true });
           scheduleChartsRender({ deferMs: 300 });
