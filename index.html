@@ -8240,6 +8240,9 @@
     function showPinScreen(mode) {
       showPinSubview("main");
       configurePinUI(mode);
+      if (isPinGateActive()) {
+        appScreen.classList.add("hidden");
+      }
       pinScreen.classList.add("visible");
       pinScreen.setAttribute("aria-hidden", "false");
       refreshIcons();
@@ -8266,12 +8269,18 @@
       showPinScreen("unlock");
     }
 
+    function isPinGateActive() {
+      return !!(currentUser && isOnboarded() && !appUnlocked);
+    }
+
     function unlockApp() {
       appUnlocked = true;
       hidePinScreen();
       pinAttempts = 0;
       lockoutUntil = 0;
       if (currentUser) clearPinSecurityState(currentUser.uid);
+      showView("app");
+      releaseAuthBootVisibility();
     }
 
     async function finishPinSetup(pin) {
@@ -9663,11 +9672,11 @@
         return;
       }
 
-      console.log("[BiznesHisob] Onboarded — showing home screen");
-      showView("app");
+      console.log("[BiznesHisob] Onboarded — PIN gate before home");
+      appUnlocked = false;
+      appScreen.classList.add("hidden");
       refreshIcons();
       if (user) initPinSecurity(user.uid);
-      releaseAuthBootVisibility();
     }
 
     function isOnboarded() {
@@ -9681,12 +9690,15 @@
         hideAuthScreenNow();
         postOnboardingView = "app";
       }
-      showView(postOnboardingView);
       refreshIcons();
       if (postOnboardingView === "app" && currentUser) {
+        appUnlocked = false;
+        appScreen.classList.add("hidden");
         initPinSecurity(currentUser.uid);
+      } else {
+        showView(postOnboardingView);
+        releaseAuthBootVisibility();
       }
-      releaseAuthBootVisibility();
     }
 
     function resetOnboardingProgress() {
@@ -9793,8 +9805,14 @@
         postOnboardingView = "app";
       }
       if (isOnboarded()) {
-        showView(postOnboardingView);
-        releaseAuthBootVisibility();
+        if (currentUser && postOnboardingView === "app") {
+          appUnlocked = false;
+          appScreen.classList.add("hidden");
+          initPinSecurity(currentUser.uid);
+        } else {
+          showView(postOnboardingView);
+          releaseAuthBootVisibility();
+        }
         return false;
       }
       showView("onboarding");
@@ -9843,6 +9861,13 @@
         } else {
           return;
         }
+      }
+      if (view === "app" && isPinGateActive()) {
+        appScreen.classList.add("hidden");
+        authScreen.classList.add("hidden");
+        onboardingScreen?.classList.add("hidden");
+        suppressAuthScreen();
+        return;
       }
       if (view === "app" || (view === "onboarding" && currentUser)) {
         suppressAuthScreen();
