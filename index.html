@@ -3350,7 +3350,7 @@
       border-radius: var(--radius);
       background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 45%, #6366f1 100%);
       box-shadow: none;
-      overflow: hidden;
+      overflow: visible;
       isolation: isolate;
     }
 
@@ -3378,9 +3378,10 @@
 
     .upgrade-card-top {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 0.75rem;
+      gap: 0.65rem 0.75rem;
       margin-bottom: 0.85rem;
     }
 
@@ -3393,17 +3394,21 @@
     }
 
     .profile-premium-btn {
-      flex-shrink: 0;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
       padding: 0.55rem 0.85rem;
       border: 1px solid rgba(255, 255, 255, 0.35);
       border-radius: 999px;
       background: linear-gradient(135deg, #7C3AED, #F59E0B, #7C3AED);
       background-size: 200% 200%;
-      animation: shimmer 3s ease infinite, glow 2.5s ease-in-out infinite;
+      animation: shimmer 3s ease infinite;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
       color: #fff;
       font-size: 0.78rem;
       font-weight: 800;
       font-family: inherit;
+      line-height: 1.25;
       cursor: pointer;
       white-space: nowrap;
       transition: transform 0.2s var(--ease);
@@ -3434,6 +3439,63 @@
       font-size: 0.92rem;
       font-weight: 700;
       text-align: center;
+    }
+
+    @media (max-width: 420px), (max-height: 720px) {
+      .profile-hero {
+        padding-top: 0.25rem;
+      }
+
+      .profile-avatar-btn {
+        margin-bottom: 0.65rem;
+      }
+
+      .profile-avatar-lg {
+        width: 60px;
+        height: 60px;
+      }
+
+      .profile-display-name {
+        font-size: 1.15rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .profile-email-text {
+        margin-bottom: 0.55rem;
+        font-size: 0.78rem;
+      }
+
+      .profile-block {
+        margin-top: 16px;
+      }
+
+      .profile-upgrade-card {
+        padding: 0.9rem 1rem;
+      }
+
+      .upgrade-card-top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.55rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .profile-tariff-text {
+        text-align: center;
+      }
+
+      .profile-premium-btn {
+        width: 100%;
+        flex: none;
+        text-align: center;
+        white-space: normal;
+        padding: 0.6rem 0.85rem;
+      }
+
+      .upgrade-progress-label {
+        margin-bottom: 0.35rem;
+        text-align: center;
+      }
     }
 
     .profile-progress-track {
