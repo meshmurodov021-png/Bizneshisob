@@ -4531,18 +4531,20 @@
     /* Basket modal — multi-item entry */
     .basket-modal {
       width: 100%;
-      max-width: 440px;
-      max-height: 92dvh;
+      max-width: 400px;
+      max-height: min(94dvh, 720px);
       display: flex;
       flex-direction: column;
-      padding: 1.25rem 1.15rem 1.15rem;
+      padding: 0.85rem 0.95rem 0.9rem;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 18px;
       box-shadow: var(--shadow);
-      transform: translateY(20px) scale(0.97);
+      transform: translateY(16px) scale(0.98);
       transition: transform 0.35s var(--ease);
       position: relative;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .modal-overlay.open .basket-modal {
@@ -4550,172 +4552,285 @@
     }
 
     .basket-modal h2 {
-      font-size: 1.15rem;
+      font-size: 1rem;
       font-weight: 800;
-      margin: 0 2rem 0.85rem 0;
+      margin: 0 1.75rem 0.55rem 0;
       letter-spacing: -0.02em;
+      line-height: 1.25;
     }
 
     .basket-modal .modal-close {
       position: absolute;
-      top: 0.85rem;
-      right: 0.85rem;
+      top: 0.65rem;
+      right: 0.65rem;
+      width: 32px;
+      height: 32px;
+      font-size: 1.15rem;
     }
 
     #basketForm {
       display: flex;
       flex-direction: column;
-      min-height: 0;
-      flex: 1;
-      overflow: hidden;
+      gap: 0.45rem;
     }
 
     .basket-form-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .basket-modal .basket-type-toggle {
+      gap: 0.35rem;
+      margin-bottom: 0;
+      padding: 3px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+    }
+
+    .basket-modal .basket-type-toggle .type-btn {
       flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-right: 2px;
+      min-height: 36px;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      transform: none;
+      box-shadow: none;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease);
+    }
+
+    .basket-modal .basket-type-toggle .type-btn [data-lucide] {
+      width: 15px;
+      height: 15px;
+    }
+
+    .basket-modal .basket-type-toggle .type-btn.active.income {
+      background: var(--income);
+      color: #fff;
+      border: none;
+    }
+
+    .basket-modal .basket-type-toggle .type-btn.active.expense {
+      background: var(--expense);
+      color: #fff;
+      border: none;
     }
 
     .basket-modal .form-row {
-      margin-bottom: 0.85rem;
+      margin-bottom: 0;
     }
 
     .basket-modal .form-row label {
-      font-size: 0.8rem;
-      margin-bottom: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      gap: 0.3rem;
+    }
+
+    .basket-modal .form-row label [data-lucide] {
+      width: 13px;
+      height: 13px;
     }
 
     .basket-modal .form-row input[type="date"],
     .basket-modal .basket-item-name,
     .basket-modal .basket-item-price,
     .basket-modal #basketNote {
-      min-height: var(--touch);
-      font-size: 1rem;
-      padding: 0.75rem 0.85rem;
+      min-height: 38px;
+      font-size: 0.88rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 10px;
     }
 
-    .basket-modal .category-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.45rem;
+    .basket-modal .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding: 0;
+    }
+
+    .basket-modal .category-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      padding: 0.32rem 0.62rem;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      line-height: 1.2;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+    }
+
+    html.light-theme .basket-modal .category-chip {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: var(--border);
+    }
+
+    .basket-modal .category-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .basket-modal .category-chip-icon {
+      font-size: 0.85rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .basket-modal .category-chip-label {
+      white-space: nowrap;
     }
 
     .basket-section-title {
-      font-size: 0.82rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      color: var(--text);
-      margin: 0 0 0.55rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0 0 0.35rem;
     }
 
     .basket-items-section {
       display: flex;
       flex-direction: column;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0;
     }
 
     .basket-items-scroll {
       display: flex;
       flex-direction: column;
-      max-height: min(38vh, 300px);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      gap: 0.2rem;
     }
 
     .basket-items-list {
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
-      padding-bottom: 0.35rem;
+      gap: 0.35rem;
     }
 
     .basket-item-row {
       display: grid;
-      grid-template-columns: 1fr minmax(5.5rem, 34%) auto;
-      gap: 0.45rem;
+      grid-template-columns: 60% 35% 5%;
+      gap: 0.3rem;
       align-items: center;
     }
 
     .basket-item-name,
     .basket-item-price {
       width: 100%;
+      min-width: 0;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       background: var(--surface-2);
       color: var(--text);
       font-family: inherit;
     }
 
     .basket-item-remove {
-      width: var(--touch);
-      height: var(--touch);
-      min-width: var(--touch);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      border-radius: var(--radius-sm);
-      background: var(--expense-dim);
+      width: 100%;
+      max-width: 28px;
+      height: 28px;
+      min-width: 0;
+      padding: 0;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
       color: var(--expense);
-      font-size: 1rem;
+      font-size: 0.75rem;
       line-height: 1;
       cursor: pointer;
       flex-shrink: 0;
+      justify-self: end;
+      opacity: 0.85;
       -webkit-tap-highlight-color: transparent;
     }
 
     .basket-item-remove:disabled {
-      opacity: 0.35;
+      opacity: 0.2;
       cursor: not-allowed;
     }
 
     .basket-add-item-btn {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      width: 100%;
-      min-height: var(--touch);
-      margin-top: 0.35rem;
-      padding: 0.65rem 0.85rem;
-      border: 1px dashed rgba(124, 58, 237, 0.45);
-      border-radius: var(--radius-sm);
-      background: var(--surface);
+      align-self: flex-start;
+      gap: 0.2rem;
+      width: auto;
+      min-height: 0;
+      margin: 0.15rem 0 0;
+      padding: 0.2rem 0;
+      border: none;
+      border-radius: 0;
+      background: none;
       color: var(--accent-hover);
-      font-size: 0.88rem;
-      font-weight: 700;
+      font-size: 0.76rem;
+      font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      position: sticky;
-      bottom: 0;
-      z-index: 2;
-      flex-shrink: 0;
-      box-shadow: 0 -8px 12px var(--surface);
+      opacity: 0.9;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .basket-add-item-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
     }
 
     .basket-divider {
       height: 1px;
       background: var(--border);
-      margin: 0.65rem 0;
+      margin: 0.15rem 0;
     }
 
     .basket-total-row {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.85rem;
-      font-size: 0.95rem;
+      gap: 0.5rem;
+      margin-bottom: 0;
+      font-size: 0.82rem;
       color: var(--muted);
     }
 
     .basket-total-row strong {
-      font-size: 1.1rem;
+      font-size: 0.98rem;
       font-weight: 800;
       color: var(--text);
       letter-spacing: -0.02em;
     }
 
-    .basket-modal .submit-btn {
+    .basket-modal #basketSubmitBtn.submit-btn {
       flex-shrink: 0;
-      margin-top: 0.35rem;
+      width: 100%;
+      min-height: 44px;
+      padding: 0.6rem 1rem;
+      margin-top: 0.15rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #16a34a, var(--income));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.32);
+    }
+
+    .basket-modal #basketSubmitBtn.submit-btn.income,
+    .basket-modal #basketSubmitBtn.submit-btn.expense {
+      background: linear-gradient(135deg, #16a34a, var(--income));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(34, 197, 94, 0.32);
     }
 
     .add-launcher-hint {
@@ -5993,7 +6108,7 @@
           </div>
           <div class="form-row">
             <label><i data-lucide="tag"></i> <span data-i18n="add.category">Kategoriya</span></label>
-            <div class="category-grid" id="basketCategorySelector" role="listbox" aria-label="Kategoriya"></div>
+            <div class="category-chips" id="basketCategorySelector" role="listbox" aria-label="Kategoriya"></div>
           </div>
           <div class="form-row">
             <label for="basketDate"><i data-lucide="calendar"></i> <span data-i18n="basket.date">Sana</span></label>
@@ -6392,6 +6507,28 @@
       income: "boshqa_daromad",
       expense: "boshqa_xarajat"
     };
+
+    const CATEGORY_EMOJI = {
+      sotuv: "🛒",
+      xizmat: "💼",
+      ish_haqi: "👔",
+      investitsiya: "📈",
+      boshqa_daromad: "🎁",
+      ijara: "🏠",
+      oziq_ovqat: "🍞",
+      transport: "🚗",
+      kommunal: "⚡",
+      telefon_internet: "📱",
+      ish_haqi_xodim: "👥",
+      mahsulot: "📦",
+      reklama: "📢",
+      tamirlash: "🔧",
+      boshqa_xarajat: "📋"
+    };
+
+    function getCategoryEmoji(categoryId) {
+      return CATEGORY_EMOJI[categoryId] || "📌";
+    }
 
     function getDefaultCategoryId(type) {
       return DEFAULT_CATEGORY[type] || CATEGORIES[type]?.[0]?.id || "";
@@ -11617,14 +11754,24 @@
         else selectedCategory = activeId;
       }
 
-      el.innerHTML = cats.map(cat => `
+      const useChips = el.classList.contains("category-chips");
+
+      el.innerHTML = cats.map(cat => {
+        if (useChips) {
+          return `
+        <button type="button" class="category-chip${activeId === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${activeId === cat.id}" aria-label="${escapeHtml(cat.label)}">
+          <span class="category-chip-icon" aria-hidden="true">${getCategoryEmoji(cat.id)}</span>
+          <span class="category-chip-label">${escapeHtml(cat.label)}</span>
+        </button>`;
+        }
+        return `
         <button type="button" class="category-option${activeId === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${activeId === cat.id}" aria-label="${escapeHtml(cat.label)}">
           ${categoryIconHtml(cat)}
           <span class="category-option-label">${escapeHtml(cat.label)}</span>
-        </button>
-      `).join("");
+        </button>`;
+      }).join("");
 
-      el.querySelectorAll(".category-option").forEach(btn => {
+      el.querySelectorAll(useChips ? ".category-chip" : ".category-option").forEach(btn => {
         btn.addEventListener("click", () => {
           if (setSelected) setSelected(btn.dataset.category);
           else selectedCategory = btn.dataset.category;
@@ -11659,7 +11806,7 @@
         sumEntered += parseAmountDigits(item.priceDigits);
       });
       const sumUzs = convertToUzs(sumEntered);
-      basketTotalDisplay.textContent = formatMoney(sumUzs);
+      basketTotalDisplay.textContent = formatMoney(sumUzs, { currencyId: BASE_CURRENCY_ID });
     }
 
     function renderBasketItems() {
@@ -11668,7 +11815,7 @@
         <div class="basket-item-row" data-item-id="${item.id}">
           <input type="text" class="basket-item-name" data-field="name" data-item-id="${item.id}" data-i18n-placeholder="basket.itemNamePh" placeholder="${escapeHtml(t("basket.itemNamePh"))}" value="${escapeHtml(item.name)}" maxlength="80">
           <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" data-i18n-placeholder="basket.itemPricePh" placeholder="${escapeHtml(t("basket.itemPricePh"))}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
-          <button type="button" class="basket-item-remove" data-remove-id="${item.id}" aria-label="${escapeHtml(t("basket.removeItem"))}"${basketItems.length <= 1 ? " disabled" : ""}>❌</button>
+          <button type="button" class="basket-item-remove" data-remove-id="${item.id}" aria-label="${escapeHtml(t("basket.removeItem"))}"${basketItems.length <= 1 ? " disabled" : ""}>×</button>
         </div>
       `).join("");
 
