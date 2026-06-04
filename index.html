@@ -4528,6 +4528,210 @@
       font-size: 0.88rem;
     }
 
+    /* Basket modal — multi-item entry */
+    .basket-modal {
+      width: 100%;
+      max-width: 440px;
+      max-height: 92dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem 1.15rem 1.15rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s var(--ease);
+      position: relative;
+    }
+
+    .modal-overlay.open .basket-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .basket-modal h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin: 0 2rem 0.85rem 0;
+      letter-spacing: -0.02em;
+    }
+
+    .basket-modal .modal-close {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+    }
+
+    #basketForm {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .basket-form-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
+    }
+
+    .basket-modal .form-row {
+      margin-bottom: 0.85rem;
+    }
+
+    .basket-modal .form-row label {
+      font-size: 0.8rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .basket-modal .form-row input[type="date"],
+    .basket-modal .basket-item-name,
+    .basket-modal .basket-item-price,
+    .basket-modal #basketNote {
+      min-height: var(--touch);
+      font-size: 1rem;
+      padding: 0.75rem 0.85rem;
+    }
+
+    .basket-modal .category-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+
+    .basket-section-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 0.55rem;
+    }
+
+    .basket-items-section {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0.75rem;
+    }
+
+    .basket-items-scroll {
+      display: flex;
+      flex-direction: column;
+      max-height: min(38vh, 300px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .basket-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      padding-bottom: 0.35rem;
+    }
+
+    .basket-item-row {
+      display: grid;
+      grid-template-columns: 1fr minmax(5.5rem, 34%) auto;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .basket-item-name,
+    .basket-item-price {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    .basket-item-remove {
+      width: var(--touch);
+      height: var(--touch);
+      min-width: var(--touch);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: var(--radius-sm);
+      background: var(--expense-dim);
+      color: var(--expense);
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .basket-item-remove:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .basket-add-item-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      width: 100%;
+      min-height: var(--touch);
+      margin-top: 0.35rem;
+      padding: 0.65rem 0.85rem;
+      border: 1px dashed rgba(124, 58, 237, 0.45);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--accent-hover);
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
+      flex-shrink: 0;
+      box-shadow: 0 -8px 12px var(--surface);
+    }
+
+    .basket-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.65rem 0;
+    }
+
+    .basket-total-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .basket-total-row strong {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .basket-modal .submit-btn {
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+    }
+
+    .add-launcher-hint {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0 0 1rem;
+    }
+
+    .transaction-items-line {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.35;
+      margin-top: 0.15rem;
+    }
+
     @media (max-height: 700px) {
       #premiumModal .premium-modal {
         padding: 1rem 1.1rem 0.85rem;
@@ -5548,26 +5752,12 @@
       <section class="tab-panel" id="tabAdd" data-tab="add">
         <div class="card">
           <div class="panel-title" data-i18n="add.title">Yangi operatsiya</div>
-          <div class="type-toggle">
+          <div class="type-toggle" id="addTypeToggle">
             <button type="button" class="type-btn income active" data-type="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
             <button type="button" class="type-btn expense" data-type="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
           </div>
-          <form id="transactionForm">
-            <div class="form-row">
-              <label for="description"><i data-lucide="file-text"></i> <span data-i18n="add.desc">Tavsif</span></label>
-              <input type="text" id="description" data-i18n-placeholder="add.descPh" placeholder="Masalan: Mahsulot sotuvi" required maxlength="120">
-            </div>
-            <div class="form-row">
-              <label><i data-lucide="tag"></i> <span data-i18n="add.category">Kategoriya</span></label>
-              <div class="category-grid" id="categorySelector" role="listbox" aria-label="Kategoriya"></div>
-            </div>
-            <div class="form-row">
-              <label for="amount"><i data-lucide="banknote"></i> <span id="amountLabel">Summa (UZS)</span></label>
-              <input type="text" id="amount" placeholder="0" inputmode="numeric" autocomplete="off" required>
-              <p class="amount-hint" id="amountHint" aria-live="polite"></p>
-            </div>
-            <button type="submit" class="submit-btn income" id="submitBtn">Daromad qoʻshish</button>
-          </form>
+          <p class="add-launcher-hint" data-i18n="basket.hint">Mahsulotlarni savatchaga qoʻshib, bitta operatsiya sifatida saqlang.</p>
+          <button type="button" class="submit-btn income" id="openBasketModalBtn" data-i18n="basket.open">Savatcha bilan qoʻshish</button>
         </div>
       </section>
 
@@ -5788,6 +5978,46 @@
         <button type="button" class="btn-payme" id="paymeBtn"><i data-lucide="credit-card"></i> <span data-i18n="premium.payme">Payme orqali to'lash</span></button>
         <button type="button" class="btn-click" id="clickBtn"><i data-lucide="circle-dollar-sign"></i> <span data-i18n="premium.click">Click orqali to'lash</span></button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="basketModal" role="dialog" aria-modal="true" aria-labelledby="basketModalTitle">
+    <div class="basket-modal">
+      <button type="button" class="modal-close" id="basketModalClose" aria-label="Yopish">×</button>
+      <h2 id="basketModalTitle" data-i18n="basket.titleExpense">Xarajat qoʻshish</h2>
+      <form id="basketForm">
+        <div class="basket-form-scroll">
+          <div class="type-toggle basket-type-toggle" id="basketTypeToggle">
+            <button type="button" class="type-btn income" data-basket-type="income"><i data-lucide="plus-circle"></i> <span data-i18n="home.income">Daromad</span></button>
+            <button type="button" class="type-btn expense active" data-basket-type="expense"><i data-lucide="minus-circle"></i> <span data-i18n="home.expense">Xarajat</span></button>
+          </div>
+          <div class="form-row">
+            <label><i data-lucide="tag"></i> <span data-i18n="add.category">Kategoriya</span></label>
+            <div class="category-grid" id="basketCategorySelector" role="listbox" aria-label="Kategoriya"></div>
+          </div>
+          <div class="form-row">
+            <label for="basketDate"><i data-lucide="calendar"></i> <span data-i18n="basket.date">Sana</span></label>
+            <input type="date" id="basketDate" required>
+          </div>
+          <div class="basket-items-section">
+            <p class="basket-section-title" data-i18n="basket.products">Mahsulotlar</p>
+            <div class="basket-items-scroll">
+              <div class="basket-items-list" id="basketItemsList"></div>
+              <button type="button" class="basket-add-item-btn" id="basketAddItemBtn" data-i18n="basket.addItem">＋ Mahsulot qoʻshish</button>
+            </div>
+          </div>
+          <div class="basket-divider"></div>
+          <div class="basket-total-row">
+            <span data-i18n="basket.total">Jami:</span>
+            <strong id="basketTotalDisplay">0 so'm</strong>
+          </div>
+          <div class="form-row">
+            <label for="basketNote"><i data-lucide="file-text"></i> <span data-i18n="basket.note">Izoh</span></label>
+            <input type="text" id="basketNote" data-i18n-placeholder="basket.notePh" placeholder="Ixtiyoriy izoh" maxlength="200">
+          </div>
+        </div>
+        <button type="submit" class="submit-btn expense" id="basketSubmitBtn" data-i18n="basket.save">Saqlash</button>
+      </form>
     </div>
   </div>
 
@@ -6184,13 +6414,43 @@
       return `<span class="category-icon-wrap" style="background:${bg}"><i data-lucide="${cat.icon}"></i></span>`;
     }
 
+    function normalizeTransactionItems(rawItems) {
+      if (!Array.isArray(rawItems)) return null;
+      const items = rawItems
+        .map(item => ({
+          name: String(item?.name ?? "").trim(),
+          amount: Number(item?.amount) || 0
+        }))
+        .filter(item => item.name && item.amount > 0);
+      return items.length ? items : null;
+    }
+
+    function getTransactionItems(tx) {
+      return normalizeTransactionItems(tx?.items);
+    }
+
+    function getTransactionListDescription(tx) {
+      const items = getTransactionItems(tx);
+      if (!items) return String(tx.description || "").trim();
+      if (items.length === 1) return items[0].name;
+      return items.map(item => item.name).join(", ");
+    }
+
     function normalizeTransactionDoc(id, data) {
       const type = data.type === "expense" ? "expense" : "income";
+      const items = normalizeTransactionItems(data.items);
+      const totalAmount = Number(data.totalAmount ?? data.amount) || 0;
+      const amount = items ? totalAmount : (Number(data.amount) || 0);
+      const description = String(data.description || "").trim() || getTransactionListDescription({ items, description: data.description });
       return {
         id,
         ...data,
         type,
-        amount: Number(data.amount) || 0,
+        amount,
+        totalAmount: items ? amount : (data.totalAmount != null ? Number(data.totalAmount) : undefined),
+        items: items || undefined,
+        note: String(data.note || "").trim(),
+        description,
         category: resolveCategoryId(data.category, type)
       };
     }
@@ -6396,6 +6656,23 @@
         "add.submitIncome": "Daromad qoʻshish",
         "add.submitExpense": "Xarajat qoʻshish",
         "add.saving": "Saqlanmoqda…",
+        "basket.hint": "Mahsulotlarni savatchaga qoʻshib, bitta operatsiya sifatida saqlang.",
+        "basket.open": "Savatcha bilan qoʻshish",
+        "basket.titleExpense": "Xarajat qoʻshish",
+        "basket.titleIncome": "Daromad qoʻshish",
+        "basket.date": "Sana",
+        "basket.products": "Mahsulotlar",
+        "basket.addItem": "＋ Mahsulot qoʻshish",
+        "basket.itemNamePh": "Masalan: Non",
+        "basket.itemPricePh": "Narx",
+        "basket.total": "Jami:",
+        "basket.note": "Izoh",
+        "basket.notePh": "Ixtiyoriy izoh",
+        "basket.save": "Saqlash",
+        "basket.removeItem": "Oʻchirish",
+        "basket.itemRequired": "Kamida bitta mahsulot kiriting",
+        "basket.itemNameRequired": "Mahsulot nomini kiriting",
+        "basket.itemPriceRequired": "Narxni kiriting",
         "list.title": "Operatsiyalar",
         "list.export": "Eksport",
         "list.exportAria": "Hisobotni eksport qilish",
@@ -6653,6 +6930,23 @@
         "add.submitIncome": "Добавить доход",
         "add.submitExpense": "Добавить расход",
         "add.saving": "Сохранение…",
+        "basket.hint": "Добавьте товары в корзину и сохраните одной операцией.",
+        "basket.open": "Добавить через корзину",
+        "basket.titleExpense": "Добавить расход",
+        "basket.titleIncome": "Добавить доход",
+        "basket.date": "Дата",
+        "basket.products": "Товары",
+        "basket.addItem": "＋ Добавить товар",
+        "basket.itemNamePh": "Например: Хлеб",
+        "basket.itemPricePh": "Цена",
+        "basket.total": "Итого:",
+        "basket.note": "Примечание",
+        "basket.notePh": "Необязательно",
+        "basket.save": "Сохранить",
+        "basket.removeItem": "Удалить",
+        "basket.itemRequired": "Добавьте хотя бы один товар",
+        "basket.itemNameRequired": "Введите название товара",
+        "basket.itemPriceRequired": "Введите цену",
         "list.title": "Операции",
         "list.export": "Экспорт",
         "list.exportAria": "Экспорт отчёта",
@@ -6910,6 +7204,23 @@
         "add.submitIncome": "Add income",
         "add.submitExpense": "Add expense",
         "add.saving": "Saving…",
+        "basket.hint": "Add products to the basket and save as one transaction.",
+        "basket.open": "Add with basket",
+        "basket.titleExpense": "Add expense",
+        "basket.titleIncome": "Add income",
+        "basket.date": "Date",
+        "basket.products": "Products",
+        "basket.addItem": "＋ Add product",
+        "basket.itemNamePh": "e.g. Bread",
+        "basket.itemPricePh": "Price",
+        "basket.total": "Total:",
+        "basket.note": "Note",
+        "basket.notePh": "Optional note",
+        "basket.save": "Save",
+        "basket.removeItem": "Remove",
+        "basket.itemRequired": "Add at least one product",
+        "basket.itemNameRequired": "Enter product name",
+        "basket.itemPriceRequired": "Enter price",
         "list.title": "Transactions",
         "list.export": "Export",
         "list.exportAria": "Export report",
@@ -7189,7 +7500,6 @@
     let chartsRenderTimer = null;
     let renderDebounceTimer = null;
     let amountHintTimer = null;
-    let submitBtnDefaultText = "";
     let lastChartsFingerprint = "";
     let lastUiContentFingerprint = "";
     let chartsRenderInFlight = false;
@@ -7307,13 +7617,23 @@
     const logoutConfirm = document.getElementById("logoutConfirm");
     const logoutCancel = document.getElementById("logoutCancel");
 
-    const form = document.getElementById("transactionForm");
-    const descriptionInput = document.getElementById("description");
-    const amountInput = document.getElementById("amount");
-    const amountHint = document.getElementById("amountHint");
-    const submitBtn = document.getElementById("submitBtn");
-    const typeButtons = document.querySelectorAll(".type-btn");
-    const categorySelector = document.getElementById("categorySelector");
+    const openBasketModalBtn = document.getElementById("openBasketModalBtn");
+    const basketModal = document.getElementById("basketModal");
+    const basketModalClose = document.getElementById("basketModalClose");
+    const basketModalTitle = document.getElementById("basketModalTitle");
+    const basketForm = document.getElementById("basketForm");
+    const basketCategorySelector = document.getElementById("basketCategorySelector");
+    const basketDateInput = document.getElementById("basketDate");
+    const basketItemsList = document.getElementById("basketItemsList");
+    const basketAddItemBtn = document.getElementById("basketAddItemBtn");
+    const basketTotalDisplay = document.getElementById("basketTotalDisplay");
+    const basketNoteInput = document.getElementById("basketNote");
+    const basketSubmitBtn = document.getElementById("basketSubmitBtn");
+    const basketTypeButtons = document.querySelectorAll("[data-basket-type]");
+    const typeButtons = document.querySelectorAll("#addTypeToggle .type-btn, #basketTypeToggle .type-btn");
+    let basketSelectedCategory = null;
+    let basketItemSeq = 0;
+    let basketItems = [];
     const transactionList = document.getElementById("transactionList");
     const emptyState = document.getElementById("emptyState");
     const totalIncomeEl = document.getElementById("totalIncome");
@@ -7373,6 +7693,7 @@
       return (
         premiumModal.classList.contains("open") ||
         exportModal.classList.contains("open") ||
+        basketModal?.classList.contains("open") ||
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
         logoutModal?.classList.contains("open") ||
@@ -7797,8 +8118,10 @@
       refreshCategoryThemeColors();
       invalidateChartDataCache();
       lastChartsFingerprint = "";
-      if (currentTab === "add" || categorySelectorNeedsRefresh) {
-        renderCategorySelector(currentType);
+      if (basketModal?.classList.contains("open")) {
+        renderCategorySelector(currentType, basketCategorySelector, () => basketSelectedCategory, id => {
+          basketSelectedCategory = id;
+        });
       }
       scheduleChartsRender({ deferMs: 80, force: true });
       if (currentUser && appScreen && !appScreen.classList.contains("hidden")) {
@@ -8793,6 +9116,71 @@
       };
     }
 
+    function buildBasketTransactionPayload({ type, category, userId, items, note, date }) {
+      const normalizedType = type === "expense" ? "expense" : "income";
+      const normalizedUserId = String(userId ?? "").trim();
+      if (!normalizedUserId) {
+        const err = new Error("userId is required");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const normalizedCategory = resolveCategoryId(String(category ?? "").trim(), normalizedType);
+      const validIds = CATEGORIES[normalizedType].map(cat => cat.id);
+      if (!validIds.includes(normalizedCategory)) {
+        const err = new Error(`Invalid category: ${category}`);
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const normalizedItems = (items || [])
+        .map(item => ({
+          name: String(item?.name ?? "").trim(),
+          amount: Number(item?.amount) || 0
+        }))
+        .filter(item => item.name && item.amount > 0);
+
+      if (!normalizedItems.length) {
+        const err = new Error("At least one item is required");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const totalAmount = normalizedItems.reduce((sum, item) => sum + item.amount, 0);
+      if (totalAmount <= 0) {
+        const err = new Error("Invalid basket total");
+        err.code = "invalid-argument";
+        throw err;
+      }
+
+      const description = normalizedItems.length === 1
+        ? normalizedItems[0].name
+        : normalizedItems.map(item => item.name).join(", ");
+
+      let isoDate = new Date().toISOString();
+      if (date) {
+        const parsed = new Date(`${date}T12:00:00`);
+        if (!Number.isNaN(parsed.getTime())) isoDate = parsed.toISOString();
+      }
+
+      const payload = {
+        type: normalizedType,
+        category: normalizedCategory,
+        userId: normalizedUserId,
+        items: normalizedItems,
+        totalAmount,
+        amount: totalAmount,
+        description,
+        date: isoDate,
+        createdAt: new Date().toISOString()
+      };
+
+      const normalizedNote = String(note ?? "").trim();
+      if (normalizedNote) payload.note = normalizedNote;
+
+      return payload;
+    }
+
     function cachePremiumStatus(isPremium) {
       localStorage.setItem(PREMIUM_CACHE_KEY, isPremium ? "1" : "0");
     }
@@ -9004,6 +9392,7 @@
         mix(String(tx.category || ""));
         mix(String(tx.date || "").slice(0, 19));
         mix(String(tx.description || "").slice(0, 120));
+        if (tx.items?.length) mix(`items:${tx.items.length}:${tx.amount}`);
       }
       return String(h >>> 0);
     }
@@ -9116,6 +9505,7 @@
       const locked =
         premiumModal.classList.contains("open") ||
         exportModal.classList.contains("open") ||
+        basketModal?.classList.contains("open") ||
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
         logoutModal?.classList.contains("open") ||
@@ -9629,9 +10019,8 @@
       });
 
       if (tabName === "profile") renderProfileUI();
-      if (tabName === "add" && categorySelectorNeedsRefresh) {
-        categorySelectorNeedsRefresh = false;
-        renderCategorySelector(currentType);
+      if (tabName === "add") {
+        openBasketModal(currentType);
       }
       if (tabName === "home" && chartsUpdatePending) {
         scheduleChartsRender({ deferMs: 120 });
@@ -9639,16 +10028,45 @@
       requestAnimationFrame(refreshIcons);
     }
 
+    function goToAddTab(openModal = true) {
+      if (currentTab === "add") {
+        if (openModal) openBasketModal(currentType);
+        return;
+      }
+      switchTab("add");
+    }
+
     navItems.forEach(nav => {
-      nav.addEventListener("click", () => switchTab(nav.dataset.tab));
+      nav.addEventListener("click", () => {
+        const tab = nav.dataset.tab;
+        if (tab === "add") {
+          goToAddTab(true);
+          return;
+        }
+        switchTab(tab);
+      });
     });
 
     quickBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         setType(btn.dataset.gotoAdd);
-        switchTab("add");
-        descriptionInput.focus();
+        goToAddTab(true);
       });
+    });
+
+    openBasketModalBtn?.addEventListener("click", () => openBasketModal(currentType));
+    basketModalClose?.addEventListener("click", closeBasketModal);
+    basketModal?.addEventListener("click", e => {
+      if (e.target === basketModal) closeBasketModal();
+    });
+    basketAddItemBtn?.addEventListener("click", () => {
+      basketItems.push(createBasketItemRow());
+      renderBasketItems();
+      const rows = basketItemsList?.querySelectorAll(".basket-item-name");
+      rows?.[rows.length - 1]?.focus();
+    });
+    basketTypeButtons.forEach(btn => {
+      btn.addEventListener("click", () => setBasketType(btn.dataset.basketType));
     });
 
     let postOnboardingView = "auth";
@@ -9942,7 +10360,8 @@
 
     function setBusy(state) {
       busy = state;
-      if (!saveInFlight) submitBtn.disabled = state;
+      if (basketSubmitBtn && !saveInFlight) basketSubmitBtn.disabled = state;
+      if (openBasketModalBtn) openBasketModalBtn.disabled = state;
       authSubmitBtn.disabled = state;
       logoutBtn.disabled = state;
       document.querySelectorAll(".delete-btn").forEach(btn => {
@@ -10838,6 +11257,8 @@
     }
 
     function updateAmountHint(amountInCurrency) {
+      const amountHint = document.getElementById("amountHint");
+      if (!amountHint) return;
       if (amountHintTimer) clearTimeout(amountHintTimer);
       amountHintTimer = setTimeout(() => {
         amountHintTimer = null;
@@ -10857,6 +11278,8 @@
     }
 
     function formatAmountInputField() {
+      const amountInput = document.getElementById("amountInput");
+      if (!amountInput) return;
       const raw = amountInput.value;
       const cursor = amountInput.selectionStart ?? raw.length;
       const digitsBeforeCursor = raw.slice(0, cursor).replace(/\D/g, "").length;
@@ -10885,13 +11308,15 @@
       amountInput.setSelectionRange(newCursor, newCursor);
     }
 
-    amountInput.addEventListener("input", formatAmountInputField);
-
-    amountInput.addEventListener("keydown", (e) => {
-      if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-" || e.key === ".") {
-        e.preventDefault();
-      }
-    });
+    const legacyAmountInput = document.getElementById("amountInput");
+    if (legacyAmountInput) {
+      legacyAmountInput.addEventListener("input", formatAmountInputField);
+      legacyAmountInput.addEventListener("keydown", (e) => {
+        if (e.key === "e" || e.key === "E" || e.key === "+" || e.key === "-" || e.key === ".") {
+          e.preventDefault();
+        }
+      });
+    }
 
     function formatDate(iso) {
       const d = new Date(iso);
@@ -11181,26 +11606,176 @@
       );
     }
 
-    function renderCategorySelector(type) {
+    function renderCategorySelector(type, container, getSelected, setSelected) {
+      const el = container;
+      if (!el) return;
       const cats = CATEGORIES[type] || [];
-      if (!selectedCategory || !cats.some(cat => cat.id === selectedCategory)) {
-        selectedCategory = getDefaultCategoryId(type);
+      let activeId = getSelected ? getSelected() : selectedCategory;
+      if (!activeId || !cats.some(cat => cat.id === activeId)) {
+        activeId = getDefaultCategoryId(type);
+        if (setSelected) setSelected(activeId);
+        else selectedCategory = activeId;
       }
 
-      categorySelector.innerHTML = cats.map(cat => `
-        <button type="button" class="category-option${selectedCategory === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${selectedCategory === cat.id}" aria-label="${escapeHtml(cat.label)}">
+      el.innerHTML = cats.map(cat => `
+        <button type="button" class="category-option${activeId === cat.id ? " active" : ""}" data-category="${cat.id}" role="option" aria-selected="${activeId === cat.id}" aria-label="${escapeHtml(cat.label)}">
           ${categoryIconHtml(cat)}
           <span class="category-option-label">${escapeHtml(cat.label)}</span>
         </button>
       `).join("");
 
-      categorySelector.querySelectorAll(".category-option").forEach(btn => {
+      el.querySelectorAll(".category-option").forEach(btn => {
         btn.addEventListener("click", () => {
-          selectedCategory = btn.dataset.category;
-          renderCategorySelector(type);
+          if (setSelected) setSelected(btn.dataset.category);
+          else selectedCategory = btn.dataset.category;
+          renderCategorySelector(type, container, getSelected, setSelected);
         });
       });
-      refreshIcons();
+      refreshIconsScoped(el);
+    }
+
+    function getBasketDateDefault() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function createBasketItemRow() {
+      basketItemSeq += 1;
+      return { id: basketItemSeq, name: "", priceDigits: "" };
+    }
+
+    function resetBasketItems() {
+      basketItemSeq = 0;
+      basketItems = [createBasketItemRow()];
+    }
+
+    function updateBasketTotalDisplay() {
+      if (!basketTotalDisplay) return;
+      let sumEntered = 0;
+      basketItems.forEach(item => {
+        sumEntered += parseAmountDigits(item.priceDigits);
+      });
+      const sumUzs = convertToUzs(sumEntered);
+      basketTotalDisplay.textContent = formatMoney(sumUzs);
+    }
+
+    function renderBasketItems() {
+      if (!basketItemsList) return;
+      basketItemsList.innerHTML = basketItems.map(item => `
+        <div class="basket-item-row" data-item-id="${item.id}">
+          <input type="text" class="basket-item-name" data-field="name" data-item-id="${item.id}" data-i18n-placeholder="basket.itemNamePh" placeholder="${escapeHtml(t("basket.itemNamePh"))}" value="${escapeHtml(item.name)}" maxlength="80">
+          <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" data-i18n-placeholder="basket.itemPricePh" placeholder="${escapeHtml(t("basket.itemPricePh"))}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
+          <button type="button" class="basket-item-remove" data-remove-id="${item.id}" aria-label="${escapeHtml(t("basket.removeItem"))}"${basketItems.length <= 1 ? " disabled" : ""}>❌</button>
+        </div>
+      `).join("");
+
+      basketItemsList.querySelectorAll(".basket-item-name").forEach(input => {
+        input.addEventListener("input", () => {
+          const id = Number(input.dataset.itemId);
+          const row = basketItems.find(x => x.id === id);
+          if (row) row.name = input.value;
+        });
+      });
+
+      basketItemsList.querySelectorAll(".basket-item-price").forEach(input => {
+        input.addEventListener("input", () => {
+          const id = Number(input.dataset.itemId);
+          const row = basketItems.find(x => x.id === id);
+          if (!row) return;
+          let digits = input.value.replace(/\D/g, "").slice(0, MAX_AMOUNT_DIGITS);
+          row.priceDigits = digits;
+          input.value = digits ? formatAmountSpaces(digits) : "";
+          updateBasketTotalDisplay();
+        });
+      });
+
+      basketItemsList.querySelectorAll(".basket-item-remove").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (basketItems.length <= 1) return;
+          const id = Number(btn.dataset.removeId);
+          basketItems = basketItems.filter(x => x.id !== id);
+          renderBasketItems();
+          updateBasketTotalDisplay();
+        });
+      });
+
+      updateBasketTotalDisplay();
+    }
+
+    function syncBasketTypeUi(type) {
+      basketTypeButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.basketType === type);
+      });
+      if (basketModalTitle) {
+        basketModalTitle.textContent = type === "income"
+          ? t("basket.titleIncome")
+          : t("basket.titleExpense");
+      }
+      if (basketSubmitBtn) {
+        basketSubmitBtn.className = "submit-btn " + type;
+        basketSubmitBtn.textContent = t("basket.save");
+      }
+    }
+
+    function setBasketType(type) {
+      currentType = type;
+      typeButtons.forEach(btn => {
+        const btnType = btn.dataset.type || btn.dataset.basketType;
+        btn.classList.toggle("active", btnType === type);
+      });
+      syncBasketTypeUi(type);
+      basketSelectedCategory = getDefaultCategoryId(type);
+      renderCategorySelector(type, basketCategorySelector, () => basketSelectedCategory, id => {
+        basketSelectedCategory = id;
+      });
+    }
+
+    function openBasketModal(type = currentType) {
+      if (!basketModal) return;
+      setBasketType(type);
+      resetBasketItems();
+      if (basketDateInput) basketDateInput.value = getBasketDateDefault();
+      if (basketNoteInput) basketNoteInput.value = "";
+      renderBasketItems();
+      basketModal.classList.add("open");
+      updateBodyScrollLock();
+      requestAnimationFrame(() => {
+        refreshIconsScoped(basketModal);
+        const firstName = basketItemsList?.querySelector(".basket-item-name");
+        firstName?.focus();
+      });
+    }
+
+    function closeBasketModal() {
+      if (!basketModal) return;
+      basketModal.classList.remove("open");
+      updateBodyScrollLock();
+    }
+
+    function collectBasketItemsForSave() {
+      const result = [];
+      for (const row of basketItems) {
+        const name = row.name.trim();
+        const entered = parseAmountDigits(row.priceDigits);
+        if (!name && !entered) continue;
+        if (!name) {
+          alert(t("basket.itemNameRequired"));
+          return null;
+        }
+        if (!entered || entered <= 0) {
+          alert(t("basket.itemPriceRequired"));
+          return null;
+        }
+        result.push({ name, amount: convertToUzs(entered) });
+      }
+      if (!result.length) {
+        alert(t("basket.itemRequired"));
+        return null;
+      }
+      return result;
     }
 
     function calcPeriodNet(period) {
@@ -11654,17 +12229,23 @@
     function setType(type) {
       currentType = type;
       typeButtons.forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.type === type);
+        const btnType = btn.dataset.type || btn.dataset.basketType;
+        btn.classList.toggle("active", btnType === type);
       });
-      submitBtn.className = "submit-btn " + type;
-      submitBtnDefaultText = type === "income" ? t("add.submitIncome") : t("add.submitExpense");
-      if (!saveInFlight) submitBtn.textContent = submitBtnDefaultText;
-      renderCategorySelector(type);
-      categorySelectorNeedsRefresh = false;
+      if (openBasketModalBtn) {
+        openBasketModalBtn.className = "submit-btn " + type;
+        openBasketModalBtn.textContent = t("basket.open");
+      }
+      if (basketModal?.classList.contains("open")) {
+        setBasketType(type);
+      }
     }
 
     typeButtons.forEach(btn => {
-      btn.addEventListener("click", () => setType(btn.dataset.type));
+      btn.addEventListener("click", () => {
+        const btnType = btn.dataset.type || btn.dataset.basketType;
+        if (btnType) setType(btnType);
+      });
     });
 
     function logSaveError(err, context = {}) {
@@ -11731,13 +12312,15 @@
         throw err;
       }
 
-      const txData = buildTransactionPayload({
-        type: rawTxData.type,
-        description: rawTxData.description,
-        amount: rawTxData.amount,
-        userId: user.uid,
-        category: rawTxData.category
-      });
+      const txData = Array.isArray(rawTxData.items)
+        ? buildBasketTransactionPayload(rawTxData)
+        : buildTransactionPayload({
+            type: rawTxData.type,
+            description: rawTxData.description,
+            amount: rawTxData.amount,
+            userId: user.uid,
+            category: rawTxData.category
+          });
 
       if (txData.userId !== user.uid) {
         const err = new Error("userId must match authenticated user");
@@ -11751,7 +12334,10 @@
         });
       }
 
-      const docRef = await addDoc(transactionsRef(user.uid), txData);
+      const docRef = await addDoc(transactionsRef(user.uid), {
+        ...txData,
+        createdAt: new Date().toISOString()
+      });
       void updateDoc(userDocRef(user.uid), {
         totalTransactionsAdded: increment(1)
       }).catch(err => {
@@ -11760,7 +12346,7 @@
       return docRef;
     }
 
-    form.addEventListener("submit", e => {
+    basketForm?.addEventListener("submit", e => {
       e.preventDefault();
 
       if (!firebaseAuth.currentUser || !currentUser) {
@@ -11770,15 +12356,13 @@
 
       if (busy || saveInFlight || !appUnlocked) return;
 
-      const description = descriptionInput.value.trim();
-      const amountEntered = parseAmountDigits(amountInput.value);
-      if (!description || !amountEntered || amountEntered <= 0) return;
-      const amount = convertToUzs(amountEntered);
-
-      if (!selectedCategory) {
+      if (!basketSelectedCategory) {
         alert(t("add.categoryRequired"));
         return;
       }
+
+      const items = collectBasketItemsForSave();
+      if (!items) return;
 
       if (!canAddTransaction()) {
         showPremiumModal({ reason: "limit" });
@@ -11786,14 +12370,17 @@
       }
 
       const saveType = currentType;
-      const saveCategory = selectedCategory;
+      const saveCategory = basketSelectedCategory;
+      const saveDate = basketDateInput?.value || getBasketDateDefault();
+      const saveNote = basketNoteInput?.value?.trim() || "";
       const pendingId = `pending_${Date.now()}`;
-      const optimisticPayload = buildTransactionPayload({
+      const optimisticPayload = buildBasketTransactionPayload({
         type: saveType,
-        description,
-        amount: Number(amount),
+        category: saveCategory,
         userId: currentUser.uid,
-        category: saveCategory
+        items,
+        note: saveNote,
+        date: saveDate
       });
       const optimisticTx = normalizeTransactionDoc(pendingId, optimisticPayload);
 
@@ -11804,21 +12391,25 @@
       rememberLimitCount(nextLimit);
       updatePremiumUI();
 
+      closeBasketModal();
       switchTab("list");
-      form.reset();
-      amountHint.textContent = "";
-      selectedCategory = getDefaultCategoryId(currentType);
-      categorySelectorNeedsRefresh = true;
       applyQuickAddUI(optimisticTx);
 
       saveInFlight = true;
+      if (basketSubmitBtn) {
+        basketSubmitBtn.disabled = true;
+        basketSubmitBtn.textContent = t("add.saving");
+      }
+
       void (async () => {
         try {
           await saveTransaction({
             type: saveType,
-            description,
-            amount: Number(amount),
-            category: saveCategory
+            category: saveCategory,
+            userId: currentUser.uid,
+            items,
+            note: saveNote,
+            date: saveDate
           });
         } catch (err) {
           removePendingTransactions();
@@ -11829,7 +12420,7 @@
           updatePremiumUI();
           render({ skipCharts: true });
           scheduleChartsRender({ deferMs: 300 });
-          logSaveError(err, { type: saveType, amount, description });
+          logSaveError(err, { type: saveType, items });
           if (err.code === "tx-limit") {
             showPremiumModal({ reason: "limit" });
           } else {
@@ -11837,6 +12428,10 @@
           }
         } finally {
           saveInFlight = false;
+          if (basketSubmitBtn) {
+            basketSubmitBtn.disabled = false;
+            basketSubmitBtn.textContent = t("basket.save");
+          }
         }
       })();
     });
@@ -11883,11 +12478,18 @@
       const cat = getCategoryForTx(tx);
       const sign = isIncome ? "+" : "−";
       const isPending = String(tx.id).startsWith("pending_");
+      const items = getTransactionItems(tx);
+      const listDesc = escapeHtml(getTransactionListDescription(tx));
+      const noteLine = tx.note ? `<div class="transaction-items-line">${escapeHtml(tx.note)}</div>` : "";
+      const primaryLine = items && items.length > 1
+        ? `<div class="transaction-items-line">${listDesc}</div>`
+        : `<div class="transaction-desc">${listDesc}</div>`;
       return `
           <li class="transaction-item${isPending ? " is-pending" : ""}">
             <div class="tx-icon tx-cat-icon">${categoryIconHtml(cat)}</div>
             <div class="transaction-info">
-              <div class="transaction-desc">${escapeHtml(tx.description)}</div>
+              ${primaryLine}
+              ${noteLine}
               <div class="transaction-meta">${typeLabel} · ${escapeHtml(cat.label)} · ${formatDate(tx.date)}</div>
             </div>
             <div class="transaction-right">
