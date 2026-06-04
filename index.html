@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
+  <script>
+    (function () {
+      document.documentElement.classList.add("auth-boot");
+      document.documentElement.style.visibility = "hidden";
+      try {
+        if (sessionStorage.getItem("bh_auth_dismissed") === "1") {
+          document.documentElement.classList.add("auth-boot-session");
+        }
+      } catch (_) {}
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#7C3AED">
@@ -17,6 +28,15 @@
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <title>BiznesHisob — Daromad va xarajatlar</title>
   <style>
+    html.auth-boot {
+      visibility: hidden !important;
+      background: #0c0e14;
+    }
+
+    html.auth-boot-session #authScreen {
+      display: none !important;
+    }
+
     :root {
       color-scheme: dark;
       --bg: #0c0e14;
@@ -5243,21 +5263,6 @@
     <div class="spinner"></div>
     <p class="loading-text" data-i18n="loading">Yuklanmoqda...</p>
   </div>
-  <script>
-    (function () {
-      setTimeout(function () {
-        var el = document.getElementById("loadingScreen");
-        if (!el || el.classList.contains("hidden")) return;
-        el.style.opacity = "0";
-        el.style.pointerEvents = "none";
-        setTimeout(function () {
-          el.style.display = "none";
-          el.classList.add("hidden");
-        }, 280);
-        /* Auth fallback handled in bootstrapApp — do not reveal auth here (causes post-login flash) */
-      }, 2000);
-    })();
-  </script>
 
   <div class="onboarding-screen hidden" id="onboardingScreen">
     <button type="button" class="onboarding-skip" id="onboardingSkip" data-i18n="onboarding.skip">O'tkazib yuborish</button>
@@ -5931,13 +5936,31 @@
     let handleAuthState = null;
     let pendingAuthUser = undefined;
     let pendingAuthReady = false;
+    let authStateResolved = false;
+    let authBootReleased = false;
     let loadingScreenDismissed = false;
     /** false = logged-in session: never show auth until logout */
     let authScreenShown = sessionStorage.getItem("bh_auth_dismissed") !== "1";
     const loadingScreen = document.getElementById("loadingScreen");
 
+    function releaseAuthBootVisibility() {
+      if (authBootReleased) return;
+      authBootReleased = true;
+      document.documentElement.style.visibility = "";
+      document.documentElement.classList.remove("auth-boot", "auth-boot-session");
+    }
+
+    function onAuthStateKnown(user) {
+      if (authStateResolved) return;
+      authStateResolved = true;
+      if (user) {
+        authScreen.classList.add("hidden");
+      }
+    }
+
     onAuthStateChanged(firebaseAuth, user => {
       console.log("[BiznesHisob] Auth state changed", user ? user.uid : "signed out");
+      onAuthStateKnown(user);
       if (handleAuthState) void handleAuthState(user);
       else {
         pendingAuthUser = user;
@@ -8220,6 +8243,7 @@
       pinScreen.classList.add("visible");
       pinScreen.setAttribute("aria-hidden", "false");
       refreshIcons();
+      releaseAuthBootVisibility();
     }
 
     function hidePinScreen() {
@@ -9635,6 +9659,7 @@
         updateOnboardingSlide(0);
         startOnboardingAuto();
         refreshIcons();
+        releaseAuthBootVisibility();
         return;
       }
 
@@ -9642,6 +9667,7 @@
       showView("app");
       refreshIcons();
       if (user) initPinSecurity(user.uid);
+      releaseAuthBootVisibility();
     }
 
     function isOnboarded() {
@@ -9660,6 +9686,7 @@
       if (postOnboardingView === "app" && currentUser) {
         initPinSecurity(currentUser.uid);
       }
+      releaseAuthBootVisibility();
     }
 
     function resetOnboardingProgress() {
@@ -9767,12 +9794,14 @@
       }
       if (isOnboarded()) {
         showView(postOnboardingView);
+        releaseAuthBootVisibility();
         return false;
       }
       showView("onboarding");
       updateOnboardingSlide(0);
       startOnboardingAuto();
       refreshIcons();
+      releaseAuthBootVisibility();
       return true;
     }
 
@@ -11923,6 +11952,7 @@
 
       if (user) {
         hideAuthScreenNow();
+        authScreen.classList.add("hidden");
         postOnboardingView = "app";
         navigateAfterAuth(user);
         scheduleAuthFallback();
@@ -11992,6 +12022,7 @@
         if (!showOnboardingIfNeeded()) {
           showView("auth");
         }
+        releaseAuthBootVisibility();
       }
     };
 
@@ -12009,10 +12040,12 @@
 
       if (!pendingAuthReady) {
         setTimeout(() => {
+          if (!authStateResolved) return;
           if (!authScreenShown || currentUser) return;
           if (isNoMainViewVisible()) {
             hideLoadingScreen();
             showView("auth");
+            releaseAuthBootVisibility();
           }
         }, 2000);
       }
