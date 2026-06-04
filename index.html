@@ -6124,7 +6124,7 @@
           <div class="basket-divider"></div>
           <div class="basket-total-row">
             <span data-i18n="basket.total">Jami:</span>
-            <strong id="basketTotalDisplay">0 so'm</strong>
+            <strong id="basketTotalDisplay">0</strong>
           </div>
           <div class="form-row">
             <label for="basketNote"><i data-lucide="file-text"></i> <span data-i18n="basket.note">Izoh</span></label>
@@ -6802,6 +6802,7 @@
         "basket.addItem": "＋ Mahsulot qoʻshish",
         "basket.itemNamePh": "Masalan: Non",
         "basket.itemPricePh": "Narx",
+        "basket.itemPricePhCurrency": "Narx ({{code}})",
         "basket.total": "Jami:",
         "basket.note": "Izoh",
         "basket.notePh": "Ixtiyoriy izoh",
@@ -7076,6 +7077,7 @@
         "basket.addItem": "＋ Добавить товар",
         "basket.itemNamePh": "Например: Хлеб",
         "basket.itemPricePh": "Цена",
+        "basket.itemPricePhCurrency": "Цена ({{code}})",
         "basket.total": "Итого:",
         "basket.note": "Примечание",
         "basket.notePh": "Необязательно",
@@ -7350,6 +7352,7 @@
         "basket.addItem": "＋ Add product",
         "basket.itemNamePh": "e.g. Bread",
         "basket.itemPricePh": "Price",
+        "basket.itemPricePhCurrency": "Price ({{code}})",
         "basket.total": "Total:",
         "basket.note": "Note",
         "basket.notePh": "Optional note",
@@ -9565,6 +9568,7 @@
       }
 
       updateAmountLabel();
+      syncBasketCurrencyUi();
 
       if (currentTab === "home") {
         scheduleChartsRender({ force: true, deferMs: 80 });
@@ -11799,6 +11803,19 @@
       basketItems = [createBasketItemRow()];
     }
 
+    function getBasketPricePlaceholder() {
+      return t("basket.itemPricePhCurrency").replace("{{code}}", getActiveCurrencyCode());
+    }
+
+    function syncBasketCurrencyUi() {
+      updateBasketTotalDisplay();
+      if (!basketItemsList) return;
+      const ph = getBasketPricePlaceholder();
+      basketItemsList.querySelectorAll(".basket-item-price").forEach(input => {
+        input.placeholder = ph;
+      });
+    }
+
     function updateBasketTotalDisplay() {
       if (!basketTotalDisplay) return;
       let sumEntered = 0;
@@ -11806,7 +11823,7 @@
         sumEntered += parseAmountDigits(item.priceDigits);
       });
       const sumUzs = convertToUzs(sumEntered);
-      basketTotalDisplay.textContent = formatMoney(sumUzs, { currencyId: BASE_CURRENCY_ID });
+      basketTotalDisplay.textContent = formatMoney(sumUzs);
     }
 
     function renderBasketItems() {
@@ -11814,7 +11831,7 @@
       basketItemsList.innerHTML = basketItems.map(item => `
         <div class="basket-item-row" data-item-id="${item.id}">
           <input type="text" class="basket-item-name" data-field="name" data-item-id="${item.id}" data-i18n-placeholder="basket.itemNamePh" placeholder="${escapeHtml(t("basket.itemNamePh"))}" value="${escapeHtml(item.name)}" maxlength="80">
-          <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" data-i18n-placeholder="basket.itemPricePh" placeholder="${escapeHtml(t("basket.itemPricePh"))}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
+          <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" placeholder="${escapeHtml(getBasketPricePlaceholder())}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
           <button type="button" class="basket-item-remove" data-remove-id="${item.id}" aria-label="${escapeHtml(t("basket.removeItem"))}"${basketItems.length <= 1 ? " disabled" : ""}>×</button>
         </div>
       `).join("");
