@@ -466,7 +466,7 @@
       position: relative;
       z-index: 1;
       min-height: 100dvh;
-      padding: max(2.75rem, calc(env(safe-area-inset-top) + 1.5rem)) 1.25rem max(2rem, env(safe-area-inset-bottom));
+      padding: max(2.75rem, calc(env(safe-area-inset-top) + 1.5rem)) 1.25rem max(5.75rem, calc(env(safe-area-inset-bottom) + 4.75rem));
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -828,9 +828,20 @@
     }
 
     .auth-lang-wrap {
+      position: fixed;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      left: max(24px, env(safe-area-inset-left));
+      z-index: 1000;
       display: flex;
-      justify-content: center;
-      margin-bottom: 1rem;
+      justify-content: flex-start;
+      margin: 0;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 480px) {
+      .auth-screen {
+        padding-bottom: max(6.25rem, calc(env(safe-area-inset-bottom) + 5.25rem));
+      }
     }
 
     .app-header-actions {
@@ -5314,13 +5325,6 @@
       </div>
       <p class="tagline" data-i18n="auth.tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
     </div>
-    <div class="auth-lang-wrap">
-      <div class="lang-switcher" role="group" data-i18n-aria="lang.aria">
-        <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
-        <button type="button" class="lang-btn" data-lang="ru">RU</button>
-        <button type="button" class="lang-btn" data-lang="en">EN</button>
-      </div>
-    </div>
     <div class="auth-card">
       <div id="authLoginView" class="auth-login-view">
         <div class="auth-tabs">
@@ -5375,6 +5379,13 @@
           <button type="submit" class="auth-btn" id="authForgotSubmit" data-i18n="auth.resetSend">Havola yuborish</button>
         </form>
         <button type="button" class="auth-back-link" id="authForgotBack" data-i18n="auth.resetBack">← Orqaga</button>
+      </div>
+    </div>
+    <div class="auth-lang-wrap">
+      <div class="lang-switcher" role="group" data-i18n-aria="lang.aria">
+        <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+        <button type="button" class="lang-btn" data-lang="ru">RU</button>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
       </div>
     </div>
   </div>
