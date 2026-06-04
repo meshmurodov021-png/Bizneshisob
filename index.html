@@ -9569,6 +9569,7 @@
 
       updateAmountLabel();
       syncBasketCurrencyUi();
+      pushWidgetSnapshot();
 
       if (currentTab === "home") {
         scheduleChartsRender({ force: true, deferMs: 80 });
@@ -9613,6 +9614,63 @@
       periodNetsCache = { fingerprint, nets };
       return nets;
     }
+
+    const WIDGET_HIGH_PROFIT_UZS = 1000000;
+
+    function getDailyTargetUzs() {
+      const raw = Number(localStorage.getItem("bh_daily_target") || "0");
+      return raw > 0 ? raw : WIDGET_HIGH_PROFIT_UZS;
+    }
+
+    function resolveWidgetState(todayNetUzs, dailyTargetUzs) {
+      if (dailyTargetUzs > 0 && todayNetUzs >= dailyTargetUzs) {
+        return { state: "record", statusEmoji: "🏆", statusText: "Rekord kun!" };
+      }
+      if (todayNetUzs < 0) {
+        return { state: "negative", statusEmoji: "📊", statusText: "Ertaga yaxshiroq bo'ladi" };
+      }
+      if (todayNetUzs === 0) {
+        return { state: "zero", statusEmoji: "💪", statusText: "Davom eting" };
+      }
+      if (todayNetUzs >= WIDGET_HIGH_PROFIT_UZS) {
+        return { state: "high", statusEmoji: "🚀", statusText: "Ajoyib natija" };
+      }
+      if (todayNetUzs >= 100000) {
+        return { state: "positive", statusEmoji: "📈", statusText: "O'sishda davom etmoqda" };
+      }
+      return { state: "positive", statusEmoji: "🎉", statusText: "Yaxshi boshlanish" };
+    }
+
+    function pushWidgetSnapshot() {
+      try {
+        const todayNet = calcPeriodNet("today");
+        const sign = todayNet >= 0 ? "+" : "−";
+        const formattedAmount = sign + formatMoney(Math.abs(todayNet));
+        const dailyTarget = getDailyTargetUzs();
+        const resolved = resolveWidgetState(todayNet, dailyTarget);
+        const snapshot = {
+          todayNetUzs: Math.round(todayNet),
+          formattedAmount,
+          currencyCode: getActiveCurrencyCode(),
+          dailyTargetUzs: dailyTarget,
+          statusEmoji: resolved.statusEmoji,
+          statusText: resolved.statusText,
+          state: resolved.state,
+          updatedAt: Date.now()
+        };
+        localStorage.setItem("bh_widget_snapshot", JSON.stringify(snapshot));
+        const json = JSON.stringify(snapshot);
+        if (typeof BiznesHisobWidgetBridge !== "undefined" && BiznesHisobWidgetBridge.updateWidget) {
+          BiznesHisobWidgetBridge.updateWidget(json);
+        } else if (window.BiznesHisobWidgetBridge?.updateWidget) {
+          window.BiznesHisobWidgetBridge.updateWidget(json);
+        }
+      } catch (err) {
+        console.warn("[BiznesHisob] Widget sync failed:", err);
+      }
+    }
+
+    window.pushWidgetSnapshot = pushWidgetSnapshot;
 
     function scheduleChartsRender(options = {}) {
       const force = options.force === true;
@@ -12731,6 +12789,7 @@
         renderPeriodStats();
         refreshIconsScoped(transactionList);
       });
+      pushWidgetSnapshot();
     }
 
     function renderTransactionList() {
@@ -12780,6 +12839,7 @@
       }
       if (!skipCharts) scheduleChartsRender();
       lastUiContentFingerprint = getTransactionsFingerprint();
+      pushWidgetSnapshot();
       requestAnimationFrame(refreshIcons);
     }
 

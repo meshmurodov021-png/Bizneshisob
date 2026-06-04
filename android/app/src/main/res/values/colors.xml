@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bh_bg_deep">#0B1020</color>
+    <color name="bh_bg_navy">#0F172A</color>
+    <color name="bh_bg_slate">#111827</color>
+    <color name="bh_accent_blue">#38BDF8</color>
+    <color name="bh_success">#22C55E</color>
+    <color name="bh_brand_purple">#7C3AED</color>
+    <color name="bh_warning">#FACC15</color>
+    <color name="bh_danger">#EF4444</color>
+    <color name="bh_text_primary">#E8EAEF</color>
+    <color name="bh_text_muted">#8B92A5</color>
+</resources>

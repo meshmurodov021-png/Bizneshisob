@@ -1,0 +1,1 @@
+-keepclassmembers class uz.bizneshisob.app.bridge.WebAppBridge { *; }

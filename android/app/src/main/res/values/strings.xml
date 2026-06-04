@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BiznesHisob</string>
+    <string name="widget_name">Bugungi Sof Foyda</string>
+    <string name="widget_title">BUGUNGI SOF FOYDA</string>
+    <string name="widget_brand">BiznesHisob</string>
+    <string name="widget_loading">Yuklanmoqda…</string>
+</resources>
