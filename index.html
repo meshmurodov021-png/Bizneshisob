@@ -6807,6 +6807,7 @@
         "basket.note": "Izoh",
         "basket.notePh": "Ixtiyoriy izoh",
         "basket.save": "Saqlash",
+        "validation.invalidDate": "Noto'g'ri sana! Iltimos, to'g'ri sana kiriting.",
         "basket.removeItem": "Oʻchirish",
         "basket.itemRequired": "Kamida bitta mahsulot kiriting",
         "basket.itemNameRequired": "Mahsulot nomini kiriting",
@@ -7082,6 +7083,7 @@
         "basket.note": "Примечание",
         "basket.notePh": "Необязательно",
         "basket.save": "Сохранить",
+        "validation.invalidDate": "Неверная дата! Введите корректную дату.",
         "basket.removeItem": "Удалить",
         "basket.itemRequired": "Добавьте хотя бы один товар",
         "basket.itemNameRequired": "Введите название товара",
@@ -7357,6 +7359,7 @@
         "basket.note": "Note",
         "basket.notePh": "Optional note",
         "basket.save": "Save",
+        "validation.invalidDate": "Invalid date! Please enter a valid date.",
         "basket.removeItem": "Remove",
         "basket.itemRequired": "Add at least one product",
         "basket.itemNameRequired": "Enter product name",
@@ -9298,9 +9301,9 @@
         : normalizedItems.map(item => item.name).join(", ");
 
       let isoDate = new Date().toISOString();
-      if (date) {
-        const parsed = new Date(`${date}T12:00:00`);
-        if (!Number.isNaN(parsed.getTime())) isoDate = parsed.toISOString();
+      if (date && isValidDate(date)) {
+        const parsed = parseLocalDateString(date);
+        if (parsed) isoDate = parsed.toISOString();
       }
 
       const payload = {
@@ -9525,6 +9528,7 @@
       };
       mix(String(transactions.length));
       mix(currentLang || "");
+      mix(new Date().toDateString());
       mix(getCurrencyFingerprint());
       for (const tx of transactions) {
         mix(String(tx.type || ""));
@@ -9854,6 +9858,56 @@
       return d;
     }
 
+    function parseLocalDateString(dateStr) {
+      if (!dateStr || typeof dateStr !== "string") return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        const [year, month, day] = dateStr.split("-").map(Number);
+        const d = new Date(year, month - 1, day, 12, 0, 0, 0);
+        return Number.isNaN(d.getTime()) ? null : d;
+      }
+      const d = new Date(dateStr);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function isValidDate(dateStr) {
+      if (!dateStr || typeof dateStr !== "string") return false;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
+      const [year, month, day] = dateStr.split("-").map(Number);
+      if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return false;
+      const date = new Date(year, month - 1, day);
+      if (Number.isNaN(date.getTime())) return false;
+      return date.getFullYear() === year &&
+        date.getMonth() + 1 === month &&
+        date.getDate() === day;
+    }
+
+    function bindDateInputValidation(input) {
+      if (!input || input.dataset.dateValidationBound === "1") return;
+      input.dataset.dateValidationBound = "1";
+      const validate = () => {
+        const value = input.value;
+        if (!value) {
+          input.setCustomValidity("");
+          return true;
+        }
+        if (!isValidDate(value)) {
+          input.setCustomValidity(t("validation.invalidDate"));
+          input.reportValidity();
+          input.value = getBasketDateDefault();
+          input.setCustomValidity("");
+          return false;
+        }
+        input.setCustomValidity("");
+        return true;
+      };
+      input.addEventListener("change", validate);
+      input.addEventListener("blur", validate);
+    }
+
+    function initDateInputValidation() {
+      document.querySelectorAll('input[type="date"]').forEach(bindDateInputValidation);
+    }
+
     function parseTxDate(tx) {
       const raw = tx?.date;
       if (raw == null || raw === "") return null;
@@ -9866,51 +9920,78 @@
         return new Date(raw.seconds * 1000);
       }
 
+      if (typeof raw === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return parseLocalDateString(raw);
+      }
+
       const d = new Date(raw);
       return Number.isNaN(d.getTime()) ? null : d;
     }
 
-    function getPeriodRange(period) {
-      const now = new Date();
-      const todayStart = startOfDay(now);
-      const todayEnd = endOfDay(now);
-
-      switch (period) {
-        case "today":
-          return { start: todayStart, end: todayEnd };
-        case "week": {
-          const start = new Date(todayStart);
-          const day = start.getDay();
-          const daysFromMonday = day === 0 ? 6 : day - 1;
-          start.setDate(start.getDate() - daysFromMonday);
-          return { start, end: todayEnd };
-        }
-        case "month":
-          return {
-            start: new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0),
-            end: todayEnd
-          };
-        case "3months": {
-          const start = new Date(todayStart);
-          start.setMonth(start.getMonth() - 3);
-          return { start, end: todayEnd };
-        }
-        default:
-          return { start: null, end: null };
+    function toFilterDate(dateInput) {
+      if (dateInput instanceof Date) return dateInput;
+      if (typeof dateInput === "string" && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+        return parseLocalDateString(dateInput);
       }
+      const d = new Date(dateInput);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function isToday(dateInput) {
+      const date = toFilterDate(dateInput);
+      if (!date) return false;
+      const today = new Date();
+      return date.toDateString() === today.toDateString();
+    }
+
+    function isThisWeek(dateInput) {
+      const now = new Date();
+      const date = toFilterDate(dateInput);
+      if (!date) return false;
+      const startOfWeek = new Date(now);
+      const day = now.getDay();
+      const daysFromMonday = day === 0 ? 6 : day - 1;
+      startOfWeek.setDate(now.getDate() - daysFromMonday);
+      startOfWeek.setHours(0, 0, 0, 0);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+      return date >= startOfWeek && date <= endOfWeek;
+    }
+
+    function isThisMonth(dateInput) {
+      const now = new Date();
+      const date = toFilterDate(dateInput);
+      if (!date) return false;
+      return date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+    }
+
+    function isLast3Months(dateInput) {
+      const now = new Date();
+      const date = toFilterDate(dateInput);
+      if (!date) return false;
+      const start = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate(), 0, 0, 0, 0);
+      const end = endOfDay(now);
+      return date >= start && date <= end;
     }
 
     function isTxInPeriod(tx, period) {
       const txDate = parseTxDate(tx);
       if (!txDate) return false;
 
-      if (period === "today") {
-        return txDate.toDateString() === new Date().toDateString();
+      switch (period) {
+        case "today":
+          return isToday(txDate);
+        case "week":
+          return isThisWeek(txDate);
+        case "month":
+          return isThisMonth(txDate);
+        case "3months":
+          return isLast3Months(txDate);
+        default:
+          return false;
       }
-
-      const { start, end } = getPeriodRange(period);
-      if (!start || !end) return false;
-      return txDate >= start && txDate <= end;
     }
 
     function filterTransactionsByPeriod(period) {
@@ -12568,6 +12649,8 @@
       return docRef;
     }
 
+    initDateInputValidation();
+
     basketForm?.addEventListener("submit", e => {
       e.preventDefault();
 
@@ -12591,9 +12674,19 @@
         return;
       }
 
+      if (basketDateInput && basketDateInput.value && !isValidDate(basketDateInput.value)) {
+        basketDateInput.setCustomValidity(t("validation.invalidDate"));
+        basketDateInput.reportValidity();
+        basketDateInput.value = getBasketDateDefault();
+        basketDateInput.setCustomValidity("");
+        return;
+      }
+
       const saveType = currentType;
       const saveCategory = basketSelectedCategory;
-      const saveDate = basketDateInput?.value || getBasketDateDefault();
+      const saveDate = (basketDateInput?.value && isValidDate(basketDateInput.value))
+        ? basketDateInput.value
+        : getBasketDateDefault();
       const saveNote = basketNoteInput?.value?.trim() || "";
       const pendingId = `pending_${Date.now()}`;
       const optimisticPayload = buildBasketTransactionPayload({
