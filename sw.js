@@ -1,4 +1,5 @@
-const CACHE_VERSION = "bizneshisob-v2";
+const BUILD_VERSION = "1780673729574";
+const CACHE_VERSION = `bizneshisob-${BUILD_VERSION}`;
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -11,28 +12,39 @@ const PRECACHE_URLS = [
   "/icons/apple-touch-icon.png"
 ];
 
-const FIREBASE_CDN = [
-  "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js",
-  "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js",
-  "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"
-];
-
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(SHELL_CACHE).then(cache => cache.addAll(PRECACHE_URLS)).then(() => self.skipWaiting())
+    caches.open(SHELL_CACHE)
+      .then(cache => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(key => key.startsWith("bizneshisob-") && key !== SHELL_CACHE && key !== RUNTIME_CACHE)
-          .map(key => caches.delete(key))
+    caches.keys()
+      .then(keys =>
+        Promise.all(
+          keys
+            .filter(key => key.startsWith("bizneshisob-") && key !== SHELL_CACHE && key !== RUNTIME_CACHE)
+            .map(key => caches.delete(key))
+        )
       )
-    ).then(() => self.clients.claim())
+      .then(() => self.clients.claim())
+      .then(() =>
+        self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(clients => {
+          clients.forEach(client => {
+            client.postMessage({ type: "SW_ACTIVATED", version: BUILD_VERSION });
+          });
+        })
+      )
   );
+});
+
+self.addEventListener("message", event => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 function isNavigationRequest(request) {
@@ -68,8 +80,16 @@ self.addEventListener("fetch", event => {
   }
 
   if (url.origin === self.location.origin) {
+    if (url.pathname === "/sw.js" || url.pathname.endsWith("/sw.js")) {
+      event.respondWith(networkOnly(request));
+      return;
+    }
     if (isNavigationRequest(request)) {
       event.respondWith(networkFirstNavigation(request));
+      return;
+    }
+    if (url.pathname === "/index.html" || url.pathname === "/version.json") {
+      event.respondWith(networkFirstAsset(request, SHELL_CACHE));
       return;
     }
     event.respondWith(cacheFirst(request, SHELL_CACHE));
@@ -77,10 +97,27 @@ self.addEventListener("fetch", event => {
   }
 });
 
+async function networkOnly(request) {
+  return fetch(request);
+}
+
+async function networkFirstAsset(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  try {
+    const response = await fetch(request, { cache: "no-store" });
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    return Response.error();
+  }
+}
+
 async function networkFirstNavigation(request) {
   const cache = await caches.open(SHELL_CACHE);
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, { cache: "no-store" });
     if (response.ok) {
       cache.put("/index.html", response.clone());
       cache.put("/", response.clone());

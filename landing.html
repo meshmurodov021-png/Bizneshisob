@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="BiznesHisob — biznes daromad va xarajatlarini boshqarish ilovasi">
   <meta name="theme-color" content="#7C3AED">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="app-build-version" content="1780673729574">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1780673729574">
+  <link rel="manifest" href="/manifest.json?v=1780673729574">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2150,9 +2151,10 @@
       deferredInstallPrompt = e;
     });
 
+    const APP_BUILD_VERSION = document.querySelector('meta[name="app-build-version"]')?.content || "dev";
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js").catch(() => {});
+        navigator.serviceWorker.register(`/sw.js?v=${APP_BUILD_VERSION}`).catch(() => {});
       });
     }
 
