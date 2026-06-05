@@ -4537,7 +4537,7 @@
       max-height: min(94dvh, 720px);
       display: flex;
       flex-direction: column;
-      padding: 0.85rem 0.95rem 0.9rem;
+      padding: 0.75rem 0.85rem 0.85rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 18px;
@@ -4545,50 +4545,84 @@
       transform: translateY(16px) scale(0.98);
       transition: transform 0.35s var(--ease);
       position: relative;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
     .modal-overlay.open .basket-modal {
       transform: translateY(0) scale(1);
     }
 
+    .basket-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      margin-bottom: 0.45rem;
+    }
+
+    .basket-modal-header h2,
     .basket-modal h2 {
       font-size: 1rem;
       font-weight: 800;
-      margin: 0 1.75rem 0.55rem 0;
+      margin: 0;
       letter-spacing: -0.02em;
       line-height: 1.25;
+      flex: 1;
+      min-width: 0;
     }
 
-    .basket-modal .modal-close {
-      position: absolute;
-      top: 0.35rem;
-      right: 0.4rem;
-      width: 30px;
-      height: 30px;
+    #basketModalClose.basket-modal-close {
+      position: static;
+      top: auto;
+      right: auto;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      margin: 0;
       padding: 0;
-      font-size: 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 400;
       line-height: 1;
-      display: grid;
-      place-items: center;
-      transform: translateY(-2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transform: none;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .basket-modal .modal-close:hover {
-      transform: translateY(-2px);
+    #basketModalClose.basket-modal-close:hover {
+      color: var(--text);
+      border-color: rgba(124, 58, 237, 0.4);
+      background: rgba(124, 58, 237, 0.12);
+      transform: none;
     }
 
     #basketForm {
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
     }
 
     .basket-form-scroll {
       display: flex;
       flex-direction: column;
       gap: 0.45rem;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 2px;
     }
 
     .basket-modal .basket-type-toggle {
@@ -6179,8 +6213,10 @@
 
   <div class="modal-overlay" id="basketModal" role="dialog" aria-modal="true" aria-labelledby="basketModalTitle">
     <div class="basket-modal">
-      <button type="button" class="modal-close" id="basketModalClose" aria-label="Yopish">×</button>
-      <h2 id="basketModalTitle" data-i18n="basket.titleExpense">Xarajat qoʻshish</h2>
+      <div class="basket-modal-header">
+        <h2 id="basketModalTitle" data-i18n="basket.titleExpense">Xarajat qoʻshish</h2>
+        <button type="button" class="basket-modal-close" id="basketModalClose" aria-label="Yopish">×</button>
+      </div>
       <form id="basketForm">
         <div class="basket-form-scroll">
           <div class="type-toggle basket-type-toggle" id="basketTypeToggle">
