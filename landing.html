@@ -409,23 +409,126 @@
 
     .phone-tilt {
       transform-style: preserve-3d;
-      transition: transform 0.15s ease-out;
-      animation: phoneFloat 3s ease-in-out infinite;
+      will-change: transform;
     }
 
-    @keyframes phoneFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-14px); }
+    .phone-tilt-inner {
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
     }
-
-    .phone-tilt-inner { position: relative; }
 
     .phone-aura {
+      --mx: 0.5;
+      --my: 0.5;
       position: absolute;
-      inset: -20% -15%;
-      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(124, 58, 237, 0.55), transparent 65%);
-      filter: blur(45px);
+      inset: -32% -28%;
       z-index: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .phone-aura-base {
+      position: absolute;
+      inset: 8% 5%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse 75% 65% at 50% 50%, rgba(124, 58, 237, 0.42), transparent 68%);
+      filter: blur(42px);
+      opacity: 0.9;
+      animation: auraBreathe 7s ease-in-out infinite;
+    }
+
+    .phone-aura-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(52px);
+      opacity: 0.75;
+      will-change: transform;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .phone-aura-blob--violet {
+      width: 58%;
+      height: 58%;
+      top: 14%;
+      left: 10%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.72) 0%, transparent 72%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * 72px),
+        calc((var(--my) - 0.5) * 56px)
+      );
+      animation: auraDriftViolet 9s ease-in-out infinite;
+    }
+
+    .phone-aura-blob--indigo {
+      width: 48%;
+      height: 48%;
+      bottom: 8%;
+      right: 6%;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.68) 0%, transparent 70%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * -64px),
+        calc((var(--my) - 0.5) * -48px)
+      );
+      animation: auraDriftIndigo 11s ease-in-out infinite;
+    }
+
+    .phone-aura-blob--cyan {
+      width: 36%;
+      height: 36%;
+      top: 42%;
+      right: 22%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 72%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * 40px),
+        calc((var(--my) - 0.5) * -36px)
+      );
+      animation: auraDriftCyan 8.5s ease-in-out infinite;
+    }
+
+    .phone-aura-ring {
+      position: absolute;
+      inset: 18% 12%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from calc(var(--mx) * 360deg),
+        rgba(124, 58, 237, 0.55),
+        rgba(79, 70, 229, 0.35),
+        rgba(56, 189, 248, 0.25),
+        rgba(124, 58, 237, 0.55)
+      );
+      filter: blur(28px);
+      opacity: 0.55;
+      transform: translate(
+        calc((var(--mx) - 0.5) * 24px),
+        calc((var(--my) - 0.5) * 20px)
+      );
+      animation: auraSpin 14s linear infinite;
+    }
+
+    @keyframes auraBreathe {
+      0%, 100% { opacity: 0.82; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+
+    @keyframes auraDriftViolet {
+      0%, 100% { filter: blur(52px) hue-rotate(0deg); }
+      50% { filter: blur(58px) hue-rotate(12deg); }
+    }
+
+    @keyframes auraDriftIndigo {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes auraDriftCyan {
+      0%, 100% { opacity: 0.28; }
+      50% { opacity: 0.48; }
+    }
+
+    @keyframes auraSpin {
+      from { transform: translate(calc((var(--mx) - 0.5) * 24px), calc((var(--my) - 0.5) * 20px)) rotate(0deg); }
+      to { transform: translate(calc((var(--mx) - 0.5) * 24px), calc((var(--my) - 0.5) * 20px)) rotate(360deg); }
     }
 
     .phone-device {
@@ -1399,7 +1502,9 @@
         transform: none;
         transition: none;
       }
-      .phone-tilt { animation: none; }
+      .phone-aura-base,
+      .phone-aura-blob,
+      .phone-aura-ring { animation: none; }
       .vs-badge { animation: none; }
     }
   </style>
@@ -1407,6 +1512,62 @@
 <body>
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="ambient" aria-hidden="true"></div>
+
+  <template id="phoneTiltTemplate">
+    <div class="phone-aura" id="phoneAura" aria-hidden="true">
+      <div class="phone-aura-ring"></div>
+      <div class="phone-aura-base"></div>
+      <div class="phone-aura-blob phone-aura-blob--violet"></div>
+      <div class="phone-aura-blob phone-aura-blob--indigo"></div>
+      <div class="phone-aura-blob phone-aura-blob--cyan"></div>
+    </div>
+    <span class="chip chip-1">✅ +24% oylik</span>
+    <div class="phone-device">
+      <div class="phone-screen">
+        <div class="dynamic-island" aria-hidden="true"></div>
+        <div class="mock-status">
+          <span>9:41</span>
+          <div class="mock-status-icons" aria-hidden="true">
+            <svg viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="0.5" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.5" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#fff"/></svg>
+            <svg viewBox="0 0 16 12" fill="none"><path d="M8 2.5C5.5 2.5 3.2 3.6 1.5 5.5L0 4C2.2 1.8 5 0.5 8 0.5s5.8 1.3 8 3.5l-1.5 1.5C12.8 3.6 10.5 2.5 8 2.5zm0 4c-1.5 0-2.9.6-3.9 1.7L2.5 6.2C3.9 4.8 5.9 4 8 4s4.1.8 5.5 2.2l-1.6 1.5C10.9 7.1 9.5 6.5 8 6.5zm0 3c-.8 0-1.5.3-2.1.9L5 9.4c.9-.9 2.1-1.4 3.4-1.4s2.5.5 3.4 1.4l-.9.9c-.6-.6-1.3-.9-2.1-.9z" fill="#fff"/><circle cx="8" cy="11" r="1.2" fill="#fff"/></svg>
+            <svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#fff" stroke-opacity="0.35"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="#fff"/><path d="M22 4v4h3v-4h-3z" fill="#fff" fill-opacity="0.4"/></svg>
+          </div>
+        </div>
+        <header class="app-header">
+          <div class="app-logo">📊</div>
+          <span class="app-title">BiznesHisob</span>
+        </header>
+        <div class="app-body">
+          <div class="profit-card">
+            <div class="mock-label">Sof foyda</div>
+            <div class="profit-amount">2,394,111 so'm</div>
+          </div>
+          <div class="stat-pair">
+            <div class="stat-mini income">
+              <div class="stat-mini-label">DAROMAD</div>
+              <div class="stat-mini-value">8.7 mln</div>
+            </div>
+            <div class="stat-mini expense">
+              <div class="stat-mini-label">XARAJAT</div>
+              <div class="stat-mini-value">6.3 mln</div>
+            </div>
+          </div>
+          <div class="quick-section-label">TEZKOR QO'SHISH</div>
+          <div class="quick-btns">
+            <button type="button" class="quick-btn income">+ Daromad</button>
+            <button type="button" class="quick-btn expense">− Xarajat</button>
+          </div>
+        </div>
+        <nav class="mock-nav" aria-label="Ilova navigatsiyasi">
+          <div class="mock-nav-item active"><span>🏠</span><span>Bosh</span></div>
+          <div class="mock-nav-item"><span>➕</span><span>Qo'shish</span></div>
+          <div class="mock-nav-item"><span>📋</span><span>Ro'yxat</span></div>
+          <div class="mock-nav-item"><span>👤</span><span>Profil</span></div>
+        </nav>
+      </div>
+    </div>
+    <span class="chip chip-2">🔒 Shifrlangan</span>
+  </template>
 
   <header class="header" id="header">
     <div class="container header-inner">
@@ -1464,58 +1625,8 @@
           </div>
           <p class="ios-hint hidden" id="heroIosHint" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
         </div>
-        <div class="hero-visual reveal">
-          <div class="phone-tilt" id="phoneTilt">
-            <div class="phone-tilt-inner">
-              <div class="phone-aura"></div>
-              <span class="chip chip-1">✅ +24% oylik</span>
-              <div class="phone-device">
-                <div class="phone-screen">
-                  <div class="dynamic-island" aria-hidden="true"></div>
-                  <div class="mock-status">
-                    <span>9:41</span>
-                    <div class="mock-status-icons" aria-hidden="true">
-                      <svg viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="0.5" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.5" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#fff"/></svg>
-                      <svg viewBox="0 0 16 12" fill="none"><path d="M8 2.5C5.5 2.5 3.2 3.6 1.5 5.5L0 4C2.2 1.8 5 0.5 8 0.5s5.8 1.3 8 3.5l-1.5 1.5C12.8 3.6 10.5 2.5 8 2.5zm0 4c-1.5 0-2.9.6-3.9 1.7L2.5 6.2C3.9 4.8 5.9 4 8 4s4.1.8 5.5 2.2l-1.6 1.5C10.9 7.1 9.5 6.5 8 6.5zm0 3c-.8 0-1.5.3-2.1.9L5 9.4c.9-.9 2.1-1.4 3.4-1.4s2.5.5 3.4 1.4l-.9.9c-.6-.6-1.3-.9-2.1-.9z" fill="#fff"/><circle cx="8" cy="11" r="1.2" fill="#fff"/></svg>
-                      <svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#fff" stroke-opacity="0.35"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="#fff"/><path d="M22 4v4h3v-4h-3z" fill="#fff" fill-opacity="0.4"/></svg>
-                    </div>
-                  </div>
-                  <header class="app-header">
-                    <div class="app-logo">📊</div>
-                    <span class="app-title">BiznesHisob</span>
-                  </header>
-                  <div class="app-body">
-                    <div class="profit-card">
-                      <div class="mock-label">Sof foyda</div>
-                      <div class="profit-amount">2,394,111 so'm</div>
-                    </div>
-                    <div class="stat-pair">
-                      <div class="stat-mini income">
-                        <div class="stat-mini-label">DAROMAD</div>
-                        <div class="stat-mini-value">8.7 mln</div>
-                      </div>
-                      <div class="stat-mini expense">
-                        <div class="stat-mini-label">XARAJAT</div>
-                        <div class="stat-mini-value">6.3 mln</div>
-                      </div>
-                    </div>
-                    <div class="quick-section-label">TEZKOR QO'SHISH</div>
-                    <div class="quick-btns">
-                      <button type="button" class="quick-btn income">+ Daromad</button>
-                      <button type="button" class="quick-btn expense">− Xarajat</button>
-                    </div>
-                  </div>
-                  <nav class="mock-nav" aria-label="Ilova navigatsiyasi">
-                    <div class="mock-nav-item active"><span>🏠</span><span>Bosh</span></div>
-                    <div class="mock-nav-item"><span>➕</span><span>Qo'shish</span></div>
-                    <div class="mock-nav-item"><span>📋</span><span>Ro'yxat</span></div>
-                    <div class="mock-nav-item"><span>👤</span><span>Profil</span></div>
-                  </nav>
-                </div>
-              </div>
-              <span class="chip chip-2">🔒 Shifrlangan</span>
-            </div>
-          </div>
+        <div class="hero-visual reveal" id="heroVisual">
+          <div id="heroPhoneMount"></div>
         </div>
       </div>
       <a href="#compare" class="scroll-hint" aria-label="Pastga aylantiring">
@@ -1958,25 +2069,6 @@
       });
     });
 
-    /* 3D phone tilt */
-    const phoneTilt = document.getElementById("phoneTilt");
-    const heroVisual = document.querySelector(".hero-visual");
-
-    if (phoneTilt && heroVisual && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      heroVisual.addEventListener("mousemove", (e) => {
-        const rect = heroVisual.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
-        phoneTilt.style.animation = "none";
-        phoneTilt.style.transform =
-          `perspective(1200px) rotateY(${x * 16}deg) rotateX(${-y * 12}deg) translateY(-6px)`;
-      });
-      heroVisual.addEventListener("mouseleave", () => {
-        phoneTilt.style.transform = "";
-        phoneTilt.style.animation = "phoneFloat 3s ease-in-out infinite";
-      });
-    }
-
     function formatCount(n, suffix, final) {
       if (suffix === "K+") {
         if (final || n >= 1000) {
@@ -2159,6 +2251,128 @@
     }
 
     setupInstallUI();
+  </script>
+
+  <script type="module">
+    import React, { useEffect, useRef, useState } from "https://esm.sh/react@18.3.1";
+    import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
+    import { motion, useSpring } from "https://esm.sh/framer-motion@11.11.17";
+
+    function mountPhoneFallback() {
+      const mount = document.getElementById("heroPhoneMount");
+      const tpl = document.getElementById("phoneTiltTemplate");
+      if (!mount || !tpl?.content || mount.childElementCount) return;
+      const shell = document.createElement("div");
+      shell.className = "phone-tilt";
+      const inner = document.createElement("div");
+      inner.className = "phone-tilt-inner";
+      inner.appendChild(tpl.content.cloneNode(true));
+      shell.appendChild(inner);
+      mount.appendChild(shell);
+    }
+
+    function HeroPhone() {
+      const innerRef = useRef(null);
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const [auraTarget, setAuraTarget] = useState({ x: 0.5, y: 0.5 });
+      const auraX = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
+      const auraY = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
+      const rotateX = useSpring(0, { stiffness: 140, damping: 24 });
+      const rotateY = useSpring(0, { stiffness: 140, damping: 24 });
+
+      useEffect(() => {
+        const tpl = document.getElementById("phoneTiltTemplate");
+        if (tpl?.content && innerRef.current && !innerRef.current.childElementCount) {
+          innerRef.current.appendChild(tpl.content.cloneNode(true));
+        }
+      }, []);
+
+      useEffect(() => {
+        if (reducedMotion) return undefined;
+        const onMove = (e) => {
+          setAuraTarget({
+            x: e.clientX / window.innerWidth,
+            y: e.clientY / window.innerHeight
+          });
+        };
+        document.addEventListener("mousemove", onMove, { passive: true });
+        return () => document.removeEventListener("mousemove", onMove);
+      }, [reducedMotion]);
+
+      useEffect(() => {
+        auraX.set(auraTarget.x);
+        auraY.set(auraTarget.y);
+      }, [auraTarget, auraX, auraY]);
+
+      useEffect(() => {
+        const applyAura = () => {
+          const el = document.getElementById("phoneAura");
+          if (!el) return;
+          el.style.setProperty("--mx", auraX.get());
+          el.style.setProperty("--my", auraY.get());
+        };
+        applyAura();
+        const unsubX = auraX.on("change", applyAura);
+        const unsubY = auraY.on("change", applyAura);
+        return () => {
+          unsubX();
+          unsubY();
+        };
+      }, [auraX, auraY]);
+
+      const handleMouseMove = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        rotateY.set(x * 18);
+        rotateX.set(-y * 14);
+      };
+
+      const handleMouseLeave = () => {
+        rotateX.set(0);
+        rotateY.set(0);
+      };
+
+      return React.createElement(
+        motion.div,
+        {
+          className: "phone-tilt",
+          animate: reducedMotion
+            ? undefined
+            : {
+                y: [0, -18, -8, 0],
+                rotateZ: [0, 0.8, -0.5, 0]
+              },
+          transition: {
+            duration: 5.8,
+            repeat: Infinity,
+            ease: [0.45, 0.05, 0.55, 0.95]
+          },
+          style: { transformStyle: "preserve-3d" },
+          onMouseMove: reducedMotion ? undefined : handleMouseMove,
+          onMouseLeave: reducedMotion ? undefined : handleMouseLeave
+        },
+        React.createElement(motion.div, {
+          ref: innerRef,
+          className: "phone-tilt-inner",
+          style: {
+            rotateX: reducedMotion ? 0 : rotateX,
+            rotateY: reducedMotion ? 0 : rotateY,
+            transformStyle: "preserve-3d"
+          }
+        })
+      );
+    }
+
+    const heroPhoneMount = document.getElementById("heroPhoneMount");
+    if (heroPhoneMount) {
+      try {
+        createRoot(heroPhoneMount).render(React.createElement(HeroPhone));
+      } catch (err) {
+        console.warn("[BiznesHisob] Hero phone motion failed, using static fallback:", err);
+        mountPhoneFallback();
+      }
+    }
   </script>
 </body>
 </html>
