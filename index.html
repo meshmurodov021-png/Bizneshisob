@@ -1936,20 +1936,28 @@
     }
 
     .settings-logout-btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       width: 100%;
       margin-top: 0.35rem;
       padding: 0.95rem 1rem;
-      border: none;
+      border: 1px solid rgba(239, 68, 68, 0.25);
       border-radius: var(--radius);
       background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.25);
       color: #f87171;
       font-size: 0.95rem;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
       transition: background 0.2s var(--ease);
+    }
+
+    .settings-logout-btn [data-lucide] {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
     }
 
     .settings-logout-btn:active {
@@ -3587,45 +3595,6 @@
       width: 16px;
       height: 16px;
       stroke: var(--muted);
-    }
-
-    .profile-logout-wrap {
-      margin-top: auto;
-      padding-top: 32px;
-      padding-bottom: 0.5rem;
-    }
-
-    .profile-logout-full {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 1rem;
-      border: 1px solid rgba(255, 77, 77, 0.4);
-      border-radius: var(--radius);
-      background: rgba(255, 77, 77, 0.12);
-      color: #ff4d4d;
-      font-size: 0.95rem;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s var(--ease);
-    }
-
-    .profile-logout-full [data-lucide] {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-    }
-
-    .profile-logout-full:active {
-      background: rgba(255, 77, 77, 0.22);
-    }
-
-    .profile-logout-full:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
     }
 
     .profile-system-hint {
@@ -6060,13 +6029,6 @@
             </div>
           </div>
 
-          <div class="profile-logout-wrap">
-            <button type="button" class="profile-logout-full" id="logoutBtn">
-              <i data-lucide="log-out"></i>
-              <span data-i18n="profile.logout">Chiqish</span>
-            </button>
-          </div>
-
           <span class="plan-badge premium hidden" id="premiumBadge" aria-hidden="true"></span>
           <span class="plan-badge free-wrap hidden" id="freePlanBadge" aria-hidden="true"></span>
           <strong class="hidden" id="profileTxCount" aria-hidden="true">0</strong>
@@ -6180,6 +6142,10 @@
               <span class="settings-row-value" id="syncStatusText" data-i18n="profile.online">Onlayn</span>
             </div>
           </div>
+          <button type="button" class="settings-logout-btn" id="logoutBtn">
+            <i data-lucide="log-out"></i>
+            <span data-i18n="profile.logout">Chiqish</span>
+          </button>
         </section>
 
         <p class="profile-system-hint" data-i18n="profile.hint">Maʼlumotlar Firestore bulutida saqlanadi</p>
