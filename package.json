@@ -3,10 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "icons": "node generate-icons.js",
-    "stamp-version": "node scripts/stamp-version.js",
-    "build": "node scripts/stamp-version.js",
-    "vercel-build": "node scripts/stamp-version.js"
+    "build": "node scripts/stamp-version.js"
   },
   "devDependencies": {
     "sharp": "^0.33.5"
