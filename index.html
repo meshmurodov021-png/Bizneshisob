@@ -10100,58 +10100,104 @@
       return Number.isNaN(d.getTime()) ? null : d;
     }
 
-    function isToday(dateInput) {
-      const date = toFilterDate(dateInput);
-      if (!date) return false;
-      const today = new Date();
-      return date.toDateString() === today.toDateString();
+    /** Local calendar day at noon — avoids UTC midnight shifting the date. */
+    function normalizeToLocalDay(dateInput) {
+      const d = toFilterDate(dateInput);
+      if (!d) return null;
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0, 0);
     }
 
-    function isThisWeek(dateInput) {
-      const now = new Date();
-      const date = toFilterDate(dateInput);
-      if (!date) return false;
-      const startOfWeek = new Date(now);
-      const day = now.getDay();
+    function getLocalDateKey(dateInput) {
+      const d = normalizeToLocalDay(dateInput);
+      if (!d) return null;
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function getMondayOfWeek(refDate = new Date()) {
+      const ref = normalizeToLocalDay(refDate);
+      if (!ref) return null;
+      const monday = new Date(ref);
+      const day = ref.getDay();
       const daysFromMonday = day === 0 ? 6 : day - 1;
-      startOfWeek.setDate(now.getDate() - daysFromMonday);
-      startOfWeek.setHours(0, 0, 0, 0);
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      endOfWeek.setHours(23, 59, 59, 999);
-      return date >= startOfWeek && date <= endOfWeek;
+      monday.setDate(ref.getDate() - daysFromMonday);
+      monday.setHours(0, 0, 0, 0);
+      return monday;
     }
 
-    function isThisMonth(dateInput) {
-      const now = new Date();
-      const date = toFilterDate(dateInput);
-      if (!date) return false;
-      return date.getMonth() === now.getMonth() &&
-        date.getFullYear() === now.getFullYear();
+    /**
+     * Period bounds for dashboard stats (all capped at end of today).
+     * today:  same calendar day as refDate
+     * week:   Monday 00:00 → refDate 23:59:59
+     * month:  1st of month 00:00 → refDate 23:59:59
+     * 3months: refDate minus 3 months → refDate 23:59:59
+     */
+    function getStatsPeriodBounds(period, refDate = new Date()) {
+      const ref = normalizeToLocalDay(refDate);
+      if (!ref) return null;
+      const todayEnd = endOfDay(ref);
+
+      switch (period) {
+        case "today":
+          return { start: startOfDay(ref), end: todayEnd };
+        case "week": {
+          const start = getMondayOfWeek(ref);
+          return start ? { start, end: todayEnd } : null;
+        }
+        case "month":
+          return {
+            start: new Date(ref.getFullYear(), ref.getMonth(), 1, 0, 0, 0, 0),
+            end: todayEnd
+          };
+        case "3months": {
+          const start = new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 0, 0, 0, 0);
+          return { start, end: todayEnd };
+        }
+        default:
+          return null;
+      }
     }
 
-    function isLast3Months(dateInput) {
-      const now = new Date();
-      const date = toFilterDate(dateInput);
-      if (!date) return false;
-      const start = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate(), 0, 0, 0, 0);
-      const end = endOfDay(now);
-      return date >= start && date <= end;
+    function isDateInStatsPeriod(dateInput, period, refDate = new Date()) {
+      const day = normalizeToLocalDay(dateInput);
+      if (!day) return false;
+      const bounds = getStatsPeriodBounds(period, refDate);
+      if (!bounds) return false;
+      return day >= bounds.start && day <= bounds.end;
     }
 
-    function isTxInPeriod(tx, period) {
+    function isToday(dateInput, refDate = new Date()) {
+      const key = getLocalDateKey(dateInput);
+      return key !== null && key === getLocalDateKey(refDate);
+    }
+
+    function isThisWeek(dateInput, refDate = new Date()) {
+      return isDateInStatsPeriod(dateInput, "week", refDate);
+    }
+
+    function isThisMonth(dateInput, refDate = new Date()) {
+      return isDateInStatsPeriod(dateInput, "month", refDate);
+    }
+
+    function isLast3Months(dateInput, refDate = new Date()) {
+      return isDateInStatsPeriod(dateInput, "3months", refDate);
+    }
+
+    function isTxInPeriod(tx, period, refDate = new Date()) {
       const txDate = parseTxDate(tx);
       if (!txDate) return false;
 
       switch (period) {
         case "today":
-          return isToday(txDate);
+          return isToday(txDate, refDate);
         case "week":
-          return isThisWeek(txDate);
+          return isThisWeek(txDate, refDate);
         case "month":
-          return isThisMonth(txDate);
+          return isThisMonth(txDate, refDate);
         case "3months":
-          return isLast3Months(txDate);
+          return isLast3Months(txDate, refDate);
         default:
           return false;
       }
