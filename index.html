@@ -9463,11 +9463,7 @@
         ? normalizedItems[0].name
         : normalizedItems.map(item => item.name).join(", ");
 
-      let isoDate = new Date().toISOString();
-      if (date && isValidDate(date)) {
-        const parsed = parseLocalDateString(date);
-        if (parsed) isoDate = parsed.toISOString();
-      }
+      const transactionDate = (date && isValidDate(date)) ? date : getBasketDateDefault();
 
       const payload = {
         type: normalizedType,
@@ -9477,7 +9473,7 @@
         totalAmount,
         amount: totalAmount,
         description,
-        date: isoDate,
+        date: transactionDate,
         createdAt: new Date().toISOString()
       };
 
@@ -9765,19 +9761,46 @@
       return bundle;
     }
 
-    function computeAllPeriodNets() {
-      const fingerprint = getTransactionsFingerprint();
+    function computeAllPeriodNets(refDate = new Date()) {
+      const refKey = getLocalDateKey(refDate);
+      const fingerprint = `${getTransactionsFingerprint()}|stats:${refKey}`;
       if (periodNetsCache.fingerprint === fingerprint && periodNetsCache.nets) {
         return periodNetsCache.nets;
       }
+
+      const ref = normalizeToLocalDay(refDate);
+      const weekStartKey = getLocalDateKey(getMondayOfWeek(refDate));
+      const monthStartKey = ref
+        ? `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`
+        : null;
+      const threeMonthsStart = ref
+        ? new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 12, 0, 0, 0)
+        : null;
+      const threeMonthsStartKey = threeMonthsStart ? getLocalDateKey(threeMonthsStart) : null;
+
       const nets = { today: 0, week: 0, month: 0, "3months": 0 };
+
       for (const tx of transactions) {
+        const txKey = getTxDateKey(tx);
+        if (!txKey || !refKey) continue;
+
         const amt = Number(tx.amount) || 0;
-        const sign = tx.type === "income" ? 1 : -1;
-        for (const key of ["today", "week", "month", "3months"]) {
-          if (isTxInPeriod(tx, key)) nets[key] += sign * amt;
+        const signed = tx.type === "income" ? amt : -amt;
+
+        if (txKey === refKey) {
+          nets.today += signed;
+        }
+        if (weekStartKey && txKey >= weekStartKey && txKey <= refKey) {
+          nets.week += signed;
+        }
+        if (monthStartKey && txKey >= monthStartKey && txKey <= refKey) {
+          nets.month += signed;
+        }
+        if (threeMonthsStartKey && txKey >= threeMonthsStartKey && txKey <= refKey) {
+          nets["3months"] += signed;
         }
       }
+
       periodNetsCache = { fingerprint, nets };
       return nets;
     }
@@ -10075,20 +10098,27 @@
       const raw = tx?.date;
       if (raw == null || raw === "") return null;
 
+      let d = null;
+
       if (typeof raw?.toDate === "function") {
-        return raw.toDate();
-      }
-
-      if (typeof raw === "object" && typeof raw.seconds === "number") {
-        return new Date(raw.seconds * 1000);
-      }
-
-      if (typeof raw === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        d = raw.toDate();
+      } else if (typeof raw === "object" && typeof raw.seconds === "number") {
+        d = new Date(raw.seconds * 1000);
+      } else if (typeof raw === "string" && /^\d{4}-\d{2}-\d{2}$/.test(raw)) {
         return parseLocalDateString(raw);
+      } else if (typeof raw === "string") {
+        d = new Date(raw);
+      } else if (raw instanceof Date) {
+        d = raw;
       }
 
-      const d = new Date(raw);
-      return Number.isNaN(d.getTime()) ? null : d;
+      if (!d || Number.isNaN(d.getTime())) return null;
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0, 0);
+    }
+
+    function getTxDateKey(tx) {
+      const parsed = parseTxDate(tx);
+      return parsed ? getLocalDateKey(parsed) : null;
     }
 
     function toFilterDate(dateInput) {
@@ -10186,18 +10216,33 @@
     }
 
     function isTxInPeriod(tx, period, refDate = new Date()) {
-      const txDate = parseTxDate(tx);
-      if (!txDate) return false;
+      const txKey = getTxDateKey(tx);
+      if (!txKey) return false;
+
+      const refKey = getLocalDateKey(refDate);
+      if (!refKey) return false;
 
       switch (period) {
         case "today":
-          return isToday(txDate, refDate);
-        case "week":
-          return isThisWeek(txDate, refDate);
-        case "month":
-          return isThisMonth(txDate, refDate);
-        case "3months":
-          return isLast3Months(txDate, refDate);
+          return txKey === refKey;
+        case "week": {
+          const weekStartKey = getLocalDateKey(getMondayOfWeek(refDate));
+          return weekStartKey ? txKey >= weekStartKey && txKey <= refKey : false;
+        }
+        case "month": {
+          const ref = normalizeToLocalDay(refDate);
+          const monthStartKey = ref
+            ? `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`
+            : null;
+          return monthStartKey ? txKey >= monthStartKey && txKey <= refKey : false;
+        }
+        case "3months": {
+          const ref = normalizeToLocalDay(refDate);
+          if (!ref) return false;
+          const start = new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 12, 0, 0, 0);
+          const startKey = getLocalDateKey(start);
+          return startKey ? txKey >= startKey && txKey <= refKey : false;
+        }
         default:
           return false;
       }
@@ -11808,7 +11853,10 @@
     }
 
     function formatDate(iso) {
-      const d = new Date(iso);
+      const d = (typeof iso === "string" && /^\d{4}-\d{2}-\d{2}$/.test(iso))
+        ? parseLocalDateString(iso)
+        : new Date(iso);
+      if (Number.isNaN(d.getTime())) return "—";
       return d.toLocaleDateString(DATE_LOCALES[currentLang] || "uz-UZ", {
         day: "numeric",
         month: "short",
