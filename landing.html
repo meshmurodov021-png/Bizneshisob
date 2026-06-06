@@ -324,16 +324,13 @@
 
     section { padding: 5.5rem 0; }
 
-    /* Reveal */
-    .reveal {
+    /* Scroll reveal — initial state (GSAP ScrollTrigger animates in) */
+    .reveal,
+    .feature-row,
+    .step-item,
+    .testimonial {
       opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
+      transform: translateY(28px);
     }
 
     /* HERO */
@@ -945,17 +942,9 @@
       gap: 2.5rem;
       align-items: center;
       margin-bottom: 5rem;
-      opacity: 0;
-      transform: translateY(48px);
-      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
 
     .feature-row:last-child { margin-bottom: 0; }
-
-    .feature-row.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
 
     .feature-row.reverse .feature-copy { order: 2; }
     .feature-row.reverse .feature-visual { order: 1; }
@@ -1090,14 +1079,6 @@
     .step-item {
       text-align: center;
       padding: 2rem 1.5rem;
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
-    }
-
-    .step-item.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .step-num {
@@ -1171,14 +1152,6 @@
 
     .testimonial {
       padding: 1.85rem;
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
-    }
-
-    .testimonial.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
 
     .stars {
@@ -1974,6 +1947,8 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
     const APP_URL = "https://bizneshisob.vercel.app/";
     let deferredInstallPrompt = null;
@@ -2096,26 +2071,169 @@
       requestAnimationFrame(tick);
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("visible");
-          if (entry.target.classList.contains("stat-value") && !entry.target.dataset.done) {
-            entry.target.dataset.done = "1";
-            animateCounter(entry.target);
+    function showScrollTargetsFallback() {
+      document.querySelectorAll(".reveal, .feature-row, .step-item, .testimonial").forEach((el) => {
+        el.style.opacity = "1";
+        el.style.transform = "none";
+      });
+    }
+
+    function initScrollReveal() {
+      const scrollTargets = ".reveal, .feature-row, .step-item, .testimonial";
+
+      if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+        showScrollTargetsFallback();
+        return;
+      }
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        gsap.set(scrollTargets, { autoAlpha: 1, y: 0, clearProps: "transform" });
+        document.querySelectorAll(".stat-value").forEach((el) => {
+          if (!el.dataset.done) {
+            el.dataset.done = "1";
+            animateCounter(el);
           }
         });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-    );
+        return;
+      }
 
-    document.querySelectorAll(
-      ".reveal, .feature-row, .step-item, .testimonial, .stat-value"
-    ).forEach((el) => {
-      if (el.dataset.delay) el.style.transitionDelay = el.dataset.delay + "ms";
-      observer.observe(el);
-    });
+      gsap.registerPlugin(ScrollTrigger);
+
+      const fadeIn = { y: 0, autoAlpha: 1 };
+      const fadeEase = "power2.out";
+
+      gsap.utils.toArray("#hero .reveal").forEach((el, i) => {
+        gsap.fromTo(
+          el,
+          { y: 22, autoAlpha: 0 },
+          { ...fadeIn, duration: 0.85, delay: i * 0.1, ease: "power3.out" }
+        );
+      });
+
+      gsap.utils.toArray("main .section-head").forEach((head) => {
+        gsap.fromTo(
+          head,
+          { y: 24, autoAlpha: 0 },
+          {
+            ...fadeIn,
+            duration: 0.72,
+            ease: fadeEase,
+            scrollTrigger: { trigger: head, start: "top 88%", once: true }
+          }
+        );
+      });
+
+      ScrollTrigger.batch("#compare .compare-card, #compare .vs-wrap", {
+        start: "top 86%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 30, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.8, ease: fadeEase, stagger: 0.11, overwrite: "auto" }
+          );
+        }
+      });
+
+      gsap.utils.toArray("#features .feature-row").forEach((row) => {
+        gsap.fromTo(
+          row,
+          { y: 32, autoAlpha: 0 },
+          {
+            ...fadeIn,
+            duration: 0.82,
+            ease: fadeEase,
+            scrollTrigger: { trigger: row, start: "top 89%", once: true }
+          }
+        );
+      });
+
+      ScrollTrigger.batch("#how .step-item", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 26, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.75, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
+          );
+        }
+      });
+
+      ScrollTrigger.create({
+        trigger: "#stats",
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          gsap.fromTo(
+            "#stats .stat-box",
+            { y: 22, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.7, ease: fadeEase, stagger: 0.08, overwrite: "auto" }
+          );
+          document.querySelectorAll("#stats .stat-value").forEach((el) => {
+            if (!el.dataset.done) {
+              el.dataset.done = "1";
+              animateCounter(el);
+            }
+          });
+        }
+      });
+
+      ScrollTrigger.batch("#reviews .testimonial", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 26, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.76, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
+          );
+        }
+      });
+
+      gsap.fromTo(
+        "#pricing .pricing-box",
+        { y: 28, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.8,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#pricing .pricing-box", start: "top 88%", once: true }
+        }
+      );
+
+      gsap.fromTo(
+        "#cta-banner .cta-banner-inner",
+        { y: 24, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.75,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#cta-banner", start: "top 86%", once: true }
+        }
+      );
+
+      gsap.fromTo(
+        "#contact .contact-card",
+        { y: 26, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.78,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#contact .contact-card", start: "top 88%", once: true }
+        }
+      );
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 180);
+      });
+    }
+
+    initScrollReveal();
 
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
