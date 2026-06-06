@@ -4717,13 +4717,65 @@
       white-space: nowrap;
     }
 
+    .basket-items-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+    }
+
     .basket-section-title {
       font-size: 0.72rem;
       font-weight: 700;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.04em;
+      margin: 0;
+    }
+
+    .basket-voice-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      flex-shrink: 0;
+      min-height: 30px;
+      padding: 0.3rem 0.55rem;
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      border-radius: 999px;
+      background: rgba(124, 58, 237, 0.1);
+      color: var(--accent-hover);
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+    }
+
+    .basket-voice-btn [data-lucide] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .basket-voice-btn.is-listening {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #f87171;
+      animation: voicePulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes voicePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.25); }
+      50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    }
+
+    .basket-voice-hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.35;
       margin: 0 0 0.35rem;
+      min-height: 1em;
     }
 
     .basket-items-section {
@@ -6198,7 +6250,14 @@
             <input type="date" id="basketDate" required>
           </div>
           <div class="basket-items-section">
-            <p class="basket-section-title" data-i18n="basket.products">Mahsulotlar</p>
+            <div class="basket-items-head">
+              <p class="basket-section-title" data-i18n="basket.products">Mahsulotlar</p>
+              <button type="button" class="basket-voice-btn" id="basketVoiceBtn" data-i18n-aria="voice.startAria">
+                <i data-lucide="mic"></i>
+                <span data-i18n="voice.btn">Ovoz</span>
+              </button>
+            </div>
+            <p class="basket-voice-hint" id="basketVoiceHint" aria-live="polite"></p>
             <div class="basket-items-scroll">
               <div class="basket-items-list" id="basketItemsList"></div>
               <button type="button" class="basket-add-item-btn" id="basketAddItemBtn" data-i18n="basket.addItem">＋ Mahsulot qoʻshish</button>
@@ -6896,6 +6955,15 @@
         "basket.note": "Izoh",
         "basket.notePh": "Ixtiyoriy izoh",
         "basket.save": "Saqlash",
+        "voice.btn": "Ovoz",
+        "voice.startAria": "Ovoz bilan kiritish",
+        "voice.listening": "Tinglanmoqda…",
+        "voice.heard": "Eshitildi: {{text}}",
+        "voice.applied": "Maydonlar to'ldirildi",
+        "voice.unsupported": "Brauzeringiz ovozni qo'llab-quvvatlamaydi",
+        "voice.noSpeech": "Ovoz eshitilmadi. Qayta urinib ko'ring.",
+        "voice.error": "Ovozni tanib bo'lmadi",
+        "voice.needAmount": "Summani ayting, masalan: \"25 ming xarajat non\"",
         "validation.invalidDate": "Noto'g'ri sana! Iltimos, to'g'ri sana kiriting.",
         "basket.removeItem": "Oʻchirish",
         "basket.itemRequired": "Kamida bitta mahsulot kiriting",
@@ -7174,6 +7242,15 @@
         "basket.note": "Примечание",
         "basket.notePh": "Необязательно",
         "basket.save": "Сохранить",
+        "voice.btn": "Голос",
+        "voice.startAria": "Голосовой ввод",
+        "voice.listening": "Слушаю…",
+        "voice.heard": "Распознано: {{text}}",
+        "voice.applied": "Поля заполнены",
+        "voice.unsupported": "Браузер не поддерживает голосовой ввод",
+        "voice.noSpeech": "Речь не распознана. Попробуйте снова.",
+        "voice.error": "Не удалось распознать голос",
+        "voice.needAmount": "Произнесите сумму, например: «25 ming xarajat non»",
         "validation.invalidDate": "Неверная дата! Введите корректную дату.",
         "basket.removeItem": "Удалить",
         "basket.itemRequired": "Добавьте хотя бы один товар",
@@ -7452,6 +7529,15 @@
         "basket.note": "Note",
         "basket.notePh": "Optional note",
         "basket.save": "Save",
+        "voice.btn": "Voice",
+        "voice.startAria": "Voice input",
+        "voice.listening": "Listening…",
+        "voice.heard": "Heard: {{text}}",
+        "voice.applied": "Fields filled",
+        "voice.unsupported": "Your browser does not support voice input",
+        "voice.noSpeech": "No speech detected. Try again.",
+        "voice.error": "Could not recognize voice",
+        "voice.needAmount": "Say an amount, e.g. \"25 ming xarajat non\"",
         "validation.invalidDate": "Invalid date! Please enter a valid date.",
         "basket.removeItem": "Remove",
         "basket.itemRequired": "Add at least one product",
@@ -7862,6 +7948,8 @@
     const basketDateInput = document.getElementById("basketDate");
     const basketItemsList = document.getElementById("basketItemsList");
     const basketAddItemBtn = document.getElementById("basketAddItemBtn");
+    const basketVoiceBtn = document.getElementById("basketVoiceBtn");
+    const basketVoiceHint = document.getElementById("basketVoiceHint");
     const basketTotalDisplay = document.getElementById("basketTotalDisplay");
     const basketNoteInput = document.getElementById("basketNote");
     const basketSubmitBtn = document.getElementById("basketSubmitBtn");
@@ -10593,6 +10681,8 @@
     basketModal?.addEventListener("click", e => {
       if (e.target === basketModal) closeBasketModal();
     });
+    basketVoiceBtn?.addEventListener("click", startBasketVoiceInput);
+
     basketAddItemBtn?.addEventListener("click", () => {
       basketItems.push(createBasketItemRow());
       renderBasketItems();
@@ -12181,6 +12271,189 @@
       refreshIconsScoped(el);
     }
 
+    const VOICE_INCOME_KEYWORDS = [
+      "daromad", "kirim", "tushum", "foyda", "sotuv", "sotdim", "oldim", "kiritdim"
+    ];
+    const VOICE_EXPENSE_KEYWORDS = [
+      "xarajat", "chiqim", "sarfladim", "sotib oldim", "to'lov", "tolov", "berdim", "sarf"
+    ];
+    const VOICE_AMOUNT_STOP_WORDS = new Set([
+      "daromad", "xarajat", "kirim", "chiqim", "tushum", "foyda", "ming", "mln", "mlrd",
+      "so'm", "som", "sum", "uzs", "dollar", "usd", "uchun", "ga", "dan", "va", "edi", "qildim"
+    ]);
+
+    let basketVoiceRecognition = null;
+    let basketVoiceListening = false;
+
+    /**
+     * Parses Uzbek voice text into transaction fields.
+     * Examples:
+     *   "25 ming xarajat non" → { type: "expense", amount: 25000, name: "non" }
+     *   "daromad 100 ming sotuv" → { type: "income", amount: 100000, name: "sotuv" }
+     */
+    function parseVoiceTransactionText(rawText) {
+      const original = String(rawText || "").trim();
+      if (!original) return null;
+
+      let text = original.toLowerCase()
+        .replace(/[''`ʻ]/g, "'")
+        .replace(/\s+/g, " ");
+
+      let type = "expense";
+      const hasIncome = VOICE_INCOME_KEYWORDS.some(word => text.includes(word));
+      const hasExpense = VOICE_EXPENSE_KEYWORDS.some(word => text.includes(word));
+      if (hasIncome && !hasExpense) type = "income";
+      else if (hasExpense) type = "expense";
+
+      let amount = 0;
+
+      const mlnMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:mln|million|millioni)/i);
+      const mingMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:ming|minga)/i);
+      const digitMatch = text.match(/(\d[\d\s.,]*\d|\d)/);
+
+      if (mlnMatch) {
+        amount = Math.round(parseFloat(mlnMatch[1].replace(/\s/g, "").replace(",", ".")) * 1000000);
+      } else if (mingMatch) {
+        amount = Math.round(parseFloat(mingMatch[1].replace(/\s/g, "").replace(",", ".")) * 1000);
+      } else if (digitMatch) {
+        amount = parseAmountDigits(digitMatch[1]);
+      }
+
+      let name = text;
+      if (mlnMatch) name = name.replace(mlnMatch[0], " ");
+      if (mingMatch) name = name.replace(mingMatch[0], " ");
+      if (digitMatch && !mlnMatch && !mingMatch) name = name.replace(digitMatch[0], " ");
+
+      [...VOICE_INCOME_KEYWORDS, ...VOICE_EXPENSE_KEYWORDS].forEach(word => {
+        name = name.replace(new RegExp(`\\b${word}\\b`, "g"), " ");
+      });
+
+      name = name
+        .replace(/\b(so'm|som|sum|uzs)\b/gi, " ")
+        .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const nameWords = name.split(" ").filter(w => w && !VOICE_AMOUNT_STOP_WORDS.has(w));
+      name = nameWords.join(" ").trim();
+
+      return {
+        type,
+        amount,
+        name: name || original,
+        rawText: original
+      };
+    }
+
+    function setBasketVoiceHint(message = "") {
+      if (basketVoiceHint) basketVoiceHint.textContent = message;
+    }
+
+    function setBasketVoiceListening(active) {
+      basketVoiceListening = active;
+      if (!basketVoiceBtn) return;
+      basketVoiceBtn.classList.toggle("is-listening", active);
+      const label = basketVoiceBtn.querySelector("span");
+      if (label) label.textContent = active ? t("voice.listening") : t("voice.btn");
+    }
+
+    function applyParsedVoiceToBasket(parsed) {
+      if (!parsed) return false;
+
+      if (parsed.type === "income" || parsed.type === "expense") {
+        setBasketType(parsed.type);
+      }
+
+      if (!basketItems.length) {
+        basketItems.push(createBasketItemRow());
+      }
+
+      const row = basketItems[0];
+      if (parsed.amount > 0) {
+        row.priceDigits = String(parsed.amount);
+      }
+      if (parsed.name) {
+        row.name = parsed.name;
+      }
+
+      renderBasketItems();
+
+      if (parsed.amount <= 0) {
+        setBasketVoiceHint(t("voice.needAmount"));
+        return false;
+      }
+
+      setBasketVoiceHint(t("voice.applied"));
+      return true;
+    }
+
+    function getSpeechRecognitionCtor() {
+      return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+    }
+
+    /**
+     * Captures microphone audio and converts Uzbek speech to text via Web Speech API.
+     * Reliable cloud upgrade path: Google Cloud Speech-to-Text (uz-UZ) or Azure Speech.
+     */
+    function startBasketVoiceInput() {
+      const Ctor = getSpeechRecognitionCtor();
+      if (!Ctor) {
+        setBasketVoiceHint(t("voice.unsupported"));
+        return;
+      }
+
+      if (basketVoiceListening && basketVoiceRecognition) {
+        basketVoiceRecognition.stop();
+        return;
+      }
+
+      const recognition = new Ctor();
+      basketVoiceRecognition = recognition;
+      recognition.lang = "uz-UZ";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        setBasketVoiceListening(true);
+        setBasketVoiceHint(t("voice.listening"));
+      };
+
+      recognition.onresult = event => {
+        const transcript = event.results?.[0]?.[0]?.transcript?.trim() || "";
+        if (!transcript) {
+          setBasketVoiceHint(t("voice.noSpeech"));
+          return;
+        }
+        setBasketVoiceHint(t("voice.heard").replace("{{text}}", transcript));
+        const parsed = parseVoiceTransactionText(transcript);
+        applyParsedVoiceToBasket(parsed);
+      };
+
+      recognition.onerror = event => {
+        if (event.error === "no-speech") {
+          setBasketVoiceHint(t("voice.noSpeech"));
+        } else if (event.error === "not-allowed") {
+          setBasketVoiceHint(t("voice.unsupported"));
+        } else {
+          setBasketVoiceHint(t("voice.error"));
+        }
+        setBasketVoiceListening(false);
+      };
+
+      recognition.onend = () => {
+        setBasketVoiceListening(false);
+      };
+
+      try {
+        recognition.start();
+      } catch (err) {
+        console.warn("[BiznesHisob] Voice start failed:", err);
+        setBasketVoiceHint(t("voice.error"));
+        setBasketVoiceListening(false);
+      }
+    }
+
     function getBasketDateDefault() {
       const d = new Date();
       const y = d.getFullYear();
@@ -12311,6 +12584,11 @@
 
     function closeBasketModal() {
       if (!basketModal) return;
+      if (basketVoiceRecognition && basketVoiceListening) {
+        basketVoiceRecognition.stop();
+      }
+      setBasketVoiceListening(false);
+      setBasketVoiceHint("");
       basketModal.classList.remove("open");
       updateBodyScrollLock();
     }
