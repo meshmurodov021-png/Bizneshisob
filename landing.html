@@ -1660,7 +1660,7 @@
     <a href="#stats" data-i18n="nav.stats">Statistika</a>
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
-    <a href="/index.html" data-i18n="cta.download">Yuklab olish</a>
+    <a href="index.html" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
 
@@ -1954,8 +1954,8 @@
             </tbody>
           </table>
           <div class="pricing-foot">
-            <a href="/index.html" class="btn btn-outline">Bepul boshlash</a>
-            <a href="/index.html" class="btn btn-primary">Premiumga o'tish</a>
+            <a href="index.html" class="btn btn-outline">Bepul boshlash</a>
+            <a href="index.html" class="btn btn-primary">Premiumga o'tish</a>
           </div>
         </div>
       </div>
@@ -2007,7 +2007,7 @@
             <li><a href="#features">Imkoniyatlar</a></li>
             <li><a href="#how">Qanday ishlaydi</a></li>
             <li><a href="#pricing">Narxlar</a></li>
-            <li><a href="/index.html">Yuklab olish</a></li>
+            <li><a href="index.html">Yuklab olish</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -2036,7 +2036,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
-    const APP_URL = "/index.html";
+    const APP_URL = new URL("index.html", window.location.href).href;
     let deferredInstallPrompt = null;
     let currentLang = localStorage.getItem("bh-lang") || "uz";
 
