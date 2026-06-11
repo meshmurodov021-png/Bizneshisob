@@ -10,6 +10,31 @@
           document.documentElement.classList.add("auth-boot-session");
         }
       } catch (_) {}
+
+      // Failsafe: Firebase sekin yuklansa ham qora oynada qolib ketmaslik uchun
+      // 4s dan keyin sahifani ochamiz — foydalanuvchi spinner ko'radi.
+      // auth-boot-session saqlanadi, shuning uchun auth ekrani "miltillamaydi".
+      setTimeout(function () {
+        if (window.__bhBootReleased) return;
+        document.documentElement.style.visibility = "";
+        document.documentElement.classList.remove("auth-boot");
+      }, 4000);
+
+      // 20s dan keyin ham ilova ishga tushmagan bo'lsa — qayta yuklash tugmasi.
+      setTimeout(function () {
+        if (window.__bhBootReleased) return;
+        var screen = document.getElementById("loadingScreen");
+        if (!screen || screen.querySelector(".boot-retry-btn")) return;
+        var txt = screen.querySelector(".loading-text");
+        if (txt) txt.textContent = "Internet sekin yoki uzilgan…";
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "boot-retry-btn";
+        btn.textContent = "Qayta yuklash";
+        btn.style.cssText = "margin-top:0.5rem;padding:0.65rem 1.5rem;border:none;border-radius:12px;background:#6366f1;color:#fff;font-size:0.95rem;font-weight:600;font-family:inherit;cursor:pointer";
+        btn.addEventListener("click", function () { location.reload(); });
+        screen.appendChild(btn);
+      }, 20000);
     })();
   </script>
   <meta charset="UTF-8">
@@ -6499,8 +6524,10 @@
     function releaseAuthBootVisibility() {
       if (authBootReleased) return;
       authBootReleased = true;
+      window.__bhBootReleased = true;
       document.documentElement.style.visibility = "";
       document.documentElement.classList.remove("auth-boot", "auth-boot-session");
+      document.querySelector("#loadingScreen .boot-retry-btn")?.remove();
     }
 
     function onAuthStateKnown(user) {

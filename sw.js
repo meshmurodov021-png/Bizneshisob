@@ -114,18 +114,35 @@ async function networkFirstAsset(request, cacheName) {
   }
 }
 
+const NAV_NETWORK_TIMEOUT_MS = 3000;
+
 async function networkFirstNavigation(request) {
   const cache = await caches.open(SHELL_CACHE);
+
+  const networkPromise = fetch(request, { cache: "no-store" })
+    .then(response => {
+      if (response.ok) {
+        cache.put("/index.html", response.clone());
+        cache.put("/", response.clone());
+      }
+      return response;
+    });
+
+  const cached = await cache.match("/index.html") || await cache.match("/");
+
+  // Kesh bor bo'lsa: tarmoq sekin bo'lganda (>3s) darhol keshdan ochamiz,
+  // yangi versiya fonda keshga yozilib boradi.
+  if (cached) {
+    const winner = await Promise.race([
+      networkPromise.catch(() => null),
+      new Promise(resolve => setTimeout(() => resolve(null), NAV_NETWORK_TIMEOUT_MS))
+    ]);
+    return winner || cached;
+  }
+
   try {
-    const response = await fetch(request, { cache: "no-store" });
-    if (response.ok) {
-      cache.put("/index.html", response.clone());
-      cache.put("/", response.clone());
-    }
-    return response;
+    return await networkPromise;
   } catch {
-    const cached = await cache.match("/index.html") || await cache.match("/");
-    if (cached) return cached;
     return new Response(
       "<!DOCTYPE html><html lang=\"uz\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>BiznesHisob</title><style>body{font-family:system-ui;background:#0c0e14;color:#e8eaef;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem}</style></head><body><h1>BiznesHisob</h1><p>Internet yoʻq. Ilovani ochish uchun onlayn boʻling.</p></body></html>",
       { headers: { "Content-Type": "text/html; charset=utf-8" } }
