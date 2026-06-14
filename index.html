@@ -6971,6 +6971,7 @@
         "voice.error": "Ovozni tanib bo'lmadi",
         "voice.needAmount": "Summani ayting, masalan: \"25 ming xarajat non\"",
         "validation.invalidDate": "Noto'g'ri sana! Iltimos, to'g'ri sana kiriting.",
+        "validation.dateTooOld": "Sana 1 yildan eski bo'la olmaydi!",
         "basket.removeItem": "Oʻchirish",
         "basket.itemRequired": "Kamida bitta mahsulot kiriting",
         "basket.itemNameRequired": "Mahsulot nomini kiriting",
@@ -7258,6 +7259,7 @@
         "voice.error": "Не удалось распознать голос",
         "voice.needAmount": "Произнесите сумму, например: «25 ming xarajat non»",
         "validation.invalidDate": "Неверная дата! Введите корректную дату.",
+        "validation.dateTooOld": "Дата не может быть старше 1 года!",
         "basket.removeItem": "Удалить",
         "basket.itemRequired": "Добавьте хотя бы один товар",
         "basket.itemNameRequired": "Введите название товара",
@@ -7545,6 +7547,7 @@
         "voice.error": "Could not recognize voice",
         "voice.needAmount": "Say an amount, e.g. \"25 ming xarajat non\"",
         "validation.invalidDate": "Invalid date! Please enter a valid date.",
+        "validation.dateTooOld": "Date cannot be more than 1 year old!",
         "basket.removeItem": "Remove",
         "basket.itemRequired": "Add at least one product",
         "basket.itemNameRequired": "Enter product name",
@@ -10177,6 +10180,13 @@
           input.setCustomValidity("");
           return false;
         }
+        if (input.min && value < input.min) {
+          input.setCustomValidity(t("validation.dateTooOld"));
+          input.reportValidity();
+          input.value = getBasketDateDefault();
+          input.setCustomValidity("");
+          return false;
+        }
         input.setCustomValidity("");
         return true;
       };
@@ -12568,7 +12578,12 @@
       if (!basketModal) return;
       setBasketType(type);
       resetBasketItems();
-      if (basketDateInput) basketDateInput.value = getBasketDateDefault();
+      if (basketDateInput) {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        basketDateInput.min = oneYearAgo.toISOString().slice(0, 10);
+        basketDateInput.value = getBasketDateDefault();
+      }
       if (basketNoteInput) basketNoteInput.value = "";
       renderBasketItems();
       basketModal.classList.add("open");
@@ -13209,6 +13224,14 @@
 
       if (basketDateInput && basketDateInput.value && !isValidDate(basketDateInput.value)) {
         basketDateInput.setCustomValidity(t("validation.invalidDate"));
+        basketDateInput.reportValidity();
+        basketDateInput.value = getBasketDateDefault();
+        basketDateInput.setCustomValidity("");
+        return;
+      }
+
+      if (basketDateInput && basketDateInput.min && basketDateInput.value < basketDateInput.min) {
+        basketDateInput.setCustomValidity(t("validation.dateTooOld"));
         basketDateInput.reportValidity();
         basketDateInput.value = getBasketDateDefault();
         basketDateInput.setCustomValidity("");
