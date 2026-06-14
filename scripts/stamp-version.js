@@ -17,7 +17,7 @@ function stampHtml(content) {
     /(<meta name="app-build-version" content=")[^"]*(">)/g,
     `$1${VERSION}$2`
   );
-  out = out.replace(/(\?v=)[^"'\s&]+/g, `$1${VERSION}`);
+  out = out.replace(/(\?v=)[^"'`$\s&)}]+/g, `$1${VERSION}`);
   return out;
 }
 
