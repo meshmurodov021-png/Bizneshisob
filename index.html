@@ -4042,6 +4042,10 @@
     }
 
     /* Bottom navigation */
+    /* tabAdd va nav "Qo'shish" — to'g'ridan-to'g'ri basketModal ochiladi endi */
+    #tabAdd { display: none !important; }
+    .nav-item[data-tab="add"] { display: none !important; }
+
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -6028,7 +6032,7 @@
         <ul class="transaction-list" id="transactionList"></ul>
         <div class="empty-state" id="emptyState">
           <div class="icon"><i data-lucide="list" class="icon-lg"></i></div>
-          <p data-i18n="list.empty" data-i18n-html="true">Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.</p>
+          <p data-i18n="list.empty" data-i18n-html="true">Hali operatsiyalar yoʻq.<br>«+» tugmasi orqali birinchi yozuvni kiriting.</p>
         </div>
       </section>
 
@@ -6973,7 +6977,7 @@
         "list.export": "Eksport",
         "list.exportAria": "Hisobotni eksport qilish",
         "list.count": "{{n}} ta",
-        "list.empty": "Hali operatsiyalar yoʻq.<br>«Qoʻshish» boʻlimidan birinchi yozuvni kiriting.",
+        "list.empty": "Hali operatsiyalar yoʻq.<br>«+» tugmasi orqali birinchi yozuvni kiriting.",
         "tx.income": "Daromad",
         "tx.expense": "Xarajat",
         "profile.free": "Bepul",
@@ -7260,7 +7264,7 @@
         "list.export": "Экспорт",
         "list.exportAria": "Экспорт отчёта",
         "list.count": "{{n}} шт.",
-        "list.empty": "Операций пока нет.<br>Добавьте первую запись в разделе «Добавить».",
+        "list.empty": "Операций пока нет.<br>Нажмите «+» чтобы добавить первую запись.",
         "tx.income": "Доход",
         "tx.expense": "Расход",
         "profile.free": "Бесплатно",
@@ -7547,7 +7551,7 @@
         "list.export": "Export",
         "list.exportAria": "Export report",
         "list.count": "{{n}} items",
-        "list.empty": "No transactions yet.<br>Add your first entry in the Add tab.",
+        "list.empty": "No transactions yet.<br>Tap «+» to add your first entry.",
         "tx.income": "Income",
         "tx.expense": "Expense",
         "profile.free": "Free",
@@ -10641,9 +10645,6 @@
       });
 
       if (tabName === "profile") renderProfileUI();
-      if (tabName === "add") {
-        openBasketModal(currentType);
-      }
       if (tabName === "home" && chartsUpdatePending) {
         scheduleChartsRender({ deferMs: 120 });
       }
@@ -10651,18 +10652,14 @@
     }
 
     function goToAddTab(openModal = true) {
-      if (currentTab === "add") {
-        if (openModal) openBasketModal(currentType);
-        return;
-      }
-      switchTab("add");
+      if (openModal) openBasketModal(currentType);
     }
 
     navItems.forEach(nav => {
       nav.addEventListener("click", () => {
         const tab = nav.dataset.tab;
         if (tab === "add") {
-          goToAddTab(true);
+          openBasketModal(currentType);
           return;
         }
         switchTab(tab);
@@ -10671,8 +10668,7 @@
 
     quickBtns.forEach(btn => {
       btn.addEventListener("click", () => {
-        setType(btn.dataset.gotoAdd);
-        goToAddTab(true);
+        openBasketModal(btn.dataset.gotoAdd || currentType);
       });
     });
 
