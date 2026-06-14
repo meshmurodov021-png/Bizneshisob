@@ -14,7 +14,7 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#7C3AED">
+  <meta name="theme-color" content="#0c0e14">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="BiznesHisob">
@@ -119,6 +119,8 @@
 
     html {
       scroll-behavior: smooth;
+      background: var(--bg);
+      overscroll-behavior: none;
     }
 
     body {
@@ -8442,7 +8444,7 @@
       localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
       if (settingsThemeToggle) settingsThemeToggle.checked = isDark;
       const metaTheme = document.querySelector('meta[name="theme-color"]');
-      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#7C3AED" : "#f3f4f8");
+      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#0c0e14" : "#f5f5f7");
       refreshCategoryThemeColors();
       invalidateChartDataCache();
       lastChartsFingerprint = "";
