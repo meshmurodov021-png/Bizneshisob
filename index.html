@@ -4740,6 +4740,168 @@
       margin: 0;
     }
 
+    /* ── Voice Settings Section ──────────────────────────────────────────── */
+    .vs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0;
+    }
+
+    .vs-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .vs-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(99,102,241,0.2));
+      border: 1px solid rgba(124,58,237,0.3);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .vs-title-block { display: flex; flex-direction: column; gap: 1px; }
+    .vs-title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
+    .vs-subtitle { font-size: 0.72rem; color: var(--muted); }
+
+    .vs-status-badge {
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .vs-status-badge.on  {
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.35);
+      color: #4ade80;
+    }
+    .vs-status-badge.off {
+      background: rgba(107,114,128,0.12);
+      border: 1px solid rgba(107,114,128,0.25);
+      color: var(--muted);
+    }
+
+    /* Voice keywords dropdown */
+    .vs-keywords-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.85rem 0;
+      background: transparent;
+      border: none;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-hover);
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.2s;
+    }
+
+    .vs-keywords-btn [data-lucide] {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .vs-keywords-btn.is-open [data-lucide] { transform: rotate(180deg); }
+
+    .vs-dropdown {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.38s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .vs-dropdown.is-open { grid-template-rows: 1fr; }
+
+    .vs-dropdown-inner { overflow: hidden; }
+
+    .vs-kw-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding-bottom: 0.25rem;
+    }
+
+    .vs-kw-card {
+      border-radius: 12px;
+      background: rgba(124,58,237,0.06);
+      border: 1px solid rgba(124,58,237,0.15);
+      overflow: hidden;
+    }
+
+    .vs-kw-card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 0.85rem;
+      background: rgba(124,58,237,0.1);
+      border-bottom: 1px solid rgba(124,58,237,0.15);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #c4b5fd;
+      text-transform: uppercase;
+    }
+
+    .vs-kw-card-body { padding: 0.6rem 0.85rem; display: flex; flex-direction: column; gap: 0.45rem; }
+
+    .vs-kw-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+    }
+
+    .vs-kw-row-label {
+      color: var(--muted);
+      font-weight: 600;
+      min-width: 62px;
+      flex-shrink: 0;
+    }
+
+    .vs-kw-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .vs-chip {
+      padding: 0.18rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-family: monospace;
+    }
+
+    .vs-chip.income { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: #4ade80; }
+    .vs-chip.expense { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: #f87171; }
+    .vs-chip.amount { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.25); color: #7dd3fc; }
+
+    .vs-disabled-overlay {
+      opacity: 0.4;
+      pointer-events: none;
+      user-select: none;
+      transition: opacity 0.3s;
+    }
+
+    /* ── (existing) basket voice button ───────────────────────────────────── */
     .basket-voice-btn {
       display: inline-flex;
       align-items: center;
@@ -6139,6 +6301,129 @@
           </div>
         </section>
 
+        <!-- Voice Settings -->
+        <section class="settings-section" id="voiceSettingsSection">
+          <p class="settings-section-label">🎙️ <span data-i18n="settings.voice.section">Ovozli boshqaruv</span></p>
+          <div class="settings-card" style="padding: 0.9rem 1rem; display:flex; flex-direction:column; gap:0.75rem;">
+
+            <!-- Toggle row -->
+            <div class="vs-header">
+              <div class="vs-header-left">
+                <div class="vs-icon">🎙️</div>
+                <div class="vs-title-block">
+                  <span class="vs-title" data-i18n="settings.voice.title">Ovozli kiritish</span>
+                  <span class="vs-subtitle" data-i18n="settings.voice.desc">Savatcha modalida ovoz bilan qo'shish</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.6rem;">
+                <span class="vs-status-badge on" id="voiceStatusBadge" data-i18n="settings.voice.on">YOQIQ</span>
+                <label class="lg-toggle" for="voiceEnabledToggle">
+                  <input type="checkbox" id="voiceEnabledToggle" checked>
+                  <span class="lg-toggle-track">
+                    <span class="lg-toggle-glass"></span>
+                    <span class="lg-toggle-reflection"></span>
+                    <span class="lg-toggle-glow"></span>
+                    <span class="lg-toggle-thumb"><span class="lg-toggle-thumb-shine"></span></span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Content that gets disabled when voice is off -->
+            <div id="voiceSettingsBody">
+              <!-- Keywords dropdown -->
+              <button type="button" class="vs-keywords-btn" id="voiceKwBtn">
+                <span data-i18n="settings.voice.showKw">Ovozli kalit so'zlarni ko'rish</span>
+                <i data-lucide="chevron-down"></i>
+              </button>
+              <div class="vs-dropdown" id="voiceKwDropdown">
+                <div class="vs-dropdown-inner">
+                  <div class="vs-kw-grid">
+
+                    <!-- Operatsiyalar -->
+                    <div class="vs-kw-card">
+                      <div class="vs-kw-card-head">💸 <span data-i18n="settings.voice.kw.ops">Operatsiyalar</span></div>
+                      <div class="vs-kw-card-body">
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.income">Kirim:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip income">keldi</span>
+                            <span class="vs-chip income">tushdi</span>
+                            <span class="vs-chip income">oldim</span>
+                            <span class="vs-chip income">daromad</span>
+                            <span class="vs-chip income">kirim</span>
+                          </div>
+                        </div>
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.expense">Chiqim:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip expense">ketdi</span>
+                            <span class="vs-chip expense">to'ladim</span>
+                            <span class="vs-chip expense">berdim</span>
+                            <span class="vs-chip expense">xarajat</span>
+                            <span class="vs-chip expense">sarfladim</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Kategoriyalar -->
+                    <div class="vs-kw-card">
+                      <div class="vs-kw-card-head">🏷️ <span data-i18n="settings.voice.kw.cats">Kategoriya kalitlari</span></div>
+                      <div class="vs-kw-card-body">
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label">Kassa:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip">savdo</span>
+                            <span class="vs-chip">do'kon</span>
+                          </div>
+                        </div>
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label">Transport:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip">benzin</span>
+                            <span class="vs-chip">yo'lkira</span>
+                          </div>
+                        </div>
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label">Mahsulot:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip">tovar</span>
+                            <span class="vs-chip">sklad</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Pul birliklari -->
+                    <div class="vs-kw-card">
+                      <div class="vs-kw-card-head">💰 <span data-i18n="settings.voice.kw.units">Pul birliklari</span></div>
+                      <div class="vs-kw-card-body">
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.say">Ayting:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip amount">ming</span>
+                            <span class="vs-chip amount">mln</span>
+                            <span class="vs-chip amount">million</span>
+                            <span class="vs-chip amount">mlrd</span>
+                          </div>
+                        </div>
+                        <div class="vs-kw-row">
+                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.example">Misol:</span>
+                          <div class="vs-kw-chips">
+                            <span class="vs-chip" style="font-size:0.65rem;color:var(--muted)">«25 ming xarajat benzin»</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="settings-section">
           <p class="settings-section-label" data-i18n="settings.section.app">Ilova</p>
           <div class="settings-card">
@@ -6970,6 +7255,19 @@
         "voice.noSpeech": "Ovoz eshitilmadi. Qayta urinib ko'ring.",
         "voice.error": "Ovozni tanib bo'lmadi",
         "voice.needAmount": "Summani ayting, masalan: \"25 ming xarajat non\"",
+        "settings.voice.section": "Ovozli boshqaruv",
+        "settings.voice.title": "Ovozli kiritish",
+        "settings.voice.desc": "Savatcha modalida ovoz bilan qo'shish",
+        "settings.voice.on": "YOQIQ",
+        "settings.voice.off": "O'CHIQ",
+        "settings.voice.showKw": "Ovozli kalit so'zlarni ko'rish",
+        "settings.voice.kw.ops": "Operatsiyalar",
+        "settings.voice.kw.income": "Kirim:",
+        "settings.voice.kw.expense": "Chiqim:",
+        "settings.voice.kw.cats": "Kategoriya kalitlari",
+        "settings.voice.kw.units": "Pul birliklari",
+        "settings.voice.kw.say": "Ayting:",
+        "settings.voice.kw.example": "Misol:",
         "validation.invalidDate": "Noto'g'ri sana! Iltimos, to'g'ri sana kiriting.",
         "validation.dateTooOld": "Sana 1 yildan eski bo'la olmaydi!",
         "basket.removeItem": "Oʻchirish",
@@ -7258,6 +7556,19 @@
         "voice.noSpeech": "Речь не распознана. Попробуйте снова.",
         "voice.error": "Не удалось распознать голос",
         "voice.needAmount": "Произнесите сумму, например: «25 ming xarajat non»",
+        "settings.voice.section": "Голосовое управление",
+        "settings.voice.title": "Голосовой ввод",
+        "settings.voice.desc": "Добавление через микрофон в корзине",
+        "settings.voice.on": "ВКЛ",
+        "settings.voice.off": "ВЫКЛ",
+        "settings.voice.showKw": "Показать ключевые слова",
+        "settings.voice.kw.ops": "Операции",
+        "settings.voice.kw.income": "Доход:",
+        "settings.voice.kw.expense": "Расход:",
+        "settings.voice.kw.cats": "Ключи категорий",
+        "settings.voice.kw.units": "Единицы валюты",
+        "settings.voice.kw.say": "Скажите:",
+        "settings.voice.kw.example": "Пример:",
         "validation.invalidDate": "Неверная дата! Введите корректную дату.",
         "validation.dateTooOld": "Дата не может быть старше 1 года!",
         "basket.removeItem": "Удалить",
@@ -7546,6 +7857,19 @@
         "voice.noSpeech": "No speech detected. Try again.",
         "voice.error": "Could not recognize voice",
         "voice.needAmount": "Say an amount, e.g. \"25 ming xarajat non\"",
+        "settings.voice.section": "Voice control",
+        "settings.voice.title": "Voice input",
+        "settings.voice.desc": "Add transactions by voice in the basket",
+        "settings.voice.on": "ON",
+        "settings.voice.off": "OFF",
+        "settings.voice.showKw": "View voice keywords",
+        "settings.voice.kw.ops": "Transactions",
+        "settings.voice.kw.income": "Income:",
+        "settings.voice.kw.expense": "Expense:",
+        "settings.voice.kw.cats": "Category keys",
+        "settings.voice.kw.units": "Currency units",
+        "settings.voice.kw.say": "Say:",
+        "settings.voice.kw.example": "Example:",
         "validation.invalidDate": "Invalid date! Please enter a valid date.",
         "validation.dateTooOld": "Date cannot be more than 1 year old!",
         "basket.removeItem": "Remove",
@@ -9236,6 +9560,66 @@
     settingsThemeToggle?.addEventListener("change", () => {
       applyTheme(settingsThemeToggle.checked ? "dark" : "light");
     });
+
+    /* ── Voice Settings ─────────────────────────────────────────────────── */
+    const VOICE_ENABLED_KEY = "bh-voice-enabled";
+
+    const voiceEnabledToggle = document.getElementById("voiceEnabledToggle");
+    const voiceStatusBadge   = document.getElementById("voiceStatusBadge");
+    const voiceSettingsBody  = document.getElementById("voiceSettingsBody");
+    const voiceKwBtn         = document.getElementById("voiceKwBtn");
+    const voiceKwDropdown    = document.getElementById("voiceKwDropdown");
+
+    let voiceKwOpen = false;
+
+    function applyVoiceEnabled(enabled) {
+      if (!voiceEnabledToggle) return;
+      voiceEnabledToggle.checked = enabled;
+
+      if (voiceStatusBadge) {
+        voiceStatusBadge.textContent = enabled ? t("settings.voice.on") : t("settings.voice.off");
+        voiceStatusBadge.classList.toggle("on", enabled);
+        voiceStatusBadge.classList.toggle("off", !enabled);
+      }
+
+      // Grey-out keywords section when disabled
+      if (voiceSettingsBody) {
+        if (enabled) {
+          voiceSettingsBody.classList.remove("vs-disabled-overlay");
+        } else {
+          voiceSettingsBody.classList.add("vs-disabled-overlay");
+          // Close dropdown if open
+          if (voiceKwOpen) toggleVoiceKeywords(false);
+        }
+      }
+
+      // Hide/show the mic button in basket modal
+      const voiceBtn = document.getElementById("basketVoiceBtn");
+      if (voiceBtn) voiceBtn.style.display = enabled ? "" : "none";
+
+      localStorage.setItem(VOICE_ENABLED_KEY, enabled ? "1" : "0");
+    }
+
+    function toggleVoiceKeywords(forceOpen) {
+      voiceKwOpen = (forceOpen !== undefined) ? forceOpen : !voiceKwOpen;
+      if (voiceKwDropdown) voiceKwDropdown.classList.toggle("is-open", voiceKwOpen);
+      if (voiceKwBtn) voiceKwBtn.classList.toggle("is-open", voiceKwOpen);
+
+      // Refresh lucide icon (chevron rotation via CSS)
+      if (window.lucide) lucide.createIcons({ scope: voiceKwBtn?.parentElement ?? document });
+    }
+
+    voiceEnabledToggle?.addEventListener("change", () => {
+      applyVoiceEnabled(voiceEnabledToggle.checked);
+    });
+
+    voiceKwBtn?.addEventListener("click", () => {
+      if (voiceEnabledToggle?.checked) toggleVoiceKeywords();
+    });
+
+    // Init from localStorage
+    const savedVoice = localStorage.getItem(VOICE_ENABLED_KEY);
+    applyVoiceEnabled(savedVoice !== "0"); // default: enabled
 
     /** iOS 26 Liquid Glass toggle — press/release + reflection sweep */
     function initLiquidGlassToggles() {
