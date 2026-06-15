@@ -4902,14 +4902,15 @@
     }
 
     /* ── (existing) basket voice button ───────────────────────────────────── */
+    /* Hold-to-Talk button ─────────────────────────────────────────────────── */
     .basket-voice-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
       flex-shrink: 0;
-      min-height: 30px;
-      padding: 0.3rem 0.55rem;
-      border: 1px solid rgba(124, 58, 237, 0.35);
+      min-height: 32px;
+      padding: 0.3rem 0.7rem 0.3rem 0.55rem;
+      border: 1.5px solid rgba(124, 58, 237, 0.38);
       border-radius: 999px;
       background: rgba(124, 58, 237, 0.1);
       color: var(--accent-hover);
@@ -4918,24 +4919,81 @@
       font-family: inherit;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: background 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+      touch-action: none;           /* prevents scroll-on-hold on mobile */
+      user-select: none;
+      -webkit-user-select: none;
+      position: relative;
+      transform-origin: center;
+      transition:
+        background 0.18s var(--ease),
+        border-color 0.18s var(--ease),
+        color 0.18s var(--ease),
+        transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.18s var(--ease);
     }
 
     .basket-voice-btn [data-lucide] {
       width: 14px;
       height: 14px;
+      flex-shrink: 0;
+      transition: transform 0.25s var(--ease);
     }
 
+    /* Pressed state (hold) */
+    .basket-voice-btn.is-pressed {
+      transform: scale(1.1);
+      background: rgba(124, 58, 237, 0.22);
+      border-color: rgba(124, 58, 237, 0.65);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
+    }
+
+    /* Listening / recording state */
     .basket-voice-btn.is-listening {
       background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.45);
+      border-color: rgba(239, 68, 68, 0.55);
       color: #f87171;
-      animation: voicePulse 1.2s ease-in-out infinite;
+      transform: scale(1.08);
+      animation: httPulse 1s ease-in-out infinite;
     }
 
-    @keyframes voicePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.25); }
-      50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    .basket-voice-btn.is-listening [data-lucide] {
+      animation: micWave 1s ease-in-out infinite;
+    }
+
+    @keyframes httPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 0   rgba(239, 68, 68, 0.35),
+          0 0 0 0   rgba(239, 68, 68, 0.15);
+      }
+      50% {
+        box-shadow:
+          0 0 0 5px rgba(239, 68, 68, 0.15),
+          0 0 0 10px rgba(239, 68, 68, 0);
+      }
+    }
+
+    @keyframes micWave {
+      0%, 100% { transform: scale(1);    }
+      50%       { transform: scale(1.22); }
+    }
+
+    /* Hold hint text */
+    .basket-voice-btn .voice-hold-hint {
+      font-size: 0.62rem;
+      font-weight: 500;
+      color: var(--muted);
+      opacity: 0;
+      max-width: 0;
+      overflow: hidden;
+      transition: opacity 0.2s, max-width 0.3s var(--ease);
+      white-space: nowrap;
+    }
+
+    .basket-voice-btn.is-listening .voice-hold-hint,
+    .basket-voice-btn.is-pressed .voice-hold-hint {
+      opacity: 1;
+      max-width: 60px;
     }
 
     .basket-voice-hint {
@@ -4944,7 +5002,11 @@
       line-height: 1.35;
       margin: 0 0 0.35rem;
       min-height: 1em;
+      transition: color 0.2s;
     }
+
+    .basket-voice-hint.hint-success { color: var(--income); }
+    .basket-voice-hint.hint-error   { color: var(--expense); }
 
     .basket-items-section {
       display: flex;
@@ -6543,9 +6605,12 @@
           <div class="basket-items-section">
             <div class="basket-items-head">
               <p class="basket-section-title" data-i18n="basket.products">Mahsulotlar</p>
-              <button type="button" class="basket-voice-btn" id="basketVoiceBtn" data-i18n-aria="voice.startAria">
+              <button type="button" class="basket-voice-btn" id="basketVoiceBtn"
+                      aria-label="Ovoz bilan qo'shish — bosib turing"
+                      data-i18n-aria="voice.startAria">
                 <i data-lucide="mic"></i>
-                <span data-i18n="voice.btn">Ovoz</span>
+                <span class="voice-label" data-i18n="voice.btn">Ovoz</span>
+                <span class="voice-hold-hint" aria-hidden="true" data-i18n="voice.hold">ushlab turing</span>
               </button>
             </div>
             <p class="basket-voice-hint" id="basketVoiceHint" aria-live="polite"></p>
@@ -7254,6 +7319,8 @@
         "voice.unsupported": "Brauzeringiz ovozni qo'llab-quvvatlamaydi",
         "voice.noSpeech": "Ovoz eshitilmadi. Qayta urinib ko'ring.",
         "voice.error": "Ovozni tanib bo'lmadi",
+        "voice.hold": "ushlab turing",
+        "voice.holdHint": "Gapirish uchun tugmani bosib turing",
         "voice.needAmount": "Summani ayting, masalan: \"25 ming xarajat non\"",
         "settings.voice.section": "Ovozli boshqaruv",
         "settings.voice.title": "Ovozli kiritish",
@@ -7555,6 +7622,8 @@
         "voice.unsupported": "Браузер не поддерживает голосовой ввод",
         "voice.noSpeech": "Речь не распознана. Попробуйте снова.",
         "voice.error": "Не удалось распознать голос",
+        "voice.hold": "держите нажатой",
+        "voice.holdHint": "Удерживайте кнопку чтобы говорить",
         "voice.needAmount": "Произнесите сумму, например: «25 ming xarajat non»",
         "settings.voice.section": "Голосовое управление",
         "settings.voice.title": "Голосовой ввод",
@@ -7856,6 +7925,8 @@
         "voice.unsupported": "Your browser does not support voice input",
         "voice.noSpeech": "No speech detected. Try again.",
         "voice.error": "Could not recognize voice",
+        "voice.hold": "hold to talk",
+        "voice.holdHint": "Hold the button to speak",
         "voice.needAmount": "Say an amount, e.g. \"25 ming xarajat non\"",
         "settings.voice.section": "Voice control",
         "settings.voice.title": "Voice input",
@@ -11073,7 +11144,8 @@
     basketModal?.addEventListener("click", e => {
       if (e.target === basketModal) closeBasketModal();
     });
-    basketVoiceBtn?.addEventListener("click", startBasketVoiceInput);
+    // Hold-to-Talk event bindings (replaces simple click handler)
+    if (basketVoiceBtn) bindHoldToTalk(basketVoiceBtn);
 
     basketAddItemBtn?.addEventListener("click", () => {
       basketItems.push(createBasketItemRow());
@@ -12783,67 +12855,169 @@
       return window.SpeechRecognition || window.webkitSpeechRecognition || null;
     }
 
-    /**
-     * Captures microphone audio and converts Uzbek speech to text via Web Speech API.
-     * Reliable cloud upgrade path: Google Cloud Speech-to-Text (uz-UZ) or Azure Speech.
-     */
-    function startBasketVoiceInput() {
+    /* ─── Hold-to-Talk state machine ───────────────────────────────────────
+     *
+     *  IDLE ──► PRESSED (pointerdown)
+     *        ──► LISTENING (recognition.onstart)
+     *        ──► IDLE (pointerup / pointerleave → recognition.stop)
+     *
+     *  recognition.onresult fires after stop() confirms the final transcript.
+     * ───────────────────────────────────────────────────────────────────── */
+    const HTT_MIN_HOLD_MS = 180; // minimum hold before we accept a result
+    let httPressStart = 0;
+    let httAborted = false;
+
+    function httStart() {
       const Ctor = getSpeechRecognitionCtor();
       if (!Ctor) {
         setBasketVoiceHint(t("voice.unsupported"));
         return;
       }
+      if (basketVoiceListening) return; // already running
 
-      if (basketVoiceListening && basketVoiceRecognition) {
-        basketVoiceRecognition.stop();
-        return;
-      }
+      httPressStart = Date.now();
+      httAborted = false;
+
+      // Visual: pressed state immediately
+      basketVoiceBtn?.classList.add("is-pressed");
 
       const recognition = new Ctor();
       basketVoiceRecognition = recognition;
       recognition.lang = "uz-UZ";
-      recognition.interimResults = false;
+      recognition.interimResults = true;   // show live transcript while holding
       recognition.maxAlternatives = 1;
-      recognition.continuous = false;
+      recognition.continuous = true;       // keep running while held
 
       recognition.onstart = () => {
         setBasketVoiceListening(true);
+        basketVoiceBtn?.classList.remove("is-pressed");
         setBasketVoiceHint(t("voice.listening"));
+        const hint = basketVoiceHint;
+        if (hint) {
+          hint.classList.remove("hint-success", "hint-error");
+        }
       };
 
+      // Show live interim text so user sees progress
       recognition.onresult = event => {
-        const transcript = event.results?.[0]?.[0]?.transcript?.trim() || "";
-        if (!transcript) {
-          setBasketVoiceHint(t("voice.noSpeech"));
-          return;
-        }
-        setBasketVoiceHint(t("voice.heard").replace("{{text}}", transcript));
-        const parsed = parseVoiceTransactionText(transcript);
-        applyParsedVoiceToBasket(parsed);
+        const last = event.results[event.results.length - 1];
+        const interim = last?.[0]?.transcript?.trim() || "";
+        if (interim) setBasketVoiceHint("🎙 " + interim);
       };
 
       recognition.onerror = event => {
         if (event.error === "no-speech") {
-          setBasketVoiceHint(t("voice.noSpeech"));
+          setVoiceHintStyled(t("voice.noSpeech"), "error");
         } else if (event.error === "not-allowed") {
-          setBasketVoiceHint(t("voice.unsupported"));
-        } else {
-          setBasketVoiceHint(t("voice.error"));
+          setVoiceHintStyled(t("voice.unsupported"), "error");
+        } else if (event.error !== "aborted") {
+          setVoiceHintStyled(t("voice.error"), "error");
         }
+        httAborted = true;
         setBasketVoiceListening(false);
+        basketVoiceBtn?.classList.remove("is-pressed");
       };
 
       recognition.onend = () => {
         setBasketVoiceListening(false);
+        basketVoiceBtn?.classList.remove("is-pressed");
+
+        if (httAborted) return;
+
+        // Collect the best final result accumulated during hold
+        let finalTranscript = "";
+        try {
+          for (let i = 0; i < recognition.results?.length; i++) {
+            if (recognition.results[i].isFinal) {
+              finalTranscript += recognition.results[i][0].transcript + " ";
+            } else {
+              // Non-final: use anyway (Chrome sometimes fires onend before final)
+              finalTranscript += recognition.results[i][0].transcript + " ";
+            }
+          }
+        } catch (_) {}
+
+        finalTranscript = finalTranscript.trim();
+
+        if (!finalTranscript) {
+          // Held less than minimum or no speech
+          if (Date.now() - httPressStart < HTT_MIN_HOLD_MS) {
+            setVoiceHintStyled(t("voice.holdHint"), "");
+          } else {
+            setVoiceHintStyled(t("voice.noSpeech"), "error");
+          }
+          return;
+        }
+
+        setVoiceHintStyled(t("voice.heard").replace("{{text}}", finalTranscript), "");
+        const parsed = parseVoiceTransactionText(finalTranscript);
+        const ok = applyParsedVoiceToBasket(parsed);
+        if (ok) {
+          if (basketVoiceHint) basketVoiceHint.classList.add("hint-success");
+        }
       };
 
       try {
         recognition.start();
       } catch (err) {
-        console.warn("[BiznesHisob] Voice start failed:", err);
-        setBasketVoiceHint(t("voice.error"));
+        console.warn("[BiznesHisob] HTT start failed:", err);
+        setVoiceHintStyled(t("voice.error"), "error");
         setBasketVoiceListening(false);
+        basketVoiceBtn?.classList.remove("is-pressed");
       }
+    }
+
+    function httStop() {
+      basketVoiceBtn?.classList.remove("is-pressed");
+      if (basketVoiceListening && basketVoiceRecognition) {
+        basketVoiceRecognition.stop();
+      }
+    }
+
+    function setVoiceHintStyled(msg, type) {
+      setBasketVoiceHint(msg);
+      if (!basketVoiceHint) return;
+      basketVoiceHint.classList.toggle("hint-success", type === "success");
+      basketVoiceHint.classList.toggle("hint-error",   type === "error");
+    }
+
+    /**
+     * Attach Hold-to-Talk (Push-to-Talk) listeners to the voice button.
+     * Handles mouse (desktop) + touch (mobile) uniformly via Pointer Events API
+     * with touch-action: none preventing scroll/zoom during hold.
+     */
+    function bindHoldToTalk(btn) {
+      if (!btn || btn.dataset.httBound === "1") return;
+      btn.dataset.httBound = "1";
+
+      // ── Pointer Events API (covers mouse + touch + stylus in one) ──
+      btn.addEventListener("pointerdown", e => {
+        e.preventDefault(); // prevent context-menu + text-selection + zoom
+        btn.setPointerCapture(e.pointerId); // capture so pointerup fires even if finger slides off
+        httStart();
+      });
+
+      btn.addEventListener("pointerup", e => {
+        e.preventDefault();
+        httStop();
+      });
+
+      // Safety net: if pointer leaves button while captured
+      btn.addEventListener("pointercancel", () => httStop());
+
+      // Keyboard: Space / Enter = hold while pressed
+      btn.addEventListener("keydown", e => {
+        if ((e.code === "Space" || e.code === "Enter") && !e.repeat) {
+          e.preventDefault();
+          httStart();
+        }
+      });
+      btn.addEventListener("keyup", e => {
+        if (e.code === "Space" || e.code === "Enter") {
+          e.preventDefault();
+          httStop();
+        }
+      });
     }
 
     function getBasketDateDefault() {
