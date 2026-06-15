@@ -3198,22 +3198,22 @@
       const rotateX = useSpring(0, { stiffness: 140, damping: 24 });
       const rotateY = useSpring(0, { stiffness: 140, damping: 24 });
 
-      // ── Scroll-controlled entrance (Control Reveal) ───────────────────────
-      // As user scrolls 0→280px, phone goes from "distant & tilted" → "front & centred"
+      // ── Scroll-controlled exit (Recede on scroll) ─────────────────────────
+      // Phone starts full-size at top; as user scrolls down it shrinks + fades away
       const { scrollY } = useScroll();
-      const scrollScale   = useTransform(scrollY, [0, 280], [0.82, 1.04]);
-      const scrollRotateY = useTransform(scrollY, [0, 280], [-14, 0]);
-      const scrollOpacity = useTransform(scrollY, [0, 120], [0.72, 1]);
+      const scrollScale   = useTransform(scrollY, [0, 320], [1,    0.76]);
+      const scrollY_move  = useTransform(scrollY, [0, 320], [0,    32]);
+      const scrollOpacity = useTransform(scrollY, [0, 240], [1,    0.42]);
 
-      // Spring-smooth the raw scroll values so they feel physical, not linear
-      const smoothScale   = useSpring(scrollScale,   { stiffness: 60, damping: 22 });
-      const smoothRotateY = useSpring(scrollRotateY, { stiffness: 50, damping: 20 });
-      const smoothOpacity = useSpring(scrollOpacity, { stiffness: 80, damping: 24 });
+      // Spring-smooth so the motion feels physical, not mechanical
+      const smoothScale   = useSpring(scrollScale,  { stiffness: 55, damping: 22 });
+      const smoothY       = useSpring(scrollY_move, { stiffness: 55, damping: 22 });
+      const smoothOpacity = useSpring(scrollOpacity,{ stiffness: 75, damping: 24 });
 
-      // On mobile, skip scroll-driven values – just show full opacity/scale
-      const finalScale   = isMobile || reducedMotion ? 1      : smoothScale;
-      const finalRotateY = isMobile || reducedMotion ? 0      : smoothRotateY;
-      const finalOpacity = isMobile || reducedMotion ? 1      : smoothOpacity;
+      // On mobile / reduced-motion: static — no scroll manipulation
+      const finalScale   = isMobile || reducedMotion ? 1 : smoothScale;
+      const finalY       = isMobile || reducedMotion ? 0 : smoothY;
+      const finalOpacity = isMobile || reducedMotion ? 1 : smoothOpacity;
 
       // ── Populate inner template ────────────────────────────────────────────
       useEffect(() => {
@@ -3271,12 +3271,11 @@
         {
           ref: wrapperRef,
           style: {
-            scale:   finalScale,
-            rotateY: finalRotateY,
-            opacity: finalOpacity,
-            transformStyle: "preserve-3d",
+            scale:     finalScale,
+            y:         finalY,
+            opacity:   finalOpacity,
             willChange: "transform, opacity",
-            transformOrigin: "center bottom"
+            transformOrigin: "center top"
           }
         },
         // Inner float loop: gentle y + rotateZ bob (unchanged)
