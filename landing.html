@@ -1137,8 +1137,15 @@
     .fm-chart-bar-fill {
       width: 100%;
       border-radius: 4px 4px 0 0;
-      animation: barGrow 0.9s var(--ease) both;
+      transform: scaleY(0);
+      opacity: 0;
       transform-origin: bottom;
+      /* animation intentionally NOT set here — triggered by JS when in viewport */
+    }
+
+    /* Active state (class added by IntersectionObserver) */
+    .fm-chart--visible .fm-chart-bar-fill {
+      animation: barGrow 0.82s var(--ease) both;
     }
 
     @keyframes barGrow {
@@ -1146,12 +1153,12 @@
       to   { transform: scaleY(1); opacity: 1; }
     }
 
-    .fm-chart-bar:nth-child(1) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.05s; }
+    .fm-chart-bar:nth-child(1) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.04s; }
     .fm-chart-bar:nth-child(2) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.12s; }
-    .fm-chart-bar:nth-child(3) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.19s; }
-    .fm-chart-bar:nth-child(4) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #c4b5fd); animation-delay: 0.26s; }
-    .fm-chart-bar:nth-child(5) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.33s; }
-    .fm-chart-bar:nth-child(6) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.40s; }
+    .fm-chart-bar:nth-child(3) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.20s; }
+    .fm-chart-bar:nth-child(4) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #c4b5fd); animation-delay: 0.28s; }
+    .fm-chart-bar:nth-child(5) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.36s; }
+    .fm-chart-bar:nth-child(6) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.44s; }
 
     .fm-chart-label {
       font-size: 0.58rem;
@@ -1513,6 +1520,23 @@
       border-color: rgba(255,255,255,0.45);
       color: var(--text);
       background: rgba(255,255,255,0.04);
+    }
+
+    /* Breathing pulse on premium CTA */
+    @keyframes premiumPulse {
+      0%, 100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(124,58,237,0.45), 0 0 0 1px rgba(139,92,246,0.3); }
+      50%       { transform: scale(1.04); box-shadow: 0 8px 32px rgba(124,58,237,0.62), 0 0 0 2px rgba(167,139,250,0.5); }
+    }
+
+    .btn-pricing-premium.is-breathing {
+      animation: premiumPulse 2.4s ease-in-out infinite;
+    }
+
+    /* Premium column scale-up (class added by JS when in viewport) */
+    .pricing-box.premium-focused .col-premium {
+      transform: scaleX(1.03);
+      transform-origin: center;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* Rich gradient "premium" CTA */
@@ -1915,7 +1939,12 @@
       .phone-aura-ring { animation: none; }
       .vs-badge { animation: none; }
       .compare-good::before { animation: none; }
-      .fm-chart-bar-fill { animation: none; }
+      .fm-chart-bar-fill,
+      .fm-chart--visible .fm-chart-bar-fill {
+        animation: none;
+        transform: scaleY(1);
+        opacity: 1;
+      }
       .glass-hover:hover { transform: none; }
     }
   </style>
@@ -2749,6 +2778,8 @@
 
       if (reducedMotion) {
         gsap.set(scrollTargets, { autoAlpha: 1, y: 0, clearProps: "transform" });
+        gsap.set(".compare-bad", { autoAlpha: 0.58 });
+        document.querySelector(".fm-chart")?.classList.add("fm-chart--visible");
         document.querySelectorAll(".stat-value").forEach((el) => {
           if (!el.dataset.done) {
             el.dataset.done = "1";
@@ -2784,14 +2815,53 @@
         );
       });
 
-      ScrollTrigger.batch("#compare .compare-card, #compare .vs-wrap", {
-        start: "top 86%",
+      // VS section: bad card dims in subtly; good card rockets up with neon glow
+      ScrollTrigger.create({
+        trigger: "#compare",
+        start: "top 84%",
         once: true,
-        onEnter: (batch) => {
+        onEnter: () => {
+          // "BiznesHisobsiz" — subdued entrance to visually recede
           gsap.fromTo(
-            batch,
-            { y: 30, autoAlpha: 0 },
-            { ...fadeIn, duration: 0.8, ease: fadeEase, stagger: 0.11, overwrite: "auto" }
+            ".compare-bad",
+            { y: 28, autoAlpha: 0 },
+            { y: 0, autoAlpha: 0.58, duration: 0.78, ease: "power2.out", overwrite: "auto" }
+          );
+
+          // VS badge
+          gsap.fromTo(
+            "#compare .vs-wrap",
+            { scale: 0.6, autoAlpha: 0 },
+            { scale: 1, autoAlpha: 1, duration: 0.55, delay: 0.18, ease: "back.out(1.8)", overwrite: "auto" }
+          );
+
+          // "BiznesHisob bilan" — energetic slide-up with neon glow burst
+          gsap.fromTo(
+            ".compare-good",
+            { y: 52, autoAlpha: 0, scale: 0.96 },
+            {
+              y: 0, autoAlpha: 1, scale: 1,
+              duration: 0.78, delay: 0.24,
+              ease: "power3.out",
+              overwrite: "auto",
+              onComplete: () => {
+                // One-shot glow burst after slide completes
+                const el = document.querySelector(".compare-good");
+                if (!el) return;
+                gsap.fromTo(
+                  el,
+                  { filter: "drop-shadow(0 0 0px rgba(147,51,234,0))" },
+                  {
+                    filter: "drop-shadow(0 0 22px rgba(147,51,234,0.65))",
+                    duration: 0.4,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1,
+                    onComplete: () => gsap.set(el, { clearProps: "filter" })
+                  }
+                );
+              }
+            }
           );
         }
       });
@@ -2859,7 +2929,20 @@
           ...fadeIn,
           duration: 0.8,
           ease: fadeEase,
-          scrollTrigger: { trigger: "#pricing .pricing-box", start: "top 88%", once: true }
+          scrollTrigger: {
+            trigger: "#pricing .pricing-box",
+            start: "top 88%",
+            once: true,
+            onEnter: () => {
+              // Slight delay so the fade-in settles first
+              setTimeout(() => {
+                const box = document.querySelector("#pricing .pricing-box");
+                if (box) box.classList.add("premium-focused");
+                const btn = document.querySelector(".btn-pricing-premium");
+                if (btn) btn.classList.add("is-breathing");
+              }, 420);
+            }
+          }
         }
       );
 
@@ -2918,6 +3001,20 @@
           scrollTrigger: { trigger: "#contact .contact-card", start: "top 88%", once: true }
         }
       );
+
+      // ── Chart bars: fire animation only when card enters viewport ────────
+      const chartEl = document.querySelector(".fm-chart");
+      if (chartEl) {
+        const chartObs = new IntersectionObserver(
+          ([entry]) => {
+            if (!entry.isIntersecting) return;
+            chartEl.classList.add("fm-chart--visible");
+            chartObs.disconnect();
+          },
+          { threshold: 0.35 }
+        );
+        chartObs.observe(chartEl);
+      }
 
       let resizeTimer;
       window.addEventListener("resize", () => {
@@ -3064,7 +3161,14 @@
   <script type="module">
     import React, { useEffect, useRef, useState } from "https://esm.sh/react@18.3.1";
     import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
-    import { motion, useSpring } from "https://esm.sh/framer-motion@11.11.17";
+    import {
+      motion,
+      useSpring,
+      useScroll,
+      useTransform,
+      useMotionValue,
+      animate
+    } from "https://esm.sh/framer-motion@11.11.17";
 
     function mountPhoneFallback() {
       const mount = document.getElementById("heroPhoneMount");
@@ -3080,14 +3184,38 @@
     }
 
     function HeroPhone() {
-      const innerRef = useRef(null);
+      const innerRef   = useRef(null);
+      const wrapperRef = useRef(null);
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+
+      // ── Aura / mouse-parallax ──────────────────────────────────────────────
       const [auraTarget, setAuraTarget] = useState({ x: 0.5, y: 0.5 });
       const auraX = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
       const auraY = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
+
+      // ── Mouse-tilt 3D ──────────────────────────────────────────────────────
       const rotateX = useSpring(0, { stiffness: 140, damping: 24 });
       const rotateY = useSpring(0, { stiffness: 140, damping: 24 });
 
+      // ── Scroll-controlled entrance (Control Reveal) ───────────────────────
+      // As user scrolls 0→280px, phone goes from "distant & tilted" → "front & centred"
+      const { scrollY } = useScroll();
+      const scrollScale   = useTransform(scrollY, [0, 280], [0.82, 1.04]);
+      const scrollRotateY = useTransform(scrollY, [0, 280], [-14, 0]);
+      const scrollOpacity = useTransform(scrollY, [0, 120], [0.72, 1]);
+
+      // Spring-smooth the raw scroll values so they feel physical, not linear
+      const smoothScale   = useSpring(scrollScale,   { stiffness: 60, damping: 22 });
+      const smoothRotateY = useSpring(scrollRotateY, { stiffness: 50, damping: 20 });
+      const smoothOpacity = useSpring(scrollOpacity, { stiffness: 80, damping: 24 });
+
+      // On mobile, skip scroll-driven values – just show full opacity/scale
+      const finalScale   = isMobile || reducedMotion ? 1      : smoothScale;
+      const finalRotateY = isMobile || reducedMotion ? 0      : smoothRotateY;
+      const finalOpacity = isMobile || reducedMotion ? 1      : smoothOpacity;
+
+      // ── Populate inner template ────────────────────────────────────────────
       useEffect(() => {
         const tpl = document.getElementById("phoneTiltTemplate");
         if (tpl?.content && innerRef.current && !innerRef.current.childElementCount) {
@@ -3095,6 +3223,7 @@
         }
       }, []);
 
+      // ── Aura tracking ─────────────────────────────────────────────────────
       useEffect(() => {
         if (reducedMotion) return undefined;
         const onMove = (e) => {
@@ -3122,53 +3251,62 @@
         applyAura();
         const unsubX = auraX.on("change", applyAura);
         const unsubY = auraY.on("change", applyAura);
-        return () => {
-          unsubX();
-          unsubY();
-        };
+        return () => { unsubX(); unsubY(); };
       }, [auraX, auraY]);
 
+      // ── Mouse-tilt handlers ────────────────────────────────────────────────
       const handleMouseMove = (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;
-        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        const x = (e.clientX - rect.left) / rect.width  - 0.5;
+        const y = (e.clientY - rect.top)  / rect.height - 0.5;
         rotateY.set(x * 18);
         rotateX.set(-y * 14);
       };
+      const handleMouseLeave = () => { rotateX.set(0); rotateY.set(0); };
 
-      const handleMouseLeave = () => {
-        rotateX.set(0);
-        rotateY.set(0);
-      };
-
+      // ── Render ─────────────────────────────────────────────────────────────
+      // Outer wrapper: scroll-controlled scale + rotateY + opacity (the "Control Reveal")
       return React.createElement(
         motion.div,
         {
-          className: "phone-tilt",
-          animate: reducedMotion
-            ? undefined
-            : {
-                y: [0, -18, -8, 0],
-                rotateZ: [0, 0.8, -0.5, 0]
-              },
-          transition: {
-            duration: 5.8,
-            repeat: Infinity,
-            ease: [0.45, 0.05, 0.55, 0.95]
-          },
-          style: { transformStyle: "preserve-3d" },
-          onMouseMove: reducedMotion ? undefined : handleMouseMove,
-          onMouseLeave: reducedMotion ? undefined : handleMouseLeave
-        },
-        React.createElement(motion.div, {
-          ref: innerRef,
-          className: "phone-tilt-inner",
+          ref: wrapperRef,
           style: {
-            rotateX: reducedMotion ? 0 : rotateX,
-            rotateY: reducedMotion ? 0 : rotateY,
-            transformStyle: "preserve-3d"
+            scale:   finalScale,
+            rotateY: finalRotateY,
+            opacity: finalOpacity,
+            transformStyle: "preserve-3d",
+            willChange: "transform, opacity",
+            transformOrigin: "center bottom"
           }
-        })
+        },
+        // Inner float loop: gentle y + rotateZ bob (unchanged)
+        React.createElement(
+          motion.div,
+          {
+            className: "phone-tilt",
+            animate: reducedMotion
+              ? undefined
+              : { y: [0, -18, -8, 0], rotateZ: [0, 0.8, -0.5, 0] },
+            transition: {
+              duration: 5.8,
+              repeat: Infinity,
+              ease: [0.45, 0.05, 0.55, 0.95]
+            },
+            style: { transformStyle: "preserve-3d" },
+            onMouseMove:  reducedMotion ? undefined : handleMouseMove,
+            onMouseLeave: reducedMotion ? undefined : handleMouseLeave
+          },
+          // Tilt inner (mouse rotateX/rotateY)
+          React.createElement(motion.div, {
+            ref: innerRef,
+            className: "phone-tilt-inner",
+            style: {
+              rotateX: reducedMotion ? 0 : rotateX,
+              rotateY: reducedMotion ? 0 : rotateY,
+              transformStyle: "preserve-3d"
+            }
+          })
+        )
       );
     }
 
