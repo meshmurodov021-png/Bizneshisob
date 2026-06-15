@@ -1188,47 +1188,229 @@
       margin-bottom: 0.5rem;
     }
 
-    .fm-tap {
-      display: grid;
-      place-items: center;
-      height: 100px;
+    /* ══ Tezkor qo'shish — Quick-add widget ══════════════════════════════ */
+    .fm-quick {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
     }
 
-    .fm-tap-btn {
-      width: 72px;
-      height: 72px;
+    .fm-quick-amount {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+    }
+
+    .fm-quick-sign {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      color: #4ade80;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .fm-quick-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #4ade80;
+      letter-spacing: -0.03em;
+    }
+
+    .fm-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .fm-qtag {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      cursor: default;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+
+    .fm-qtag:hover,
+    .fm-qtag.qtag-active {
+      background: rgba(124, 58, 237, 0.18);
+      border-color: rgba(124, 58, 237, 0.45);
+      color: #c4b5fd;
+    }
+
+    .fm-quick-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .fm-quick-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .fm-quick-fab {
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       background: var(--gradient);
       display: grid;
       place-items: center;
-      font-size: 2rem;
-      box-shadow: 0 8px 32px var(--glow);
-      animation: tapPulse 2s ease infinite;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s var(--ease);
+      box-shadow:
+        0 6px 24px rgba(124, 58, 237, 0.5),
+        0 0  0   6px rgba(124, 58, 237, 0.08);
+      animation: fabPulse 2.4s ease-in-out infinite;
     }
 
-    @keyframes tapPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.06); }
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 0  6px rgba(124,58,237,0.08); }
+      50%       { box-shadow: 0 8px 32px rgba(124,58,237,0.7), 0 0 0 12px rgba(124,58,237,0.04); }
     }
 
-    .fm-langs {
+    .feature-mock:hover .fm-quick-fab {
+      transform: rotate(90deg);
+      animation: none;
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.65), 0 0 0 14px rgba(124, 58, 237, 0.06);
+    }
+
+    /* stagger-in for tags on card hover */
+    .feature-mock:hover .fm-qtag:nth-child(1) { animation: tagIn 0.22s 0.05s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(2) { animation: tagIn 0.22s 0.11s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(3) { animation: tagIn 0.22s 0.17s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(4) { animation: tagIn 0.22s 0.23s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(5) { animation: tagIn 0.22s 0.29s var(--ease) both; }
+
+    @keyframes tagIn {
+      from { transform: translateY(6px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    /* ══ Ko'p tilli — Language switcher card ═════════════════════════════ */
+    .fm-multilang {
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 1rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+      width: 100%;
+      position: relative;
     }
 
-    .fm-lang {
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.8rem;
+    /* Neon aura behind badges */
+    .fm-multilang::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.22) 0%, rgba(79,70,229,0.12) 40%, transparent 72%);
+      filter: blur(32px);
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .fm-lang-badges {
+      display: flex;
+      gap: 0.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fm-lang-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.6rem 1rem;
+      border-radius: 14px;
       border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: default;
+      transition: background 0.3s var(--ease), border-color 0.3s, color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
     }
 
-    .fm-lang.active {
+    .fm-lang-badge .fm-lang-flag {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .fm-lang-badge.fm-lang-active {
       background: var(--gradient);
       border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(124,58,237,0.42);
+      transform: translateY(-3px);
+    }
+
+    .fm-lang-badge:not(.fm-lang-active):hover {
+      background: rgba(124, 58, 237, 0.15);
+      border-color: rgba(124, 58, 237, 0.4);
+      color: #c4b5fd;
+      transform: translateY(-2px);
+    }
+
+    /* Translated preview snippet */
+    .fm-lang-preview {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-height: 68px;
+    }
+
+    .fm-lang-preview-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(124,58,237,0.75);
+      text-transform: uppercase;
+    }
+
+    .fm-lang-preview-text {
+      font-size: 0.78rem;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.45;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .fm-lang-preview-text.fading {
+      opacity: 0;
+      transform: translateY(4px);
     }
 
     /* HOW IT WORKS */
@@ -2186,8 +2368,22 @@
             <p>Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
-            <div class="fm-tap">
-              <div class="fm-tap-btn">+</div>
+            <div class="fm-quick">
+              <div class="fm-quick-amount">
+                <div class="fm-quick-sign">+</div>
+                <span class="fm-quick-value">1 500 000 so'm</span>
+              </div>
+              <div class="fm-quick-tags">
+                <span class="fm-qtag qtag-active">💼 Kassa</span>
+                <span class="fm-qtag">👤 Mijoz</span>
+                <span class="fm-qtag">🛒 Sotib olish</span>
+                <span class="fm-qtag">🚗 Transport</span>
+                <span class="fm-qtag">📦 Mahsulot</span>
+              </div>
+              <div class="fm-quick-footer">
+                <span class="fm-quick-note">Kategoriya tanlang, saqlang</span>
+                <button type="button" class="fm-quick-fab" aria-label="Qo'shish">+</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2197,11 +2393,26 @@
             <h3><span class="feat-icon">🌐</span> Ko'p tilli</h3>
             <p>O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
           </div>
-          <div class="feature-visual glass glass-hover feature-card feature-mock">
-            <div class="fm-langs">
-              <span class="fm-lang active">UZ</span>
-              <span class="fm-lang">RU</span>
-              <span class="fm-lang">EN</span>
+          <div class="feature-visual glass glass-hover feature-card feature-mock" id="langCard">
+            <div class="fm-multilang">
+              <div class="fm-lang-badges">
+                <button type="button" class="fm-lang-badge fm-lang-active" data-lang-switch="uz">
+                  <span class="fm-lang-flag">🇺🇿</span>
+                  <span>UZ</span>
+                </button>
+                <button type="button" class="fm-lang-badge" data-lang-switch="ru">
+                  <span class="fm-lang-flag">🇷🇺</span>
+                  <span>RU</span>
+                </button>
+                <button type="button" class="fm-lang-badge" data-lang-switch="en">
+                  <span class="fm-lang-flag">🇬🇧</span>
+                  <span>EN</span>
+                </button>
+              </div>
+              <div class="fm-lang-preview">
+                <div class="fm-lang-preview-label" id="langPreviewLabel">UI namunasi</div>
+                <div class="fm-lang-preview-text" id="langPreviewText">Sof foyda: 2 394 111 so'm ↑ Daromad va xarajatlarni real vaqtda kuzating.</div>
+              </div>
             </div>
           </div>
         </div>
@@ -3024,6 +3235,49 @@
     }
 
     initScrollReveal();
+
+    /* ── Lang preview switcher ────────────────────────────────────────────── */
+    (function initLangCard() {
+      const PREVIEWS = {
+        uz: { label: "UI namunasi — O'zbek", text: "Sof foyda: 2 394 111 so'm ↑ Daromad va xarajatlarni real vaqtda kuzating." },
+        ru: { label: "UI образец — Русский", text: "Чистая прибыль: 2 394 111 сум ↑ Отслеживайте доходы и расходы в реальном времени." },
+        en: { label: "UI preview — English",   text: "Net profit: 2,394,111 UZS ↑ Track income and expenses in real time." }
+      };
+
+      const previewLabel = document.getElementById("langPreviewLabel");
+      const previewText  = document.getElementById("langPreviewText");
+      const badges       = document.querySelectorAll("[data-lang-switch]");
+
+      if (!previewLabel || !previewText || !badges.length) return;
+
+      function switchLangPreview(lang) {
+        const p = PREVIEWS[lang];
+        if (!p) return;
+
+        previewText.classList.add("fading");
+        previewLabel.classList.add("fading");
+
+        setTimeout(() => {
+          previewLabel.textContent = p.label;
+          previewText.textContent  = p.text;
+          previewText.classList.remove("fading");
+          previewLabel.classList.remove("fading");
+        }, 240);
+
+        badges.forEach(b => {
+          b.classList.toggle("fm-lang-active", b.dataset.langSwitch === lang);
+        });
+      }
+
+      badges.forEach(badge => {
+        badge.addEventListener("mouseenter", () => switchLangPreview(badge.dataset.langSwitch));
+        badge.addEventListener("click",      () => switchLangPreview(badge.dataset.langSwitch));
+      });
+
+      document.getElementById("langCard")?.addEventListener("mouseleave", () => {
+        switchLangPreview("uz");
+      });
+    })();
 
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
