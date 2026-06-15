@@ -920,24 +920,58 @@
     }
 
     .compare-good {
-      background: rgba(124, 58, 237, 0.1);
-      border-color: rgba(124, 58, 237, 0.45);
-      box-shadow: 0 0 80px rgba(124, 58, 237, 0.2), inset 0 1px 0 rgba(167, 139, 250, 0.15);
+      background: rgba(124, 58, 237, 0.12);
+      border-color: transparent;
+      box-shadow:
+        0 0 0 1.5px rgba(139, 92, 246, 0.7),
+        0 0 40px rgba(124, 58, 237, 0.35),
+        0 0 80px rgba(124, 58, 237, 0.18),
+        inset 0 1px 0 rgba(167, 139, 250, 0.18);
+      position: relative;
+      z-index: 1;
     }
 
+    /* Animated rotating gradient border */
     .compare-good::before {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: -1.5px;
       border-radius: inherit;
-      padding: 1px;
-      background: var(--gradient);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-      opacity: 0.6;
+      background: conic-gradient(
+        from var(--angle, 0deg),
+        #7C3AED 0deg,
+        #a78bfa 60deg,
+        #38bdf8 120deg,
+        #4F46E5 180deg,
+        #7C3AED 240deg,
+        #a78bfa 300deg,
+        #7C3AED 360deg
+      );
+      z-index: -1;
+      animation: borderRotate 4s linear infinite;
+      opacity: 0.85;
+    }
+
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes borderRotate {
+      to { --angle: 360deg; }
+    }
+
+    /* Inner fill to mask the rotating border */
+    .compare-good::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: calc(var(--radius) - 2px);
+      background: rgba(16, 12, 28, 0.92);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      z-index: -1;
     }
 
     .compare-card { position: relative; }
@@ -1023,10 +1057,24 @@
       font-size: 1.65rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      line-height: 1.2;
+    }
+
+    .feature-copy h3 .feat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      font-size: 1.15rem;
+      flex-shrink: 0;
     }
 
     .feature-copy p {
@@ -1068,17 +1116,49 @@
 
     .fm-chart {
       display: flex;
-      gap: 4px;
+      gap: 5px;
       align-items: flex-end;
-      height: 48px;
+      height: 72px;
       margin-top: 1rem;
+      padding-bottom: 2px;
+      position: relative;
     }
 
-    .fm-chart span {
+    .fm-chart-bar {
       flex: 1;
-      background: var(--gradient);
-      border-radius: 3px 3px 0 0;
-      opacity: 0.85;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .fm-chart-bar-fill {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      animation: barGrow 0.9s var(--ease) both;
+      transform-origin: bottom;
+    }
+
+    @keyframes barGrow {
+      from { transform: scaleY(0); opacity: 0; }
+      to   { transform: scaleY(1); opacity: 1; }
+    }
+
+    .fm-chart-bar:nth-child(1) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.05s; }
+    .fm-chart-bar:nth-child(2) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.12s; }
+    .fm-chart-bar:nth-child(3) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.19s; }
+    .fm-chart-bar:nth-child(4) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #c4b5fd); animation-delay: 0.26s; }
+    .fm-chart-bar:nth-child(5) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.33s; }
+    .fm-chart-bar:nth-child(6) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.40s; }
+
+    .fm-chart-label {
+      font-size: 0.58rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
     }
 
     .fm-offline {
@@ -1261,15 +1341,28 @@
     }
 
     .t-avatar {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      background: var(--gradient);
       display: grid;
       place-items: center;
-      font-weight: 700;
-      font-size: 0.8rem;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
+
+    .t-avatar svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* unique gradient per avatar */
+    .t-avatar--violet { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #c4b5fd 100%); }
+    .t-avatar--teal   { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%); }
+    .t-avatar--amber  { background: linear-gradient(135deg, #92400e 0%, #f59e0b 50%, #fde68a 100%); }
 
     .t-author strong { display: block; font-size: 0.95rem; }
     .t-author span { font-size: 0.8rem; color: var(--muted); }
@@ -1330,20 +1423,35 @@
     }
 
     .col-premium {
-      background: rgba(124, 58, 237, 0.14);
-      box-shadow: inset 0 0 60px rgba(124, 58, 237, 0.08);
+      background: rgba(124, 58, 237, 0.12);
+      position: relative;
+    }
+
+    /* Left border accent line on premium column */
+    .col-premium::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.9), transparent);
+      pointer-events: none;
     }
 
     .badge-tavsiya {
-      display: inline-block;
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.62rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.6rem;
       font-weight: 800;
-      background: var(--gradient);
+      background: linear-gradient(135deg, #7C3AED, #38bdf8);
       color: #fff;
-      margin-bottom: 0.45rem;
-      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 12px rgba(124, 58, 237, 0.35);
     }
 
     .yes,
@@ -1362,21 +1470,88 @@
       transition: transform 0.25s var(--ease);
     }
 
+    /* Free col checks: standard green */
     .yes { background: #22c55e; }
-    .no { background: #f97316; }
+    .no  { background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid rgba(255,255,255,0.15); }
+
+    /* Premium col checks: vivid violet */
+    .col-premium .yes {
+      background: linear-gradient(135deg, #7C3AED, #a78bfa);
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    }
 
     .yes:hover,
-    .no:hover {
-      transform: scale(1.12);
-    }
+    .no:hover { transform: scale(1.12); }
 
     .pricing-foot {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.85rem;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 1.65rem 1.5rem;
       border-top: 1px solid var(--border);
+    }
+
+    /* Ghost "free" button */
+    .btn-pricing-ghost {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      color: var(--muted);
+      padding: 0.78rem 1.6rem;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: border-color 0.3s var(--ease), color 0.3s var(--ease), background 0.3s var(--ease);
+    }
+
+    .btn-pricing-ghost:hover {
+      border-color: rgba(255,255,255,0.45);
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Rich gradient "premium" CTA */
+    .btn-pricing-premium {
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 40%, #4F46E5 100%);
+      border: none;
+      color: #fff;
+      padding: 0.78rem 1.8rem;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-shadow:
+        0 4px 20px rgba(124, 58, 237, 0.45),
+        0 0 0 1px rgba(139, 92, 246, 0.3);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), filter 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-pricing-premium::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn-pricing-premium:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 30px rgba(124, 58, 237, 0.55),
+        0 0 0 1px rgba(167, 139, 250, 0.4);
+      filter: brightness(1.08);
     }
 
     /* CTA BANNER */
@@ -1562,9 +1737,9 @@
       .phone-aura-blob,
       .phone-aura-ring { animation: none; }
       .vs-badge { animation: none; }
-      .glass-hover:hover {
-        transform: none;
-      }
+      .compare-good::before { animation: none; }
+      .fm-chart-bar-fill { animation: none; }
+      .glass-hover:hover { transform: none; }
     }
   </style>
 </head>
@@ -1741,7 +1916,7 @@
 
         <div class="feature-row reveal" data-delay="0">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>💰 Daromad va xarajat</h3>
+            <h3><span class="feat-icon">💰</span> Daromad va xarajat</h3>
             <p>Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
@@ -1756,15 +1931,19 @@
 
         <div class="feature-row reverse reveal" data-delay="80">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>📊 Vizual hisobotlar</h3>
+            <h3><span class="feat-icon">📊</span> Vizual hisobotlar</h3>
             <p>Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
             <div class="feature-mock-inner">
               <div class="mock-label">Oylik statistika</div>
               <div class="fm-chart">
-                <span style="height:45%"></span><span style="height:70%"></span><span style="height:55%"></span>
-                <span style="height:85%"></span><span style="height:60%"></span><span style="height:95%"></span>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:42%"></div><span class="fm-chart-label">Yan</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:61%"></div><span class="fm-chart-label">Feb</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:48%"></div><span class="fm-chart-label">Mar</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:78%"></div><span class="fm-chart-label">Apr</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:55%"></div><span class="fm-chart-label">May</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:92%"></div><span class="fm-chart-label">Iyu</span></div>
               </div>
             </div>
           </div>
@@ -1772,7 +1951,7 @@
 
         <div class="feature-row reveal" data-delay="160">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>📱 Mobil va PWA</h3>
+            <h3><span class="feat-icon">📱</span> Mobil va PWA</h3>
             <p>Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
@@ -1783,7 +1962,7 @@
 
         <div class="feature-row reverse reveal" data-delay="240">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>🔒 Xavfsizlik</h3>
+            <h3><span class="feat-icon">🔒</span> Xavfsizlik</h3>
             <p>Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
@@ -1794,7 +1973,7 @@
 
         <div class="feature-row reveal" data-delay="320">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>⚡ Tezkor qo'shish</h3>
+            <h3><span class="feat-icon">⚡</span> Tezkor qo'shish</h3>
             <p>Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
@@ -1806,7 +1985,7 @@
 
         <div class="feature-row reverse reveal" data-delay="400">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3>🌐 Ko'p tilli</h3>
+            <h3><span class="feat-icon">🌐</span> Ko'p tilli</h3>
             <p>O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
@@ -1886,7 +2065,12 @@
             <div class="stars" aria-label="5 yulduz">★★★★★</div>
             <q>Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!</q>
             <div class="testimonial-author">
-              <div class="t-avatar">AK</div>
+              <div class="t-avatar t-avatar--violet" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
               <div class="t-author">
                 <strong>Aziza Karimova</strong>
                 <span>Do'kon egasi, Toshkent</span>
@@ -1897,7 +2081,12 @@
             <div class="stars" aria-label="5 yulduz">★★★★★</div>
             <q>Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!</q>
             <div class="testimonial-author">
-              <div class="t-avatar">DR</div>
+              <div class="t-avatar t-avatar--teal" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
               <div class="t-author">
                 <strong>Dilshod Rakhimov</strong>
                 <span>IT xizmatlar, Samarqand</span>
@@ -1908,7 +2097,12 @@
             <div class="stars" aria-label="5 yulduz">★★★★★</div>
             <q>Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.</q>
             <div class="testimonial-author">
-              <div class="t-avatar">SN</div>
+              <div class="t-avatar t-avatar--amber" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
               <div class="t-author">
                 <strong>Sardor Nazarov</strong>
                 <span>Kafe egasi, Toshkent</span>
@@ -1954,8 +2148,8 @@
             </tbody>
           </table>
           <div class="pricing-foot">
-            <a href="index.html" class="btn btn-outline">Bepul boshlash</a>
-            <a href="index.html" class="btn btn-primary">Premiumga o'tish</a>
+            <a href="index.html" class="btn-pricing-ghost">Bepul boshlash</a>
+            <a href="index.html" class="btn-pricing-premium">✦ Premiumga o'tish</a>
           </div>
         </div>
       </div>
