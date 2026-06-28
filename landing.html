@@ -1877,12 +1877,23 @@
     }
 
     .phone-ph {
+      display: block;
+      text-align: center;
+      text-decoration: none;
       padding: 0.85rem;
       border-radius: 14px;
       border: 1px dashed var(--border);
       color: var(--muted);
       font-weight: 600;
       font-size: 0.95rem;
+      transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .phone-ph:hover {
+        color: var(--text);
+        border-color: rgba(124, 58, 237, 0.4);
+      }
     }
 
     /* ═══════════════════════════════════════════
@@ -2779,8 +2790,8 @@
           <h3 data-i18n="contact.title">Savollaringiz bormi?</h3>
           <p data-i18n="contact.sub">Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.</p>
           <div class="contact-btns">
-            <a href="https://t.me/bizneshisob" class="btn btn-telegram" target="_blank" rel="noopener" data-i18n="contact.telegram">✈ Telegram orqali yozish</a>
-            <div class="phone-ph" aria-label="Telefon tez orada">📞 +998 XX XXX XX XX</div>
+            <a href="https://t.me/+998940262101" class="btn btn-telegram" target="_blank" rel="noopener" data-i18n="contact.telegram">✈ Telegram orqali yozish</a>
+            <a href="tel:+998940262101" class="phone-ph" aria-label="+998 94 026 21 01">📞 +998 94 026 21 01</a>
           </div>
         </div>
       </div>
