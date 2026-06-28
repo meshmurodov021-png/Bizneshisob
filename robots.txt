@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /app
+Allow: /landing.html
+
+Sitemap: https://bizneshisob.vercel.app/sitemap.xml

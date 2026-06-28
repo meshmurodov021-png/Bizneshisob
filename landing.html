@@ -3,14 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="BiznesHisob — biznes daromad va xarajatlarini boshqarish ilovasi">
+  <meta name="description" content="BiznesHisob — O'zbekiston tadbirkorlari uchun biznes daromad va xarajatlarini boshqarish ilovasi. Bepul boshlang, Premium bilan kengaytiring.">
+  <meta name="keywords" content="BiznesHisob, biznes hisob, daromad xarajat, moliya ilovasi, O'zbekiston, tadbirkor, PWA">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
   <meta name="app-build-version" content="1780673729574">
+  <link rel="canonical" href="https://bizneshisob.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiznesHisob">
+  <meta property="og:title" content="BiznesHisob — Biznes moliyasini boshqaring">
+  <meta property="og:description" content="Daromad, xarajat va balans — barchasi bitta joyda. O'zbekiston tadbirkorlari uchun zamonaviy moliya ilovasi.">
+  <meta property="og:url" content="https://bizneshisob.vercel.app/">
+  <meta property="og:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
+  <meta property="og:locale" content="uz_UZ">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
+  <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
+  <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
   <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1780673729574">
   <link rel="manifest" href="/manifest.json?v=1780673729574">
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BiznesHisob",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "UZS"
+    },
+    "description": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
+    "url": "https://bizneshisob.vercel.app/app",
+    "image": "https://bizneshisob.vercel.app/icons/icon-512.png",
+    "inLanguage": ["uz", "ru", "en"]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -86,7 +119,7 @@
       );
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; background: var(--bg); overscroll-behavior: none; }
 
     body {
       font-family: "Plus Jakarta Sans", system-ui, sans-serif;
@@ -2195,7 +2228,7 @@
 
   <header class="header" id="header">
     <div class="container header-inner">
-      <a href="#" class="logo">
+      <a href="/" class="logo">
         <div class="logo-mark">📊</div>
         <span>BiznesHisob</span>
       </a>
@@ -2228,7 +2261,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="index.html" data-i18n="cta.download">Yuklab olish</a>
+    <a href="/app" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
 
@@ -2256,9 +2289,9 @@
           <div id="heroPhoneMount"></div>
         </div>
       </div>
-      <a href="#compare" class="scroll-hint" aria-label="Pastga aylantiring">
+      <a href="#compare" class="scroll-hint" data-i18n-aria="scroll.hintAria">
         <span class="scroll-hint-icon"></span>
-        <span>Pastga</span>
+        <span data-i18n="scroll.hint">Pastga</span>
       </a>
     </section>
 
@@ -2266,32 +2299,32 @@
     <section id="compare">
       <div class="container">
         <div class="section-head reveal">
-          <span class="section-tag">Farq</span>
-          <h2>Murakkablikdan <span class="gradient-text">osonlikka</span></h2>
-          <p>BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba</p>
+          <span class="section-tag" data-i18n="compare.tag">Farq</span>
+          <h2 data-i18n-html="compare.title">Murakkablikdan <span class="gradient-text">osonlikka</span></h2>
+          <p data-i18n="compare.sub">BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba</p>
         </div>
         <div class="compare-wrap">
           <article class="compare-card compare-bad glass glass-hover reveal">
-            <div class="compare-tag">BiznesHisobsiz</div>
-            <h3>murakkab</h3>
+            <div class="compare-tag" data-i18n="compare.bad.tag">BiznesHisobsiz</div>
+            <h3 data-i18n="compare.bad.title">murakkab</h3>
             <ul class="compare-list">
-              <li><span>❌</span> Excel va qog'ozda chalkash hisoblar</li>
-              <li><span>❌</span> Balansni bilish uchun soatlab vaqt</li>
-              <li><span>❌</span> Xarajatlar nazoratdan chiqadi</li>
-              <li><span>❌</span> Hisobotlar yo'q — faqat taxmin</li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l1">Excel va qog'ozda chalkash hisoblar</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l2">Balansni bilish uchun soatlab vaqt</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l3">Xarajatlar nazoratdan chiqadi</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l4">Hisobotlar yo'q — faqat taxmin</span></li>
             </ul>
           </article>
           <div class="vs-wrap reveal">
             <div class="vs-badge">VS</div>
           </div>
           <article class="compare-card compare-good glass glass-hover reveal">
-            <div class="compare-tag">BiznesHisob bilan</div>
-            <h3>oson</h3>
+            <div class="compare-tag" data-i18n="compare.good.tag">BiznesHisob bilan</div>
+            <h3 data-i18n="compare.good.title">oson</h3>
             <ul class="compare-list">
-              <li><span>✅</span> Barcha operatsiyalar bitta ilovada</li>
-              <li><span>✅</span> Bir bosish — daromad yoki xarajat</li>
-              <li><span>✅</span> Real vaqtda balans va statistika</li>
-              <li><span>✅</span> Aniq grafiklar va tahlil</li>
+              <li><span>✅</span> <span data-i18n="compare.good.l1">Barcha operatsiyalar bitta ilovada</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l2">Bir bosish — daromad yoki xarajat</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l3">Real vaqtda balans va statistika</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l4">Aniq grafiklar va tahlil</span></li>
             </ul>
           </article>
         </div>
@@ -2302,34 +2335,34 @@
     <section id="features">
       <div class="container">
         <div class="section-head reveal">
-          <span class="section-tag">Imkoniyatlar</span>
-          <h2>Biznesingiz uchun <span class="gradient-text">barcha vositalar</span></h2>
-          <p>Har bir funksiya — real vazifalar uchun mo'ljallangan</p>
+          <span class="section-tag" data-i18n="features.tag">Imkoniyatlar</span>
+          <h2 data-i18n-html="features.title">Biznesingiz uchun <span class="gradient-text">barcha vositalar</span></h2>
+          <p data-i18n="features.sub">Har bir funksiya — real vazifalar uchun mo'ljallangan</p>
         </div>
 
         <div class="feature-row reveal" data-delay="0">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">💰</span> Daromad va xarajat</h3>
-            <p>Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.</p>
+            <h3><span class="feat-icon">💰</span> <span data-i18n="features.f1.title">Daromad va xarajat</span></h3>
+            <p data-i18n="features.f1.desc">Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
             <div class="feature-mock-inner">
-              <div class="mock-label">Joriy balans</div>
+              <div class="mock-label" data-i18n="features.f1.mock.label">Joriy balans</div>
               <div class="fm-balance">+8 240 000 so'm</div>
-              <div class="mock-row"><span>Bugungi daromad</span><span style="color:#4ade80">+1.2M</span></div>
-              <div class="mock-row"><span>Bugungi xarajat</span><span style="color:#f87171">-340K</span></div>
+              <div class="mock-row"><span data-i18n="features.f1.mock.income">Bugungi daromad</span><span style="color:#4ade80">+1.2M</span></div>
+              <div class="mock-row"><span data-i18n="features.f1.mock.expense">Bugungi xarajat</span><span style="color:#f87171">-340K</span></div>
             </div>
           </div>
         </div>
 
         <div class="feature-row reverse reveal" data-delay="80">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">📊</span> Vizual hisobotlar</h3>
-            <p>Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.</p>
+            <h3><span class="feat-icon">📊</span> <span data-i18n="features.f2.title">Vizual hisobotlar</span></h3>
+            <p data-i18n="features.f2.desc">Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
             <div class="feature-mock-inner">
-              <div class="mock-label">Oylik statistika</div>
+              <div class="mock-label" data-i18n="features.f2.mock.label">Oylik statistika</div>
               <div class="fm-chart">
                 <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:42%"></div><span class="fm-chart-label">Yan</span></div>
                 <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:61%"></div><span class="fm-chart-label">Feb</span></div>
@@ -2344,30 +2377,30 @@
 
         <div class="feature-row reveal" data-delay="160">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">📱</span> Mobil va PWA</h3>
-            <p>Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.</p>
+            <h3><span class="feat-icon">📱</span> <span data-i18n="features.f3.title">Mobil va PWA</span></h3>
+            <p data-i18n="features.f3.desc">Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
-            <div class="fm-offline">📶 Oflayn rejim — faol</div>
-            <p style="color:var(--muted);font-size:0.85rem;margin-top:0.75rem">PWA — brauzerdan to'liq ilovaga</p>
+            <div class="fm-offline" data-i18n="features.f3.mock.offline">📶 Oflayn rejim — faol</div>
+            <p style="color:var(--muted);font-size:0.85rem;margin-top:0.75rem" data-i18n="features.f3.mock.sub">PWA — brauzerdan to'liq ilovaga</p>
           </div>
         </div>
 
         <div class="feature-row reverse reveal" data-delay="240">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">🔒</span> Xavfsizlik</h3>
-            <p>Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.</p>
+            <h3><span class="feat-icon">🔒</span> <span data-i18n="features.f4.title">Xavfsizlik</span></h3>
+            <p data-i18n="features.f4.desc">Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
             <div class="fm-shield">🛡️</div>
-            <p style="text-align:center;color:var(--muted);font-size:0.85rem">256-bit shifrlash • Xavfsiz serverlar</p>
+            <p style="text-align:center;color:var(--muted);font-size:0.85rem" data-i18n="features.f4.mock.sub">256-bit shifrlash • Xavfsiz serverlar</p>
           </div>
         </div>
 
         <div class="feature-row reveal" data-delay="320">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">⚡</span> Tezkor qo'shish</h3>
-            <p>Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
+            <h3><span class="feat-icon">⚡</span> <span data-i18n="features.f5.title">Tezkor qo'shish</span></h3>
+            <p data-i18n="features.f5.desc">Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock">
             <div class="fm-quick">
@@ -2392,8 +2425,8 @@
 
         <div class="feature-row reverse reveal" data-delay="400">
           <div class="feature-copy glass glass-hover feature-copy-card">
-            <h3><span class="feat-icon">🌐</span> Ko'p tilli</h3>
-            <p>O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
+            <h3><span class="feat-icon">🌐</span> <span data-i18n="features.f6.title">Ko'p tilli</span></h3>
+            <p data-i18n="features.f6.desc">O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
           </div>
           <div class="feature-visual glass glass-hover feature-card feature-mock" id="langCard">
             <div class="fm-multilang">
@@ -2417,7 +2450,7 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="section-tag" data-i18n="trust.tag">Xavfsizlik</span>
-          <h2 data-i18n="trust.title">Ma'lumotlaringiz <span class="gradient-text">100% himoyalangan</span></h2>
+          <h2 data-i18n-html="trust.title">Ma'lumotlaringiz <span class="gradient-text">100% himoyalangan</span></h2>
           <p data-i18n="trust.sub">Moliyaviy ma'lumotlaringizni ishonchli saqlash — bizning birinchi ustuvorligimiz</p>
         </div>
 
@@ -2467,11 +2500,11 @@
         </div>
 
         <div class="trust-badge-strip reveal">
-          <span class="trust-badge-pill"><span>🔒</span> SSL Sertifikati</span>
-          <span class="trust-badge-pill"><span>☁️</span> Google Cloud</span>
-          <span class="trust-badge-pill"><span>🛡️</span> GDPR Ready</span>
-          <span class="trust-badge-pill"><span>📱</span> PWA Secure</span>
-          <span class="trust-badge-pill"><span>⚡</span> 99.9% Uptime</span>
+          <span class="trust-badge-pill"><span>🔒</span> <span data-i18n="trust.badge.ssl">SSL Sertifikati</span></span>
+          <span class="trust-badge-pill"><span>☁️</span> <span data-i18n="trust.badge.cloud">Google Cloud</span></span>
+          <span class="trust-badge-pill"><span>🛡️</span> <span data-i18n="trust.badge.gdpr">GDPR Ready</span></span>
+          <span class="trust-badge-pill"><span>📱</span> <span data-i18n="trust.badge.pwa">PWA Secure</span></span>
+          <span class="trust-badge-pill"><span>⚡</span> <span data-i18n="trust.badge.uptime">99.9% Uptime</span></span>
         </div>
       </div>
     </section>
@@ -2625,8 +2658,8 @@
             </tbody>
           </table>
           <div class="pricing-foot">
-            <a href="index.html" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
-            <a href="index.html" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+            <a href="/app" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="/app" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
           </div>
         </div>
       </div>
@@ -2637,7 +2670,7 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="section-tag" data-i18n="faq.tag">Savollar</span>
-          <h2 data-i18n="faq.title">Ko'p <span class="gradient-text">so'raladigan savollar</span></h2>
+          <h2 data-i18n-html="faq.title">Ko'p <span class="gradient-text">so'raladigan savollar</span></h2>
           <p data-i18n="faq.sub">Javob topa olmadingizmi? Telegram orqali yozing — tez javob beramiz</p>
         </div>
 
@@ -2759,7 +2792,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="#" class="logo">
+          <a href="/" class="logo">
             <div class="logo-mark">📊</div>
             <span>BiznesHisob</span>
           </a>
@@ -2771,7 +2804,7 @@
             <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
             <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
             <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
-            <li><a href="index.html" data-i18n="cta.download">Yuklab olish</a></li>
+            <li><a href="/app" data-i18n="cta.download">Yuklab olish</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -2779,7 +2812,7 @@
           <ul>
             <li><a href="#compare" data-i18n="footer.about">Biz haqimizda</a></li>
             <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
-            <li><a href="#" data-i18n="footer.privacy">Maxfiylik</a></li>
+            <li><a href="#trust" data-i18n="footer.privacy">Maxfiylik</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -2787,7 +2820,7 @@
           <ul>
             <li><a href="#reviews" data-i18n="nav.reviews">Sharhlar</a></li>
             <li><a href="mailto:support@bizneshisob.uz">support@bizneshisob.uz</a></li>
-            <li><a href="https://bizneshisob.vercel.app" target="_blank" rel="noopener">bizneshisob.vercel.app</a></li>
+            <li><a href="/" id="footerSiteLink">bizneshisob.uz</a></li>
           </ul>
         </div>
       </div>
@@ -2800,21 +2833,49 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
-    const APP_URL = new URL("index.html", window.location.href).href;
+    const APP_URL = window.location.protocol === "file:"
+      ? new URL("index.html", window.location.href).href
+      : new URL("/app", window.location.origin).href;
     let deferredInstallPrompt = null;
     let currentLang = localStorage.getItem("bh-lang") || "uz";
 
     const i18n = {
       uz: {
-        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Jarayon", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar",
-        "trust.tag": "Xavfsizlik", "trust.title": "Ma'lumotlaringiz", "trust.sub": "Moliyaviy ma'lumotlaringizni ishonchli saqlash — bizning birinchi ustuvorligimiz",
+        "meta.title": "BiznesHisob — Biznes moliyasini boshqaring",
+        "scroll.hint": "Pastga", "scroll.hintAria": "Pastga aylantiring",
+        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar",
+        "compare.tag": "Farq",
+        "compare.title": "Murakkablikdan <span class=\"gradient-text\">osonlikka</span>",
+        "compare.sub": "BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba",
+        "compare.bad.tag": "BiznesHisobsiz", "compare.bad.title": "murakkab",
+        "compare.bad.l1": "Excel va qog'ozda chalkash hisoblar", "compare.bad.l2": "Balansni bilish uchun soatlab vaqt",
+        "compare.bad.l3": "Xarajatlar nazoratdan chiqadi", "compare.bad.l4": "Hisobotlar yo'q — faqat taxmin",
+        "compare.good.tag": "BiznesHisob bilan", "compare.good.title": "oson",
+        "compare.good.l1": "Barcha operatsiyalar bitta ilovada", "compare.good.l2": "Bir bosish — daromad yoki xarajat",
+        "compare.good.l3": "Real vaqtda balans va statistika", "compare.good.l4": "Aniq grafiklar va tahlil",
+        "features.tag": "Imkoniyatlar",
+        "features.title": "Biznesingiz uchun <span class=\"gradient-text\">barcha vositalar</span>",
+        "features.sub": "Har bir funksiya — real vazifalar uchun mo'ljallangan",
+        "features.f1.title": "Daromad va xarajat", "features.f1.desc": "Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.",
+        "features.f1.mock.label": "Joriy balans", "features.f1.mock.income": "Bugungi daromad", "features.f1.mock.expense": "Bugungi xarajat",
+        "features.f2.title": "Vizual hisobotlar", "features.f2.desc": "Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.",
+        "features.f2.mock.label": "Oylik statistika",
+        "features.f3.title": "Mobil va PWA", "features.f3.desc": "Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.",
+        "features.f3.mock.offline": "📶 Oflayn rejim — faol", "features.f3.mock.sub": "PWA — brauzerdan to'liq ilovaga",
+        "features.f4.title": "Xavfsizlik", "features.f4.desc": "Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.",
+        "features.f4.mock.sub": "256-bit shifrlash • Xavfsiz serverlar",
+        "features.f5.title": "Tezkor qo'shish", "features.f5.desc": "Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.",
+        "features.f6.title": "Ko'p tilli", "features.f6.desc": "O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.",
+        "trust.tag": "Xavfsizlik", "trust.title": "Ma'lumotlaringiz <span class=\"gradient-text\">100% himoyalangan</span>", "trust.sub": "Moliyaviy ma'lumotlaringizni ishonchli saqlash — bizning birinchi ustuvorligimiz",
+        "trust.badge.ssl": "SSL Sertifikati", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
         "trust.enc.title": "256-bit shifrlash", "trust.enc.desc": "Barcha ma'lumotlar AES-256 shifrlash bilan himoyalangan — bank darajasidagi xavfsizlik.",
         "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Ma'lumotlar Google'ning ishonchli bulut infratuzilmasida saqlanadi va zaxiralangan.",
         "trust.auth.title": "Xavfsiz autentifikatsiya", "trust.auth.desc": "Email va parol bilan kirish, har bir hisob alohida izolatsiya qilingan.",
         "trust.pin.title": "PIN himoyasi", "trust.pin.desc": "Ilovani PIN-kod bilan qulflang — telefon boshqalar qo'liga tushsa ham ma'lumotlar xavfsiz.",
         "trust.https.title": "HTTPS / TLS", "trust.https.desc": "Barcha tarmoq aloqalari TLS orqali shifrlangan. Ochiq WiFi'da ham xavfsiz.",
         "trust.privacy.title": "Maxfiylik kafolati", "trust.privacy.desc": "Uchinchi tomon reklama tarmoqlari yo'q. Ma'lumotlaringiz hech qachon sotilmaydi.",
-        "faq.tag": "Savollar", "faq.title": "Ko'p so'raladigan savollar", "faq.sub": "Javob topa olmadingizmi? Telegram orqali yozing — tez javob beramiz",
+        "faq.tag": "Savollar", "faq.title": "Ko'p <span class=\"gradient-text\">so'raladigan savollar</span>", "faq.sub": "Javob topa olmadingizmi? Telegram orqali yozing — tez javob beramiz",
         "faq.q1": "BiznesHisob to'liq bepulmi?", "faq.a1": "Ha, asosiy funksiyalar abadiy bepul. Daromad va xarajat qo'shish, asosiy statistika va 50 tagacha operatsiya — barchasi bepul. Premium rejada esa cheksiz operatsiyalar, kengaytirilgan grafiklar va eksport mavjud.",
         "faq.q2": "Mening moliyaviy ma'lumotlarim xavfsizmi?", "faq.a2": "Albatta. Ma'lumotlar Google Firebase infratuzilmasida 256-bit AES shifrlash bilan saqlanadi. Barcha ulanishlar TLS orqali himoyalangan. Ma'lumotlaringiz hech qachon uchinchi tomonlarga sotilmaydi.",
         "faq.q3": "Internet bo'lmasa ham ishlaydimi?", "faq.a3": "Ha! BiznesHisob PWA texnologiyasida qurilgan — telefonga o'rnatgach oflayn rejimda ham ishlaydi. Internet qaytganda ma'lumotlar avtomatik sinxronlashadi.",
@@ -2866,15 +2927,41 @@
         "pricing.cta.free": "Bepul boshlash", "pricing.cta.premium": "✦ Premiumga o'tish"
       },
       ru: {
-        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Процесс", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы",
-        "trust.tag": "Безопасность", "trust.title": "Ваши данные", "trust.sub": "Надёжное хранение финансовых данных — наш главный приоритет",
+        "meta.title": "BiznesHisob — Управляйте финансами бизнеса",
+        "scroll.hint": "Вниз", "scroll.hintAria": "Прокрутить вниз",
+        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы",
+        "compare.tag": "Сравнение",
+        "compare.title": "От сложности <span class=\"gradient-text\">к простоте</span>",
+        "compare.sub": "С BiznesHisob управление финансами — совершенно другой опыт",
+        "compare.bad.tag": "Без BiznesHisob", "compare.bad.title": "сложно",
+        "compare.bad.l1": "Путаница в Excel и на бумаге", "compare.bad.l2": "Часы на подсчёт баланса",
+        "compare.bad.l3": "Расходы выходят из-под контроля", "compare.bad.l4": "Нет отчётов — только догадки",
+        "compare.good.tag": "С BiznesHisob", "compare.good.title": "легко",
+        "compare.good.l1": "Все операции в одном приложении", "compare.good.l2": "Один клик — доход или расход",
+        "compare.good.l3": "Баланс и статистика в реальном времени", "compare.good.l4": "Точные графики и анализ",
+        "features.tag": "Возможности",
+        "features.title": "Все инструменты <span class=\"gradient-text\">для вашего бизнеса</span>",
+        "features.sub": "Каждая функция создана для реальных задач",
+        "features.f1.title": "Доход и расход", "features.f1.desc": "Добавляйте операции за секунды. Баланс и категории обновляются в реальном времени.",
+        "features.f1.mock.label": "Текущий баланс", "features.f1.mock.income": "Доход сегодня", "features.f1.mock.expense": "Расход сегодня",
+        "features.f2.title": "Визуальные отчёты", "features.f2.desc": "Точные графики доходов и расходов, месячное сравнение и анализ трендов.",
+        "features.f2.mock.label": "Месячная статистика",
+        "features.f3.title": "Мобильное и PWA", "features.f3.desc": "Установите на телефон — работает как настоящее приложение. Офлайн-режим доступен.",
+        "features.f3.mock.offline": "📶 Офлайн-режим — активен", "features.f3.mock.sub": "PWA — от браузера до полного приложения",
+        "features.f4.title": "Безопасность", "features.f4.desc": "Данные зашифрованы и хранятся только в вашем аккаунте. Конфиденциальность — наш приоритет.",
+        "features.f4.mock.sub": "256-битное шифрование • Безопасные серверы",
+        "features.f5.title": "Быстрое добавление", "features.f5.desc": "Добавляйте доход или расход одним нажатием. Идеально для ежедневных операций.",
+        "features.f6.title": "Мультиязычность", "features.f6.desc": "Удобный интерфейс на узбекском, русском и английском — для команды и клиентов.",
+        "trust.tag": "Безопасность", "trust.title": "Ваши данные <span class=\"gradient-text\">100% защищены</span>", "trust.sub": "Надёжное хранение финансовых данных — наш главный приоритет",
+        "trust.badge.ssl": "SSL Сертификат", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
         "trust.enc.title": "256-битное шифрование", "trust.enc.desc": "Все данные защищены шифрованием AES-256 — уровень безопасности банков.",
         "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Данные хранятся в надёжной облачной инфраструктуре Google с резервным копированием.",
         "trust.auth.title": "Безопасная аутентификация", "trust.auth.desc": "Вход по email и паролю, каждый аккаунт изолирован.",
         "trust.pin.title": "PIN-защита", "trust.pin.desc": "Заблокируйте приложение PIN-кодом — данные в безопасности даже если телефон в чужих руках.",
         "trust.https.title": "HTTPS / TLS", "trust.https.desc": "Все сетевые соединения зашифрованы через TLS. Безопасно даже в открытом Wi-Fi.",
         "trust.privacy.title": "Гарантия конфиденциальности", "trust.privacy.desc": "Нет рекламных сетей третьих сторон. Ваши данные никогда не продаются.",
-        "faq.tag": "Вопросы", "faq.title": "Часто задаваемые вопросы", "faq.sub": "Не нашли ответ? Напишите в Telegram — ответим быстро",
+        "faq.tag": "Вопросы", "faq.title": "Часто <span class=\"gradient-text\">задаваемые вопросы</span>", "faq.sub": "Не нашли ответ? Напишите в Telegram — ответим быстро",
         "faq.q1": "BiznesHisob полностью бесплатный?", "faq.a1": "Да, основные функции навсегда бесплатны. Добавление доходов и расходов, базовая статистика и до 50 операций — всё бесплатно. В Premium — безлимитные операции, расширенные графики и экспорт.",
         "faq.q2": "Мои финансовые данные в безопасности?", "faq.a2": "Абсолютно. Данные хранятся в инфраструктуре Google Firebase с 256-битным шифрованием AES. Все соединения защищены TLS. Данные никогда не продаются третьим лицам.",
         "faq.q3": "Работает ли без интернета?", "faq.a3": "Да! BiznesHisob создан на технологии PWA — после установки на телефон работает в офлайн-режиме. При восстановлении интернета данные автоматически синхронизируются.",
@@ -2926,15 +3013,41 @@
         "pricing.cta.free": "Начать бесплатно", "pricing.cta.premium": "✦ Перейти на Premium"
       },
       en: {
-        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "Process", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews",
-        "trust.tag": "Security", "trust.title": "Your data is", "trust.sub": "Keeping your financial data safe is our first priority",
+        "meta.title": "BiznesHisob — Manage your business finances",
+        "scroll.hint": "Scroll", "scroll.hintAria": "Scroll down",
+        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews",
+        "compare.tag": "Compare",
+        "compare.title": "From complexity <span class=\"gradient-text\">to simplicity</span>",
+        "compare.sub": "With BiznesHisob, financial management is a completely different experience",
+        "compare.bad.tag": "Without BiznesHisob", "compare.bad.title": "complex",
+        "compare.bad.l1": "Messy records in Excel and on paper", "compare.bad.l2": "Hours spent calculating balance",
+        "compare.bad.l3": "Expenses spiral out of control", "compare.bad.l4": "No reports — only guesswork",
+        "compare.good.tag": "With BiznesHisob", "compare.good.title": "easy",
+        "compare.good.l1": "All transactions in one app", "compare.good.l2": "One tap — income or expense",
+        "compare.good.l3": "Real-time balance and statistics", "compare.good.l4": "Clear charts and analysis",
+        "features.tag": "Features",
+        "features.title": "All the tools <span class=\"gradient-text\">your business needs</span>",
+        "features.sub": "Every feature is built for real-world tasks",
+        "features.f1.title": "Income & expenses", "features.f1.desc": "Add transactions in seconds. Balance and categories update in real time — never fall behind.",
+        "features.f1.mock.label": "Current balance", "features.f1.mock.income": "Today's income", "features.f1.mock.expense": "Today's expense",
+        "features.f2.title": "Visual reports", "features.f2.desc": "Clear income/expense charts, monthly comparisons and trend analysis — make data-driven decisions.",
+        "features.f2.mock.label": "Monthly statistics",
+        "features.f3.title": "Mobile & PWA", "features.f3.desc": "Install on your phone — works like a native app. Keep going offline when there's no internet.",
+        "features.f3.mock.offline": "📶 Offline mode — active", "features.f3.mock.sub": "PWA — from browser to full app",
+        "features.f4.title": "Security", "features.f4.desc": "Your data is encrypted and stored only in your account. Privacy is our top priority.",
+        "features.f4.mock.sub": "256-bit encryption • Secure servers",
+        "features.f5.title": "Quick add", "features.f5.desc": "Add income or expense with one tap. Perfect for daily operations — save your time.",
+        "features.f6.title": "Multilingual", "features.f6.desc": "Comfortable interface in Uzbek, Russian and English — for your team and clients.",
+        "trust.tag": "Security", "trust.title": "Your data is <span class=\"gradient-text\">100% protected</span>", "trust.sub": "Keeping your financial data safe is our first priority",
+        "trust.badge.ssl": "SSL Certificate", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
         "trust.enc.title": "256-bit Encryption", "trust.enc.desc": "All data protected with AES-256 encryption — bank-level security standard.",
         "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Data stored on Google's reliable cloud infrastructure with automatic backups.",
         "trust.auth.title": "Secure Authentication", "trust.auth.desc": "Email and password login, each account fully isolated from others.",
         "trust.pin.title": "PIN Lock", "trust.pin.desc": "Lock the app with a PIN — your data stays safe even if your phone is lost.",
         "trust.https.title": "HTTPS / TLS", "trust.https.desc": "All network connections encrypted via TLS. Safe even on public Wi-Fi.",
         "trust.privacy.title": "Privacy Guarantee", "trust.privacy.desc": "No third-party ad networks. Your data is never sold or shared.",
-        "faq.tag": "FAQ", "faq.title": "Frequently asked questions", "faq.sub": "Didn't find an answer? Message us on Telegram — we reply fast",
+        "faq.tag": "FAQ", "faq.title": "Frequently <span class=\"gradient-text\">asked questions</span>", "faq.sub": "Didn't find an answer? Message us on Telegram — we reply fast",
         "faq.q1": "Is BiznesHisob completely free?", "faq.a1": "Yes, core features are free forever. Adding income/expenses, basic statistics and up to 50 transactions — all free. Premium adds unlimited transactions, advanced charts and export.",
         "faq.q2": "Is my financial data secure?", "faq.a2": "Absolutely. Data is stored on Google Firebase with 256-bit AES encryption. All connections are TLS-protected. Your data is never sold to third parties.",
         "faq.q3": "Does it work without internet?", "faq.a3": "Yes! BiznesHisob is built on PWA technology — after installing on your phone it works offline. Data auto-syncs when internet returns.",
@@ -2996,16 +3109,19 @@
       document.querySelectorAll(".lang-btn").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.lang === currentLang);
       });
-      // Plain text nodes
-      document.querySelectorAll("[data-i18n]").forEach(el => {
-        const val = t(el.dataset.i18n);
-        el.textContent = val;
-      });
-      // Rich HTML (e.g. h2 with gradient-text <span>)
       document.querySelectorAll("[data-i18n-html]").forEach(el => {
         const val = t(el.dataset.i18nHtml);
-        if (val && val !== el.dataset.i18nHtml) el.innerHTML = val;
+        if (val) el.innerHTML = val;
       });
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const val = t(el.dataset.i18n);
+        if (val) el.textContent = val;
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+        const val = t(el.dataset.i18nAria);
+        if (val) el.setAttribute("aria-label", val);
+      });
+      document.title = t("meta.title");
       setupInstallUI();
     }
 
@@ -3021,6 +3137,14 @@
     });
 
     applyI18n();
+
+    const footerSiteLink = document.getElementById("footerSiteLink");
+    if (footerSiteLink) {
+      footerSiteLink.textContent = window.location.hostname || "bizneshisob.uz";
+      footerSiteLink.href = window.location.origin + "/";
+    }
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) canonicalLink.href = window.location.origin + "/";
 
     document.getElementById("menuBtn").addEventListener("click", () => {
       const nav = document.getElementById("mobileNav");
@@ -3455,22 +3579,22 @@
     }
 
     function toggleIosHint(show) {
-      heroIosHint.classList.toggle("hidden", !show);
-      ctaIosHint.classList.toggle("hidden", !show);
+      heroIosHint?.classList.toggle("hidden", !show);
+      ctaIosHint?.classList.toggle("hidden", !show);
     }
 
     function setupInstallUI() {
       if (isStandalone()) {
         const label = t("cta.open");
         [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((b) => { if (b) b.textContent = label; });
-        heroIosBtn.classList.add("hidden");
-        ctaIosBtn.classList.add("hidden");
+        heroIosBtn?.classList.add("hidden");
+        ctaIosBtn?.classList.add("hidden");
         toggleIosHint(false);
         return;
       }
       if (isIOS()) {
-        heroIosBtn.classList.remove("hidden");
-        ctaIosBtn.classList.remove("hidden");
+        heroIosBtn?.classList.remove("hidden");
+        ctaIosBtn?.classList.remove("hidden");
       }
     }
 
@@ -3484,8 +3608,8 @@
       if (!/Safari/i.test(navigator.userAgent) && !isStandalone()) openApp();
     }
 
-    heroIosBtn.addEventListener("click", handleIosInstall);
-    ctaIosBtn.addEventListener("click", handleIosInstall);
+    heroIosBtn?.addEventListener("click", handleIosInstall);
+    ctaIosBtn?.addEventListener("click", handleIosInstall);
 
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
