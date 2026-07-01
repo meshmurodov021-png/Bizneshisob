@@ -91,6 +91,8 @@
       --scrollbar-thumb-1: #7C3AED;
       --scrollbar-thumb-2: #4F46E5;
       --scrollbar-thumb-3: #6366f1;
+      --scrollbar-thumb-hover-1: #6D28D9;
+      --scrollbar-thumb-hover-2: #4338CA;
       --pin-bg: #0a0a0f;
       --pin-glow: rgba(124, 58, 237, 0.2);
       --pin-key-bg: rgba(22, 22, 31, 0.72);
@@ -148,7 +150,7 @@
     /* Custom scrollbar — all scrollable areas */
     * {
       scrollbar-width: thin;
-      scrollbar-color: #7C3AED transparent;
+      scrollbar-color: var(--scrollbar-thumb-1) transparent;
     }
 
     *::-webkit-scrollbar {
@@ -161,12 +163,21 @@
     }
 
     *::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, #7C3AED, #4F46E5, #6366f1);
+      background: linear-gradient(
+        to bottom,
+        var(--scrollbar-thumb-1),
+        var(--scrollbar-thumb-2),
+        var(--scrollbar-thumb-3)
+      );
       border-radius: 10px;
     }
 
     *::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(to bottom, #6D28D9, #4338CA);
+      background: linear-gradient(
+        to bottom,
+        var(--scrollbar-thumb-hover-1),
+        var(--scrollbar-thumb-hover-2)
+      );
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -3772,9 +3783,11 @@
       --premium-msg-bg: #fffbeb;
       --premium-msg-text: #92400e;
       --category-active-ring: rgba(99, 102, 241, 0.4);
-      --scrollbar-thumb-1: #6366f1;
-      --scrollbar-thumb-2: #4f46e5;
-      --scrollbar-thumb-3: #7c3aed;
+      --scrollbar-thumb-1: #e2e8f0;
+      --scrollbar-thumb-2: #d4d4d8;
+      --scrollbar-thumb-3: #cbd5e1;
+      --scrollbar-thumb-hover-1: #cbd5e1;
+      --scrollbar-thumb-hover-2: #a1a1aa;
       --pin-bg: #f5f5f7;
       --pin-glow: transparent;
       --pin-key-bg: #ffffff;
@@ -3784,14 +3797,6 @@
 
     html.light-theme body::before {
       display: none;
-    }
-
-    html.light-theme * {
-      scrollbar-color: var(--scrollbar-thumb-1) transparent;
-    }
-
-    html.light-theme *::-webkit-scrollbar-thumb {
-      background: linear-gradient(to bottom, var(--scrollbar-thumb-1), var(--scrollbar-thumb-2), var(--scrollbar-thumb-3));
     }
 
     html.light-theme .app-header,
