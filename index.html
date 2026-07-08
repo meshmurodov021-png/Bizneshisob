@@ -5929,6 +5929,11 @@
       border-color: rgba(99, 102, 241, 0.35);
     }
 
+    html.light-theme .pin-phone-input,
+    html.light-theme .otp-box {
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    }
+
     .profile-pin-btn {
       width: 100%;
       min-height: 44px;
@@ -6045,7 +6050,7 @@
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(22, 22, 31, 0.72);
+      background: var(--pin-key-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       transition: border-color 0.25s, box-shadow 0.25s;
@@ -9448,6 +9453,7 @@
     }
 
     function showOtpRecovery(phone) {
+      clearAuthFallbackTimer();
       setRecoveryError(pinOtpError, "");
       clearOtpInputs();
       pinOtpPhoneHint.textContent = phone ? `${phone} raqamiga yuborildi` : "";
@@ -9539,6 +9545,7 @@
     }
 
     function showPinScreen(mode) {
+      clearAuthFallbackTimer();
       showPinSubview("main");
       configurePinUI(mode);
       if (isPinGateActive()) {
@@ -9756,13 +9763,20 @@
       if (!pinResendBtn.disabled) sendPinRecoverySms();
     });
 
+    let otpConfirmInFlight = false;
+
     otpInputs.forEach((inp, idx) => {
       inp.addEventListener("input", () => {
         const v = inp.value.replace(/\D/g, "").slice(-1);
         inp.value = v;
         setRecoveryError(pinOtpError, "");
         if (v && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
-        if (getOtpCode().length === 6) confirmPinRecoveryOtp();
+        if (getOtpCode().length === 6 && !otpConfirmInFlight) {
+          otpConfirmInFlight = true;
+          confirmPinRecoveryOtp().finally(() => {
+            otpConfirmInFlight = false;
+          });
+        }
       });
       inp.addEventListener("keydown", e => {
         if (e.key === "Backspace" && !inp.value && idx > 0) {
@@ -9776,7 +9790,12 @@
           if (otpInputs[i]) otpInputs[i].value = ch;
         });
         if (pasted.length > 0) otpInputs[Math.min(pasted.length, 5)]?.focus();
-        if (pasted.length === 6) confirmPinRecoveryOtp();
+        if (pasted.length === 6 && !otpConfirmInFlight) {
+          otpConfirmInFlight = true;
+          confirmPinRecoveryOtp().finally(() => {
+            otpConfirmInFlight = false;
+          });
+        }
       });
     });
 
@@ -9940,6 +9959,7 @@
     logoutConfirm?.addEventListener("click", handleLogout);
 
     function initPinSecurity(uid) {
+      clearAuthFallbackTimer();
       appUnlocked = false;
       if (!hasPinForUser(uid)) {
         pinAttempts = 0;
@@ -11378,7 +11398,8 @@
     function isNoMainViewVisible() {
       return authScreen.classList.contains("hidden") &&
         appScreen.classList.contains("hidden") &&
-        (onboardingScreen?.classList.contains("hidden") ?? true);
+        (onboardingScreen?.classList.contains("hidden") ?? true) &&
+        !pinScreen?.classList.contains("visible");
     }
 
     function clearAuthFallbackTimer() {
