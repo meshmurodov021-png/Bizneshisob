@@ -98,6 +98,15 @@
       --pin-key-bg: rgba(22, 22, 31, 0.72);
       --pin-dot-empty: rgba(255, 255, 255, 0.04);
       --pin-dot-border: rgba(124, 58, 237, 0.35);
+      --input-bg: rgba(255, 255, 255, 0.04);
+      --input-bg-subtle: rgba(255, 255, 255, 0.03);
+      --input-bg-hover: rgba(255, 255, 255, 0.08);
+      --dropdown-bg: rgba(255, 255, 255, 0.05);
+      --dropdown-border: rgba(255, 255, 255, 0.1);
+      --elevated-bg: rgba(18, 18, 28, 0.96);
+      --modal-bg: rgba(18, 18, 28, 0.92);
+      --modal-overlay-bg: rgba(10, 10, 15, 0.75);
+      --scrollbar-track: transparent;
     }
 
     /* Lucide icons */
@@ -150,7 +159,7 @@
     /* Custom scrollbar — all scrollable areas */
     * {
       scrollbar-width: thin;
-      scrollbar-color: var(--scrollbar-thumb-1) transparent;
+      scrollbar-color: var(--scrollbar-thumb-1) var(--scrollbar-track);
     }
 
     *::-webkit-scrollbar {
@@ -159,20 +168,28 @@
     }
 
     *::-webkit-scrollbar-track {
-      background: transparent;
+      background: var(--scrollbar-track);
     }
 
     *::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb-1);
+      border-radius: 10px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover-1);
+    }
+
+    html:not(.light-theme) *::-webkit-scrollbar-thumb {
       background: linear-gradient(
         to bottom,
         var(--scrollbar-thumb-1),
         var(--scrollbar-thumb-2),
         var(--scrollbar-thumb-3)
       );
-      border-radius: 10px;
     }
 
-    *::-webkit-scrollbar-thumb:hover {
+    html:not(.light-theme) *::-webkit-scrollbar-thumb:hover {
       background: linear-gradient(
         to bottom,
         var(--scrollbar-thumb-hover-1),
@@ -767,7 +784,7 @@
       margin: 0 auto;
       padding: 1.25rem 1.1rem;
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       border: 1px solid var(--border);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -777,8 +794,8 @@
 
     html.light-theme .recovery-glass-card {
       background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     .recovery-icon {
@@ -1164,7 +1181,7 @@
       width: 32px;
       height: 32px;
       border: none;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       border-radius: 8px;
       cursor: pointer;
       display: flex;
@@ -1233,7 +1250,7 @@
       padding: 0.75rem 0.85rem;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       color: var(--text);
       font-size: 0.95rem;
       font-family: inherit;
@@ -1273,7 +1290,7 @@
       width: 42px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       color: var(--muted);
       font-size: 0.7rem;
       cursor: pointer;
@@ -1384,7 +1401,7 @@
       width: 44px;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       color: var(--text);
       font-size: 1.05rem;
       cursor: pointer;
@@ -1433,7 +1450,7 @@
       justify-content: center;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: var(--muted);
@@ -1505,7 +1522,7 @@
       justify-content: center;
       border: 1px solid var(--border);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       color: var(--text);
       cursor: pointer;
       transition: all 0.2s var(--ease);
@@ -3751,22 +3768,22 @@
 
     html.light-theme {
       color-scheme: light;
-      --bg: #f5f5f7;
+      --bg: #f3f4f6;
       --surface: #ffffff;
-      --surface-2: #ffffff;
+      --surface-2: #f9fafb;
       --surface-3: #e5e7eb;
-      --border: #f0f0f0;
+      --border: #e5e7eb;
       --text: #111827;
       --muted: #6b7280;
       --income-dim: rgba(22, 163, 74, 0.12);
       --expense-dim: rgba(220, 38, 38, 0.1);
       --accent-hover: #4f46e5;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       --icon-inactive: #9ca3af;
       --icon-active: #6366f1;
       --glass-card: #ffffff;
-      --glass-border: #f0f0f0;
-      --glass-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --glass-border: #e5e7eb;
+      --glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       --bar-track: rgba(0, 0, 0, 0.06);
       --panel-header: #ffffff;
       --panel-nav: #ffffff;
@@ -3783,16 +3800,25 @@
       --premium-msg-bg: #fffbeb;
       --premium-msg-text: #92400e;
       --category-active-ring: rgba(99, 102, 241, 0.4);
-      --scrollbar-thumb-1: #e2e8f0;
-      --scrollbar-thumb-2: #d4d4d8;
-      --scrollbar-thumb-3: #cbd5e1;
-      --scrollbar-thumb-hover-1: #cbd5e1;
-      --scrollbar-thumb-hover-2: #a1a1aa;
-      --pin-bg: #f5f5f7;
+      --scrollbar-track: #f3f4f6;
+      --scrollbar-thumb-1: #d1d5db;
+      --scrollbar-thumb-2: #d1d5db;
+      --scrollbar-thumb-3: #d1d5db;
+      --scrollbar-thumb-hover-1: #9ca3af;
+      --scrollbar-thumb-hover-2: #9ca3af;
+      --pin-bg: #f3f4f6;
       --pin-glow: transparent;
       --pin-key-bg: #ffffff;
       --pin-dot-empty: #e5e7eb;
       --pin-dot-border: rgba(99, 102, 241, 0.35);
+      --input-bg: #ffffff;
+      --input-bg-subtle: #f9fafb;
+      --input-bg-hover: rgba(99, 102, 241, 0.06);
+      --dropdown-bg: #ffffff;
+      --dropdown-border: #e5e7eb;
+      --elevated-bg: #ffffff;
+      --modal-bg: #ffffff;
+      --modal-overlay-bg: rgba(17, 24, 39, 0.45);
     }
 
     html.light-theme body::before {
@@ -3827,33 +3853,28 @@
     html.light-theme .stat-card,
     html.light-theme .settings-card {
       background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     html.light-theme .hero-card {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     html.light-theme .chart-card,
     html.light-theme .top-cats-card,
     html.light-theme .period-stat-item {
       background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: none;
-    }
-
-    html.light-theme .chart-card,
-    html.light-theme .top-cats-card {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     html.light-theme .currency-picker-list {
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     }
 
     html.light-theme .currency-picker-option:hover:not([disabled]),
@@ -3890,8 +3911,121 @@
 
     html.light-theme .ptr-pill {
       background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Light theme — global component surfaces */
+    html.light-theme .transaction-item,
+    html.light-theme .auth-card,
+    html.light-theme .auth-tab,
+    html.light-theme .info-row {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    html.light-theme .auth-tab.active {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent);
+    }
+
+    html.light-theme .form-row input,
+    html.light-theme .currency-form-group input,
+    html.light-theme .currency-edit-readonly,
+    html.light-theme .pin-phone-input,
+    html.light-theme .otp-box {
+      background: #ffffff;
+      border-color: #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    html.light-theme .form-row input::placeholder,
+    html.light-theme .currency-form-group input::placeholder {
+      color: #9ca3af;
+    }
+
+    html.light-theme .currency-action-btn,
+    html.light-theme .currency-picker-toggle,
+    html.light-theme .currency-rate-refresh,
+    html.light-theme .header-icon-btn,
+    html.light-theme .settings-back-btn,
+    html.light-theme .modal-close,
+    html.light-theme #basketModalClose.basket-modal-close,
+    html.light-theme .export-option,
+    html.light-theme .export-format-btn,
+    html.light-theme .profile-plan-badge,
+    html.light-theme .plan-badge.free-wrap,
+    html.light-theme .vs-chip:not(.income):not(.expense):not(.amount) {
+      background: #ffffff;
+      border-color: #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    html.light-theme .currency-dropdown {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    html.light-theme .currency-dropdown-item.active {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-hover);
+    }
+
+    html.light-theme .currency-dropdown-item.active .currency-dropdown-symbol {
+      background: rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    html.light-theme .modal-overlay {
+      background: var(--modal-overlay-bg);
+    }
+
+    html.light-theme .premium-modal,
+    html.light-theme .profile-sheet {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    html.light-theme #premiumModal .premium-modal::after {
+      background: #ffffff;
+    }
+
+    html.light-theme .basket-modal {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    html.light-theme #basketModalClose.basket-modal-close {
+      background: #f9fafb;
+    }
+
+    html.light-theme .basket-modal .category-chip {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+
+    html.light-theme .basket-modal .category-chip.active {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.45);
+      color: var(--accent-hover);
+    }
+
+    html.light-theme .category-option.active .category-option-label {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    html.light-theme .auth-error.visible {
+      color: #b91c1c;
+    }
+
+    html.light-theme .delete-btn {
+      background: #f9fafb;
+      border-color: #e5e7eb;
     }
 
     .plan-badge [data-lucide] {
@@ -5415,7 +5549,7 @@
       padding: 0.55rem 0.65rem;
       border: 1px solid var(--border);
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--input-bg);
       color: var(--muted);
       font-size: 0.85rem;
       font-weight: 600;
