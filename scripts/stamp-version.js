@@ -42,6 +42,7 @@ function stampVersionJson(content) {
 const TARGETS = [
   { file: "index.html", stamp: stampHtml },
   { file: "landing.html", stamp: stampHtml },
+  { file: "app.html", stamp: stampHtml },
   { file: "sw.js", stamp: stampSw },
   { file: "version.json", stamp: stampVersionJson }
 ];
