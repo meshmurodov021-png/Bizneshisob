@@ -1,4 +1,4 @@
-const BUILD_VERSION = "1780673729575";
+const BUILD_VERSION = "1780673729574";
 const CACHE_VERSION = `bizneshisob-${BUILD_VERSION}`;
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
@@ -6,8 +6,6 @@ const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const PRECACHE_URLS = [
   "/",
   "/index.html",
-  "/app",
-  "/app.html",
   "/manifest.json",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
@@ -66,15 +64,6 @@ function isFirebaseApi(url) {
     (url.hostname.includes("firebaseapp.com") && url.pathname.includes("__"));
 }
 
-function isAppPath(pathname) {
-  return pathname === "/app" || pathname === "/app.html";
-}
-
-function navigationCacheKeys(pathname) {
-  if (isAppPath(pathname)) return ["/app", "/app.html"];
-  return ["/", "/index.html", "/landing.html"];
-}
-
 self.addEventListener("fetch", event => {
   const { request } = event;
   const url = new URL(request.url);
@@ -99,11 +88,7 @@ self.addEventListener("fetch", event => {
       event.respondWith(networkFirstNavigation(request));
       return;
     }
-    if (
-      url.pathname === "/index.html" ||
-      url.pathname === "/app.html" ||
-      url.pathname === "/version.json"
-    ) {
+    if (url.pathname === "/index.html" || url.pathname === "/version.json") {
       event.respondWith(networkFirstAsset(request, SHELL_CACHE));
       return;
     }
@@ -133,25 +118,17 @@ const NAV_NETWORK_TIMEOUT_MS = 3000;
 
 async function networkFirstNavigation(request) {
   const cache = await caches.open(SHELL_CACHE);
-  const url = new URL(request.url);
-  const cacheKeys = navigationCacheKeys(url.pathname);
 
   const networkPromise = fetch(request, { cache: "no-store" })
     .then(response => {
       if (response.ok) {
-        cache.put(request, response.clone());
-        cacheKeys.forEach(key => cache.put(key, response.clone()));
+        cache.put("/index.html", response.clone());
+        cache.put("/", response.clone());
       }
       return response;
     });
 
-  let cached = await cache.match(request);
-  if (!cached) {
-    for (const key of cacheKeys) {
-      cached = await cache.match(key);
-      if (cached) break;
-    }
-  }
+  const cached = await cache.match("/index.html") || await cache.match("/");
 
   // Kesh bor bo'lsa: tarmoq sekin bo'lganda (>3s) darhol keshdan ochamiz,
   // yangi versiya fonda keshga yozilib boradi.

@@ -2845,7 +2845,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
     const APP_URL = window.location.protocol === "file:"
-      ? new URL("app.html", window.location.href).href
+      ? new URL("index.html", window.location.href).href
       : new URL("/app", window.location.origin).href;
     let deferredInstallPrompt = null;
     let currentLang = localStorage.getItem("bh-lang") || "uz";
