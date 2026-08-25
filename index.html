@@ -4758,47 +4758,6 @@
       box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
     }
 
-    /* Price field with integrated mic voice button */
-    .basket-item-price-wrap {
-      position: relative;
-      flex: 0 1 38%;
-      min-width: 5.5rem;
-      display: flex;
-      align-items: center;
-    }
-
-    .basket-item-price-wrap .basket-item-price {
-      padding-right: 2.4rem;
-      max-width: 100%;
-    }
-
-    .basket-item-mic {
-      position: absolute;
-      right: 6px;
-      top: 50%; transform: translateY(-50%);
-      width: 26px; height: 26px;
-      border-radius: 8px;
-      border: 1px solid rgba(124,58,237,0.3);
-      background: rgba(124,58,237,0.1);
-      color: var(--accent-hover);
-      display: grid; place-items: center;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: none;
-      user-select: none;
-    }
-
-    .basket-item-mic [data-lucide] { width: 12px; height: 12px; }
-
-    .basket-item-mic.is-pressed,
-    .basket-item-mic.is-listening {
-      background: rgba(239,68,68,0.18);
-      border-color: rgba(239,68,68,0.5);
-      color: #f87171;
-      transform: translateY(-50%) scale(1.1);
-    }
-
     /* ── Category chips — glassmorphic ── */
     .basket-modal .category-chips {
       display: flex;
@@ -4869,274 +4828,6 @@
       letter-spacing: 0.04em;
       margin: 0;
     }
-
-    /* ── Voice Settings Section ──────────────────────────────────────────── */
-    .vs-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0;
-    }
-
-    .vs-header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-
-    .vs-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(99,102,241,0.2));
-      border: 1px solid rgba(124,58,237,0.3);
-      display: grid;
-      place-items: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-
-    .vs-title-block { display: flex; flex-direction: column; gap: 1px; }
-    .vs-title { font-size: 0.9rem; font-weight: 700; color: var(--text); }
-    .vs-subtitle { font-size: 0.72rem; color: var(--muted); }
-
-    .vs-status-badge {
-      font-size: 0.62rem;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      padding: 0.18rem 0.5rem;
-      border-radius: 999px;
-      transition: background 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-    .vs-status-badge.on  {
-      background: rgba(34,197,94,0.12);
-      border: 1px solid rgba(34,197,94,0.35);
-      color: #4ade80;
-    }
-    .vs-status-badge.off {
-      background: rgba(107,114,128,0.12);
-      border: 1px solid rgba(107,114,128,0.25);
-      color: var(--muted);
-    }
-
-    /* Voice keywords dropdown */
-    .vs-keywords-btn {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0.85rem 0;
-      background: transparent;
-      border: none;
-      border-top: 1px solid var(--border);
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--accent-hover);
-      -webkit-tap-highlight-color: transparent;
-      transition: color 0.2s;
-    }
-
-    .vs-keywords-btn [data-lucide] {
-      width: 15px;
-      height: 15px;
-      flex-shrink: 0;
-      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-    }
-
-    .vs-keywords-btn.is-open [data-lucide] { transform: rotate(180deg); }
-
-    .vs-dropdown {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.38s cubic-bezier(0.22,1,0.36,1);
-    }
-
-    .vs-dropdown.is-open { grid-template-rows: 1fr; }
-
-    .vs-dropdown-inner { overflow: hidden; }
-
-    .vs-kw-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      padding-bottom: 0.25rem;
-    }
-
-    .vs-kw-card {
-      border-radius: 12px;
-      background: rgba(124,58,237,0.06);
-      border: 1px solid rgba(124,58,237,0.15);
-      overflow: hidden;
-    }
-
-    .vs-kw-card-head {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.55rem 0.85rem;
-      background: rgba(124,58,237,0.1);
-      border-bottom: 1px solid rgba(124,58,237,0.15);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      color: #c4b5fd;
-      text-transform: uppercase;
-    }
-
-    .vs-kw-card-body { padding: 0.6rem 0.85rem; display: flex; flex-direction: column; gap: 0.45rem; }
-
-    .vs-kw-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-    }
-
-    .vs-kw-row-label {
-      color: var(--muted);
-      font-weight: 600;
-      min-width: 62px;
-      flex-shrink: 0;
-    }
-
-    .vs-kw-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-    }
-
-    .vs-chip {
-      padding: 0.18rem 0.5rem;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text);
-      font-family: monospace;
-    }
-
-    .vs-chip.income { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.25); color: #4ade80; }
-    .vs-chip.expense { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: #f87171; }
-    .vs-chip.amount { background: rgba(56,189,248,0.1); border-color: rgba(56,189,248,0.25); color: #7dd3fc; }
-
-    .vs-disabled-overlay {
-      opacity: 0.4;
-      pointer-events: none;
-      user-select: none;
-      transition: opacity 0.3s;
-    }
-
-    /* ── (existing) basket voice button ───────────────────────────────────── */
-    /* Hold-to-Talk button ─────────────────────────────────────────────────── */
-    .basket-voice-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      flex-shrink: 0;
-      min-height: 32px;
-      padding: 0.3rem 0.7rem 0.3rem 0.55rem;
-      border: 1.5px solid rgba(124, 58, 237, 0.38);
-      border-radius: 999px;
-      background: rgba(124, 58, 237, 0.1);
-      color: var(--accent-hover);
-      font-size: 0.72rem;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: none;           /* prevents scroll-on-hold on mobile */
-      user-select: none;
-      -webkit-user-select: none;
-      position: relative;
-      transform-origin: center;
-      transition:
-        background 0.18s var(--ease),
-        border-color 0.18s var(--ease),
-        color 0.18s var(--ease),
-        transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
-        box-shadow 0.18s var(--ease);
-    }
-
-    .basket-voice-btn [data-lucide] {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-      transition: transform 0.25s var(--ease);
-    }
-
-    /* Pressed state (hold) */
-    .basket-voice-btn.is-pressed {
-      transform: scale(1.1);
-      background: rgba(124, 58, 237, 0.22);
-      border-color: rgba(124, 58, 237, 0.65);
-      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
-    }
-
-    /* Listening / recording state */
-    .basket-voice-btn.is-listening {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.55);
-      color: #f87171;
-      transform: scale(1.08);
-      animation: httPulse 1s ease-in-out infinite;
-    }
-
-    .basket-voice-btn.is-listening [data-lucide] {
-      animation: micWave 1s ease-in-out infinite;
-    }
-
-    @keyframes httPulse {
-      0%, 100% {
-        box-shadow:
-          0 0 0 0   rgba(239, 68, 68, 0.35),
-          0 0 0 0   rgba(239, 68, 68, 0.15);
-      }
-      50% {
-        box-shadow:
-          0 0 0 5px rgba(239, 68, 68, 0.15),
-          0 0 0 10px rgba(239, 68, 68, 0);
-      }
-    }
-
-    @keyframes micWave {
-      0%, 100% { transform: scale(1);    }
-      50%       { transform: scale(1.22); }
-    }
-
-    /* Hold hint text */
-    .basket-voice-btn .voice-hold-hint {
-      font-size: 0.62rem;
-      font-weight: 500;
-      color: var(--muted);
-      opacity: 0;
-      max-width: 0;
-      overflow: hidden;
-      transition: opacity 0.2s, max-width 0.3s var(--ease);
-      white-space: nowrap;
-    }
-
-    .basket-voice-btn.is-listening .voice-hold-hint,
-    .basket-voice-btn.is-pressed .voice-hold-hint {
-      opacity: 1;
-      max-width: 60px;
-    }
-
-    .basket-voice-hint {
-      font-size: 0.7rem;
-      color: var(--muted);
-      line-height: 1.35;
-      margin: 0 0 0.35rem;
-      min-height: 1em;
-      transition: color 0.2s;
-    }
-
-    .basket-voice-hint.hint-success { color: var(--income); }
-    .basket-voice-hint.hint-error   { color: var(--expense); }
 
     .basket-items-section {
       display: flex;
@@ -6542,129 +6233,6 @@
           </div>
         </section>
 
-        <!-- Voice Settings -->
-        <section class="settings-section" id="voiceSettingsSection">
-          <p class="settings-section-label">🎙️ <span data-i18n="settings.voice.section">Ovozli boshqaruv</span></p>
-          <div class="settings-card" style="padding: 0.9rem 1rem; display:flex; flex-direction:column; gap:0.75rem;">
-
-            <!-- Toggle row -->
-            <div class="vs-header">
-              <div class="vs-header-left">
-                <div class="vs-icon">🎙️</div>
-                <div class="vs-title-block">
-                  <span class="vs-title" data-i18n="settings.voice.title">Ovozli kiritish</span>
-                  <span class="vs-subtitle" data-i18n="settings.voice.desc">Savatcha modalida ovoz bilan qo'shish</span>
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;gap:0.6rem;">
-                <span class="vs-status-badge on" id="voiceStatusBadge" data-i18n="settings.voice.on">YOQIQ</span>
-                <label class="lg-toggle" for="voiceEnabledToggle">
-                  <input type="checkbox" id="voiceEnabledToggle" checked>
-                  <span class="lg-toggle-track">
-                    <span class="lg-toggle-glass"></span>
-                    <span class="lg-toggle-reflection"></span>
-                    <span class="lg-toggle-glow"></span>
-                    <span class="lg-toggle-thumb"><span class="lg-toggle-thumb-shine"></span></span>
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Content that gets disabled when voice is off -->
-            <div id="voiceSettingsBody">
-              <!-- Keywords dropdown -->
-              <button type="button" class="vs-keywords-btn" id="voiceKwBtn">
-                <span data-i18n="settings.voice.showKw">Ovozli kalit so'zlarni ko'rish</span>
-                <i data-lucide="chevron-down"></i>
-              </button>
-              <div class="vs-dropdown" id="voiceKwDropdown">
-                <div class="vs-dropdown-inner">
-                  <div class="vs-kw-grid">
-
-                    <!-- Operatsiyalar -->
-                    <div class="vs-kw-card">
-                      <div class="vs-kw-card-head">💸 <span data-i18n="settings.voice.kw.ops">Operatsiyalar</span></div>
-                      <div class="vs-kw-card-body">
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.income">Kirim:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip income">keldi</span>
-                            <span class="vs-chip income">tushdi</span>
-                            <span class="vs-chip income">oldim</span>
-                            <span class="vs-chip income">daromad</span>
-                            <span class="vs-chip income">kirim</span>
-                          </div>
-                        </div>
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.expense">Chiqim:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip expense">ketdi</span>
-                            <span class="vs-chip expense">to'ladim</span>
-                            <span class="vs-chip expense">berdim</span>
-                            <span class="vs-chip expense">xarajat</span>
-                            <span class="vs-chip expense">sarfladim</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Kategoriyalar -->
-                    <div class="vs-kw-card">
-                      <div class="vs-kw-card-head">🏷️ <span data-i18n="settings.voice.kw.cats">Kategoriya kalitlari</span></div>
-                      <div class="vs-kw-card-body">
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label">Kassa:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip">savdo</span>
-                            <span class="vs-chip">do'kon</span>
-                          </div>
-                        </div>
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label">Transport:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip">benzin</span>
-                            <span class="vs-chip">yo'lkira</span>
-                          </div>
-                        </div>
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label">Mahsulot:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip">tovar</span>
-                            <span class="vs-chip">sklad</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Pul birliklari -->
-                    <div class="vs-kw-card">
-                      <div class="vs-kw-card-head">💰 <span data-i18n="settings.voice.kw.units">Pul birliklari</span></div>
-                      <div class="vs-kw-card-body">
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.say">Ayting:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip amount">ming</span>
-                            <span class="vs-chip amount">mln</span>
-                            <span class="vs-chip amount">million</span>
-                            <span class="vs-chip amount">mlrd</span>
-                          </div>
-                        </div>
-                        <div class="vs-kw-row">
-                          <span class="vs-kw-row-label" data-i18n="settings.voice.kw.example">Misol:</span>
-                          <div class="vs-kw-chips">
-                            <span class="vs-chip" style="font-size:0.65rem;color:var(--muted)">«25 ming xarajat benzin»</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section class="settings-section">
           <p class="settings-section-label" data-i18n="settings.section.app">Ilova</p>
           <div class="settings-card">
@@ -6799,8 +6367,6 @@
           <div class="basket-items-section">
             <div class="basket-items-head">
               <p class="basket-section-title" data-i18n="basket.products">Mahsulotlar</p>
-              <!-- Voice hint inline (not button here — mic is per-row) -->
-              <p class="basket-voice-hint" id="basketVoiceHint" aria-live="polite"></p>
             </div>
             <div class="basket-items-scroll">
               <div class="basket-items-list" id="basketItemsList"></div>
@@ -7504,30 +7070,6 @@
         "basket.note": "Izoh",
         "basket.notePh": "Ixtiyoriy izoh",
         "basket.save": "Saqlash",
-        "voice.btn": "Ovoz",
-        "voice.startAria": "Ovoz bilan kiritish",
-        "voice.listening": "Tinglanmoqda…",
-        "voice.heard": "Eshitildi: {{text}}",
-        "voice.applied": "Maydonlar to'ldirildi",
-        "voice.unsupported": "Brauzeringiz ovozni qo'llab-quvvatlamaydi",
-        "voice.noSpeech": "Ovoz eshitilmadi. Qayta urinib ko'ring.",
-        "voice.error": "Ovozni tanib bo'lmadi",
-        "voice.hold": "ushlab turing",
-        "voice.holdHint": "Gapirish uchun tugmani bosib turing",
-        "voice.needAmount": "Summani ayting, masalan: \"25 ming xarajat non\"",
-        "settings.voice.section": "Ovozli boshqaruv",
-        "settings.voice.title": "Ovozli kiritish",
-        "settings.voice.desc": "Savatcha modalida ovoz bilan qo'shish",
-        "settings.voice.on": "YOQIQ",
-        "settings.voice.off": "O'CHIQ",
-        "settings.voice.showKw": "Ovozli kalit so'zlarni ko'rish",
-        "settings.voice.kw.ops": "Operatsiyalar",
-        "settings.voice.kw.income": "Kirim:",
-        "settings.voice.kw.expense": "Chiqim:",
-        "settings.voice.kw.cats": "Kategoriya kalitlari",
-        "settings.voice.kw.units": "Pul birliklari",
-        "settings.voice.kw.say": "Ayting:",
-        "settings.voice.kw.example": "Misol:",
         "validation.invalidDate": "Noto'g'ri sana! Iltimos, to'g'ri sana kiriting.",
         "validation.dateTooOld": "Sana 1 yildan eski bo'la olmaydi!",
         "basket.removeItem": "Oʻchirish",
@@ -7807,30 +7349,6 @@
         "basket.note": "Примечание",
         "basket.notePh": "Необязательно",
         "basket.save": "Сохранить",
-        "voice.btn": "Голос",
-        "voice.startAria": "Голосовой ввод",
-        "voice.listening": "Слушаю…",
-        "voice.heard": "Распознано: {{text}}",
-        "voice.applied": "Поля заполнены",
-        "voice.unsupported": "Браузер не поддерживает голосовой ввод",
-        "voice.noSpeech": "Речь не распознана. Попробуйте снова.",
-        "voice.error": "Не удалось распознать голос",
-        "voice.hold": "держите нажатой",
-        "voice.holdHint": "Удерживайте кнопку чтобы говорить",
-        "voice.needAmount": "Произнесите сумму, например: «25 ming xarajat non»",
-        "settings.voice.section": "Голосовое управление",
-        "settings.voice.title": "Голосовой ввод",
-        "settings.voice.desc": "Добавление через микрофон в корзине",
-        "settings.voice.on": "ВКЛ",
-        "settings.voice.off": "ВЫКЛ",
-        "settings.voice.showKw": "Показать ключевые слова",
-        "settings.voice.kw.ops": "Операции",
-        "settings.voice.kw.income": "Доход:",
-        "settings.voice.kw.expense": "Расход:",
-        "settings.voice.kw.cats": "Ключи категорий",
-        "settings.voice.kw.units": "Единицы валюты",
-        "settings.voice.kw.say": "Скажите:",
-        "settings.voice.kw.example": "Пример:",
         "validation.invalidDate": "Неверная дата! Введите корректную дату.",
         "validation.dateTooOld": "Дата не может быть старше 1 года!",
         "basket.removeItem": "Удалить",
@@ -8110,30 +7628,6 @@
         "basket.note": "Note",
         "basket.notePh": "Optional note",
         "basket.save": "Save",
-        "voice.btn": "Voice",
-        "voice.startAria": "Voice input",
-        "voice.listening": "Listening…",
-        "voice.heard": "Heard: {{text}}",
-        "voice.applied": "Fields filled",
-        "voice.unsupported": "Your browser does not support voice input",
-        "voice.noSpeech": "No speech detected. Try again.",
-        "voice.error": "Could not recognize voice",
-        "voice.hold": "hold to talk",
-        "voice.holdHint": "Hold the button to speak",
-        "voice.needAmount": "Say an amount, e.g. \"25 ming xarajat non\"",
-        "settings.voice.section": "Voice control",
-        "settings.voice.title": "Voice input",
-        "settings.voice.desc": "Add transactions by voice in the basket",
-        "settings.voice.on": "ON",
-        "settings.voice.off": "OFF",
-        "settings.voice.showKw": "View voice keywords",
-        "settings.voice.kw.ops": "Transactions",
-        "settings.voice.kw.income": "Income:",
-        "settings.voice.kw.expense": "Expense:",
-        "settings.voice.kw.cats": "Category keys",
-        "settings.voice.kw.units": "Currency units",
-        "settings.voice.kw.say": "Say:",
-        "settings.voice.kw.example": "Example:",
         "validation.invalidDate": "Invalid date! Please enter a valid date.",
         "validation.dateTooOld": "Date cannot be more than 1 year old!",
         "basket.removeItem": "Remove",
@@ -8545,8 +8039,6 @@
     const basketDateInput = document.getElementById("basketDate");
     const basketItemsList = document.getElementById("basketItemsList");
     const basketAddItemBtn = document.getElementById("basketAddItemBtn");
-    const basketVoiceBtn = document.getElementById("basketVoiceBtn");
-    const basketVoiceHint = document.getElementById("basketVoiceHint");
     const basketTotalDisplay = document.getElementById("basketTotalDisplay");
     const basketNoteInput = document.getElementById("basketNote");
     const basketSubmitBtn = document.getElementById("basketSubmitBtn");
@@ -9838,66 +9330,6 @@
     settingsThemeToggle?.addEventListener("change", () => {
       applyTheme(settingsThemeToggle.checked ? "dark" : "light");
     });
-
-    /* ── Voice Settings ─────────────────────────────────────────────────── */
-    const VOICE_ENABLED_KEY = "bh-voice-enabled";
-
-    const voiceEnabledToggle = document.getElementById("voiceEnabledToggle");
-    const voiceStatusBadge   = document.getElementById("voiceStatusBadge");
-    const voiceSettingsBody  = document.getElementById("voiceSettingsBody");
-    const voiceKwBtn         = document.getElementById("voiceKwBtn");
-    const voiceKwDropdown    = document.getElementById("voiceKwDropdown");
-
-    let voiceKwOpen = false;
-
-    function applyVoiceEnabled(enabled) {
-      if (!voiceEnabledToggle) return;
-      voiceEnabledToggle.checked = enabled;
-
-      if (voiceStatusBadge) {
-        voiceStatusBadge.textContent = enabled ? t("settings.voice.on") : t("settings.voice.off");
-        voiceStatusBadge.classList.toggle("on", enabled);
-        voiceStatusBadge.classList.toggle("off", !enabled);
-      }
-
-      // Grey-out keywords section when disabled
-      if (voiceSettingsBody) {
-        if (enabled) {
-          voiceSettingsBody.classList.remove("vs-disabled-overlay");
-        } else {
-          voiceSettingsBody.classList.add("vs-disabled-overlay");
-          // Close dropdown if open
-          if (voiceKwOpen) toggleVoiceKeywords(false);
-        }
-      }
-
-      // Hide/show the mic button in basket modal
-      const voiceBtn = document.getElementById("basketVoiceBtn");
-      if (voiceBtn) voiceBtn.style.display = enabled ? "" : "none";
-
-      localStorage.setItem(VOICE_ENABLED_KEY, enabled ? "1" : "0");
-    }
-
-    function toggleVoiceKeywords(forceOpen) {
-      voiceKwOpen = (forceOpen !== undefined) ? forceOpen : !voiceKwOpen;
-      if (voiceKwDropdown) voiceKwDropdown.classList.toggle("is-open", voiceKwOpen);
-      if (voiceKwBtn) voiceKwBtn.classList.toggle("is-open", voiceKwOpen);
-
-      // Refresh lucide icon (chevron rotation via CSS)
-      if (window.lucide) lucide.createIcons({ scope: voiceKwBtn?.parentElement ?? document });
-    }
-
-    voiceEnabledToggle?.addEventListener("change", () => {
-      applyVoiceEnabled(voiceEnabledToggle.checked);
-    });
-
-    voiceKwBtn?.addEventListener("click", () => {
-      if (voiceEnabledToggle?.checked) toggleVoiceKeywords();
-    });
-
-    // Init from localStorage
-    const savedVoice = localStorage.getItem(VOICE_ENABLED_KEY);
-    applyVoiceEnabled(savedVoice !== "0"); // default: enabled
 
     /** iOS 26 Liquid Glass toggle — press/release + reflection sweep */
     function initLiquidGlassToggles() {
@@ -11352,8 +10784,6 @@
     basketModal?.addEventListener("click", e => {
       if (e.target === basketModal) closeBasketModal();
     });
-    // Hold-to-Talk event bindings (replaces simple click handler)
-    if (basketVoiceBtn) bindHoldToTalk(basketVoiceBtn);
 
     basketAddItemBtn?.addEventListener("click", () => {
       basketItems.push(createBasketItemRow());
@@ -12944,291 +12374,6 @@
       refreshIconsScoped(el);
     }
 
-    const VOICE_INCOME_KEYWORDS = [
-      "daromad", "kirim", "tushum", "foyda", "sotuv", "sotdim", "oldim", "kiritdim"
-    ];
-    const VOICE_EXPENSE_KEYWORDS = [
-      "xarajat", "chiqim", "sarfladim", "sotib oldim", "to'lov", "tolov", "berdim", "sarf"
-    ];
-    const VOICE_AMOUNT_STOP_WORDS = new Set([
-      "daromad", "xarajat", "kirim", "chiqim", "tushum", "foyda", "ming", "mln", "mlrd",
-      "so'm", "som", "sum", "uzs", "dollar", "usd", "uchun", "ga", "dan", "va", "edi", "qildim"
-    ]);
-
-    let basketVoiceRecognition = null;
-    let basketVoiceListening = false;
-
-    /**
-     * Parses Uzbek voice text into transaction fields.
-     * Examples:
-     *   "25 ming xarajat non" → { type: "expense", amount: 25000, name: "non" }
-     *   "daromad 100 ming sotuv" → { type: "income", amount: 100000, name: "sotuv" }
-     */
-    function parseVoiceTransactionText(rawText) {
-      const original = String(rawText || "").trim();
-      if (!original) return null;
-
-      let text = original.toLowerCase()
-        .replace(/[''`ʻ]/g, "'")
-        .replace(/\s+/g, " ");
-
-      let type = "expense";
-      const hasIncome = VOICE_INCOME_KEYWORDS.some(word => text.includes(word));
-      const hasExpense = VOICE_EXPENSE_KEYWORDS.some(word => text.includes(word));
-      if (hasIncome && !hasExpense) type = "income";
-      else if (hasExpense) type = "expense";
-
-      let amount = 0;
-
-      const mlnMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:mln|million|millioni)/i);
-      const mingMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(?:ming|minga)/i);
-      const digitMatch = text.match(/(\d[\d\s.,]*\d|\d)/);
-
-      if (mlnMatch) {
-        amount = Math.round(parseFloat(mlnMatch[1].replace(/\s/g, "").replace(",", ".")) * 1000000);
-      } else if (mingMatch) {
-        amount = Math.round(parseFloat(mingMatch[1].replace(/\s/g, "").replace(",", ".")) * 1000);
-      } else if (digitMatch) {
-        amount = parseAmountDigits(digitMatch[1]);
-      }
-
-      let name = text;
-      if (mlnMatch) name = name.replace(mlnMatch[0], " ");
-      if (mingMatch) name = name.replace(mingMatch[0], " ");
-      if (digitMatch && !mlnMatch && !mingMatch) name = name.replace(digitMatch[0], " ");
-
-      [...VOICE_INCOME_KEYWORDS, ...VOICE_EXPENSE_KEYWORDS].forEach(word => {
-        name = name.replace(new RegExp(`\\b${word}\\b`, "g"), " ");
-      });
-
-      name = name
-        .replace(/\b(so'm|som|sum|uzs)\b/gi, " ")
-        .replace(/[^\p{L}\p{N}\s-]/gu, " ")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      const nameWords = name.split(" ").filter(w => w && !VOICE_AMOUNT_STOP_WORDS.has(w));
-      name = nameWords.join(" ").trim();
-
-      return {
-        type,
-        amount,
-        name: name || original,
-        rawText: original
-      };
-    }
-
-    function setBasketVoiceHint(message = "") {
-      if (basketVoiceHint) basketVoiceHint.textContent = message;
-    }
-
-    function setBasketVoiceListening(active) {
-      basketVoiceListening = active;
-      if (!basketVoiceBtn) return;
-      basketVoiceBtn.classList.toggle("is-listening", active);
-      const label = basketVoiceBtn.querySelector("span");
-      if (label) label.textContent = active ? t("voice.listening") : t("voice.btn");
-    }
-
-    function applyParsedVoiceToBasket(parsed) {
-      if (!parsed) return false;
-
-      if (parsed.type === "income" || parsed.type === "expense") {
-        setBasketType(parsed.type);
-      }
-
-      if (!basketItems.length) {
-        basketItems.push(createBasketItemRow());
-      }
-
-      const row = basketItems[0];
-      if (parsed.amount > 0) {
-        row.priceDigits = String(parsed.amount);
-      }
-      if (parsed.name) {
-        row.name = parsed.name;
-      }
-
-      renderBasketItems();
-
-      if (parsed.amount <= 0) {
-        setBasketVoiceHint(t("voice.needAmount"));
-        return false;
-      }
-
-      setBasketVoiceHint(t("voice.applied"));
-      return true;
-    }
-
-    function getSpeechRecognitionCtor() {
-      return window.SpeechRecognition || window.webkitSpeechRecognition || null;
-    }
-
-    /* ─── Hold-to-Talk state machine ───────────────────────────────────────
-     *
-     *  IDLE ──► PRESSED (pointerdown)
-     *        ──► LISTENING (recognition.onstart)
-     *        ──► IDLE (pointerup / pointerleave → recognition.stop)
-     *
-     *  recognition.onresult fires after stop() confirms the final transcript.
-     * ───────────────────────────────────────────────────────────────────── */
-    const HTT_MIN_HOLD_MS = 180; // minimum hold before we accept a result
-    let httPressStart = 0;
-    let httAborted = false;
-
-    function httStart() {
-      const Ctor = getSpeechRecognitionCtor();
-      if (!Ctor) {
-        setBasketVoiceHint(t("voice.unsupported"));
-        return;
-      }
-      if (basketVoiceListening) return; // already running
-
-      httPressStart = Date.now();
-      httAborted = false;
-
-      // Visual: pressed state immediately
-      basketVoiceBtn?.classList.add("is-pressed");
-
-      const recognition = new Ctor();
-      basketVoiceRecognition = recognition;
-      recognition.lang = "uz-UZ";
-      recognition.interimResults = true;   // show live transcript while holding
-      recognition.maxAlternatives = 1;
-      recognition.continuous = true;       // keep running while held
-
-      recognition.onstart = () => {
-        setBasketVoiceListening(true);
-        basketVoiceBtn?.classList.remove("is-pressed");
-        setBasketVoiceHint(t("voice.listening"));
-        const hint = basketVoiceHint;
-        if (hint) {
-          hint.classList.remove("hint-success", "hint-error");
-        }
-      };
-
-      // Show live interim text so user sees progress
-      recognition.onresult = event => {
-        const last = event.results[event.results.length - 1];
-        const interim = last?.[0]?.transcript?.trim() || "";
-        if (interim) setBasketVoiceHint("🎙 " + interim);
-      };
-
-      recognition.onerror = event => {
-        if (event.error === "no-speech") {
-          setVoiceHintStyled(t("voice.noSpeech"), "error");
-        } else if (event.error === "not-allowed") {
-          setVoiceHintStyled(t("voice.unsupported"), "error");
-        } else if (event.error !== "aborted") {
-          setVoiceHintStyled(t("voice.error"), "error");
-        }
-        httAborted = true;
-        setBasketVoiceListening(false);
-        basketVoiceBtn?.classList.remove("is-pressed");
-      };
-
-      recognition.onend = () => {
-        setBasketVoiceListening(false);
-        basketVoiceBtn?.classList.remove("is-pressed");
-
-        if (httAborted) return;
-
-        // Collect the best final result accumulated during hold
-        let finalTranscript = "";
-        try {
-          for (let i = 0; i < recognition.results?.length; i++) {
-            if (recognition.results[i].isFinal) {
-              finalTranscript += recognition.results[i][0].transcript + " ";
-            } else {
-              // Non-final: use anyway (Chrome sometimes fires onend before final)
-              finalTranscript += recognition.results[i][0].transcript + " ";
-            }
-          }
-        } catch (_) {}
-
-        finalTranscript = finalTranscript.trim();
-
-        if (!finalTranscript) {
-          // Held less than minimum or no speech
-          if (Date.now() - httPressStart < HTT_MIN_HOLD_MS) {
-            setVoiceHintStyled(t("voice.holdHint"), "");
-          } else {
-            setVoiceHintStyled(t("voice.noSpeech"), "error");
-          }
-          return;
-        }
-
-        setVoiceHintStyled(t("voice.heard").replace("{{text}}", finalTranscript), "");
-        const parsed = parseVoiceTransactionText(finalTranscript);
-        const ok = applyParsedVoiceToBasket(parsed);
-        if (ok) {
-          if (basketVoiceHint) basketVoiceHint.classList.add("hint-success");
-        }
-      };
-
-      try {
-        recognition.start();
-      } catch (err) {
-        console.warn("[BiznesHisob] HTT start failed:", err);
-        setVoiceHintStyled(t("voice.error"), "error");
-        setBasketVoiceListening(false);
-        basketVoiceBtn?.classList.remove("is-pressed");
-      }
-    }
-
-    function httStop() {
-      basketVoiceBtn?.classList.remove("is-pressed");
-      if (basketVoiceListening && basketVoiceRecognition) {
-        basketVoiceRecognition.stop();
-      }
-    }
-
-    function setVoiceHintStyled(msg, type) {
-      setBasketVoiceHint(msg);
-      if (!basketVoiceHint) return;
-      basketVoiceHint.classList.toggle("hint-success", type === "success");
-      basketVoiceHint.classList.toggle("hint-error",   type === "error");
-    }
-
-    /**
-     * Attach Hold-to-Talk (Push-to-Talk) listeners to the voice button.
-     * Handles mouse (desktop) + touch (mobile) uniformly via Pointer Events API
-     * with touch-action: none preventing scroll/zoom during hold.
-     */
-    function bindHoldToTalk(btn) {
-      if (!btn || btn.dataset.httBound === "1") return;
-      btn.dataset.httBound = "1";
-
-      // ── Pointer Events API (covers mouse + touch + stylus in one) ──
-      btn.addEventListener("pointerdown", e => {
-        e.preventDefault(); // prevent context-menu + text-selection + zoom
-        btn.setPointerCapture(e.pointerId); // capture so pointerup fires even if finger slides off
-        httStart();
-      });
-
-      btn.addEventListener("pointerup", e => {
-        e.preventDefault();
-        httStop();
-      });
-
-      // Safety net: if pointer leaves button while captured
-      btn.addEventListener("pointercancel", () => httStop());
-
-      // Keyboard: Space / Enter = hold while pressed
-      btn.addEventListener("keydown", e => {
-        if ((e.code === "Space" || e.code === "Enter") && !e.repeat) {
-          e.preventDefault();
-          httStart();
-        }
-      });
-      btn.addEventListener("keyup", e => {
-        if (e.code === "Space" || e.code === "Enter") {
-          e.preventDefault();
-          httStop();
-        }
-      });
-    }
-
     function getBasketDateDefault() {
       const d = new Date();
       const y = d.getFullYear();
@@ -13275,12 +12420,7 @@
       basketItemsList.innerHTML = basketItems.map(item => `
         <div class="basket-item-row" data-item-id="${item.id}">
           <input type="text" class="basket-item-name" data-field="name" data-item-id="${item.id}" data-i18n-placeholder="basket.itemNamePh" placeholder="${escapeHtml(t("basket.itemNamePh"))}" value="${escapeHtml(item.name)}" maxlength="80">
-          <div class="basket-item-price-wrap">
-            <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" placeholder="${escapeHtml(getBasketPricePlaceholder())}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
-            <button type="button" class="basket-item-mic" data-mic-item="${item.id}" aria-label="Ovoz bilan narx kiritish">
-              <i data-lucide="mic"></i>
-            </button>
-          </div>
+          <input type="text" class="basket-item-price" data-field="price" data-item-id="${item.id}" inputmode="numeric" placeholder="${escapeHtml(getBasketPricePlaceholder())}" value="${item.priceDigits ? formatAmountSpaces(item.priceDigits) : ""}">
           <button type="button" class="basket-item-remove" data-remove-id="${item.id}" aria-label="${escapeHtml(t("basket.removeItem"))}"${basketItems.length <= 1 ? " disabled" : ""}>×</button>
         </div>
       `).join("");
@@ -13314,12 +12454,6 @@
           updateBasketTotalDisplay();
         });
       });
-
-      // Per-row mic buttons (Hold-to-Talk, same engine as main voice btn)
-      basketItemsList.querySelectorAll(".basket-item-mic").forEach(micBtn => {
-        bindHoldToTalk(micBtn);
-        // Refresh lucide icon
-        if (window.lucide) lucide.createIcons({ scope: micBtn });
       });
 
       updateBasketTotalDisplay();
@@ -13383,11 +12517,6 @@
 
     function closeBasketModal() {
       if (!basketModal) return;
-      if (basketVoiceRecognition && basketVoiceListening) {
-        basketVoiceRecognition.stop();
-      }
-      setBasketVoiceListening(false);
-      setBasketVoiceHint("");
       basketModal.classList.remove("open");
       updateBodyScrollLock();
     }
