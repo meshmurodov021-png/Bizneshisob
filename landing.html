@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1780673729574">
+  <meta name="app-build-version" content="1787679800000">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -39,7 +39,7 @@
       "priceCurrency": "UZS"
     },
     "description": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
-    "url": "https://bizneshisob.vercel.app/app",
+    "url": "https://bizneshisob.vercel.app/app.html",
     "image": "https://bizneshisob.vercel.app/icons/icon-512.png",
     "inLanguage": ["uz", "ru", "en"]
   }
@@ -2272,7 +2272,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="/app" data-i18n="cta.download">Yuklab olish</a>
+    <a href="/app.html" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
 
@@ -2669,8 +2669,8 @@
             </tbody>
           </table>
           <div class="pricing-foot">
-            <a href="/app" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
-            <a href="/app" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+            <a href="/app.html" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="/app.html" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
           </div>
         </div>
       </div>
@@ -2815,7 +2815,7 @@
             <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
             <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
             <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
-            <li><a href="/app" data-i18n="cta.download">Yuklab olish</a></li>
+            <li><a href="/app.html" data-i18n="cta.download">Yuklab olish</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -2845,8 +2845,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
     const APP_URL = window.location.protocol === "file:"
-      ? new URL("index.html", window.location.href).href
-      : new URL("/app", window.location.origin).href;
+      ? new URL("app.html", window.location.href).href
+      : new URL("/app.html", window.location.origin).href;
     let deferredInstallPrompt = null;
     let currentLang = localStorage.getItem("bh-lang") || "uz";
 

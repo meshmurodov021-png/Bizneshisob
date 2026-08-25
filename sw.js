@@ -1,11 +1,11 @@
-const BUILD_VERSION = "1780673729574";
+const BUILD_VERSION = "1787679800000";
 const CACHE_VERSION = `bizneshisob-${BUILD_VERSION}`;
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 const PRECACHE_URLS = [
-  "/",
-  "/index.html",
+  "/app.html",
+  "/landing.html",
   "/manifest.json",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
@@ -64,6 +64,20 @@ function isFirebaseApi(url) {
     (url.hostname.includes("firebaseapp.com") && url.pathname.includes("__"));
 }
 
+function isLandingPath(pathname) {
+  return pathname === "/" || pathname === "/landing.html";
+}
+
+function isAppPath(pathname) {
+  return pathname === "/app" || pathname === "/app/" || pathname === "/app.html" || pathname === "/index.html";
+}
+
+function navigationCacheKey(pathname) {
+  if (isLandingPath(pathname)) return "/landing.html";
+  if (isAppPath(pathname)) return "/app.html";
+  return pathname;
+}
+
 self.addEventListener("fetch", event => {
   const { request } = event;
   const url = new URL(request.url);
@@ -88,7 +102,7 @@ self.addEventListener("fetch", event => {
       event.respondWith(networkFirstNavigation(request));
       return;
     }
-    if (url.pathname === "/index.html" || url.pathname === "/version.json") {
+    if (url.pathname === "/app.html" || url.pathname === "/index.html" || url.pathname === "/version.json") {
       event.respondWith(networkFirstAsset(request, SHELL_CACHE));
       return;
     }
@@ -118,20 +132,26 @@ const NAV_NETWORK_TIMEOUT_MS = 3000;
 
 async function networkFirstNavigation(request) {
   const cache = await caches.open(SHELL_CACHE);
+  const pathname = new URL(request.url).pathname;
+  const cacheKey = navigationCacheKey(pathname);
 
   const networkPromise = fetch(request, { cache: "no-store" })
     .then(response => {
       if (response.ok) {
-        cache.put("/index.html", response.clone());
-        cache.put("/", response.clone());
+        cache.put(cacheKey, response.clone());
+        if (isAppPath(pathname)) {
+          cache.put("/app.html", response.clone());
+        }
+        if (isLandingPath(pathname)) {
+          cache.put("/landing.html", response.clone());
+          cache.put("/", response.clone());
+        }
       }
       return response;
     });
 
-  const cached = await cache.match("/index.html") || await cache.match("/");
+  const cached = await cache.match(cacheKey);
 
-  // Kesh bor bo'lsa: tarmoq sekin bo'lganda (>3s) darhol keshdan ochamiz,
-  // yangi versiya fonda keshga yozilib boradi.
   if (cached) {
     const winner = await Promise.race([
       networkPromise.catch(() => null),

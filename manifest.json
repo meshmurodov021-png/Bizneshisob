@@ -4,7 +4,7 @@
   "description": "Biznes daromad va xarajatlarini boshqarish ilovasi",
   "lang": "uz",
   "dir": "ltr",
-  "start_url": "/app",
+  "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
