@@ -1,0 +1,3954 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BiznesHisob — O'zbekiston tadbirkorlari uchun biznes daromad va xarajatlarini boshqarish ilovasi. Bepul boshlang, Premium bilan kengaytiring.">
+  <meta name="keywords" content="BiznesHisob, biznes hisob, daromad xarajat, moliya ilovasi, O'zbekiston, tadbirkor, PWA">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="BiznesHisob">
+  <meta name="theme-color" content="#7C3AED">
+  <meta name="app-build-version" content="1780673729574">
+  <link rel="canonical" href="https://bizneshisob.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiznesHisob">
+  <meta property="og:title" content="BiznesHisob — Biznes moliyasini boshqaring">
+  <meta property="og:description" content="Daromad, xarajat va balans — barchasi bitta joyda. O'zbekiston tadbirkorlari uchun zamonaviy moliya ilovasi.">
+  <meta property="og:url" content="https://bizneshisob.vercel.app/">
+  <meta property="og:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
+  <meta property="og:locale" content="uz_UZ">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
+  <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
+  <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1780673729574">
+  <link rel="manifest" href="/manifest.json?v=1780673729574">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>BiznesHisob — Biznes moliyasini boshqaring</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BiznesHisob",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web, Android, iOS",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "UZS"
+    },
+    "description": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova.",
+    "url": "https://bizneshisob.vercel.app/app",
+    "image": "https://bizneshisob.vercel.app/icons/icon-512.png",
+    "inLanguage": ["uz", "ru", "en"]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: rgba(18, 18, 28, 0.72);
+      --bg-card-hover: rgba(22, 22, 34, 0.82);
+      --border: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-hover: rgba(124, 58, 237, 0.45);
+      --text: #f4f4f8;
+      --muted: #8b8ba3;
+      --purple: #7C3AED;
+      --indigo: #4F46E5;
+      --gradient: linear-gradient(135deg, #7C3AED 0%, #5B21B6 45%, #4F46E5 100%);
+      --gradient-text: linear-gradient(135deg, #c4b5fd 0%, #7C3AED 50%, #4F46E5 100%);
+      --glow: rgba(124, 58, 237, 0.5);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --glass-blur: blur(20px);
+      --glass-saturate: saturate(1.12);
+      --glass-filter: var(--glass-blur) var(--glass-saturate);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+      --glass-shadow-hover:
+        0 22px 56px rgba(124, 58, 237, 0.2),
+        0 0 0 1px rgba(124, 58, 237, 0.18),
+        0 0 40px rgba(124, 58, 237, 0.12);
+      --glass-shadow-premium:
+        0 26px 64px rgba(124, 58, 237, 0.24),
+        0 0 0 1px rgba(167, 139, 250, 0.22),
+        0 0 48px rgba(124, 58, 237, 0.16);
+      --nav-h: 76px;
+      --radius: 22px;
+      --scrollbar-thumb-1: #7C3AED;
+      --scrollbar-thumb-2: #4F46E5;
+      --scrollbar-thumb-3: #6366f1;
+      --scrollbar-thumb-hover-1: #6D28D9;
+      --scrollbar-thumb-hover-2: #4338CA;
+    }
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb-1) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(
+        to bottom,
+        var(--scrollbar-thumb-1),
+        var(--scrollbar-thumb-2),
+        var(--scrollbar-thumb-3)
+      );
+      border-radius: 10px;
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(
+        to bottom,
+        var(--scrollbar-thumb-hover-1),
+        var(--scrollbar-thumb-hover-2)
+      );
+    }
+
+    html { scroll-behavior: smooth; background: var(--bg); overscroll-behavior: none; }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124, 58, 237, 0.22), transparent 55%),
+        radial-gradient(ellipse 40% 35% at 100% 30%, rgba(79, 70, 229, 0.12), transparent),
+        radial-gradient(ellipse 35% 30% at 0% 70%, rgba(124, 58, 237, 0.08), transparent);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.35rem;
+    }
+
+    main { position: relative; z-index: 1; }
+
+    /* Glass */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--glass-shadow);
+      transition:
+        transform 0.45s var(--ease),
+        box-shadow 0.45s var(--ease),
+        border-color 0.45s var(--ease),
+        background 0.45s var(--ease);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .glass-hover:hover {
+        transform: translateY(-7px);
+        border-color: var(--glass-border-hover);
+        box-shadow: var(--glass-shadow-hover);
+      }
+
+      .feature-card.glass-hover:hover,
+      .feature-copy-card.glass-hover:hover,
+      .pricing-box.glass-hover:hover {
+        transform: translateY(-8px);
+        border-color: rgba(124, 58, 237, 0.52);
+        box-shadow: var(--glass-shadow-premium);
+        background: var(--bg-card-hover);
+      }
+    }
+
+    /* Header — always sticky blur */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.72);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 20px var(--glow);
+    }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      align-items: center;
+      gap: 1.85rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.25s;
+    }
+
+    .nav-links a:hover { color: #c4b5fd; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 0.35rem 0.55rem;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+      font-family: inherit;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.25s var(--ease);
+    }
+
+    .lang-btn.active {
+      background: var(--gradient);
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s;
+    }
+
+    .btn-sm { padding: 0.55rem 1.1rem; font-size: 0.8rem; }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.55);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(124, 58, 237, 0.5);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .btn-white {
+      background: #fff;
+      color: var(--purple);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #2AABEE, #229ED9);
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(34, 158, 217, 0.35);
+    }
+
+    .menu-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      z-index: 199;
+      padding: 1rem 1.35rem 1.5rem;
+      background: rgba(10, 10, 15, 0.96);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transform: translateY(-110%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s var(--ease), opacity 0.35s;
+    }
+
+    .mobile-nav.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hidden { display: none !important; }
+
+    .gradient-text {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-tag {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #a78bfa;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.28);
+      margin-bottom: 0.85rem;
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 3.5rem;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.85rem, 4.5vw, 2.65rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-head p { color: var(--muted); font-size: 1.05rem; }
+
+    section { padding: 5.5rem 0; }
+
+    /* Scroll reveal — initial state (GSAP ScrollTrigger animates in) */
+    .reveal,
+    .feature-row,
+    .step-item,
+    .testimonial {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      padding: calc(var(--nav-h) + 2.5rem) 0 5rem;
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #c4b5fd;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-eyebrow span:first-child {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 14px #22c55e;
+      animation: livePulse 2s ease infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.35rem, 6.5vw, 3.85rem);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .ios-hint {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      max-width: 380px;
+    }
+
+    /* 3D Phone — iPhone 14 Pro */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .phone-tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .phone-tilt-inner {
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .phone-aura {
+      --mx: 0.5;
+      --my: 0.5;
+      position: absolute;
+      inset: -32% -28%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .phone-aura-base {
+      position: absolute;
+      inset: 8% 5%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse 75% 65% at 50% 50%, rgba(124, 58, 237, 0.42), transparent 68%);
+      filter: blur(42px);
+      opacity: 0.9;
+      animation: auraBreathe 7s ease-in-out infinite;
+    }
+
+    .phone-aura-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(52px);
+      opacity: 0.75;
+      will-change: transform;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .phone-aura-blob--violet {
+      width: 58%;
+      height: 58%;
+      top: 14%;
+      left: 10%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.72) 0%, transparent 72%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * 72px),
+        calc((var(--my) - 0.5) * 56px)
+      );
+      animation: auraDriftViolet 9s ease-in-out infinite;
+    }
+
+    .phone-aura-blob--indigo {
+      width: 48%;
+      height: 48%;
+      bottom: 8%;
+      right: 6%;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.68) 0%, transparent 70%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * -64px),
+        calc((var(--my) - 0.5) * -48px)
+      );
+      animation: auraDriftIndigo 11s ease-in-out infinite;
+    }
+
+    .phone-aura-blob--cyan {
+      width: 36%;
+      height: 36%;
+      top: 42%;
+      right: 22%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 72%);
+      transform: translate(
+        calc((var(--mx) - 0.5) * 40px),
+        calc((var(--my) - 0.5) * -36px)
+      );
+      animation: auraDriftCyan 8.5s ease-in-out infinite;
+    }
+
+    .phone-aura-ring {
+      position: absolute;
+      inset: 18% 12%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from calc(var(--mx) * 360deg),
+        rgba(124, 58, 237, 0.55),
+        rgba(79, 70, 229, 0.35),
+        rgba(56, 189, 248, 0.25),
+        rgba(124, 58, 237, 0.55)
+      );
+      filter: blur(28px);
+      opacity: 0.55;
+      transform: translate(
+        calc((var(--mx) - 0.5) * 24px),
+        calc((var(--my) - 0.5) * 20px)
+      );
+      animation: auraSpin 14s linear infinite;
+    }
+
+    @keyframes auraBreathe {
+      0%, 100% { opacity: 0.82; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.06); }
+    }
+
+    @keyframes auraDriftViolet {
+      0%, 100% { filter: blur(52px) hue-rotate(0deg); }
+      50% { filter: blur(58px) hue-rotate(12deg); }
+    }
+
+    @keyframes auraDriftIndigo {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.9; }
+    }
+
+    @keyframes auraDriftCyan {
+      0%, 100% { opacity: 0.28; }
+      50% { opacity: 0.48; }
+    }
+
+    @keyframes auraSpin {
+      from { transform: translate(calc((var(--mx) - 0.5) * 24px), calc((var(--my) - 0.5) * 20px)) rotate(0deg); }
+      to { transform: translate(calc((var(--mx) - 0.5) * 24px), calc((var(--my) - 0.5) * 20px)) rotate(360deg); }
+    }
+
+    .phone-device {
+      position: relative;
+      z-index: 1;
+      width: min(280px, 78vw);
+      padding: 3px;
+      border-radius: 55px;
+      background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 50%, #151515 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow:
+        0 40px 80px rgba(0, 0, 0, 0.65),
+        0 0 60px rgba(124, 58, 237, 0.35),
+        0 0 120px rgba(79, 70, 229, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .phone-screen {
+      position: relative;
+      background: #0d0d1a;
+      border-radius: 52px;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mock-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 22px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .mock-status-icons {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mock-status-icons svg {
+      display: block;
+      height: 11px;
+      width: auto;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 96px;
+      height: 28px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 10;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px 12px;
+    }
+
+    .app-logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #7C3AED, #4F46E5);
+      display: grid;
+      place-items: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .app-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .app-body {
+      flex: 1;
+      padding: 0 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profit-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profit-card .mock-label {
+      font-size: 0.62rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8b8ba3;
+      margin-bottom: 6px;
+    }
+
+    .profit-amount {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #22d3ee;
+      line-height: 1.15;
+      text-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
+    }
+
+    .stat-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-mini {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-mini.income {
+      background: rgba(34, 197, 94, 0.1);
+      border-color: rgba(34, 197, 94, 0.22);
+    }
+
+    .stat-mini.expense {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.22);
+    }
+
+    .stat-mini-label {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .stat-mini.income .stat-mini-label { color: #4ade80; }
+    .stat-mini.expense .stat-mini-label { color: #f87171; }
+
+    .stat-mini-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .quick-section-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #6b6b80;
+      margin-top: 4px;
+    }
+
+    .quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .quick-btn {
+      padding: 11px 8px;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: default;
+      text-align: center;
+    }
+
+    .quick-btn.income {
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .quick-btn.expense {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .mock-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 6px 18px;
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.35);
+    }
+
+    .mock-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.5rem;
+      font-weight: 600;
+      color: #6b6b80;
+    }
+
+    .mock-nav-item.active {
+      color: #a78bfa;
+    }
+
+    .mock-nav-item span:first-child {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .mock-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .chip {
+      position: absolute;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 100px;
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+      white-space: nowrap;
+      color: #e8e8f0;
+    }
+
+    .chip-1 { top: 4%; left: -14%; animation: chipBob 3s ease-in-out infinite; }
+    .chip-2 { bottom: 10%; right: -16%; animation: chipBob 3s 0.8s ease-in-out infinite; }
+
+    @keyframes chipBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      animation: scrollBounce 2s ease infinite;
+    }
+
+    .scroll-hint-icon {
+      width: 26px;
+      height: 40px;
+      border: 2px solid rgba(124, 58, 237, 0.4);
+      border-radius: 14px;
+      position: relative;
+    }
+
+    .scroll-hint-icon::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: var(--purple);
+      border-radius: 2px;
+      animation: scrollDot 2s ease infinite;
+    }
+
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    @keyframes scrollDot {
+      0% { opacity: 1; top: 8px; }
+      100% { opacity: 0; top: 20px; }
+    }
+
+    /* BEFORE / AFTER */
+    .compare-wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      align-items: stretch;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .compare-card {
+      padding: 2rem 1.75rem;
+    }
+
+    .compare-bad {
+      background: rgba(127, 29, 29, 0.12);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .compare-good {
+      background: rgba(124, 58, 237, 0.12);
+      border-color: transparent;
+      box-shadow:
+        0 0 0 1.5px rgba(139, 92, 246, 0.7),
+        0 0 40px rgba(124, 58, 237, 0.35),
+        0 0 80px rgba(124, 58, 237, 0.18),
+        inset 0 1px 0 rgba(167, 139, 250, 0.18);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Animated rotating gradient border */
+    .compare-good::before {
+      content: "";
+      position: absolute;
+      inset: -1.5px;
+      border-radius: inherit;
+      background: conic-gradient(
+        from var(--angle, 0deg),
+        #7C3AED 0deg,
+        #a78bfa 60deg,
+        #38bdf8 120deg,
+        #4F46E5 180deg,
+        #7C3AED 240deg,
+        #a78bfa 300deg,
+        #7C3AED 360deg
+      );
+      z-index: -1;
+      animation: borderRotate 4s linear infinite;
+      opacity: 0.85;
+    }
+
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes borderRotate {
+      to { --angle: 360deg; }
+    }
+
+    /* Inner fill to mask the rotating border */
+    .compare-good::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: calc(var(--radius) - 2px);
+      background: rgba(16, 12, 28, 0.92);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      z-index: -1;
+    }
+
+    .compare-card { position: relative; }
+
+    .compare-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .compare-bad .compare-tag { color: #f87171; }
+    .compare-good .compare-tag { color: #a78bfa; }
+
+    .compare-card h3 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      margin-bottom: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .compare-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .compare-list li {
+      display: flex;
+      gap: 0.65rem;
+      font-size: 0.92rem;
+      color: var(--muted);
+      align-items: flex-start;
+    }
+
+    .compare-good .compare-list li { color: #d8d8e8; }
+
+    .vs-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 0;
+    }
+
+    .vs-badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+      box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5);
+      animation: vsPulse 2.5s ease infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes vsPulse {
+      0% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.55); }
+      70% { box-shadow: 0 0 0 18px rgba(124, 58, 237, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
+    }
+
+    /* FEATURES alternating */
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      margin-bottom: 5rem;
+    }
+
+    .feature-row:last-child { margin-bottom: 0; }
+
+    .feature-row.reverse .feature-copy { order: 2; }
+    .feature-row.reverse .feature-visual { order: 1; }
+
+    .feature-copy h3 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      line-height: 1.2;
+    }
+
+    .feature-copy h3 .feat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .feature-copy p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 420px;
+    }
+
+    .feature-copy-card {
+      padding: 2rem 2.25rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .feature-card {
+      height: 100%;
+    }
+
+    .feature-mock {
+      padding: 1.75rem;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .feature-mock-inner {
+      font-size: 0.85rem;
+    }
+
+    .fm-balance {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #4ade80;
+      margin: 0.5rem 0;
+    }
+
+    .fm-chart {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      height: 72px;
+      margin-top: 1rem;
+      padding-bottom: 2px;
+      position: relative;
+    }
+
+    .fm-chart-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .fm-chart-bar-fill {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      transform: scaleY(0);
+      opacity: 0;
+      transform-origin: bottom;
+      /* animation intentionally NOT set here — triggered by JS when in viewport */
+    }
+
+    /* Active state (class added by IntersectionObserver) */
+    .fm-chart--visible .fm-chart-bar-fill {
+      animation: barGrow 0.82s var(--ease) both;
+    }
+
+    @keyframes barGrow {
+      from { transform: scaleY(0); opacity: 0; }
+      to   { transform: scaleY(1); opacity: 1; }
+    }
+
+    .fm-chart-bar:nth-child(1) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.04s; }
+    .fm-chart-bar:nth-child(2) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.12s; }
+    .fm-chart-bar:nth-child(3) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.20s; }
+    .fm-chart-bar:nth-child(4) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #c4b5fd); animation-delay: 0.28s; }
+    .fm-chart-bar:nth-child(5) .fm-chart-bar-fill { background: linear-gradient(to top, #4F46E5, #818cf8); animation-delay: 0.36s; }
+    .fm-chart-bar:nth-child(6) .fm-chart-bar-fill { background: linear-gradient(to top, #7C3AED, #a78bfa); animation-delay: 0.44s; }
+
+    .fm-chart-label {
+      font-size: 0.58rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .fm-offline {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 10px;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #4ade80;
+      font-size: 0.85rem;
+    }
+
+    .fm-shield {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ══ Tezkor qo'shish — Quick-add widget ══════════════════════════════ */
+    .fm-quick {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .fm-quick-amount {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+    }
+
+    .fm-quick-sign {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      line-height: 1;
+      color: #4ade80;
+      font-weight: 800;
+      flex-shrink: 0;
+      padding: 0 0 2px 0;
+    }
+
+    .fm-quick-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #4ade80;
+      letter-spacing: -0.03em;
+    }
+
+    .fm-quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .fm-qtag {
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      cursor: default;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+
+    .fm-qtag:hover,
+    .fm-qtag.qtag-active {
+      background: rgba(124, 58, 237, 0.18);
+      border-color: rgba(124, 58, 237, 0.45);
+      color: #c4b5fd;
+    }
+
+    .fm-quick-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .fm-quick-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .fm-quick-fab {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s var(--ease);
+      box-shadow:
+        0 6px 24px rgba(124, 58, 237, 0.5),
+        0 0  0   6px rgba(124, 58, 237, 0.08);
+      animation: fabPulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes fabPulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(124,58,237,0.5), 0 0 0  6px rgba(124,58,237,0.08); }
+      50%       { box-shadow: 0 8px 32px rgba(124,58,237,0.7), 0 0 0 12px rgba(124,58,237,0.04); }
+    }
+
+    .feature-mock:hover .fm-quick-fab {
+      transform: rotate(90deg);
+      animation: none;
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.65), 0 0 0 14px rgba(124, 58, 237, 0.06);
+    }
+
+    /* stagger-in for tags on card hover */
+    .feature-mock:hover .fm-qtag:nth-child(1) { animation: tagIn 0.22s 0.05s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(2) { animation: tagIn 0.22s 0.11s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(3) { animation: tagIn 0.22s 0.17s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(4) { animation: tagIn 0.22s 0.23s var(--ease) both; }
+    .feature-mock:hover .fm-qtag:nth-child(5) { animation: tagIn 0.22s 0.29s var(--ease) both; }
+
+    @keyframes tagIn {
+      from { transform: translateY(6px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    /* ══ Ko'p tilli — Language switcher card ═════════════════════════════ */
+    .fm-multilang {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Neon aura behind badges */
+    .fm-multilang::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.22) 0%, rgba(79,70,229,0.12) 40%, transparent 72%);
+      filter: blur(32px);
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .fm-lang-badges {
+      display: flex;
+      gap: 0.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fm-lang-badge {
+      display: inline-grid;
+      place-items: center;
+      min-width: 54px;
+      padding: 0.55rem 0.9rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 800;
+      font-size: 0.85rem;
+      font-family: inherit;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      cursor: default;
+      line-height: 1;
+      white-space: nowrap;
+      transition: background 0.3s var(--ease), border-color 0.3s, color 0.3s,
+                  transform 0.3s var(--ease), box-shadow 0.3s;
+    }
+
+    .fm-lang-badge.fm-lang-active {
+      background: var(--gradient);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(124,58,237,0.42);
+      transform: translateY(-3px);
+    }
+
+    .fm-lang-badge:not(.fm-lang-active):hover {
+      background: rgba(124, 58, 237, 0.15);
+      border-color: rgba(124, 58, 237, 0.4);
+      color: #c4b5fd;
+      transform: translateY(-2px);
+    }
+
+    /* Translated preview snippet */
+    .fm-lang-preview {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.65rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-height: 68px;
+    }
+
+    .fm-lang-preview-label {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: rgba(124,58,237,0.75);
+      text-transform: uppercase;
+    }
+
+    .fm-lang-preview-text {
+      font-size: 0.78rem;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.45;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .fm-lang-preview-text.fading {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    /* HOW IT WORKS */
+    .steps-track {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .steps-line {
+      display: none;
+    }
+
+    .step-item {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .step-num {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.25rem;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: grid;
+      place-items: center;
+      font-size: 1.75rem;
+      font-weight: 800;
+      box-shadow: 0 10px 36px var(--glow);
+    }
+
+    .step-item h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .step-item p { color: var(--muted); font-size: 0.9rem; }
+
+    /* STATS */
+    .stats-section {
+      padding: 5rem 0;
+      background: var(--gradient);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-box { text-align: center; }
+
+    .stat-value {
+      font-size: clamp(2.25rem, 5vw, 3.25rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-label {
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* TESTIMONIALS */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .testimonial {
+      padding: 1.85rem;
+    }
+
+    .stars {
+      color: #fbbf24;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+    }
+
+    .testimonial q {
+      display: block;
+      font-size: 0.95rem;
+      color: #e2e2ec;
+      font-style: italic;
+      line-height: 1.7;
+      margin-bottom: 1.35rem;
+      quotes: none;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .t-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .t-avatar svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* unique gradient per avatar */
+    .t-avatar--violet { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #c4b5fd 100%); }
+    .t-avatar--teal   { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%); }
+    .t-avatar--amber  { background: linear-gradient(135deg, #92400e 0%, #f59e0b 50%, #fde68a 100%); }
+
+    .t-author strong { display: block; font-size: 0.95rem; }
+    .t-author span { font-size: 0.8rem; color: var(--muted); }
+
+    /* PRICING */
+    .pricing-box {
+      max-width: 820px;
+      margin: 0 auto;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pricing-table th,
+    .pricing-table td {
+      padding: 1rem 1.15rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    .pricing-table th:first-child,
+    .pricing-table td:first-child {
+      text-align: left;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .pricing-table thead th { padding-top: 1.75rem; padding-bottom: 1.5rem; vertical-align: bottom; }
+
+    .plan-title {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+    }
+
+    .plan-cost {
+      font-size: 1.45rem;
+      font-weight: 800;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .plan-cost small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      -webkit-text-fill-color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .col-premium {
+      background: rgba(124, 58, 237, 0.12);
+      position: relative;
+    }
+
+    /* Left border accent line on premium column */
+    .col-premium::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.9), transparent);
+      pointer-events: none;
+    }
+
+    .badge-tavsiya {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #7C3AED, #38bdf8);
+      color: #fff;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 12px rgba(124, 58, 237, 0.35);
+    }
+
+    .yes,
+    .no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #fff;
+      vertical-align: middle;
+      transition: transform 0.25s var(--ease);
+    }
+
+    /* Free col checks: standard green */
+    .yes { background: #22c55e; }
+    .no  { background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid rgba(255,255,255,0.15); }
+
+    /* Premium col checks: vivid violet */
+    .col-premium .yes {
+      background: linear-gradient(135deg, #7C3AED, #a78bfa);
+      box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+    }
+
+    .yes:hover,
+    .no:hover { transform: scale(1.12); }
+
+    .pricing-foot {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      justify-content: center;
+      padding: 1.65rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Ghost "free" button */
+    .btn-pricing-ghost {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      color: var(--muted);
+      padding: 0.78rem 1.6rem;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: border-color 0.3s var(--ease), color 0.3s var(--ease), background 0.3s var(--ease);
+    }
+
+    .btn-pricing-ghost:hover {
+      border-color: rgba(255,255,255,0.45);
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* Breathing pulse on premium CTA */
+    @keyframes premiumPulse {
+      0%, 100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(124,58,237,0.45), 0 0 0 1px rgba(139,92,246,0.3); }
+      50%       { transform: scale(1.04); box-shadow: 0 8px 32px rgba(124,58,237,0.62), 0 0 0 2px rgba(167,139,250,0.5); }
+    }
+
+    .btn-pricing-premium.is-breathing {
+      animation: premiumPulse 2.4s ease-in-out infinite;
+    }
+
+    /* Premium column scale-up (class added by JS when in viewport) */
+    .pricing-box.premium-focused .col-premium {
+      transform: scaleX(1.03);
+      transform-origin: center;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Rich gradient "premium" CTA */
+    .btn-pricing-premium {
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 40%, #4F46E5 100%);
+      border: none;
+      color: #fff;
+      padding: 0.78rem 1.8rem;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-shadow:
+        0 4px 20px rgba(124, 58, 237, 0.45),
+        0 0 0 1px rgba(139, 92, 246, 0.3);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), filter 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-pricing-premium::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .btn-pricing-premium:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 30px rgba(124, 58, 237, 0.55),
+        0 0 0 1px rgba(167, 139, 250, 0.4);
+      filter: brightness(1.08);
+    }
+
+    /* CTA BANNER */
+    .cta-banner {
+      padding: 0;
+      margin: 0;
+    }
+
+    .cta-banner-inner {
+      padding: 4.5rem 2rem;
+      text-align: center;
+      background: var(--gradient);
+      border: none;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner-inner::after {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      top: -200px;
+      right: -100px;
+      pointer-events: none;
+    }
+
+    .cta-banner-inner h2 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.65rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-banner-inner p {
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 1.75rem;
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-banner-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* CONTACT */
+    .contact-card {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 2.75rem 2rem;
+      text-align: center;
+    }
+
+    .contact-card h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-card > p {
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .contact-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .phone-ph {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      padding: 0.85rem;
+      border-radius: 14px;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .phone-ph:hover {
+        color: var(--text);
+        border-color: rgba(124, 58, 237, 0.4);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       TRUST / SECURITY SECTION
+    ═══════════════════════════════════════════ */
+    .trust-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .trust-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.1rem;
+      padding: 1.5rem 1.65rem;
+    }
+
+    .trust-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+      background: rgba(124, 58, 237, 0.14);
+      border: 1px solid rgba(124, 58, 237, 0.28);
+      box-shadow: 0 0 18px rgba(124, 58, 237, 0.12);
+      transition: box-shadow 0.3s var(--ease), background 0.3s var(--ease);
+    }
+
+    .trust-card:hover .trust-icon {
+      background: rgba(124, 58, 237, 0.24);
+      box-shadow: 0 0 28px rgba(124, 58, 237, 0.28);
+    }
+
+    .trust-body h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+
+    .trust-body p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .trust-badge-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 3rem;
+    }
+
+    .trust-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+    }
+
+    .trust-badge-pill span:first-child {
+      font-size: 0.95rem;
+    }
+
+    /* ═══════════════════════════════════════════
+       FAQ / ACCORDION SECTION
+    ═══════════════════════════════════════════ */
+    .faq-list {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .faq-item {
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      backdrop-filter: var(--glass-filter);
+      -webkit-backdrop-filter: var(--glass-filter);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      overflow: hidden;
+      transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+
+    .faq-item:has(.faq-toggle:checked) {
+      border-color: rgba(124, 58, 237, 0.38);
+      box-shadow: 0 0 28px rgba(124, 58, 237, 0.12);
+    }
+
+    .faq-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .faq-label:hover { background: rgba(124, 58, 237, 0.05); }
+
+    .faq-question {
+      font-size: 0.97rem;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.22);
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      color: #a78bfa;
+      transition: transform 0.35s var(--ease), background 0.25s;
+    }
+
+    .faq-toggle { display: none; }
+
+    .faq-toggle:checked ~ .faq-label .faq-chevron {
+      transform: rotate(180deg);
+      background: rgba(124, 58, 237, 0.28);
+    }
+
+    .faq-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.38s var(--ease);
+    }
+
+    .faq-toggle:checked ~ .faq-body {
+      grid-template-rows: 1fr;
+    }
+
+    .faq-body-inner {
+      overflow: hidden;
+    }
+
+    .faq-answer {
+      padding: 0 1.5rem 1.35rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    .faq-answer a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+    .faq-answer a:hover { text-decoration: underline; }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 3.5rem 0 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-brand p {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    .footer-col h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.45rem; }
+
+    .footer-col a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.25s;
+    }
+
+    .footer-col a:hover { color: #c4b5fd; }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 540px) {
+      .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+      .menu-btn { display: none; }
+      .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 2rem; }
+      .compare-wrap { grid-template-columns: 1fr auto 1fr; gap: 0; }
+      .compare-bad { border-radius: var(--radius) 0 0 var(--radius); }
+      .compare-good { border-radius: var(--radius); }
+      .vs-wrap { padding: 0; }
+      .feature-row { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+      .feature-row.reverse .feature-copy { order: 1; }
+      .feature-row.reverse .feature-visual { order: 2; }
+      .steps-track { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+      .steps-line {
+        display: block;
+        position: absolute;
+        top: 36px;
+        left: 18%;
+        right: 18%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), transparent);
+        z-index: 0;
+      }
+      .step-item { position: relative; z-index: 1; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+      .trust-grid { grid-template-columns: repeat(3, 1fr); }
+      .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+      .contact-btns { flex-direction: row; justify-content: center; }
+      .contact-btns .btn,
+      .contact-btns .phone-ph { flex: 1; max-width: 200px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .feature-row, .step-item, .testimonial {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .phone-aura-base,
+      .phone-aura-blob,
+      .phone-aura-ring { animation: none; }
+      .vs-badge { animation: none; }
+      .compare-good::before { animation: none; }
+      .fm-chart-bar-fill,
+      .fm-chart--visible .fm-chart-bar-fill {
+        animation: none;
+        transform: scaleY(1);
+        opacity: 1;
+      }
+      .glass-hover:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <template id="phoneTiltTemplate">
+    <div class="phone-aura" id="phoneAura" aria-hidden="true">
+      <div class="phone-aura-ring"></div>
+      <div class="phone-aura-base"></div>
+      <div class="phone-aura-blob phone-aura-blob--violet"></div>
+      <div class="phone-aura-blob phone-aura-blob--indigo"></div>
+      <div class="phone-aura-blob phone-aura-blob--cyan"></div>
+    </div>
+    <span class="chip chip-1">✅ +24% oylik</span>
+    <div class="phone-device">
+      <div class="phone-screen">
+        <div class="dynamic-island" aria-hidden="true"></div>
+        <div class="mock-status">
+          <span>9:41</span>
+          <div class="mock-status-icons" aria-hidden="true">
+            <svg viewBox="0 0 18 12" fill="none"><rect x="0" y="8" width="3" height="4" rx="0.5" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.5" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.5" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.5" fill="#fff"/></svg>
+            <svg viewBox="0 0 16 12" fill="none"><path d="M8 2.5C5.5 2.5 3.2 3.6 1.5 5.5L0 4C2.2 1.8 5 0.5 8 0.5s5.8 1.3 8 3.5l-1.5 1.5C12.8 3.6 10.5 2.5 8 2.5zm0 4c-1.5 0-2.9.6-3.9 1.7L2.5 6.2C3.9 4.8 5.9 4 8 4s4.1.8 5.5 2.2l-1.6 1.5C10.9 7.1 9.5 6.5 8 6.5zm0 3c-.8 0-1.5.3-2.1.9L5 9.4c.9-.9 2.1-1.4 3.4-1.4s2.5.5 3.4 1.4l-.9.9c-.6-.6-1.3-.9-2.1-.9z" fill="#fff"/><circle cx="8" cy="11" r="1.2" fill="#fff"/></svg>
+            <svg viewBox="0 0 26 12" fill="none"><rect x="0.5" y="0.5" width="20" height="11" rx="2.5" stroke="#fff" stroke-opacity="0.35"/><rect x="2" y="2" width="14" height="8" rx="1.5" fill="#fff"/><path d="M22 4v4h3v-4h-3z" fill="#fff" fill-opacity="0.4"/></svg>
+          </div>
+        </div>
+        <header class="app-header">
+          <div class="app-logo">📊</div>
+          <span class="app-title">BiznesHisob</span>
+        </header>
+        <div class="app-body">
+          <div class="profit-card">
+            <div class="mock-label">Sof foyda</div>
+            <div class="profit-amount">2,394,111 so'm</div>
+          </div>
+          <div class="stat-pair">
+            <div class="stat-mini income">
+              <div class="stat-mini-label">DAROMAD</div>
+              <div class="stat-mini-value">8.7 mln</div>
+            </div>
+            <div class="stat-mini expense">
+              <div class="stat-mini-label">XARAJAT</div>
+              <div class="stat-mini-value">6.3 mln</div>
+            </div>
+          </div>
+          <div class="quick-section-label">TEZKOR QO'SHISH</div>
+          <div class="quick-btns">
+            <button type="button" class="quick-btn income">+ Daromad</button>
+            <button type="button" class="quick-btn expense">− Xarajat</button>
+          </div>
+        </div>
+        <nav class="mock-nav" aria-label="Ilova navigatsiyasi">
+          <div class="mock-nav-item active"><span>🏠</span><span>Bosh</span></div>
+          <div class="mock-nav-item"><span>➕</span><span>Qo'shish</span></div>
+          <div class="mock-nav-item"><span>📋</span><span>Ro'yxat</span></div>
+          <div class="mock-nav-item"><span>👤</span><span>Profil</span></div>
+        </nav>
+      </div>
+    </div>
+    <span class="chip chip-2">🔒 Shifrlangan</span>
+  </template>
+
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <div class="logo-mark">📊</div>
+        <span>BiznesHisob</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#compare" data-i18n="nav.compare">Farq</a></li>
+        <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
+        <li><a href="#trust" data-i18n="nav.trust">Xavfsizlik</a></li>
+        <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
+        <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
+      </ul>
+      <div class="header-actions">
+        <div class="lang-switcher" role="group" aria-label="Language">
+          <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+        <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <a href="#compare" data-i18n="nav.compare">Farq</a>
+    <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
+    <a href="#trust" data-i18n="nav.trust">Xavfsizlik</a>
+    <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
+    <a href="#stats" data-i18n="nav.stats">Statistika</a>
+    <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
+    <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    <a href="/app" data-i18n="cta.download">Yuklab olish</a>
+    <a href="#contact" data-i18n="nav.contact">Aloqa</a>
+  </nav>
+
+  <main>
+    <!-- 1. HERO -->
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-text reveal">
+          <div class="hero-eyebrow">
+            <span></span>
+            <span data-i18n="hero.eyebrow">O'zbekiston tadbirkorlari uchun #1 moliya ilovasi</span>
+          </div>
+          <h1><span data-i18n="hero.title1">Biznes moliyasini</span> <span class="gradient-text" data-i18n="hero.title2">bir qo'lda boshqaring</span></h1>
+          <p class="hero-sub" data-i18n="hero.sub">
+            Daromad, xarajat va balans — barchasi bitta joyda. BiznesHisob kichik biznes uchun tez, xavfsiz va zamonaviy moliyaviy yordamchi. Bepul boshlang, istalgan vaqtda Premiumga o'ting.
+          </p>
+          <div class="hero-cta">
+            <button type="button" class="btn btn-primary" id="heroInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+            <a href="#features" class="btn btn-outline" data-i18n="hero.learn">Batafsil</a>
+            <button type="button" class="btn btn-outline hidden" id="heroIosBtn" data-i18n="cta.ios">iPhone uchun</button>
+          </div>
+          <p class="ios-hint hidden" id="heroIosHint" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
+        </div>
+        <div class="hero-visual reveal" id="heroVisual">
+          <div id="heroPhoneMount"></div>
+        </div>
+      </div>
+      <a href="#compare" class="scroll-hint" data-i18n-aria="scroll.hintAria">
+        <span class="scroll-hint-icon"></span>
+        <span data-i18n="scroll.hint">Pastga</span>
+      </a>
+    </section>
+
+    <!-- 2. BEFORE vs AFTER -->
+    <section id="compare">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="compare.tag">Farq</span>
+          <h2 data-i18n-html="compare.title">Murakkablikdan <span class="gradient-text">osonlikka</span></h2>
+          <p data-i18n="compare.sub">BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba</p>
+        </div>
+        <div class="compare-wrap">
+          <article class="compare-card compare-bad glass glass-hover reveal">
+            <div class="compare-tag" data-i18n="compare.bad.tag">BiznesHisobsiz</div>
+            <h3 data-i18n="compare.bad.title">murakkab</h3>
+            <ul class="compare-list">
+              <li><span>❌</span> <span data-i18n="compare.bad.l1">Excel va qog'ozda chalkash hisoblar</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l2">Balansni bilish uchun soatlab vaqt</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l3">Xarajatlar nazoratdan chiqadi</span></li>
+              <li><span>❌</span> <span data-i18n="compare.bad.l4">Hisobotlar yo'q — faqat taxmin</span></li>
+            </ul>
+          </article>
+          <div class="vs-wrap reveal">
+            <div class="vs-badge">VS</div>
+          </div>
+          <article class="compare-card compare-good glass glass-hover reveal">
+            <div class="compare-tag" data-i18n="compare.good.tag">BiznesHisob bilan</div>
+            <h3 data-i18n="compare.good.title">oson</h3>
+            <ul class="compare-list">
+              <li><span>✅</span> <span data-i18n="compare.good.l1">Barcha operatsiyalar bitta ilovada</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l2">Bir bosish — daromad yoki xarajat</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l3">Real vaqtda balans va statistika</span></li>
+              <li><span>✅</span> <span data-i18n="compare.good.l4">Aniq grafiklar va tahlil</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FEATURES alternating -->
+    <section id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="features.tag">Imkoniyatlar</span>
+          <h2 data-i18n-html="features.title">Biznesingiz uchun <span class="gradient-text">barcha vositalar</span></h2>
+          <p data-i18n="features.sub">Har bir funksiya — real vazifalar uchun mo'ljallangan</p>
+        </div>
+
+        <div class="feature-row reveal" data-delay="0">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">💰</span> <span data-i18n="features.f1.title">Daromad va xarajat</span></h3>
+            <p data-i18n="features.f1.desc">Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock">
+            <div class="feature-mock-inner">
+              <div class="mock-label" data-i18n="features.f1.mock.label">Joriy balans</div>
+              <div class="fm-balance">+8 240 000 so'm</div>
+              <div class="mock-row"><span data-i18n="features.f1.mock.income">Bugungi daromad</span><span style="color:#4ade80">+1.2M</span></div>
+              <div class="mock-row"><span data-i18n="features.f1.mock.expense">Bugungi xarajat</span><span style="color:#f87171">-340K</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="80">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">📊</span> <span data-i18n="features.f2.title">Vizual hisobotlar</span></h3>
+            <p data-i18n="features.f2.desc">Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock">
+            <div class="feature-mock-inner">
+              <div class="mock-label" data-i18n="features.f2.mock.label">Oylik statistika</div>
+              <div class="fm-chart">
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:42%"></div><span class="fm-chart-label">Yan</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:61%"></div><span class="fm-chart-label">Feb</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:48%"></div><span class="fm-chart-label">Mar</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:78%"></div><span class="fm-chart-label">Apr</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:55%"></div><span class="fm-chart-label">May</span></div>
+                <div class="fm-chart-bar"><div class="fm-chart-bar-fill" style="height:92%"></div><span class="fm-chart-label">Iyu</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reveal" data-delay="160">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">📱</span> <span data-i18n="features.f3.title">Mobil va PWA</span></h3>
+            <p data-i18n="features.f3.desc">Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock">
+            <div class="fm-offline" data-i18n="features.f3.mock.offline">📶 Oflayn rejim — faol</div>
+            <p style="color:var(--muted);font-size:0.85rem;margin-top:0.75rem" data-i18n="features.f3.mock.sub">PWA — brauzerdan to'liq ilovaga</p>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="240">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">🔒</span> <span data-i18n="features.f4.title">Xavfsizlik</span></h3>
+            <p data-i18n="features.f4.desc">Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock">
+            <div class="fm-shield">🛡️</div>
+            <p style="text-align:center;color:var(--muted);font-size:0.85rem" data-i18n="features.f4.mock.sub">256-bit shifrlash • Xavfsiz serverlar</p>
+          </div>
+        </div>
+
+        <div class="feature-row reveal" data-delay="320">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">⚡</span> <span data-i18n="features.f5.title">Tezkor qo'shish</span></h3>
+            <p data-i18n="features.f5.desc">Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock">
+            <div class="fm-quick">
+              <div class="fm-quick-amount">
+                <div class="fm-quick-sign">+</div>
+                <span class="fm-quick-value">1 500 000 so'm</span>
+              </div>
+              <div class="fm-quick-tags">
+                <span class="fm-qtag qtag-active">💼 Kassa</span>
+                <span class="fm-qtag">👤 Mijoz</span>
+                <span class="fm-qtag">🛒 Sotib olish</span>
+                <span class="fm-qtag">🚗 Transport</span>
+                <span class="fm-qtag">📦 Mahsulot</span>
+              </div>
+              <div class="fm-quick-footer">
+                <span class="fm-quick-note">Kategoriya tanlang, saqlang</span>
+                <button type="button" class="fm-quick-fab" aria-label="Qo'shish">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reverse reveal" data-delay="400">
+          <div class="feature-copy glass glass-hover feature-copy-card">
+            <h3><span class="feat-icon">🌐</span> <span data-i18n="features.f6.title">Ko'p tilli</span></h3>
+            <p data-i18n="features.f6.desc">O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.</p>
+          </div>
+          <div class="feature-visual glass glass-hover feature-card feature-mock" id="langCard">
+            <div class="fm-multilang">
+              <div class="fm-lang-badges">
+                <button type="button" class="fm-lang-badge fm-lang-active" data-lang-switch="uz">UZ</button>
+                <button type="button" class="fm-lang-badge" data-lang-switch="ru">RU</button>
+                <button type="button" class="fm-lang-badge" data-lang-switch="en">EN</button>
+              </div>
+              <div class="fm-lang-preview">
+                <div class="fm-lang-preview-label" id="langPreviewLabel">UI namunasi</div>
+                <div class="fm-lang-preview-text" id="langPreviewText">Sof foyda: 2 394 111 so'm ↑ Daromad va xarajatlarni real vaqtda kuzating.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.5 TRUST / SECURITY -->
+    <section id="trust">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="trust.tag">Xavfsizlik</span>
+          <h2 data-i18n-html="trust.title">Ma'lumotlaringiz <span class="gradient-text">100% himoyalangan</span></h2>
+          <p data-i18n="trust.sub">Moliyaviy ma'lumotlaringizni ishonchli saqlash — bizning birinchi ustuvorligimiz</p>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">🔐</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.enc.title">256-bit shifrlash</h4>
+              <p data-i18n="trust.enc.desc">Barcha ma'lumotlar AES-256 shifrlash bilan himoyalangan — bank darajasidagi xavfsizlik.</p>
+            </div>
+          </div>
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">☁️</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.firebase.title">Google Firebase</h4>
+              <p data-i18n="trust.firebase.desc">Ma'lumotlar Google'ning ishonchli bulut infratuzilmasida saqlanadi va zaxiralangan.</p>
+            </div>
+          </div>
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">🔑</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.auth.title">Xavfsiz autentifikatsiya</h4>
+              <p data-i18n="trust.auth.desc">Email va parol bilan kirish, har bir hisob alohida izolatsiya qilingan.</p>
+            </div>
+          </div>
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">📵</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.pin.title">PIN himoyasi</h4>
+              <p data-i18n="trust.pin.desc">Ilovani PIN-kod bilan qulflang — telefon boshqalar qo'liga tushsa ham ma'lumotlar xavfsiz.</p>
+            </div>
+          </div>
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">🌐</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.https.title">HTTPS / TLS</h4>
+              <p data-i18n="trust.https.desc">Barcha tarmoq aloqalari TLS orqali shifrlangan. Ochiq WiFi'da ham xavfsiz.</p>
+            </div>
+          </div>
+          <div class="trust-card glass glass-hover reveal">
+            <div class="trust-icon">🛡️</div>
+            <div class="trust-body">
+              <h4 data-i18n="trust.privacy.title">Maxfiylik kafolati</h4>
+              <p data-i18n="trust.privacy.desc">Uchinchi tomon reklama tarmoqlari yo'q. Ma'lumotlaringiz hech qachon sotilmaydi.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="trust-badge-strip reveal">
+          <span class="trust-badge-pill"><span>🔒</span> <span data-i18n="trust.badge.ssl">SSL Sertifikati</span></span>
+          <span class="trust-badge-pill"><span>☁️</span> <span data-i18n="trust.badge.cloud">Google Cloud</span></span>
+          <span class="trust-badge-pill"><span>🛡️</span> <span data-i18n="trust.badge.gdpr">GDPR Ready</span></span>
+          <span class="trust-badge-pill"><span>📱</span> <span data-i18n="trust.badge.pwa">PWA Secure</span></span>
+          <span class="trust-badge-pill"><span>⚡</span> <span data-i18n="trust.badge.uptime">99.9% Uptime</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS -->
+    <section id="how">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="how.tag">Jarayon</span>
+          <h2 data-i18n-html="how.title">Qanday <span class="gradient-text">ishlaydi?</span></h2>
+          <p data-i18n="how.sub">Uch oddiy qadam — va moliyangiz to'liq nazorat ostida</p>
+        </div>
+        <div class="steps-track">
+          <div class="steps-line" aria-hidden="true"></div>
+          <div class="step-item glass glass-hover" data-delay="0">
+            <div class="step-num">1</div>
+            <h3 data-i18n="how.step1.title">Ro'yxatdan o'ting</h3>
+            <p data-i18n="how.step1.desc">Email va parol bilan bepul hisob yarating. Bir daqiqadan kam vaqt ketadi.</p>
+          </div>
+          <div class="step-item glass glass-hover" data-delay="120">
+            <div class="step-num">2</div>
+            <h3 data-i18n="how.step2.title">Operatsiya qo'shing</h3>
+            <p data-i18n="how.step2.desc">Daromad va xarajatlarni kategoriyalar bilan belgilang. Tez va tartibli.</p>
+          </div>
+          <div class="step-item glass glass-hover" data-delay="240">
+            <div class="step-num">3</div>
+            <h3 data-i18n="how.step3.title">Tahlil qiling</h3>
+            <p data-i18n="how.step3.desc">Statistika va grafiklarni ko'ring. Biznesingizni ma'lumot asosida rivojlantiring.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. STATISTICS -->
+    <section class="stats-section" id="stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="1000" data-suffix="K+">0</div>
+            <div class="stat-label" data-i18n="stats.users">Faol foydalanuvchilar</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="50000" data-suffix="K+">0</div>
+            <div class="stat-label" data-i18n="stats.ops">Operatsiyalar</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="98" data-suffix="%">0</div>
+            <div class="stat-label" data-i18n="stats.satisfaction">Mamnunlik</div>
+          </div>
+          <div class="stat-box reveal">
+            <div class="stat-value" data-count="24" data-suffix="/7">0</div>
+            <div class="stat-label" data-i18n="stats.support">Qo'llab-quvvatlash</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. TESTIMONIALS -->
+    <section id="reviews">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="reviews.tag">Sharhlar</span>
+          <h2 data-i18n-html="reviews.title">Foydalanuvchilar <span class="gradient-text">nima deydi</span></h2>
+          <p data-i18n="reviews.sub">Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda</p>
+        </div>
+        <div class="testimonials-grid">
+          <article class="testimonial glass glass-hover" data-delay="0">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q data-i18n="reviews.q1">Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!</q>
+            <div class="testimonial-author">
+              <div class="t-avatar t-avatar--violet" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
+              <div class="t-author">
+                <strong data-i18n="reviews.n1">Aziza Karimova</strong>
+                <span data-i18n="reviews.r1">Do'kon egasi, Toshkent</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial glass glass-hover" data-delay="100">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q data-i18n="reviews.q2">Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!</q>
+            <div class="testimonial-author">
+              <div class="t-avatar t-avatar--teal" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
+              <div class="t-author">
+                <strong data-i18n="reviews.n2">Dilshod Rakhimov</strong>
+                <span data-i18n="reviews.r2">IT xizmatlar, Samarqand</span>
+              </div>
+            </div>
+          </article>
+          <article class="testimonial glass glass-hover" data-delay="200">
+            <div class="stars" aria-label="5 yulduz">★★★★★</div>
+            <q data-i18n="reviews.q3">Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.</q>
+            <div class="testimonial-author">
+              <div class="t-avatar t-avatar--amber" aria-hidden="true">
+                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
+                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
+                </svg>
+              </div>
+              <div class="t-author">
+                <strong data-i18n="reviews.n3">Sardor Nazarov</strong>
+                <span data-i18n="reviews.r3">Kafe egasi, Toshkent</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. PRICING -->
+    <section id="pricing">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="pricing.tag">Narxlar</span>
+          <h2 data-i18n-html="pricing.title">Sizga mos <span class="gradient-text">rejani tanlang</span></h2>
+          <p data-i18n="pricing.sub">Bepul boshlang — kerak bo'lsa Premiumga o'ting</p>
+        </div>
+        <div class="pricing-box glass glass-hover reveal">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  <span class="plan-title" data-i18n="pricing.free.title">Bepul</span>
+                  <span class="plan-cost">0 so'm<small data-i18n="pricing.free.period">abadiy</small></span>
+                </th>
+                <th class="col-premium">
+                  <span class="badge-tavsiya" data-i18n="pricing.badge">TAVSIYA</span>
+                  <span class="plan-title" data-i18n="pricing.premium.title">Premium</span>
+                  <span class="plan-cost">29 900 so'm<small data-i18n="pricing.premium.period">oyiga</small></span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td data-i18n="pricing.f1">Daromad / xarajat qo'shish</td><td><span class="yes" aria-label="Mavjud">✓</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f2">Asosiy statistika</td><td><span class="yes" aria-label="Mavjud">✓</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f3">Kengaytirilgan grafiklar</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f4">Cheksiz operatsiyalar</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f5">Export (PDF / Excel)</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+              <tr><td data-i18n="pricing.f7">Reklamasiz</td><td><span class="no" aria-label="Mavjud emas">✕</span></td><td class="col-premium"><span class="yes" aria-label="Mavjud">✓</span></td></tr>
+            </tbody>
+          </table>
+          <div class="pricing-foot">
+            <a href="/app" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="/app" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7.5 FAQ -->
+    <section id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="section-tag" data-i18n="faq.tag">Savollar</span>
+          <h2 data-i18n-html="faq.title">Ko'p <span class="gradient-text">so'raladigan savollar</span></h2>
+          <p data-i18n="faq.sub">Javob topa olmadingizmi? Telegram orqali yozing — tez javob beramiz</p>
+        </div>
+
+        <div class="faq-list reveal">
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq1">
+            <label class="faq-label" for="faq1">
+              <span class="faq-question" data-i18n="faq.q1">BiznesHisob to'liq bepulmi?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a1">Ha, asosiy funksiyalar abadiy bepul. Daromad va xarajat qo'shish, asosiy statistika va 50 tagacha operatsiya — barchasi bepul. Premium rejada esa cheksiz operatsiyalar, kengaytirilgan grafiklar va eksport mavjud.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq2">
+            <label class="faq-label" for="faq2">
+              <span class="faq-question" data-i18n="faq.q2">Mening moliyaviy ma'lumotlarim xavfsizmi?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a2">Albatta. Ma'lumotlar Google Firebase infratuzilmasida 256-bit AES shifrlash bilan saqlanadi. Barcha ulanishlar TLS orqali himoyalangan. Ma'lumotlaringiz hech qachon uchinchi tomonlarga sotilmaydi.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq3">
+            <label class="faq-label" for="faq3">
+              <span class="faq-question" data-i18n="faq.q3">Internet bo'lmasa ham ishlaydimi?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a3">Ha! BiznesHisob PWA texnologiyasida qurilgan — telefonga o'rnatgach oflayn rejimda ham ishlaydi. Internet qaytganda ma'lumotlar avtomatik sinxronlashadi.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq4">
+            <label class="faq-label" for="faq4">
+              <span class="faq-question" data-i18n="faq.q4">Premiumga qanday o'tish mumkin?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a4">Ilovani ochib, Profil → Premium bo'limiga o'ting. To'lov Payme orqali amalga oshiriladi. Aktivatsiya bir zumda ishlaydi — hech qanday kutish yo'q.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq5">
+            <label class="faq-label" for="faq5">
+              <span class="faq-question" data-i18n="faq.q5">Nechta qurilmada bir vaqtda ishlatsa bo'ladi?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a5">Bir hisob bilan istalgan qurilmada (telefon, planshet, kompyuter) kirish mumkin. Ma'lumotlar real vaqtda barcha qurilmalar o'rtasida sinxronlanadi.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <input type="checkbox" class="faq-toggle" id="faq6">
+            <label class="faq-label" for="faq6">
+              <span class="faq-question" data-i18n="faq.q6">Premium obunani bekor qilsam ma'lumotlarim yo'qoladimi?</span>
+              <span class="faq-chevron" aria-hidden="true">▼</span>
+            </label>
+            <div class="faq-body">
+              <div class="faq-body-inner">
+                <div class="faq-answer" data-i18n="faq.a6">Yo'q, hech qachon. Barcha kiritilgan ma'lumotlar saqlanib qoladi. Faqat yangi operatsiya qo'shish cheklanadi (50 ta limiti). Oldingi ma'lumotlarni ko'rish va eksport — har doim mavjud.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. CTA BANNER -->
+    <section class="cta-banner" id="cta-banner">
+      <div class="cta-banner-inner reveal">
+        <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
+        <p data-i18n="cta.sub">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
+        <div class="cta-banner-actions">
+          <button type="button" class="btn btn-white" id="ctaInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+          <button type="button" class="btn btn-outline hidden" id="ctaIosBtn" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.ios">iPhone uchun</button>
+        </div>
+        <p class="ios-hint hidden" id="ctaIosHint" style="margin-top:1rem;color:rgba(255,255,255,0.8)" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
+      </div>
+    </section>
+
+    <!-- 9. CONTACT -->
+    <section id="contact">
+      <div class="container">
+        <div class="contact-card glass glass-hover reveal">
+          <span class="section-tag" data-i18n="contact.tag">Aloqa</span>
+          <h3 data-i18n="contact.title">Savollaringiz bormi?</h3>
+          <p data-i18n="contact.sub">Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.</p>
+          <div class="contact-btns">
+            <a href="https://t.me/+998940262101" class="btn btn-telegram" target="_blank" rel="noopener" data-i18n="contact.telegram">✈ Telegram orqali yozish</a>
+            <a href="tel:+998940262101" class="phone-ph" aria-label="+998 94 026 21 01">📞 +998 94 026 21 01</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 10. FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <div class="logo-mark">📊</div>
+            <span>BiznesHisob</span>
+          </a>
+          <p data-i18n="footer.desc">Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova. O'zbekiston tadbirkorlari uchun yaratilgan.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.col1">Mahsulot</h4>
+          <ul>
+            <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
+            <li><a href="#how" data-i18n="nav.how">Qanday ishlaydi</a></li>
+            <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
+            <li><a href="/app" data-i18n="cta.download">Yuklab olish</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.col2">Kompaniya</h4>
+          <ul>
+            <li><a href="#compare" data-i18n="footer.about">Biz haqimizda</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
+            <li><a href="#trust" data-i18n="footer.privacy">Maxfiylik</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.col3">Yordam</h4>
+          <ul>
+            <li><a href="#reviews" data-i18n="nav.reviews">Sharhlar</a></li>
+            <li><a href="mailto:support@bizneshisob.uz">support@bizneshisob.uz</a></li>
+            <li><a href="/" id="footerSiteLink">bizneshisob.uz</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom" data-i18n="footer.rights">
+        © 2026 BiznesHisob. Barcha huquqlar himoyalangan.
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script>
+    const APP_URL = window.location.protocol === "file:"
+      ? new URL("index.html", window.location.href).href
+      : new URL("/app", window.location.origin).href;
+    let deferredInstallPrompt = null;
+    let currentLang = localStorage.getItem("bh-lang") || "uz";
+
+    const i18n = {
+      uz: {
+        "meta.title": "BiznesHisob — Biznes moliyasini boshqaring",
+        "scroll.hint": "Pastga", "scroll.hintAria": "Pastga aylantiring",
+        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar",
+        "compare.tag": "Farq",
+        "compare.title": "Murakkablikdan <span class=\"gradient-text\">osonlikka</span>",
+        "compare.sub": "BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba",
+        "compare.bad.tag": "BiznesHisobsiz", "compare.bad.title": "murakkab",
+        "compare.bad.l1": "Excel va qog'ozda chalkash hisoblar", "compare.bad.l2": "Balansni bilish uchun soatlab vaqt",
+        "compare.bad.l3": "Xarajatlar nazoratdan chiqadi", "compare.bad.l4": "Hisobotlar yo'q — faqat taxmin",
+        "compare.good.tag": "BiznesHisob bilan", "compare.good.title": "oson",
+        "compare.good.l1": "Barcha operatsiyalar bitta ilovada", "compare.good.l2": "Bir bosish — daromad yoki xarajat",
+        "compare.good.l3": "Real vaqtda balans va statistika", "compare.good.l4": "Aniq grafiklar va tahlil",
+        "features.tag": "Imkoniyatlar",
+        "features.title": "Biznesingiz uchun <span class=\"gradient-text\">barcha vositalar</span>",
+        "features.sub": "Har bir funksiya — real vazifalar uchun mo'ljallangan",
+        "features.f1.title": "Daromad va xarajat", "features.f1.desc": "Har bir operatsiyani soniyalar ichida qo'shing. Balans va kategoriyalar real vaqtda yangilanadi — hech qachon ortda qolmaysiz.",
+        "features.f1.mock.label": "Joriy balans", "features.f1.mock.income": "Bugungi daromad", "features.f1.mock.expense": "Bugungi xarajat",
+        "features.f2.title": "Vizual hisobotlar", "features.f2.desc": "Daromad va xarajatlar bo'yicha aniq grafiklar, oylik taqqoslash va trend tahlili — qarorlarni ma'lumot bilan qabul qiling.",
+        "features.f2.mock.label": "Oylik statistika",
+        "features.f3.title": "Mobil va PWA", "features.f3.desc": "Telefonga o'rnating — haqiqiy ilova kabi ishlaydi. Internet bo'lmasa ham oflayn rejimda davom eting.",
+        "features.f3.mock.offline": "📶 Oflayn rejim — faol", "features.f3.mock.sub": "PWA — brauzerdan to'liq ilovaga",
+        "features.f4.title": "Xavfsizlik", "features.f4.desc": "Ma'lumotlaringiz shifrlangan va faqat sizning hisobingizda saqlanadi. Maxfiylik — bizning ustuvorligimiz.",
+        "features.f4.mock.sub": "256-bit shifrlash • Xavfsiz serverlar",
+        "features.f5.title": "Tezkor qo'shish", "features.f5.desc": "Bir bosish bilan daromad yoki xarajat qo'shing. Kundalik operatsiyalar uchun ideal — vaqtingizni tejang.",
+        "features.f6.title": "Ko'p tilli", "features.f6.desc": "O'zbek, rus va ingliz tillarida qulay interfeys — jamoangiz va mijozlaringiz uchun mos.",
+        "trust.tag": "Xavfsizlik", "trust.title": "Ma'lumotlaringiz <span class=\"gradient-text\">100% himoyalangan</span>", "trust.sub": "Moliyaviy ma'lumotlaringizni ishonchli saqlash — bizning birinchi ustuvorligimiz",
+        "trust.badge.ssl": "SSL Sertifikati", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
+        "trust.enc.title": "256-bit shifrlash", "trust.enc.desc": "Barcha ma'lumotlar AES-256 shifrlash bilan himoyalangan — bank darajasidagi xavfsizlik.",
+        "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Ma'lumotlar Google'ning ishonchli bulut infratuzilmasida saqlanadi va zaxiralangan.",
+        "trust.auth.title": "Xavfsiz autentifikatsiya", "trust.auth.desc": "Email va parol bilan kirish, har bir hisob alohida izolatsiya qilingan.",
+        "trust.pin.title": "PIN himoyasi", "trust.pin.desc": "Ilovani PIN-kod bilan qulflang — telefon boshqalar qo'liga tushsa ham ma'lumotlar xavfsiz.",
+        "trust.https.title": "HTTPS / TLS", "trust.https.desc": "Barcha tarmoq aloqalari TLS orqali shifrlangan. Ochiq WiFi'da ham xavfsiz.",
+        "trust.privacy.title": "Maxfiylik kafolati", "trust.privacy.desc": "Uchinchi tomon reklama tarmoqlari yo'q. Ma'lumotlaringiz hech qachon sotilmaydi.",
+        "faq.tag": "Savollar", "faq.title": "Ko'p <span class=\"gradient-text\">so'raladigan savollar</span>", "faq.sub": "Javob topa olmadingizmi? Telegram orqali yozing — tez javob beramiz",
+        "faq.q1": "BiznesHisob to'liq bepulmi?", "faq.a1": "Ha, asosiy funksiyalar abadiy bepul. Daromad va xarajat qo'shish, asosiy statistika va 50 tagacha operatsiya — barchasi bepul. Premium rejada esa cheksiz operatsiyalar, kengaytirilgan grafiklar va eksport mavjud.",
+        "faq.q2": "Mening moliyaviy ma'lumotlarim xavfsizmi?", "faq.a2": "Albatta. Ma'lumotlar Google Firebase infratuzilmasida 256-bit AES shifrlash bilan saqlanadi. Barcha ulanishlar TLS orqali himoyalangan. Ma'lumotlaringiz hech qachon uchinchi tomonlarga sotilmaydi.",
+        "faq.q3": "Internet bo'lmasa ham ishlaydimi?", "faq.a3": "Ha! BiznesHisob PWA texnologiyasida qurilgan — telefonga o'rnatgach oflayn rejimda ham ishlaydi. Internet qaytganda ma'lumotlar avtomatik sinxronlashadi.",
+        "faq.q4": "Premiumga qanday o'tish mumkin?", "faq.a4": "Ilovani ochib, Profil → Premium bo'limiga o'ting. To'lov Payme orqali amalga oshiriladi. Aktivatsiya bir zumda ishlaydi.",
+        "faq.q5": "Nechta qurilmada bir vaqtda ishlatsa bo'ladi?", "faq.a5": "Bir hisob bilan istalgan qurilmada (telefon, planshet, kompyuter) kirish mumkin. Ma'lumotlar real vaqtda barcha qurilmalar o'rtasida sinxronlanadi.",
+        "faq.q6": "Premium obunani bekor qilsam ma'lumotlarim yo'qoladimi?", "faq.a6": "Yo'q, hech qachon. Barcha kiritilgan ma'lumotlar saqlanib qoladi. Faqat yangi operatsiya qo'shish cheklanadi. Oldingi ma'lumotlarni ko'rish va eksport — har doim mavjud.",
+        "hero.eyebrow": "O'zbekiston tadbirkorlari uchun #1 moliya ilovasi",
+        "hero.title1": "Biznes moliyasini", "hero.title2": "bir qo'lda boshqaring",
+        "hero.sub": "Daromad, xarajat va balans — barchasi bitta joyda. BiznesHisob kichik biznes uchun tez, xavfsiz va zamonaviy moliyaviy yordamchi. Bepul boshlang, istalgan vaqtda Premiumga o'ting.",
+        "hero.learn": "Batafsil",
+        "cta.download": "Yuklab olish", "cta.ios": "iPhone uchun", "cta.open": "Ilovani ochish",
+        "cta.iosHint": "Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.",
+        "cta.title": "Bugun boshlang — bepul!",
+        "cta.sub": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
+        "contact.tag": "Aloqa", "contact.title": "Savollaringiz bormi?",
+        "contact.sub": "Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.",
+        "contact.telegram": "✈ Telegram orqali yozish",
+        "footer.desc": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova. O'zbekiston tadbirkorlari uchun yaratilgan.",
+        "footer.col1": "Mahsulot", "footer.col2": "Kompaniya", "footer.col3": "Yordam",
+        "footer.about": "Biz haqimizda", "footer.privacy": "Maxfiylik",
+        "footer.rights": "© 2026 BiznesHisob. Barcha huquqlar himoyalangan.",
+        "how.tag": "Jarayon",
+        "how.title": "Qanday <span class=\"gradient-text\">ishlaydi?</span>",
+        "how.sub": "Uch oddiy qadam — va moliyangiz to'liq nazorat ostida",
+        "how.step1.title": "Ro'yxatdan o'ting", "how.step1.desc": "Email va parol bilan bepul hisob yarating. Bir daqiqadan kam vaqt ketadi.",
+        "how.step2.title": "Operatsiya qo'shing", "how.step2.desc": "Daromad va xarajatlarni kategoriyalar bilan belgilang. Tez va tartibli.",
+        "how.step3.title": "Tahlil qiling", "how.step3.desc": "Statistika va grafiklarni ko'ring. Biznesingizni ma'lumot asosida rivojlantiring.",
+        "stats.users": "Faol foydalanuvchilar", "stats.ops": "Operatsiyalar",
+        "stats.satisfaction": "Mamnunlik", "stats.support": "Qo'llab-quvvatlash",
+        "reviews.tag": "Sharhlar",
+        "reviews.title": "Foydalanuvchilar <span class=\"gradient-text\">nima deydi</span>",
+        "reviews.sub": "Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda",
+        "reviews.q1": "Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!",
+        "reviews.n1": "Aziza Karimova", "reviews.r1": "Do'kon egasi, Toshkent",
+        "reviews.q2": "Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!",
+        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT xizmatlar, Samarqand",
+        "reviews.q3": "Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.",
+        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Kafe egasi, Toshkent",
+        "pricing.tag": "Narxlar",
+        "pricing.title": "Sizga mos <span class=\"gradient-text\">rejani tanlang</span>",
+        "pricing.sub": "Bepul boshlang — kerak bo'lsa Premiumga o'ting",
+        "pricing.free.title": "Bepul", "pricing.free.period": "abadiy",
+        "pricing.badge": "TAVSIYA",
+        "pricing.premium.title": "Premium", "pricing.premium.period": "oyiga",
+        "pricing.f1": "Daromad / xarajat qo'shish", "pricing.f2": "Asosiy statistika",
+        "pricing.f3": "Kengaytirilgan grafiklar", "pricing.f4": "Cheksiz operatsiyalar",
+        "pricing.f5": "Export (PDF / Excel)", "pricing.f6": "Ustuvor qo'llab-quvvatlash",
+        "pricing.f7": "Reklamasiz",
+        "pricing.cta.free": "Bepul boshlash", "pricing.cta.premium": "✦ Premiumga o'tish"
+      },
+      ru: {
+        "meta.title": "BiznesHisob — Управляйте финансами бизнеса",
+        "scroll.hint": "Вниз", "scroll.hintAria": "Прокрутить вниз",
+        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы",
+        "compare.tag": "Сравнение",
+        "compare.title": "От сложности <span class=\"gradient-text\">к простоте</span>",
+        "compare.sub": "С BiznesHisob управление финансами — совершенно другой опыт",
+        "compare.bad.tag": "Без BiznesHisob", "compare.bad.title": "сложно",
+        "compare.bad.l1": "Путаница в Excel и на бумаге", "compare.bad.l2": "Часы на подсчёт баланса",
+        "compare.bad.l3": "Расходы выходят из-под контроля", "compare.bad.l4": "Нет отчётов — только догадки",
+        "compare.good.tag": "С BiznesHisob", "compare.good.title": "легко",
+        "compare.good.l1": "Все операции в одном приложении", "compare.good.l2": "Один клик — доход или расход",
+        "compare.good.l3": "Баланс и статистика в реальном времени", "compare.good.l4": "Точные графики и анализ",
+        "features.tag": "Возможности",
+        "features.title": "Все инструменты <span class=\"gradient-text\">для вашего бизнеса</span>",
+        "features.sub": "Каждая функция создана для реальных задач",
+        "features.f1.title": "Доход и расход", "features.f1.desc": "Добавляйте операции за секунды. Баланс и категории обновляются в реальном времени.",
+        "features.f1.mock.label": "Текущий баланс", "features.f1.mock.income": "Доход сегодня", "features.f1.mock.expense": "Расход сегодня",
+        "features.f2.title": "Визуальные отчёты", "features.f2.desc": "Точные графики доходов и расходов, месячное сравнение и анализ трендов.",
+        "features.f2.mock.label": "Месячная статистика",
+        "features.f3.title": "Мобильное и PWA", "features.f3.desc": "Установите на телефон — работает как настоящее приложение. Офлайн-режим доступен.",
+        "features.f3.mock.offline": "📶 Офлайн-режим — активен", "features.f3.mock.sub": "PWA — от браузера до полного приложения",
+        "features.f4.title": "Безопасность", "features.f4.desc": "Данные зашифрованы и хранятся только в вашем аккаунте. Конфиденциальность — наш приоритет.",
+        "features.f4.mock.sub": "256-битное шифрование • Безопасные серверы",
+        "features.f5.title": "Быстрое добавление", "features.f5.desc": "Добавляйте доход или расход одним нажатием. Идеально для ежедневных операций.",
+        "features.f6.title": "Мультиязычность", "features.f6.desc": "Удобный интерфейс на узбекском, русском и английском — для команды и клиентов.",
+        "trust.tag": "Безопасность", "trust.title": "Ваши данные <span class=\"gradient-text\">100% защищены</span>", "trust.sub": "Надёжное хранение финансовых данных — наш главный приоритет",
+        "trust.badge.ssl": "SSL Сертификат", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
+        "trust.enc.title": "256-битное шифрование", "trust.enc.desc": "Все данные защищены шифрованием AES-256 — уровень безопасности банков.",
+        "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Данные хранятся в надёжной облачной инфраструктуре Google с резервным копированием.",
+        "trust.auth.title": "Безопасная аутентификация", "trust.auth.desc": "Вход по email и паролю, каждый аккаунт изолирован.",
+        "trust.pin.title": "PIN-защита", "trust.pin.desc": "Заблокируйте приложение PIN-кодом — данные в безопасности даже если телефон в чужих руках.",
+        "trust.https.title": "HTTPS / TLS", "trust.https.desc": "Все сетевые соединения зашифрованы через TLS. Безопасно даже в открытом Wi-Fi.",
+        "trust.privacy.title": "Гарантия конфиденциальности", "trust.privacy.desc": "Нет рекламных сетей третьих сторон. Ваши данные никогда не продаются.",
+        "faq.tag": "Вопросы", "faq.title": "Часто <span class=\"gradient-text\">задаваемые вопросы</span>", "faq.sub": "Не нашли ответ? Напишите в Telegram — ответим быстро",
+        "faq.q1": "BiznesHisob полностью бесплатный?", "faq.a1": "Да, основные функции навсегда бесплатны. Добавление доходов и расходов, базовая статистика и до 50 операций — всё бесплатно. В Premium — безлимитные операции, расширенные графики и экспорт.",
+        "faq.q2": "Мои финансовые данные в безопасности?", "faq.a2": "Абсолютно. Данные хранятся в инфраструктуре Google Firebase с 256-битным шифрованием AES. Все соединения защищены TLS. Данные никогда не продаются третьим лицам.",
+        "faq.q3": "Работает ли без интернета?", "faq.a3": "Да! BiznesHisob создан на технологии PWA — после установки на телефон работает в офлайн-режиме. При восстановлении интернета данные автоматически синхронизируются.",
+        "faq.q4": "Как перейти на Premium?", "faq.a4": "Откройте приложение, перейдите в Профиль → Premium. Оплата через Payme. Активация мгновенная.",
+        "faq.q5": "На скольких устройствах можно использовать?", "faq.a5": "С одним аккаунтом можно входить с любого устройства (телефон, планшет, компьютер). Данные синхронизируются в реальном времени.",
+        "faq.q6": "Если отменить Premium, данные пропадут?", "faq.a6": "Нет, никогда. Все введённые данные сохраняются. Ограничивается только добавление новых операций (лимит 50). Просмотр и экспорт прошлых данных — всегда доступны.",
+        "hero.eyebrow": "#1 финансовое приложение для предпринимателей Узбекистана",
+        "hero.title1": "Управляйте финансами", "hero.title2": "бизнеса в одной руке",
+        "hero.sub": "Доход, расход и баланс — всё в одном месте. BiznesHisob — быстрый, безопасный и современный помощник для малого бизнеса. Начните бесплатно, переходите на Premium когда нужно.",
+        "hero.learn": "Подробнее",
+        "cta.download": "Скачать", "cta.ios": "Для iPhone", "cta.open": "Открыть приложение",
+        "cta.iosHint": "В Safari нажмите «Поделиться» → «На экран Домой».",
+        "cta.title": "Начните сегодня — бесплатно!",
+        "cta.sub": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
+        "contact.tag": "Контакты", "contact.title": "Есть вопросы?",
+        "contact.sub": "Наша команда готова помочь. Напишите в Telegram или позвоните.",
+        "contact.telegram": "✈ Написать в Telegram",
+        "footer.desc": "Современное мобильное приложение для учёта доходов и расходов бизнеса. Создано для предпринимателей Узбекистана.",
+        "footer.col1": "Продукт", "footer.col2": "Компания", "footer.col3": "Помощь",
+        "footer.about": "О нас", "footer.privacy": "Конфиденциальность",
+        "footer.rights": "© 2026 BiznesHisob. Все права защищены.",
+        "how.tag": "Процесс",
+        "how.title": "Как это <span class=\"gradient-text\">работает?</span>",
+        "how.sub": "Три простых шага — и ваши финансы под полным контролем",
+        "how.step1.title": "Зарегистрируйтесь", "how.step1.desc": "Создайте бесплатный аккаунт по email и паролю. Займёт меньше минуты.",
+        "how.step2.title": "Добавьте операцию", "how.step2.desc": "Отмечайте доходы и расходы по категориям. Быстро и аккуратно.",
+        "how.step3.title": "Анализируйте", "how.step3.desc": "Просматривайте статистику и графики. Развивайте бизнес на основе данных.",
+        "stats.users": "Активных пользователей", "stats.ops": "Операций",
+        "stats.satisfaction": "Удовлетворённость", "stats.support": "Поддержка",
+        "reviews.tag": "Отзывы",
+        "reviews.title": "Что говорят <span class=\"gradient-text\">пользователи</span>",
+        "reviews.sub": "Тысячи предпринимателей уже используют BiznesHisob",
+        "reviews.q1": "Отличное приложение для моего небольшого магазина. Каждый день отслеживаю доходы и расходы с телефона. Очень легко и быстро!",
+        "reviews.n1": "Aziza Karimova", "reviews.r1": "Владелец магазина, Ташкент",
+        "reviews.q2": "Раньше вёл учёт в Excel. Теперь всё в одном месте — быстрее и удобнее. Рекомендую друзьям!",
+        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT-услуги, Самарканд",
+        "reviews.q3": "Отлично для кафе. Офлайн-режим очень удобен. Красивый и простой интерфейс — сотрудники быстро освоились.",
+        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Владелец кафе, Ташкент",
+        "pricing.tag": "Цены",
+        "pricing.title": "Выберите <span class=\"gradient-text\">подходящий план</span>",
+        "pricing.sub": "Начните бесплатно — переходите на Premium когда нужно",
+        "pricing.free.title": "Бесплатно", "pricing.free.period": "навсегда",
+        "pricing.badge": "РЕКОМЕНДУЕМ",
+        "pricing.premium.title": "Premium", "pricing.premium.period": "в месяц",
+        "pricing.f1": "Добавление доходов / расходов", "pricing.f2": "Базовая статистика",
+        "pricing.f3": "Расширенные графики", "pricing.f4": "Безлимитные операции",
+        "pricing.f5": "Экспорт (PDF / Excel)", "pricing.f6": "Приоритетная поддержка",
+        "pricing.f7": "Без рекламы",
+        "pricing.cta.free": "Начать бесплатно", "pricing.cta.premium": "✦ Перейти на Premium"
+      },
+      en: {
+        "meta.title": "BiznesHisob — Manage your business finances",
+        "scroll.hint": "Scroll", "scroll.hintAria": "Scroll down",
+        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews",
+        "compare.tag": "Compare",
+        "compare.title": "From complexity <span class=\"gradient-text\">to simplicity</span>",
+        "compare.sub": "With BiznesHisob, financial management is a completely different experience",
+        "compare.bad.tag": "Without BiznesHisob", "compare.bad.title": "complex",
+        "compare.bad.l1": "Messy records in Excel and on paper", "compare.bad.l2": "Hours spent calculating balance",
+        "compare.bad.l3": "Expenses spiral out of control", "compare.bad.l4": "No reports — only guesswork",
+        "compare.good.tag": "With BiznesHisob", "compare.good.title": "easy",
+        "compare.good.l1": "All transactions in one app", "compare.good.l2": "One tap — income or expense",
+        "compare.good.l3": "Real-time balance and statistics", "compare.good.l4": "Clear charts and analysis",
+        "features.tag": "Features",
+        "features.title": "All the tools <span class=\"gradient-text\">your business needs</span>",
+        "features.sub": "Every feature is built for real-world tasks",
+        "features.f1.title": "Income & expenses", "features.f1.desc": "Add transactions in seconds. Balance and categories update in real time — never fall behind.",
+        "features.f1.mock.label": "Current balance", "features.f1.mock.income": "Today's income", "features.f1.mock.expense": "Today's expense",
+        "features.f2.title": "Visual reports", "features.f2.desc": "Clear income/expense charts, monthly comparisons and trend analysis — make data-driven decisions.",
+        "features.f2.mock.label": "Monthly statistics",
+        "features.f3.title": "Mobile & PWA", "features.f3.desc": "Install on your phone — works like a native app. Keep going offline when there's no internet.",
+        "features.f3.mock.offline": "📶 Offline mode — active", "features.f3.mock.sub": "PWA — from browser to full app",
+        "features.f4.title": "Security", "features.f4.desc": "Your data is encrypted and stored only in your account. Privacy is our top priority.",
+        "features.f4.mock.sub": "256-bit encryption • Secure servers",
+        "features.f5.title": "Quick add", "features.f5.desc": "Add income or expense with one tap. Perfect for daily operations — save your time.",
+        "features.f6.title": "Multilingual", "features.f6.desc": "Comfortable interface in Uzbek, Russian and English — for your team and clients.",
+        "trust.tag": "Security", "trust.title": "Your data is <span class=\"gradient-text\">100% protected</span>", "trust.sub": "Keeping your financial data safe is our first priority",
+        "trust.badge.ssl": "SSL Certificate", "trust.badge.cloud": "Google Cloud", "trust.badge.gdpr": "GDPR Ready",
+        "trust.badge.pwa": "PWA Secure", "trust.badge.uptime": "99.9% Uptime",
+        "trust.enc.title": "256-bit Encryption", "trust.enc.desc": "All data protected with AES-256 encryption — bank-level security standard.",
+        "trust.firebase.title": "Google Firebase", "trust.firebase.desc": "Data stored on Google's reliable cloud infrastructure with automatic backups.",
+        "trust.auth.title": "Secure Authentication", "trust.auth.desc": "Email and password login, each account fully isolated from others.",
+        "trust.pin.title": "PIN Lock", "trust.pin.desc": "Lock the app with a PIN — your data stays safe even if your phone is lost.",
+        "trust.https.title": "HTTPS / TLS", "trust.https.desc": "All network connections encrypted via TLS. Safe even on public Wi-Fi.",
+        "trust.privacy.title": "Privacy Guarantee", "trust.privacy.desc": "No third-party ad networks. Your data is never sold or shared.",
+        "faq.tag": "FAQ", "faq.title": "Frequently <span class=\"gradient-text\">asked questions</span>", "faq.sub": "Didn't find an answer? Message us on Telegram — we reply fast",
+        "faq.q1": "Is BiznesHisob completely free?", "faq.a1": "Yes, core features are free forever. Adding income/expenses, basic statistics and up to 50 transactions — all free. Premium adds unlimited transactions, advanced charts and export.",
+        "faq.q2": "Is my financial data secure?", "faq.a2": "Absolutely. Data is stored on Google Firebase with 256-bit AES encryption. All connections are TLS-protected. Your data is never sold to third parties.",
+        "faq.q3": "Does it work without internet?", "faq.a3": "Yes! BiznesHisob is built on PWA technology — after installing on your phone it works offline. Data auto-syncs when internet returns.",
+        "faq.q4": "How do I upgrade to Premium?", "faq.a4": "Open the app, go to Profile → Premium. Payment via Payme. Activation is instant.",
+        "faq.q5": "How many devices can I use?", "faq.a5": "One account works on any device (phone, tablet, computer). Data syncs in real time across all devices.",
+        "faq.q6": "Will I lose data if I cancel Premium?", "faq.a6": "Never. All your data stays intact. Only adding new transactions is limited (50 cap). Viewing and exporting past data is always available.",
+        "hero.eyebrow": "#1 finance app for entrepreneurs in Uzbekistan",
+        "hero.title1": "Manage your business", "hero.title2": "finances in one hand",
+        "hero.sub": "Income, expenses, and balance — all in one place. BiznesHisob is a fast, secure, modern finance assistant for small business. Start free, upgrade to Premium anytime.",
+        "hero.learn": "Learn more",
+        "cta.download": "Download", "cta.ios": "For iPhone", "cta.open": "Open app",
+        "cta.iosHint": "In Safari, tap Share → Add to Home Screen.",
+        "cta.title": "Start today — it's free!",
+        "cta.sub": "Open BiznesHisob now or install on your phone. Sign up takes one minute.",
+        "contact.tag": "Contact", "contact.title": "Have questions?",
+        "contact.sub": "Our team is ready to help. Message us on Telegram or call.",
+        "contact.telegram": "✈ Message on Telegram",
+        "footer.desc": "A modern mobile app for managing business income and expenses. Built for entrepreneurs in Uzbekistan.",
+        "footer.col1": "Product", "footer.col2": "Company", "footer.col3": "Help",
+        "footer.about": "About us", "footer.privacy": "Privacy",
+        "footer.rights": "© 2026 BiznesHisob. All rights reserved.",
+        "how.tag": "Process",
+        "how.title": "How does it <span class=\"gradient-text\">work?</span>",
+        "how.sub": "Three simple steps — and your finances are fully under control",
+        "how.step1.title": "Sign up", "how.step1.desc": "Create a free account with email and password. Takes less than a minute.",
+        "how.step2.title": "Add a transaction", "how.step2.desc": "Record income and expenses by category. Fast and organised.",
+        "how.step3.title": "Analyse", "how.step3.desc": "View statistics and charts. Grow your business based on real data.",
+        "stats.users": "Active users", "stats.ops": "Transactions",
+        "stats.satisfaction": "Satisfaction", "stats.support": "Support",
+        "reviews.tag": "Reviews",
+        "reviews.title": "What <span class=\"gradient-text\">users say</span>",
+        "reviews.sub": "Thousands of entrepreneurs already use BiznesHisob",
+        "reviews.q1": "Amazing app for my small shop. I track income and expenses from my phone every day. Very easy and fast!",
+        "reviews.n1": "Aziza Karimova", "reviews.r1": "Shop owner, Tashkent",
+        "reviews.q2": "Used to track in Excel. Now everything is in one place — faster and more convenient. Recommending to friends!",
+        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT services, Samarkand",
+        "reviews.q3": "Great for my café. Offline mode is very handy. Beautiful and simple interface — staff learnt it quickly.",
+        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Café owner, Tashkent",
+        "pricing.tag": "Pricing",
+        "pricing.title": "Choose the plan <span class=\"gradient-text\">that fits you</span>",
+        "pricing.sub": "Start free — upgrade to Premium when you need it",
+        "pricing.free.title": "Free", "pricing.free.period": "forever",
+        "pricing.badge": "RECOMMENDED",
+        "pricing.premium.title": "Premium", "pricing.premium.period": "per month",
+        "pricing.f1": "Add income / expenses", "pricing.f2": "Basic statistics",
+        "pricing.f3": "Advanced charts", "pricing.f4": "Unlimited transactions",
+        "pricing.f5": "Export (PDF / Excel)", "pricing.f6": "Priority support",
+        "pricing.f7": "Ad-free",
+        "pricing.cta.free": "Start free", "pricing.cta.premium": "✦ Go Premium"
+      }
+    };
+
+    function t(key) {
+      return i18n[currentLang]?.[key] ?? i18n.uz[key] ?? key;
+    }
+
+    function applyI18n() {
+      document.documentElement.lang = currentLang;
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.lang === currentLang);
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach(el => {
+        const val = t(el.dataset.i18nHtml);
+        if (val) el.innerHTML = val;
+      });
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const val = t(el.dataset.i18n);
+        if (val) el.textContent = val;
+      });
+      document.querySelectorAll("[data-i18n-aria]").forEach(el => {
+        const val = t(el.dataset.i18nAria);
+        if (val) el.setAttribute("aria-label", val);
+      });
+      document.title = t("meta.title");
+      setupInstallUI();
+    }
+
+    function setLang(lang) {
+      if (!i18n[lang]) return;
+      currentLang = lang;
+      localStorage.setItem("bh-lang", lang);
+      applyI18n();
+    }
+
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+
+    applyI18n();
+
+    const footerSiteLink = document.getElementById("footerSiteLink");
+    if (footerSiteLink) {
+      footerSiteLink.textContent = window.location.hostname || "bizneshisob.uz";
+      footerSiteLink.href = window.location.origin + "/";
+    }
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) canonicalLink.href = window.location.origin + "/";
+
+    document.getElementById("menuBtn").addEventListener("click", () => {
+      const nav = document.getElementById("mobileNav");
+      const open = nav.classList.toggle("open");
+      nav.setAttribute("aria-hidden", !open);
+    });
+    document.querySelectorAll("#mobileNav a").forEach((a) => {
+      a.addEventListener("click", () => {
+        document.getElementById("mobileNav").classList.remove("open");
+      });
+    });
+
+    function formatCount(n, suffix, final) {
+      if (suffix === "K+") {
+        if (final || n >= 1000) {
+          const k = n / 1000;
+          const label = (k % 1 === 0 ? k : k.toFixed(1).replace(/\.0$/, "")) + "K+";
+          return final ? label : (n >= 1000 ? label : String(Math.floor(n)));
+        }
+        return String(Math.floor(n));
+      }
+      return String(Math.floor(n)) + suffix;
+    }
+
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || "";
+      const duration = 2200;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 4);
+        const val = Math.floor(target * eased);
+        el.textContent = formatCount(val, suffix, t >= 1);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function showScrollTargetsFallback() {
+      document.querySelectorAll(".reveal, .feature-row, .step-item, .testimonial").forEach((el) => {
+        el.style.opacity = "1";
+        el.style.transform = "none";
+      });
+    }
+
+    function initScrollReveal() {
+      const scrollTargets = ".reveal, .feature-row, .step-item, .testimonial";
+
+      if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+        showScrollTargetsFallback();
+        return;
+      }
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion) {
+        gsap.set(scrollTargets, { autoAlpha: 1, y: 0, clearProps: "transform" });
+        gsap.set(".compare-bad", { autoAlpha: 0.58 });
+        document.querySelector(".fm-chart")?.classList.add("fm-chart--visible");
+        document.querySelectorAll(".stat-value").forEach((el) => {
+          if (!el.dataset.done) {
+            el.dataset.done = "1";
+            animateCounter(el);
+          }
+        });
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      const fadeIn = { y: 0, autoAlpha: 1 };
+      const fadeEase = "power2.out";
+
+      gsap.utils.toArray("#hero .reveal").forEach((el, i) => {
+        gsap.fromTo(
+          el,
+          { y: 22, autoAlpha: 0 },
+          { ...fadeIn, duration: 0.85, delay: i * 0.1, ease: "power3.out" }
+        );
+      });
+
+      gsap.utils.toArray("main .section-head").forEach((head) => {
+        gsap.fromTo(
+          head,
+          { y: 24, autoAlpha: 0 },
+          {
+            ...fadeIn,
+            duration: 0.72,
+            ease: fadeEase,
+            scrollTrigger: { trigger: head, start: "top 88%", once: true }
+          }
+        );
+      });
+
+      // VS section: bad card dims in subtly; good card rockets up with neon glow
+      ScrollTrigger.create({
+        trigger: "#compare",
+        start: "top 84%",
+        once: true,
+        onEnter: () => {
+          // "BiznesHisobsiz" — subdued entrance to visually recede
+          gsap.fromTo(
+            ".compare-bad",
+            { y: 28, autoAlpha: 0 },
+            { y: 0, autoAlpha: 0.58, duration: 0.78, ease: "power2.out", overwrite: "auto" }
+          );
+
+          // VS badge
+          gsap.fromTo(
+            "#compare .vs-wrap",
+            { scale: 0.6, autoAlpha: 0 },
+            { scale: 1, autoAlpha: 1, duration: 0.55, delay: 0.18, ease: "back.out(1.8)", overwrite: "auto" }
+          );
+
+          // "BiznesHisob bilan" — energetic slide-up with neon glow burst
+          gsap.fromTo(
+            ".compare-good",
+            { y: 52, autoAlpha: 0, scale: 0.96 },
+            {
+              y: 0, autoAlpha: 1, scale: 1,
+              duration: 0.78, delay: 0.24,
+              ease: "power3.out",
+              overwrite: "auto",
+              onComplete: () => {
+                // One-shot glow burst after slide completes
+                const el = document.querySelector(".compare-good");
+                if (!el) return;
+                gsap.fromTo(
+                  el,
+                  { filter: "drop-shadow(0 0 0px rgba(147,51,234,0))" },
+                  {
+                    filter: "drop-shadow(0 0 22px rgba(147,51,234,0.65))",
+                    duration: 0.4,
+                    ease: "power2.out",
+                    yoyo: true,
+                    repeat: 1,
+                    onComplete: () => gsap.set(el, { clearProps: "filter" })
+                  }
+                );
+              }
+            }
+          );
+        }
+      });
+
+      gsap.utils.toArray("#features .feature-row").forEach((row) => {
+        gsap.fromTo(
+          row,
+          { y: 32, autoAlpha: 0 },
+          {
+            ...fadeIn,
+            duration: 0.82,
+            ease: fadeEase,
+            scrollTrigger: { trigger: row, start: "top 89%", once: true }
+          }
+        );
+      });
+
+      ScrollTrigger.batch("#how .step-item", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 26, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.75, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
+          );
+        }
+      });
+
+      ScrollTrigger.create({
+        trigger: "#stats",
+        start: "top 82%",
+        once: true,
+        onEnter: () => {
+          gsap.fromTo(
+            "#stats .stat-box",
+            { y: 22, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.7, ease: fadeEase, stagger: 0.08, overwrite: "auto" }
+          );
+          document.querySelectorAll("#stats .stat-value").forEach((el) => {
+            if (!el.dataset.done) {
+              el.dataset.done = "1";
+              animateCounter(el);
+            }
+          });
+        }
+      });
+
+      ScrollTrigger.batch("#reviews .testimonial", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 26, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.76, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
+          );
+        }
+      });
+
+      gsap.fromTo(
+        "#pricing .pricing-box",
+        { y: 28, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.8,
+          ease: fadeEase,
+          scrollTrigger: {
+            trigger: "#pricing .pricing-box",
+            start: "top 88%",
+            once: true,
+            onEnter: () => {
+              // Slight delay so the fade-in settles first
+              setTimeout(() => {
+                const box = document.querySelector("#pricing .pricing-box");
+                if (box) box.classList.add("premium-focused");
+                const btn = document.querySelector(".btn-pricing-premium");
+                if (btn) btn.classList.add("is-breathing");
+              }, 420);
+            }
+          }
+        }
+      );
+
+      gsap.fromTo(
+        "#cta-banner .cta-banner-inner",
+        { y: 24, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.75,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#cta-banner", start: "top 86%", once: true }
+        }
+      );
+
+      ScrollTrigger.batch("#trust .trust-card", {
+        start: "top 88%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.fromTo(
+            batch,
+            { y: 26, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.75, ease: fadeEase, stagger: 0.08, overwrite: "auto" }
+          );
+        }
+      });
+
+      gsap.fromTo(
+        "#trust .trust-badge-strip",
+        { y: 18, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.65,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#trust .trust-badge-strip", start: "top 90%", once: true }
+        }
+      );
+
+      gsap.fromTo(
+        "#faq .faq-list",
+        { y: 24, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.8,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#faq .faq-list", start: "top 88%", once: true }
+        }
+      );
+
+      gsap.fromTo(
+        "#contact .contact-card",
+        { y: 26, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.78,
+          ease: fadeEase,
+          scrollTrigger: { trigger: "#contact .contact-card", start: "top 88%", once: true }
+        }
+      );
+
+      // ── Chart bars: fire animation only when card enters viewport ────────
+      const chartEl = document.querySelector(".fm-chart");
+      if (chartEl) {
+        const chartObs = new IntersectionObserver(
+          ([entry]) => {
+            if (!entry.isIntersecting) return;
+            chartEl.classList.add("fm-chart--visible");
+            chartObs.disconnect();
+          },
+          { threshold: 0.35 }
+        );
+        chartObs.observe(chartEl);
+      }
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => ScrollTrigger.refresh(), 180);
+      });
+    }
+
+    initScrollReveal();
+
+    /* ── Lang preview switcher ────────────────────────────────────────────── */
+    (function initLangCard() {
+      const PREVIEWS = {
+        uz: { label: "UI namunasi — O'zbek", text: "Sof foyda: 2 394 111 so'm ↑ Daromad va xarajatlarni real vaqtda kuzating." },
+        ru: { label: "UI образец — Русский", text: "Чистая прибыль: 2 394 111 сум ↑ Отслеживайте доходы и расходы в реальном времени." },
+        en: { label: "UI preview — English",   text: "Net profit: 2,394,111 UZS ↑ Track income and expenses in real time." }
+      };
+
+      const previewLabel = document.getElementById("langPreviewLabel");
+      const previewText  = document.getElementById("langPreviewText");
+      const badges       = document.querySelectorAll("[data-lang-switch]");
+
+      if (!previewLabel || !previewText || !badges.length) return;
+
+      function switchLangPreview(lang) {
+        const p = PREVIEWS[lang];
+        if (!p) return;
+
+        previewText.classList.add("fading");
+        previewLabel.classList.add("fading");
+
+        setTimeout(() => {
+          previewLabel.textContent = p.label;
+          previewText.textContent  = p.text;
+          previewText.classList.remove("fading");
+          previewLabel.classList.remove("fading");
+        }, 240);
+
+        badges.forEach(b => {
+          b.classList.toggle("fm-lang-active", b.dataset.langSwitch === lang);
+        });
+      }
+
+      badges.forEach(badge => {
+        badge.addEventListener("mouseenter", () => switchLangPreview(badge.dataset.langSwitch));
+        badge.addEventListener("click",      () => switchLangPreview(badge.dataset.langSwitch));
+      });
+
+      document.getElementById("langCard")?.addEventListener("mouseleave", () => {
+        switchLangPreview("uz");
+      });
+    })();
+
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let particles = [], w, h;
+
+    function resizeCanvas() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+
+    function initParticles() {
+      const n = Math.min(75, Math.floor((w * h) / 14000));
+      particles = Array.from({ length: n }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 2 + 0.4,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        o: Math.random() * 0.4 + 0.15
+      }));
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, w, h);
+      const c = "rgba(167, 139, 250, 0.5)";
+      particles.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = c;
+        ctx.globalAlpha = p.o;
+        ctx.fill();
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < 115) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = c;
+            ctx.globalAlpha = (1 - d / 115) * 0.1;
+            ctx.stroke();
+          }
+        }
+      });
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(drawParticles);
+    }
+
+    resizeCanvas();
+    initParticles();
+    drawParticles();
+    window.addEventListener("resize", () => { resizeCanvas(); initParticles(); });
+
+    const heroInstallBtn = document.getElementById("heroInstallBtn");
+    const ctaInstallBtn = document.getElementById("ctaInstallBtn");
+    const navInstallBtn = document.getElementById("navInstallBtn");
+    const heroIosBtn = document.getElementById("heroIosBtn");
+    const ctaIosBtn = document.getElementById("ctaIosBtn");
+    const heroIosHint = document.getElementById("heroIosHint");
+    const ctaIosHint = document.getElementById("ctaIosHint");
+
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+    function isStandalone() {
+      return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+    }
+
+    function openApp() { window.location.href = APP_URL; }
+
+    async function triggerInstall() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        return;
+      }
+      openApp();
+    }
+
+    function toggleIosHint(show) {
+      heroIosHint?.classList.toggle("hidden", !show);
+      ctaIosHint?.classList.toggle("hidden", !show);
+    }
+
+    function setupInstallUI() {
+      if (isStandalone()) {
+        const label = t("cta.open");
+        [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((b) => { if (b) b.textContent = label; });
+        heroIosBtn?.classList.add("hidden");
+        ctaIosBtn?.classList.add("hidden");
+        toggleIosHint(false);
+        return;
+      }
+      if (isIOS()) {
+        heroIosBtn?.classList.remove("hidden");
+        ctaIosBtn?.classList.remove("hidden");
+      }
+    }
+
+    [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((btn) => {
+      if (!btn) return;
+      btn.addEventListener("click", openApp);
+    });
+
+    function handleIosInstall() {
+      toggleIosHint(true);
+      if (!/Safari/i.test(navigator.userAgent) && !isStandalone()) openApp();
+    }
+
+    heroIosBtn?.addEventListener("click", handleIosInstall);
+    ctaIosBtn?.addEventListener("click", handleIosInstall);
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+    });
+
+    const APP_BUILD_VERSION = document.querySelector('meta[name="app-build-version"]')?.content || "dev";
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register(`/sw.js?v=${APP_BUILD_VERSION}`).catch(() => {});
+      });
+    }
+
+    setupInstallUI();
+  </script>
+
+  <script type="module">
+    import React, { useEffect, useRef, useState } from "https://esm.sh/react@18.3.1";
+    import { createRoot } from "https://esm.sh/react-dom@18.3.1/client";
+    import {
+      motion,
+      useSpring,
+      useScroll,
+      useTransform,
+      useMotionTemplate
+    } from "https://esm.sh/framer-motion@11.11.17";
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Fallback: plain DOM phone (no Framer Motion, e.g. CDN blocked)
+    ───────────────────────────────────────────────────────────────────────── */
+    function mountPhoneFallback() {
+      const mount = document.getElementById("heroPhoneMount");
+      const tpl   = document.getElementById("phoneTiltTemplate");
+      if (!mount || !tpl?.content || mount.childElementCount) return;
+      const shell = document.createElement("div");
+      shell.className = "phone-tilt";
+      const inner = document.createElement("div");
+      inner.className = "phone-tilt-inner";
+      inner.appendChild(tpl.content.cloneNode(true));
+      shell.appendChild(inner);
+      mount.appendChild(shell);
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       SVG icons (inlined, no extra requests)
+    ───────────────────────────────────────────────────────────────────────── */
+    const ce = React.createElement;
+    const SVG_SIGNAL = ce("svg", { viewBox: "0 0 18 12", fill: "none" },
+      ce("rect", { x: "0", y: "8",  width: "3", height: "4",  rx: "0.5", fill: "#fff" }),
+      ce("rect", { x: "5", y: "5",  width: "3", height: "7",  rx: "0.5", fill: "#fff" }),
+      ce("rect", { x: "10",y: "2",  width: "3", height: "10", rx: "0.5", fill: "#fff" }),
+      ce("rect", { x: "15",y: "0",  width: "3", height: "12", rx: "0.5", fill: "#fff" })
+    );
+    const SVG_WIFI = ce("svg", { viewBox: "0 0 16 12", fill: "none" },
+      ce("path", { d: "M8 2.5C5.5 2.5 3.2 3.6 1.5 5.5L0 4C2.2 1.8 5 0.5 8 0.5s5.8 1.3 8 3.5l-1.5 1.5C12.8 3.6 10.5 2.5 8 2.5zm0 4c-1.5 0-2.9.6-3.9 1.7L2.5 6.2C3.9 4.8 5.9 4 8 4s4.1.8 5.5 2.2l-1.6 1.5C10.9 7.1 9.5 6.5 8 6.5zm0 3c-.8 0-1.5.3-2.1.9L5 9.4c.9-.9 2.1-1.4 3.4-1.4s2.5.5 3.4 1.4l-.9.9c-.6-.6-1.3-.9-2.1-.9z", fill: "#fff" }),
+      ce("circle", { cx: "8", cy: "11", r: "1.2", fill: "#fff" })
+    );
+    const SVG_BATTERY = ce("svg", { viewBox: "0 0 26 12", fill: "none" },
+      ce("rect", { x: "0.5", y: "0.5", width: "20", height: "11", rx: "2.5", stroke: "#fff", strokeOpacity: "0.35" }),
+      ce("rect", { x: "2", y: "2", width: "14", height: "8", rx: "1.5", fill: "#fff" }),
+      ce("path", { d: "M22 4v4h3v-4h-3z", fill: "#fff", fillOpacity: "0.4" })
+    );
+
+    /* ─────────────────────────────────────────────────────────────────────────
+       Main component
+    ───────────────────────────────────────────────────────────────────────── */
+    function HeroPhone() {
+      const auraRef    = useRef(null);
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isMobile      = window.matchMedia("(max-width: 767px)").matches;
+      const noAnim        = reducedMotion || isMobile;
+
+      /* ── Aura mouse tracking ────────────────────────────────────────────── */
+      const [auraTarget, setAuraTarget] = useState({ x: 0.5, y: 0.5 });
+      const auraX = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
+      const auraY = useSpring(0.5, { stiffness: 42, damping: 20, mass: 0.6 });
+
+      /* ── Mouse-tilt springs ─────────────────────────────────────────────── */
+      const mouseTiltX = useSpring(0, { stiffness: 140, damping: 24 });
+      const mouseTiltY = useSpring(0, { stiffness: 140, damping: 24 });
+
+      /* ── Scroll motion values ───────────────────────────────────────────── */
+      const { scrollY } = useScroll();
+
+      // — Outer exit (phone recedes as page scrolls) —
+      const _scale   = useTransform(scrollY, [0, 320], [1,    0.76]);
+      const _moveY   = useTransform(scrollY, [0, 320], [0,    32]);
+      const _opacity = useTransform(scrollY, [0, 240], [1,    0.42]);
+      const exitScale   = useSpring(_scale,   { stiffness: 55, damping: 22 });
+      const exitY       = useSpring(_moveY,   { stiffness: 55, damping: 22 });
+      const exitOpacity = useSpring(_opacity, { stiffness: 75, damping: 24 });
+
+      // — Phone body tilt back (rotateX) as scroll progress 0→1 —
+      const _rotX  = useTransform(scrollY, [0, 300], [0, 20]);
+      const tiltRX = useSpring(_rotX, { stiffness: 45, damping: 20 });
+
+      // normalized 0→1 scroll progress for parallax layers
+      const prog = useTransform(scrollY, [0, 300], [0, 1]);
+
+      /* ── Layer 1 — Profit card (deepest pop, most forward) ──────────────── */
+      const _pScale = useTransform(prog, [0, 1], [1, 1.14]);
+      const _pY     = useTransform(prog, [0, 1], [0, -6]);
+      const profitScale = useSpring(_pScale, { stiffness: 50, damping: 18 });
+      const profitY     = useSpring(_pY,     { stiffness: 50, damping: 18 });
+
+      /* ── Layer 2 — Stat pair (mid pop) ─────────────────────────────────── */
+      const _sScale = useTransform(prog, [0, 1], [1, 1.07]);
+      const statScale = useSpring(_sScale, { stiffness: 50, damping: 18 });
+
+      /* ── Glare — sweeps across screen as phone tilts ───────────────────── */
+      const _glareOp = useTransform(prog, [0, 0.2, 0.55, 1], [0, 0.52, 0.28, 0]);
+      const _glareX  = useTransform(prog, [0, 1], ["-110%", "125%"]);
+      const glareOp  = useSpring(_glareOp, { stiffness: 38, damping: 20 });
+      const glareX   = useSpring(_glareX,  { stiffness: 38, damping: 20 });
+
+      /* ── Shadow realism — blur & shift as phone recedes ────────────────── */
+      const _blur  = useTransform(prog, [0, 1], [40, 74]);
+      const _shade = useTransform(prog, [0, 1], [0.65, 0.28]);
+      const _shiftY = useTransform(prog, [0, 1], [40, 64]);
+      const shadowBlur  = useSpring(_blur,   { stiffness: 45, damping: 20 });
+      const shadowAlpha = useSpring(_shade,  { stiffness: 45, damping: 20 });
+      const shadowShift = useSpring(_shiftY, { stiffness: 45, damping: 20 });
+      const deviceShadow = useMotionTemplate`0 ${shadowShift}px ${shadowBlur}px rgba(0,0,0,${shadowAlpha}), 0 0 60px rgba(124,58,237,0.35), 0 0 120px rgba(79,70,229,0.15), inset 0 1px 0 rgba(255,255,255,0.06)`;
+
+      /* ── Aura effects ───────────────────────────────────────────────────── */
+      useEffect(() => {
+        if (reducedMotion) return;
+        const onMove = (e) => setAuraTarget({
+          x: e.clientX / window.innerWidth,
+          y: e.clientY / window.innerHeight
+        });
+        document.addEventListener("mousemove", onMove, { passive: true });
+        return () => document.removeEventListener("mousemove", onMove);
+      }, [reducedMotion]);
+
+      useEffect(() => { auraX.set(auraTarget.x); auraY.set(auraTarget.y); },
+        [auraTarget, auraX, auraY]);
+
+      useEffect(() => {
+        const apply = () => {
+          if (!auraRef.current) return;
+          auraRef.current.style.setProperty("--mx", auraX.get());
+          auraRef.current.style.setProperty("--my", auraY.get());
+        };
+        apply();
+        const ua = auraX.on("change", apply);
+        const ub = auraY.on("change", apply);
+        return () => { ua(); ub(); };
+      }, [auraX, auraY]);
+
+      /* ── Mouse tilt ─────────────────────────────────────────────────────── */
+      const onMouseMove = (e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        mouseTiltY.set(((e.clientX - r.left) / r.width  - 0.5) * 18);
+        mouseTiltX.set(-((e.clientY - r.top)  / r.height - 0.5) * 14);
+      };
+      const onMouseLeave = () => { mouseTiltX.set(0); mouseTiltY.set(0); };
+
+      /* ── Build phone content ────────────────────────────────────────────── */
+      const phoneContent = ce(
+        /* phone-tilt-inner: mouse tilt + scroll rotateX */
+        motion.div,
+        {
+          className: "phone-tilt-inner",
+          style: {
+            rotateX: noAnim ? 0 : mouseTiltX,
+            rotateY: noAnim ? 0 : mouseTiltY,
+            transformStyle: "preserve-3d",
+            willChange: "transform"
+          }
+        },
+
+        /* Aurora background */
+        ce("div", { className: "phone-aura", ref: auraRef, "aria-hidden": "true" },
+          ce("div", { className: "phone-aura-ring" }),
+          ce("div", { className: "phone-aura-base" }),
+          ce("div", { className: "phone-aura-blob phone-aura-blob--violet" }),
+          ce("div", { className: "phone-aura-blob phone-aura-blob--indigo" }),
+          ce("div", { className: "phone-aura-blob phone-aura-blob--cyan" })
+        ),
+
+        /* Floating badge — top left */
+        ce("span", { className: "chip chip-1" }, "✅ +24% oylik"),
+
+        /* ── Phone device with dynamic shadow ── */
+        ce(motion.div, {
+          className: "phone-device",
+          style: { boxShadow: noAnim ? undefined : deviceShadow }
+        },
+          ce("div", { className: "phone-screen" },
+
+            /* Dynamic-island notch */
+            ce("div", { className: "dynamic-island", "aria-hidden": "true" }),
+
+            /* ── GLARE overlay — sweeps across glass on scroll ── */
+            ce(motion.div, {
+              "aria-hidden": "true",
+              style: {
+                position: "absolute",
+                inset: 0,
+                borderRadius: "52px",
+                background: "linear-gradient(112deg, transparent 15%, rgba(255,255,255,0.22) 48%, rgba(147,51,234,0.10) 62%, transparent 82%)",
+                opacity: noAnim ? 0 : glareOp,
+                x:       noAnim ? 0 : glareX,
+                pointerEvents: "none",
+                zIndex: 20,
+                mixBlendMode: "screen"
+              }
+            }),
+
+            /* Status bar */
+            ce("div", { className: "mock-status" },
+              ce("span", null, "9:41"),
+              ce("div", { className: "mock-status-icons", "aria-hidden": "true" },
+                SVG_SIGNAL, SVG_WIFI, SVG_BATTERY
+              )
+            ),
+
+            /* App header */
+            ce("header", { className: "app-header" },
+              ce("div", { className: "app-logo" }, "📊"),
+              ce("span", { className: "app-title" }, "BiznesHisob")
+            ),
+
+            /* ── App body — parallax layers ── */
+            ce("div", { className: "app-body" },
+
+              /* Layer 1: Profit card — pops most forward */
+              ce(motion.div, {
+                className: "profit-card",
+                style: {
+                  scale: noAnim ? 1 : profitScale,
+                  y:     noAnim ? 0 : profitY,
+                  transformOrigin: "center center",
+                  willChange: "transform",
+                  position: "relative",
+                  zIndex: 3
+                }
+              },
+                ce("div", { className: "mock-label" }, "Sof foyda"),
+                ce("div", { className: "profit-amount" }, "2,394,111 so\u2019m")
+              ),
+
+              /* Layer 2: Stat pair — mid depth pop */
+              ce(motion.div, {
+                className: "stat-pair",
+                style: {
+                  scale: noAnim ? 1 : statScale,
+                  transformOrigin: "center center",
+                  willChange: "transform",
+                  position: "relative",
+                  zIndex: 2
+                }
+              },
+                ce("div", { className: "stat-mini income" },
+                  ce("div", { className: "stat-mini-label" }, "DAROMAD"),
+                  ce("div", { className: "stat-mini-value" }, "8.7 mln")
+                ),
+                ce("div", { className: "stat-mini expense" },
+                  ce("div", { className: "stat-mini-label" }, "XARAJAT"),
+                  ce("div", { className: "stat-mini-value" }, "6.3 mln")
+                )
+              ),
+
+              /* Layer 3: Quick buttons — base layer, no extra scale */
+              ce("div", { className: "quick-section-label" }, "TEZKOR QO\u02BBSHISH"),
+              ce("div", { className: "quick-btns" },
+                ce("button", { type: "button", className: "quick-btn income" }, "+ Daromad"),
+                ce("button", { type: "button", className: "quick-btn expense" }, "\u2212 Xarajat")
+              )
+            ),
+
+            /* Bottom nav */
+            ce("nav", { className: "mock-nav", "aria-label": "Ilova navigatsiyasi" },
+              ce("div", { className: "mock-nav-item active" }, ce("span", null, "🏠"), ce("span", null, "Bosh")),
+              ce("div", { className: "mock-nav-item" },        ce("span", null, "➕"), ce("span", null, "Qo\u02BBshish")),
+              ce("div", { className: "mock-nav-item" },        ce("span", null, "📋"), ce("span", null, "Ro\u02BBxat")),
+              ce("div", { className: "mock-nav-item" },        ce("span", null, "👤"), ce("span", null, "Profil"))
+            )
+          )
+        ),
+
+        /* Floating badge — bottom right */
+        ce("span", { className: "chip chip-2" }, "🔒 Shifrlangan")
+      );
+
+      /* ── Full render tree ───────────────────────────────────────────────── */
+      return ce(
+        /* 1. Scroll exit wrapper */
+        motion.div,
+        {
+          style: {
+            scale:     noAnim ? 1 : exitScale,
+            y:         noAnim ? 0 : exitY,
+            opacity:   noAnim ? 1 : exitOpacity,
+            willChange: "transform, opacity",
+            transformOrigin: "center top"
+          }
+        },
+        /* 2. Float-bob loop */
+        ce(motion.div,
+          {
+            className: "phone-tilt",
+            animate: reducedMotion
+              ? undefined
+              : { y: [0, -18, -8, 0], rotateZ: [0, 0.8, -0.5, 0] },
+            transition: { duration: 5.8, repeat: Infinity, ease: [0.45, 0.05, 0.55, 0.95] },
+            style: {
+              rotateX: noAnim ? 0 : tiltRX,
+              transformStyle: "preserve-3d"
+            },
+            onMouseMove:  noAnim ? undefined : onMouseMove,
+            onMouseLeave: noAnim ? undefined : onMouseLeave
+          },
+          phoneContent
+        )
+      );
+    }
+
+    const heroPhoneMount = document.getElementById("heroPhoneMount");
+    if (heroPhoneMount) {
+      try {
+        createRoot(heroPhoneMount).render(ce(HeroPhone));
+      } catch (err) {
+        console.warn("[BiznesHisob] Hero phone parallax failed, using fallback:", err);
+        mountPhoneFallback();
+      }
+    }
+  </script>
+</body>
+</html>
