@@ -6658,6 +6658,17 @@
       document.documentElement.classList.remove("auth-boot", "auth-boot-session");
     }
 
+    function showSessionBootLoading() {
+      releaseAuthBootVisibility();
+      if (!loadingScreen) return;
+      loadingScreenDismissed = false;
+      loadingScreen.classList.remove("hidden");
+      loadingScreen.style.display = "flex";
+      loadingScreen.style.opacity = "1";
+      loadingScreen.style.pointerEvents = "auto";
+      document.body.style.overflow = "hidden";
+    }
+
     function onAuthStateKnown(user) {
       if (authStateResolved) return;
       authStateResolved = true;
@@ -8657,42 +8668,49 @@
 
     /**
      * Resolve account PIN from Firestore with explicit certainty.
-     * - pin: document read from server (or offline cache) contains a valid pin
-     * - absent: online server confirms doc has no valid pin (safe to offer setup)
-     * - unknown: offline / cache-only / read failure — must NOT treat as "no pin"
+     * Fast path: local pin cache / Firestore persistence before slow server round-trip.
+     * - pin: valid pin found
+     * - absent: online server confirms no valid pin (safe for setup)
+     * - unknown: offline / failure — must NOT treat as "no pin"
      */
     async function resolveCloudPinState(uid) {
       const ref = userDocRef(uid);
 
-      if (navigator.onLine) {
-        try {
-          const snap = await getDocFromServer(ref);
-          if (!snap.exists()) {
-            return { kind: "absent", pin: null };
-          }
-          const pin = snap.data()?.pin;
-          if (isValidCloudPinRecord(pin)) {
-            return { kind: "pin", pin };
-          }
-          return { kind: "absent", pin: null };
-        } catch (err) {
-          return { kind: "unknown", pin: null, error: err };
-        }
+      // Instant: previous session cloud PIN cache on this device
+      const appCached = readPinCache(uid);
+      if (appCached) {
+        return { kind: "pin", pin: appCached };
       }
 
-      // Offline: may discover a cached pin, but never conclude "absent".
+      // Fast: Firestore IndexedDB persistence (no network)
       try {
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          const pin = snap.data()?.pin;
-          if (isValidCloudPinRecord(pin)) {
-            return { kind: "pin", pin };
+        const localSnap = await getDoc(ref);
+        if (localSnap.exists()) {
+          const localPin = localSnap.data()?.pin;
+          if (isValidCloudPinRecord(localPin)) {
+            return { kind: "pin", pin: localPin };
           }
         }
+      } catch (_) { /* continue */ }
+
+      if (!navigator.onLine) {
+        return { kind: "unknown", pin: null };
+      }
+
+      // Server only when local cache has no PIN (needed to decide setup vs unlock)
+      try {
+        const snap = await getDocFromServer(ref);
+        if (!snap.exists()) {
+          return { kind: "absent", pin: null };
+        }
+        const pin = snap.data()?.pin;
+        if (isValidCloudPinRecord(pin)) {
+          return { kind: "pin", pin };
+        }
+        return { kind: "absent", pin: null };
       } catch (err) {
         return { kind: "unknown", pin: null, error: err };
       }
-      return { kind: "unknown", pin: null };
     }
 
     async function savePin(pin, uid) {
@@ -8876,6 +8894,7 @@
           avatarType: avatar,
           avatarData: ""
         });
+        if (currentUser?.uid) rememberDisplayName(currentUser.uid, name);
         closeProfileModal(profileEditModal);
         alert(t("profile.profileSaved"));
       } catch (err) {
@@ -9017,6 +9036,60 @@
       const raw = String(userProfile?.displayName || "").trim();
       if (!raw) return "";
       return raw.split(/\s+/)[0];
+    }
+
+    function displayNameCacheKey(uid) {
+      return `bzh_display_name_${uid}`;
+    }
+
+    function rememberDisplayName(uid, name) {
+      const cleaned = String(name || "").trim();
+      if (!uid || !cleaned) return;
+      userProfile.displayName = cleaned;
+      try {
+        localStorage.setItem(displayNameCacheKey(uid), cleaned);
+      } catch (_) { /* ignore */ }
+    }
+
+    function readCachedDisplayName(uid) {
+      if (!uid) return "";
+      try {
+        return String(localStorage.getItem(displayNameCacheKey(uid)) || "").trim();
+      } catch (_) {
+        return "";
+      }
+    }
+
+    /** Ensure displayName is ready before PIN unlock greeting. */
+    async function hydrateDisplayNameForPin(uid, { allowNetwork = true } = {}) {
+      if (!uid) return "";
+      const existing = String(userProfile?.displayName || "").trim();
+      if (existing) {
+        rememberDisplayName(uid, existing);
+        return existing;
+      }
+      const cached = readCachedDisplayName(uid);
+      if (cached) {
+        userProfile.displayName = cached;
+        return cached;
+      }
+      if (!allowNetwork) return "";
+      try {
+        // Prefer local persistence first (fast); server only if still empty.
+        let snap = await getDoc(userDocRef(uid));
+        let name = snap.exists() ? String(snap.data()?.displayName || "").trim() : "";
+        if (!name && navigator.onLine) {
+          try {
+            snap = await getDocFromServer(userDocRef(uid));
+            name = snap.exists() ? String(snap.data()?.displayName || "").trim() : "";
+          } catch (_) { /* keep empty */ }
+        }
+        if (name) rememberDisplayName(uid, name);
+        return name;
+      } catch (err) {
+        console.error("[BiznesHisob] displayName hydrate failed:", err?.code || err);
+        return "";
+      }
     }
 
     function applyPinUnlockGreeting() {
@@ -9365,6 +9438,7 @@
 
     function showPinScreen(mode) {
       clearAuthFallbackTimer();
+      hideLoadingScreen();
       showPinSubview("main");
       configurePinUI(mode);
       if (isPinGateActive()) {
@@ -9827,20 +9901,25 @@
           return;
         }
         // Do NOT open setup when PIN existence is uncertain or read failed.
+        await hydrateDisplayNameForPin(uid, { allowNetwork: false });
         showPinScreen("unlock");
         setKeypadEnabled(false);
         pinForgot?.classList.add("hidden");
         setPinMsg(t("pin.networkError"), "error");
+        void hydrateDisplayNameForPin(uid).then(() => applyPinUnlockGreeting());
         return;
       }
 
+      await hydrateDisplayNameForPin(uid, { allowNetwork: false });
       loadPinSecurityState(uid);
       if (isLockoutActive()) {
         showPinScreen("unlock");
         startLockout(true);
+        void hydrateDisplayNameForPin(uid).then(() => applyPinUnlockGreeting());
         return;
       }
       lockApp();
+      void hydrateDisplayNameForPin(uid).then(() => applyPinUnlockGreeting());
     }
 
     function handleVisibilityLock() {
@@ -10224,6 +10303,9 @@
             };
             cachePremiumStatus(false);
             rememberLimitCount(0);
+          }
+          if (userProfile.displayName) {
+            rememberDisplayName(uid, userProfile.displayName);
           }
           updatePremiumUI();
           renderProfileUI();
@@ -11303,11 +11385,11 @@
     function navigateAfterAuth(user) {
       console.log("[BiznesHisob] Showing main app");
       clearAuthFallbackTimer();
-      hideLoadingScreen();
       hideAuthScreenNow();
       postOnboardingView = "app";
 
       if (!isOnboarded()) {
+        hideLoadingScreen();
         console.log("[BiznesHisob] Not onboarded — showing onboarding");
         showView("onboarding");
         updateOnboardingSlide(0);
@@ -11318,6 +11400,8 @@
       }
 
       console.log("[BiznesHisob] Onboarded — PIN gate before home");
+      // Keep spinner visible (not black) while PIN state resolves.
+      showSessionBootLoading();
       appUnlocked = false;
       appScreen.classList.add("hidden");
       refreshIcons();
@@ -12648,7 +12732,7 @@
                 await showBriefAuthLoading(800);
                 if (fullName) {
                   await setDoc(userDocRef(cred.user.uid), { displayName: fullName }, { merge: true });
-                  userProfile = { ...userProfile, displayName: fullName };
+                  rememberDisplayName(cred.user.uid, fullName);
                 }
                 scheduleAuthFallback();
               } catch (regErr) {
@@ -13869,7 +13953,6 @@
         hideAuthScreenNow();
         authScreen.classList.add("hidden");
         postOnboardingView = "app";
-        navigateAfterAuth(user);
         scheduleAuthFallback();
         transactions = [];
         userCurrencies = [];
@@ -13877,32 +13960,45 @@
         userDocEnsured = false;
         userProfileLimitReady = false;
         lastKnownLimitCount = readCachedLimitCount(user.uid);
+        const cachedName = readCachedDisplayName(user.uid);
         userProfile = {
           isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
           totalTransactionsAdded: undefined,
-          email: "",
-          displayName: "",
+          email: user.email || "",
+          displayName: cachedName || "",
           avatar: "",
           avatarType: "",
           avatarData: ""
         };
         txCounterSynced = false;
-        try {
-          await ensureUserDocument(user);
-        } catch (err) {
-          console.error("User doc:", err);
-        }
-        subscribeUserProfile(user.uid);
-        if (typeof lastKnownLimitCount === "number") updatePremiumUI();
-        subscribeCurrencies(user.uid);
-        switchTab("home");
-        render();
-        subscribeTransactions(user.uid);
-        setupInstallUI();
-        handlePaymentReturn();
-        renderProfileUI();
-        updateSettingsUI();
-        refreshIcons();
+
+        // Stop black boot screen immediately; PIN gate can start with cached name.
+        showSessionBootLoading();
+        navigateAfterAuth(user);
+
+        void (async () => {
+          try {
+            await ensureUserDocument(user);
+          } catch (err) {
+            console.error("User doc:", err);
+          }
+          subscribeUserProfile(user.uid);
+          if (typeof lastKnownLimitCount === "number") updatePremiumUI();
+          subscribeCurrencies(user.uid);
+          switchTab("home");
+          render();
+          subscribeTransactions(user.uid);
+          setupInstallUI();
+          handlePaymentReturn();
+          renderProfileUI();
+          updateSettingsUI();
+          refreshIcons();
+          void hydrateDisplayNameForPin(user.uid).then(() => {
+            if (pinScreen?.classList.contains("visible") && pinMode === "unlock") {
+              applyPinUnlockGreeting();
+            }
+          });
+        })();
       } else {
         if (firebaseAuth.currentUser) return;
         userDocEnsured = false;
