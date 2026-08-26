@@ -5607,6 +5607,23 @@
 
     .pin-forgot:hover { color: var(--accent-hover); }
 
+    .pin-cancel {
+      background: none;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0.65rem 1.25rem;
+      border-radius: 12px;
+      min-width: 10rem;
+    }
+
+    .pin-cancel:hover { border-color: var(--accent); color: var(--accent); }
+
+    .pin-cancel.hidden { display: none; }
+
     html.light-theme .pin-logo-icon {
       box-shadow: 0 4px 14px rgba(99, 102, 241, 0.22);
     }
@@ -5821,6 +5838,7 @@
         </div>
         <div class="pin-actions" id="pinActions">
           <button type="button" class="pin-forgot hidden" id="pinForgot">PIN kodini unutdim?</button>
+          <button type="button" class="pin-cancel hidden" id="pinChangeCancelBtn" data-i18n="pin.cancel">Bekor qilish</button>
         </div>
       </div>
 
@@ -7184,6 +7202,9 @@
         "pin.wrong": "Noto'g'ri PIN",
         "pin.wrongLeft": "Noto'g'ri PIN ({{n}} urinish qoldi)",
         "pin.updated": "PIN yangilandi ✓",
+        "pin.networkError": "PIN yuklanmadi. Internetni tekshiring va qayta urinib ko'ring.",
+        "pin.saveError": "PIN saqlanmadi. Internetni tekshiring.",
+        "pin.migrateFail": "PIN bulutga sinxronlanmadi. Shu qurilmada ochildi — keyinroq qayta urinib ko'ring.",
         "pin.bioFail": "Biometrik tasdiqlanmadi. PIN kiriting.",
         "pin.bioEnableFail": "Biometrik yoqilmadi. Keyinroq profildan urinib ko'ring.",
         "pin.bioOk": "Biometrik yoqildi ✓",
@@ -7207,6 +7228,7 @@
         "pin.enableBio": "Biometrikni yoqish",
         "pin.skipBio": "Keyinroq",
         "pin.forgot": "PIN kodini unutdim?",
+        "pin.cancel": "Bekor qilish",
         "pin.resetEmail.title": "PIN kodni tiklash",
         "pin.resetEmail.desc": "Hisobingiz emailiga tasdiqlash havolasi yuboriladi",
         "pin.resetEmail.send": "Email yuborish",
@@ -7463,6 +7485,9 @@
         "pin.wrong": "Неверный PIN",
         "pin.wrongLeft": "Неверный PIN (осталось {{n}})",
         "pin.updated": "PIN обновлён ✓",
+        "pin.networkError": "Не удалось загрузить PIN. Проверьте интернет и попробуйте снова.",
+        "pin.saveError": "Не удалось сохранить PIN. Проверьте интернет.",
+        "pin.migrateFail": "PIN не синхронизирован с облаком. Устройство разблокировано — повторите позже.",
         "pin.bioFail": "Биометрия не подтверждена. Введите PIN.",
         "pin.bioEnableFail": "Биометрия не включена. Попробуйте позже в профиле.",
         "pin.bioOk": "Биометрия включена ✓",
@@ -7486,6 +7511,7 @@
         "pin.enableBio": "Включить биометрию",
         "pin.skipBio": "Позже",
         "pin.forgot": "Забыли PIN?",
+        "pin.cancel": "Отмена",
         "pin.resetEmail.title": "Сброс PIN",
         "pin.resetEmail.desc": "На email аккаунта будет отправлена ссылка для сброса",
         "pin.resetEmail.send": "Отправить email",
@@ -7742,6 +7768,9 @@
         "pin.wrong": "Wrong PIN",
         "pin.wrongLeft": "Wrong PIN ({{n}} left)",
         "pin.updated": "PIN updated ✓",
+        "pin.networkError": "Could not load PIN. Check your internet and try again.",
+        "pin.saveError": "Could not save PIN. Check your internet.",
+        "pin.migrateFail": "PIN was not synced to the cloud. Unlocked on this device — try again later.",
         "pin.bioFail": "Biometrics failed. Enter PIN.",
         "pin.bioEnableFail": "Could not enable biometrics. Try later in profile.",
         "pin.bioOk": "Biometrics enabled ✓",
@@ -7765,6 +7794,7 @@
         "pin.enableBio": "Enable biometrics",
         "pin.skipBio": "Later",
         "pin.forgot": "Forgot PIN?",
+        "pin.cancel": "Cancel",
         "pin.resetEmail.title": "Reset PIN",
         "pin.resetEmail.desc": "A verification link will be sent to your account email",
         "pin.resetEmail.send": "Send email",
@@ -8401,10 +8431,13 @@
 
     /* ——— PIN security ——— */
     const PIN_UID_KEY = "bzh_pin_uid";
+    const PIN_CACHE_KEY = "bzh_pin_cloud_v1";
     const PIN_LEN = 4;
     const MAX_PIN_ATTEMPTS = 3;
     const LOCKOUT_SEC = 30;
     const BG_LOCK_MS = 60000;
+    const PIN_PBKDF2_ITERATIONS = 310000;
+    const PIN_PBKDF2_ALGO = "PBKDF2-SHA256";
 
     let appUnlocked = false;
     let pinMode = "unlock";
@@ -8414,6 +8447,11 @@
     let lockoutUntil = 0;
     let lockoutTimer = null;
     let backgroundHiddenAt = 0;
+    /** @type {null | { legacy?: boolean, hash: string, algo?: string, iterations?: number, salt?: string, version?: number, updatedAt?: string }} */
+    let sessionPinRecord = null;
+    let sessionPinUid = null;
+    /** @type {null | "cloud" | "legacy"} */
+    let sessionPinSource = null;
 
     const pinScreen = document.getElementById("pinScreen");
     const pinTitle = document.getElementById("pinTitle");
@@ -8422,6 +8460,7 @@
     const pinMsg = document.getElementById("pinMsg");
     const pinKeypad = document.getElementById("pinKeypad");
     const pinForgot = document.getElementById("pinForgot");
+    const pinChangeCancelBtn = document.getElementById("pinChangeCancelBtn");
     const pinMainView = document.getElementById("pinMainView");
     const pinPhoneView = document.getElementById("pinPhoneView");
     const pinOtpView = document.getElementById("pinOtpView");
@@ -8461,7 +8500,22 @@
     }
     purgeLegacyBiometricKeys();
 
-    async function hashPin(pin) {
+    function bytesToBase64(bytes) {
+      let binary = "";
+      const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+      for (let i = 0; i < arr.length; i++) binary += String.fromCharCode(arr[i]);
+      return btoa(binary);
+    }
+
+    function base64ToBytes(b64) {
+      const binary = atob(b64);
+      const out = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+      return out;
+    }
+
+    /** Legacy localStorage hash (pre-cloud). Used only for one-time migration. */
+    async function legacyHashPin(pin) {
       const data = new TextEncoder().encode(`${pin}:bizneshisob`);
       const buf = await crypto.subtle.digest("SHA-256", data);
       return Array.from(new Uint8Array(buf))
@@ -8469,27 +8523,186 @@
         .join("");
     }
 
-    function getStoredPinUid() {
-      return localStorage.getItem(PIN_UID_KEY);
+    async function derivePinHash(pin, saltBytes, iterations) {
+      const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(String(pin)),
+        "PBKDF2",
+        false,
+        ["deriveBits"]
+      );
+      const bits = await crypto.subtle.deriveBits(
+        {
+          name: "PBKDF2",
+          salt: saltBytes,
+          iterations,
+          hash: "SHA-256"
+        },
+        keyMaterial,
+        256
+      );
+      return bytesToBase64(new Uint8Array(bits));
     }
 
-    function getStoredPinHash() {
-      return localStorage.getItem(PIN_KEY);
+    async function createPinRecord(pin) {
+      const saltBytes = crypto.getRandomValues(new Uint8Array(16));
+      const iterations = PIN_PBKDF2_ITERATIONS;
+      const hash = await derivePinHash(pin, saltBytes, iterations);
+      return {
+        algo: PIN_PBKDF2_ALGO,
+        iterations,
+        salt: bytesToBase64(saltBytes),
+        hash,
+        version: 1,
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    function isValidCloudPinRecord(pin) {
+      return !!(
+        pin &&
+        typeof pin === "object" &&
+        pin.algo === PIN_PBKDF2_ALGO &&
+        typeof pin.iterations === "number" &&
+        pin.iterations >= 100000 &&
+        typeof pin.salt === "string" &&
+        pin.salt.length >= 8 &&
+        typeof pin.hash === "string" &&
+        pin.hash.length >= 16 &&
+        (pin.version === undefined || pin.version === 1)
+      );
+    }
+
+    function writePinCache(uid, record) {
+      if (!uid || !isValidCloudPinRecord(record)) return;
+      try {
+        localStorage.setItem(PIN_CACHE_KEY, JSON.stringify({
+          uid,
+          algo: record.algo,
+          iterations: record.iterations,
+          salt: record.salt,
+          hash: record.hash,
+          version: record.version || 1,
+          updatedAt: record.updatedAt || null
+        }));
+      } catch (_) { /* ignore quota */ }
+    }
+
+    function readPinCache(uid) {
+      try {
+        const raw = localStorage.getItem(PIN_CACHE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || parsed.uid !== uid) return null;
+        const record = {
+          algo: parsed.algo,
+          iterations: parsed.iterations,
+          salt: parsed.salt,
+          hash: parsed.hash,
+          version: parsed.version || 1,
+          updatedAt: parsed.updatedAt || null
+        };
+        return isValidCloudPinRecord(record) ? record : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function clearLegacyPinStorage() {
+      localStorage.removeItem(PIN_KEY);
+      localStorage.removeItem(PIN_UID_KEY);
+    }
+
+    function clearPinLocalCache() {
+      localStorage.removeItem(PIN_CACHE_KEY);
+      clearLegacyPinStorage();
+      sessionPinRecord = null;
+      sessionPinUid = null;
+      sessionPinSource = null;
+    }
+
+    /** @deprecated name kept for call sites — clears local PIN cache only, never cloud. */
+    function clearPinStorage() {
+      clearPinLocalCache();
     }
 
     function hasPinForUser(uid) {
-      return getStoredPinHash() && getStoredPinUid() === uid;
+      return !!(uid && sessionPinUid === uid && sessionPinRecord);
+    }
+
+    /**
+     * Resolve account PIN from Firestore with explicit certainty.
+     * - pin: document read from server (or offline cache) contains a valid pin
+     * - absent: online server confirms doc has no valid pin (safe to offer setup)
+     * - unknown: offline / cache-only / read failure — must NOT treat as "no pin"
+     */
+    async function resolveCloudPinState(uid) {
+      const ref = userDocRef(uid);
+
+      if (navigator.onLine) {
+        try {
+          const snap = await getDocFromServer(ref);
+          if (!snap.exists()) {
+            return { kind: "absent", pin: null };
+          }
+          const pin = snap.data()?.pin;
+          if (isValidCloudPinRecord(pin)) {
+            return { kind: "pin", pin };
+          }
+          return { kind: "absent", pin: null };
+        } catch (err) {
+          return { kind: "unknown", pin: null, error: err };
+        }
+      }
+
+      // Offline: may discover a cached pin, but never conclude "absent".
+      try {
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const pin = snap.data()?.pin;
+          if (isValidCloudPinRecord(pin)) {
+            return { kind: "pin", pin };
+          }
+        }
+      } catch (err) {
+        return { kind: "unknown", pin: null, error: err };
+      }
+      return { kind: "unknown", pin: null };
     }
 
     async function savePin(pin, uid) {
-      const hash = await hashPin(pin);
-      localStorage.setItem(PIN_KEY, hash);
-      localStorage.setItem(PIN_UID_KEY, uid);
+      if (!uid) throw new Error("uid required");
+      if (!navigator.onLine) {
+        const err = new Error("offline");
+        err.code = "unavailable";
+        throw err;
+      }
+      const record = await createPinRecord(pin);
+      await setDoc(userDocRef(uid), { pin: record }, { merge: true });
+      sessionPinRecord = record;
+      sessionPinUid = uid;
+      sessionPinSource = "cloud";
+      writePinCache(uid, record);
+      clearLegacyPinStorage();
     }
 
-    function clearPinStorage() {
-      localStorage.removeItem(PIN_KEY);
-      localStorage.removeItem(PIN_UID_KEY);
+    async function verifyPinInput(pin) {
+      if (!sessionPinRecord) return false;
+      if (sessionPinRecord.legacy) {
+        const hash = await legacyHashPin(pin);
+        return hash === sessionPinRecord.hash;
+      }
+      const saltBytes = base64ToBytes(sessionPinRecord.salt);
+      const hash = await derivePinHash(pin, saltBytes, sessionPinRecord.iterations);
+      return hash === sessionPinRecord.hash;
+    }
+
+    function pinStorageErrorMessage(err) {
+      const code = err?.code || "";
+      if (code === "unavailable" || code === "offline" || !navigator.onLine) {
+        return t("pin.networkError");
+      }
+      return t("pin.saveError");
     }
 
     function updateSettingsUI() {
@@ -9018,12 +9231,68 @@
       }
     }
 
+    let pinChangeHistoryPushed = false;
+    let pinChangeActive = false;
+
+    function isPinChangeMode(mode = pinMode) {
+      return mode === "change-old" || mode === "change-new" || mode === "change-confirm";
+    }
+
+    function clearPinChangeHistoryFlag() {
+      if (!pinChangeHistoryPushed) return;
+      pinChangeHistoryPushed = false;
+      try {
+        const st = history.state && typeof history.state === "object" ? { ...history.state } : {};
+        if (st.bhPinChange) {
+          delete st.bhPinChange;
+          history.replaceState(st, "");
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    function pushPinChangeHistory() {
+      if (pinChangeHistoryPushed) return;
+      try {
+        const st = history.state && typeof history.state === "object" ? { ...history.state } : {};
+        st.bhPinChange = true;
+        history.pushState(st, "");
+        pinChangeHistoryPushed = true;
+      } catch (_) {
+        pinChangeHistoryPushed = false;
+      }
+    }
+
+    /** Cancel PIN change without saving; return to Settings. */
+    function cancelPinChange(fromPopstate = false) {
+      if (!pinChangeActive) return;
+      pinChangeActive = false;
+      pinSetupFirst = "";
+      resetPinBuffer();
+      setPinMsg("");
+      const shouldHistoryBack = pinChangeHistoryPushed && !fromPopstate;
+      pinChangeHistoryPushed = false;
+      if (!shouldHistoryBack) {
+        clearPinChangeHistoryFlag();
+      }
+      hidePinScreen();
+      if (appUnlocked) {
+        appScreen?.classList.remove("hidden");
+        showView("app");
+      }
+      openSettings();
+      refreshIcons();
+      if (shouldHistoryBack) {
+        try { history.back(); } catch (_) { /* ignore */ }
+      }
+    }
+
     function configurePinUI(mode) {
       pinMode = mode;
       showPinSubview("main");
       resetPinBuffer();
       setPinMsg("");
       pinForgot.classList.toggle("hidden", mode !== "unlock");
+      pinChangeCancelBtn?.classList.toggle("hidden", !isPinChangeMode(mode));
       pinKeypad.classList.remove("hidden");
 
       pinTitle.textContent = t(`pin.title.${mode}`) || "PIN";
@@ -9057,6 +9326,7 @@
       clearRecaptcha();
       phoneConfirmationResult = null;
       resetPinBuffer();
+      pinChangeCancelBtn?.classList.add("hidden");
       if (lockoutTimer) {
         clearInterval(lockoutTimer);
         lockoutTimer = null;
@@ -9084,14 +9354,15 @@
     }
 
     async function finishPinSetup(pin) {
-      await savePin(pin, currentUser.uid);
-      pinSetupFirst = "";
-      unlockApp();
-    }
-
-    async function verifyPinInput(pin) {
-      const hash = await hashPin(pin);
-      return hash === getStoredPinHash();
+      try {
+        await savePin(pin, currentUser.uid);
+        pinSetupFirst = "";
+        unlockApp();
+      } catch (err) {
+        console.error("[BiznesHisob] PIN setup save failed:", err?.code || err);
+        setPinMsg(pinStorageErrorMessage(err), "error");
+        shakeDots();
+      }
     }
 
     async function onPinComplete() {
@@ -9134,9 +9405,15 @@
           pinSetupFirst = "";
           return;
         }
-        await savePin(pinBuffer, currentUser.uid);
-        pinSetupFirst = "";
-        unlockApp();
+        try {
+          await savePin(pinBuffer, currentUser.uid);
+          pinSetupFirst = "";
+          unlockApp();
+        } catch (err) {
+          console.error("[BiznesHisob] PIN reset save failed:", err?.code || err);
+          setPinMsg(pinStorageErrorMessage(err), "error");
+          shakeDots();
+        }
         resetPinBuffer();
         return;
       }
@@ -9169,13 +9446,21 @@
           pinSetupFirst = "";
           return;
         }
-        await savePin(pinBuffer, currentUser.uid);
-        pinSetupFirst = "";
-        setPinMsg(t("pin.updated"));
-        setTimeout(() => {
-          if (appUnlocked) hidePinScreen();
-          else unlockApp();
-        }, 800);
+        try {
+          await savePin(pinBuffer, currentUser.uid);
+          pinSetupFirst = "";
+          pinChangeActive = false;
+          clearPinChangeHistoryFlag();
+          setPinMsg(t("pin.updated"));
+          setTimeout(() => {
+            if (appUnlocked) hidePinScreen();
+            else unlockApp();
+          }, 800);
+        } catch (err) {
+          console.error("[BiznesHisob] PIN change save failed:", err?.code || err);
+          setPinMsg(pinStorageErrorMessage(err), "error");
+          shakeDots();
+        }
         return;
       }
 
@@ -9191,6 +9476,18 @@
             shakeDots();
           }
           return;
+        }
+        const enteredPin = pinBuffer;
+        if (sessionPinSource === "legacy" && currentUser) {
+          try {
+            await savePin(enteredPin, currentUser.uid);
+          } catch (err) {
+            console.error("[BiznesHisob] PIN migration failed:", err?.code || err);
+            // Keep legacy localStorage; do not clear it. Unlock still allowed on this device.
+            setPinMsg(t("pin.migrateFail"), "error");
+            unlockApp();
+            return;
+          }
         }
         unlockApp();
       }
@@ -9298,7 +9595,24 @@
         return;
       }
       pinSetupFirst = "";
+      pinChangeActive = true;
+      pushPinChangeHistory();
       showPinScreen("change-old");
+    });
+
+    pinChangeCancelBtn?.addEventListener("click", () => {
+      cancelPinChange(false);
+    });
+
+    window.addEventListener("popstate", () => {
+      if (!pinChangeActive) return;
+      if (!pinScreen?.classList.contains("visible")) {
+        pinChangeActive = false;
+        pinChangeHistoryPushed = false;
+        return;
+      }
+      if (!isPinChangeMode()) return;
+      cancelPinChange(true);
     });
 
     settingsOpenBtn?.addEventListener("click", openSettings);
@@ -9390,15 +9704,68 @@
 
     logoutConfirm?.addEventListener("click", handleLogout);
 
-    function initPinSecurity(uid) {
+    async function initPinSecurity(uid) {
       clearAuthFallbackTimer();
       appUnlocked = false;
-      if (!hasPinForUser(uid)) {
-        pinAttempts = 0;
-        clearPinSecurityState(uid);
-        showPinScreen("setup");
+      sessionPinRecord = null;
+      sessionPinUid = null;
+      sessionPinSource = null;
+
+      let cloudState = { kind: "unknown", pin: null };
+      try {
+        cloudState = await resolveCloudPinState(uid);
+      } catch (err) {
+        console.error("[BiznesHisob] PIN cloud resolve failed:", err?.code || err);
+        cloudState = { kind: "unknown", pin: null, error: err };
+      }
+
+      if (cloudState.kind === "pin" && cloudState.pin) {
+        sessionPinRecord = cloudState.pin;
+        sessionPinUid = uid;
+        sessionPinSource = "cloud";
+        writePinCache(uid, cloudState.pin);
+      } else if (cloudState.kind === "absent") {
+        // Online server confirmed no account PIN — legacy local hash may still migrate.
+        const legacyHash = localStorage.getItem(PIN_KEY);
+        const legacyUid = localStorage.getItem(PIN_UID_KEY);
+        if (legacyHash && legacyUid === uid) {
+          sessionPinRecord = { legacy: true, hash: legacyHash };
+          sessionPinUid = uid;
+          sessionPinSource = "legacy";
+        }
+      } else {
+        // Unknown (offline / empty cache / read error): only trusted local sources.
+        const cached = readPinCache(uid);
+        if (cached) {
+          sessionPinRecord = cached;
+          sessionPinUid = uid;
+          sessionPinSource = "cloud";
+        } else {
+          const legacyHash = localStorage.getItem(PIN_KEY);
+          const legacyUid = localStorage.getItem(PIN_UID_KEY);
+          if (legacyHash && legacyUid === uid) {
+            sessionPinRecord = { legacy: true, hash: legacyHash };
+            sessionPinUid = uid;
+            sessionPinSource = "legacy";
+          }
+        }
+      }
+
+      if (!sessionPinRecord) {
+        if (cloudState.kind === "absent") {
+          pinAttempts = 0;
+          clearPinSecurityState(uid);
+          showPinScreen("setup");
+          return;
+        }
+        // Do NOT open setup when PIN existence is uncertain or read failed.
+        showPinScreen("unlock");
+        setKeypadEnabled(false);
+        pinForgot?.classList.add("hidden");
+        setPinMsg(t("pin.networkError"), "error");
         return;
       }
+
       loadPinSecurityState(uid);
       if (isLockoutActive()) {
         showPinScreen("unlock");
@@ -10883,7 +11250,7 @@
       appUnlocked = false;
       appScreen.classList.add("hidden");
       refreshIcons();
-      if (user) initPinSecurity(user.uid);
+      if (user) void initPinSecurity(user.uid);
     }
 
     function isOnboarded() {
@@ -10901,7 +11268,7 @@
       if (postOnboardingView === "app" && currentUser) {
         appUnlocked = false;
         appScreen.classList.add("hidden");
-        initPinSecurity(currentUser.uid);
+        void initPinSecurity(currentUser.uid);
       } else {
         showView(postOnboardingView);
         releaseAuthBootVisibility();
@@ -11015,7 +11382,7 @@
         if (currentUser && postOnboardingView === "app") {
           appUnlocked = false;
           appScreen.classList.add("hidden");
-          initPinSecurity(currentUser.uid);
+          void initPinSecurity(currentUser.uid);
         } else {
           showView(postOnboardingView);
           releaseAuthBootVisibility();
@@ -13490,6 +13857,9 @@
         txCounterSynced = false;
         cachePremiumStatus(false);
         appUnlocked = false;
+        sessionPinRecord = null;
+        sessionPinUid = null;
+        sessionPinSource = null;
         hidePinScreen();
         closePremiumModal();
         closeExportModal(true);
