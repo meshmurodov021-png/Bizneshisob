@@ -3095,6 +3095,36 @@
       gap: 0.65rem;
     }
 
+    .tx-date-separator {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0.15rem 0 -0.15rem;
+      padding: 0.15rem 0.15rem;
+      list-style: none;
+      pointer-events: none;
+    }
+
+    .tx-date-separator:first-child {
+      margin-top: 0;
+    }
+
+    .tx-date-separator-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      opacity: 0.95;
+    }
+
+    .tx-date-separator-label {
+      flex-shrink: 0;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
     .transaction-item {
       display: flex;
       align-items: center;
@@ -6562,6 +6592,16 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="deleteTxModal" role="dialog" aria-modal="true" aria-labelledby="deleteTxModalTitle">
+    <div class="profile-sheet">
+      <h3 id="deleteTxModalTitle" data-i18n="list.deleteConfirm">Haqiqatan ham oʻchirmoqchimisiz?</h3>
+      <div class="profile-sheet-actions">
+        <button type="button" class="profile-sheet-btn secondary" id="deleteTxCancel" data-i18n="profile.no">Yo'q</button>
+        <button type="button" class="profile-sheet-btn primary" id="deleteTxConfirm" style="background:linear-gradient(135deg,#ef4444,#dc2626)" data-i18n="profile.yes">Ha</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
     import {
@@ -7164,6 +7204,10 @@
         "list.exportAria": "Hisobotni eksport qilish",
         "list.count": "{{n}} ta",
         "list.empty": "Hali operatsiyalar yoʻq.<br>«+» tugmasi orqali birinchi yozuvni kiriting.",
+        "list.today": "Bugun",
+        "list.yesterday": "Kecha",
+        "list.deleteConfirm": "Haqiqatan ham oʻchirmoqchimisiz?",
+        "list.deleteAria": "Oʻchirish",
         "tx.income": "Daromad",
         "tx.expense": "Xarajat",
         "profile.free": "Bepul",
@@ -7448,6 +7492,10 @@
         "list.exportAria": "Экспорт отчёта",
         "list.count": "{{n}} шт.",
         "list.empty": "Операций пока нет.<br>Нажмите «+» чтобы добавить первую запись.",
+        "list.today": "Сегодня",
+        "list.yesterday": "Вчера",
+        "list.deleteConfirm": "Вы действительно хотите удалить?",
+        "list.deleteAria": "Удалить",
         "tx.income": "Доход",
         "tx.expense": "Расход",
         "profile.free": "Бесплатно",
@@ -7732,6 +7780,10 @@
         "list.exportAria": "Export report",
         "list.count": "{{n}} items",
         "list.empty": "No transactions yet.<br>Tap «+» to add your first entry.",
+        "list.today": "Today",
+        "list.yesterday": "Yesterday",
+        "list.deleteConfirm": "Are you sure you want to delete this?",
+        "list.deleteAria": "Delete",
         "tx.income": "Income",
         "tx.expense": "Expense",
         "profile.free": "Free",
@@ -8127,6 +8179,10 @@
     const logoutModal = document.getElementById("logoutModal");
     const logoutConfirm = document.getElementById("logoutConfirm");
     const logoutCancel = document.getElementById("logoutCancel");
+    const deleteTxModal = document.getElementById("deleteTxModal");
+    const deleteTxConfirm = document.getElementById("deleteTxConfirm");
+    const deleteTxCancel = document.getElementById("deleteTxCancel");
+    let pendingDeleteTxId = null;
 
     const openBasketModalBtn = document.getElementById("openBasketModalBtn");
     const basketModal = document.getElementById("basketModal");
@@ -8208,6 +8264,7 @@
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
         logoutModal?.classList.contains("open") ||
+        deleteTxModal?.classList.contains("open") ||
         currencyModal?.classList.contains("open")
       );
     }
@@ -9871,10 +9928,11 @@
       });
     }
 
-    [profileEditModal, langModal, logoutModal, currencyModal].forEach(modal => {
+    [profileEditModal, langModal, logoutModal, currencyModal, deleteTxModal].forEach(modal => {
       modal?.addEventListener("click", e => {
         if (e.target === modal) {
           if (modal === currencyModal) closeCurrencyModal();
+          else if (modal === deleteTxModal) closeDeleteTxModal();
           else closeProfileModal(modal);
         }
       });
@@ -9882,6 +9940,24 @@
 
     logoutBtn?.addEventListener("click", () => openProfileModal(logoutModal));
     logoutCancel?.addEventListener("click", () => closeProfileModal(logoutModal));
+
+    function closeDeleteTxModal() {
+      pendingDeleteTxId = null;
+      closeProfileModal(deleteTxModal);
+    }
+
+    function openDeleteTxModal(id) {
+      if (!id || String(id).startsWith("pending_")) return;
+      pendingDeleteTxId = id;
+      openProfileModal(deleteTxModal);
+    }
+
+    deleteTxCancel?.addEventListener("click", closeDeleteTxModal);
+    deleteTxConfirm?.addEventListener("click", async () => {
+      const id = pendingDeleteTxId;
+      closeDeleteTxModal();
+      if (id) await deleteTransaction(id);
+    });
 
     async function handleLogout() {
       setBusy(true);
@@ -10687,6 +10763,7 @@
         profileEditModal?.classList.contains("open") ||
         langModal?.classList.contains("open") ||
         logoutModal?.classList.contains("open") ||
+        deleteTxModal?.classList.contains("open") ||
         currencyModal?.classList.contains("open");
       document.body.style.overflow = locked ? "hidden" : "";
     }
@@ -10785,7 +10862,8 @@
     clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
 
     function closeAllProfileModals() {
-      [profileEditModal, langModal, logoutModal, currencyModal].forEach(modal => closeProfileModal(modal));
+      pendingDeleteTxId = null;
+      [profileEditModal, langModal, logoutModal, currencyModal, deleteTxModal].forEach(modal => closeProfileModal(modal));
     }
 
     document.addEventListener("keydown", e => {
@@ -10796,6 +10874,10 @@
       }
       if (logoutModal?.classList.contains("open")) {
         closeProfileModal(logoutModal);
+        return;
+      }
+      if (deleteTxModal?.classList.contains("open")) {
+        closeDeleteTxModal();
         return;
       }
       if (profileEditModal?.classList.contains("open")) {
@@ -10915,6 +10997,48 @@
     function getTxDateKey(tx) {
       const parsed = parseTxDate(tx);
       return parsed ? getLocalDateKey(parsed) : null;
+    }
+
+    function getYesterdayLocalDateKey(refDate = new Date()) {
+      const ref = normalizeToLocalDay(refDate);
+      if (!ref) return null;
+      const yest = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate() - 1, 12, 0, 0, 0);
+      return getLocalDateKey(yest);
+    }
+
+    const LIST_MONTH_NAMES = {
+      uz: ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"],
+      ru: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
+      en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    };
+
+    /** List heading: Bugun / Kecha / 25-avgust (local calendar day, no UTC shift). */
+    function formatListDateHeading(dateKey, refDate = new Date()) {
+      if (!dateKey) return "";
+      const todayKey = getLocalDateKey(refDate);
+      const yesterdayKey = getYesterdayLocalDateKey(refDate);
+      if (dateKey === todayKey) return t("list.today");
+      if (dateKey === yesterdayKey) return t("list.yesterday");
+      const [year, month, day] = dateKey.split("-").map(Number);
+      if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) return dateKey;
+      const months = LIST_MONTH_NAMES[currentLang] || LIST_MONTH_NAMES.uz;
+      const monthName = months[month - 1] || "";
+      const showYear = year !== (normalizeToLocalDay(refDate)?.getFullYear?.() ?? new Date().getFullYear());
+      if (currentLang === "uz") {
+        return showYear ? `${day}-${monthName} ${year}` : `${day}-${monthName}`;
+      }
+      return showYear ? `${day} ${monthName} ${year}` : `${day} ${monthName}`;
+    }
+
+    function buildDateSeparatorHtml(dateKey) {
+      const label = formatListDateHeading(dateKey);
+      return `
+          <li class="tx-date-separator" data-date-key="${escapeHtml(dateKey || "")}" aria-label="${escapeHtml(label)}">
+            <span class="tx-date-separator-line" aria-hidden="true"></span>
+            <span class="tx-date-separator-label">${escapeHtml(label)}</span>
+            <span class="tx-date-separator-line" aria-hidden="true"></span>
+          </li>
+        `;
     }
 
     function toFilterDate(dateInput) {
@@ -13921,7 +14045,7 @@
             </div>
             <div class="transaction-right">
               <span class="transaction-amount ${tx.type}">${sign}${formatMoney(tx.amount)}</span>
-              <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="Oʻchirish"${isPending ? " disabled" : ""}><i data-lucide="trash-2"></i></button>
+              <button class="delete-btn" type="button" data-id="${tx.id}" aria-label="${escapeHtml(t("list.deleteAria"))}"${isPending ? " disabled" : ""}><i data-lucide="trash-2"></i></button>
             </div>
           </li>
         `;
@@ -13929,7 +14053,7 @@
 
     function bindDeleteButton(btn) {
       const id = btn.dataset.id;
-      btn.onclick = () => deleteTransaction(id);
+      btn.onclick = () => openDeleteTxModal(id);
     }
 
     function reconcilePendingListRow() {
@@ -13939,9 +14063,10 @@
       if (transactions.some(tx => String(tx.id).startsWith("pending_"))) return false;
 
       const topTx = transactions[0];
+      const firstItem = transactionList.querySelector(".transaction-item");
       pendingRows.forEach(row => {
         row.classList.remove("is-pending");
-        if (topTx && row === transactionList.firstElementChild) {
+        if (topTx && row === firstItem) {
           const delBtn = row.querySelector(".delete-btn");
           if (delBtn) {
             delBtn.dataset.id = topTx.id;
@@ -13954,20 +14079,9 @@
     }
 
     function prependTransactionRow(tx) {
-      const hasItems = transactions.length > 0;
-      emptyState.style.display = hasItems ? "none" : "block";
-      transactionList.style.display = hasItems ? "flex" : "none";
-      if (!hasItems || !transactionList) return;
-
-      const wrap = document.createElement("div");
-      wrap.innerHTML = buildTransactionRowHtml(tx).trim();
-      const row = wrap.firstElementChild;
-      if (!row) return;
-
-      transactionList.insertBefore(row, transactionList.firstChild);
-      const delBtn = row.querySelector(".delete-btn");
-      if (delBtn) bindDeleteButton(delBtn);
-      refreshIconsScoped(row);
+      renderTransactionList();
+      const first = transactionList?.querySelector(".transaction-item");
+      if (first) refreshIconsScoped(first);
     }
 
     function refreshIconsScoped(root) {
@@ -14001,7 +14115,17 @@
       const hasItems = transactions.length > 0;
       emptyState.style.display = hasItems ? "none" : "block";
       transactionList.style.display = hasItems ? "flex" : "none";
-      transactionList.innerHTML = transactions.map(tx => buildTransactionRowHtml(tx)).join("");
+      const parts = [];
+      let lastDateKey = null;
+      for (const tx of transactions) {
+        const dateKey = getTxDateKey(tx) || "";
+        if (dateKey !== lastDateKey) {
+          parts.push(buildDateSeparatorHtml(dateKey));
+          lastDateKey = dateKey;
+        }
+        parts.push(buildTransactionRowHtml(tx));
+      }
+      transactionList.innerHTML = parts.join("");
       transactionList.querySelectorAll(".delete-btn").forEach(bindDeleteButton);
       if (busy) {
         transactionList.querySelectorAll(".delete-btn").forEach(btn => {
