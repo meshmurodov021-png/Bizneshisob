@@ -4324,6 +4324,15 @@
       pointer-events: auto;
     }
 
+    /* Keep overlay clickable while fading out so "Yo'q" tap doesn't hit a delete button underneath. */
+    .modal-overlay.is-closing {
+      pointer-events: auto;
+    }
+
+    #deleteTxModal {
+      z-index: 620;
+    }
+
     .premium-modal {
       width: 100%;
       max-width: 400px;
@@ -8383,7 +8392,7 @@
           createdAt: data.createdAt || null,
           isPremium: !!data.isPremium,
           totalTransactionsAdded: totalAdded,
-          displayName: data.displayName || "",
+          displayName: String(data.displayName || "").trim() || userProfile.displayName || "",
           avatar: data.avatar || data.avatarType || "",
           avatarType: data.avatarType || data.avatar || "",
           avatarData: data.avatarData || ""
@@ -9133,7 +9142,9 @@
 
     /** First name from registration displayName (Firestore). Never hardcoded. */
     function getPinDisplayName() {
-      const raw = String(userProfile?.displayName || "").trim();
+      const fromProfile = String(userProfile?.displayName || "").trim();
+      const fromCache = currentUser?.uid ? readCachedDisplayName(currentUser.uid) : "";
+      const raw = fromProfile || fromCache;
       if (!raw) return "";
       return raw.split(/\s+/)[0];
     }
@@ -9149,6 +9160,9 @@
       try {
         localStorage.setItem(displayNameCacheKey(uid), cleaned);
       } catch (_) { /* ignore */ }
+      if (pinScreen?.classList.contains("visible") && pinMode === "unlock") {
+        applyPinUnlockGreeting();
+      }
     }
 
     function readCachedDisplayName(uid) {
@@ -9201,9 +9215,9 @@
           pinSub.textContent = "";
           pinSub.style.display = "none";
         }
-      } else {
-        pinTitle.textContent = t("pin.title.unlock");
+        return;
       }
+      pinTitle.textContent = t("pin.title.unlock");
     }
 
     function showPinSubview(view) {
@@ -9943,20 +9957,33 @@
 
     function closeDeleteTxModal() {
       pendingDeleteTxId = null;
+      if (!deleteTxModal) return;
+      deleteTxModal.classList.add("is-closing");
       closeProfileModal(deleteTxModal);
+      window.setTimeout(() => deleteTxModal?.classList.remove("is-closing"), 400);
     }
 
     function openDeleteTxModal(id) {
       if (!id || String(id).startsWith("pending_")) return;
       pendingDeleteTxId = id;
+      deleteTxModal?.classList.remove("is-closing");
       openProfileModal(deleteTxModal);
     }
 
-    deleteTxCancel?.addEventListener("click", closeDeleteTxModal);
-    deleteTxConfirm?.addEventListener("click", async () => {
+    deleteTxCancel?.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeDeleteTxModal();
+    });
+    deleteTxConfirm?.addEventListener("click", async e => {
+      e.preventDefault();
+      e.stopPropagation();
       const id = pendingDeleteTxId;
       closeDeleteTxModal();
       if (id) await deleteTransaction(id);
+    });
+    deleteTxModal?.querySelector(".profile-sheet")?.addEventListener("click", e => {
+      e.stopPropagation();
     });
 
     async function handleLogout() {
@@ -10435,7 +10462,10 @@
               totalTransactionsAdded: typeof data.totalTransactionsAdded === "number"
                 ? data.totalTransactionsAdded
                 : undefined,
-              displayName: data.displayName || "",
+              displayName: String(data.displayName || "").trim()
+                || userProfile.displayName
+                || readCachedDisplayName(uid)
+                || "",
               avatar: data.avatar || data.avatarType || "",
               avatarType: data.avatarType || data.avatar || "",
               avatarData: data.avatarData || ""
@@ -10452,7 +10482,7 @@
               isPremium: false,
               totalTransactionsAdded: 0,
               email: "",
-              displayName: "",
+              displayName: readCachedDisplayName(uid) || userProfile.displayName || "",
               avatar: "",
               avatarType: "",
               avatarData: ""
