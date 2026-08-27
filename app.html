@@ -5597,6 +5597,18 @@
       cursor: not-allowed;
     }
 
+    /* Correct PIN: freeze input look — do not dim / darken keys */
+    .pin-keypad.pin-keys-frozen .pin-key {
+      pointer-events: none;
+      opacity: 1 !important;
+      transform: none !important;
+      background: var(--pin-key-bg) !important;
+      border-color: var(--border) !important;
+      color: var(--text) !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+
     .pin-key.empty { visibility: hidden; pointer-events: none; }
     .pin-key.back { font-size: 1.1rem; }
 
@@ -6693,6 +6705,8 @@
     const TX_LIMIT_CACHE_PREFIX = "bh-tx-limit-";
     let userProfileLimitReady = false;
     let lastKnownLimitCount = null;
+    /** UID that lastKnownLimitCount / in-memory limit UI belongs to (prevents cross-account bleed). */
+    let limitCountUid = null;
 
     const kategoriyaRanglariDark = {
       sotuv: "#22C55E",
@@ -6934,9 +6948,16 @@
 
     function rememberLimitCount(count) {
       if (typeof count !== "number" || !Number.isFinite(count) || count < 0) return;
-      lastKnownLimitCount =
-        typeof lastKnownLimitCount === "number" ? Math.max(lastKnownLimitCount, count) : count;
-      if (currentUser?.uid) writeCachedLimitCount(currentUser.uid, lastKnownLimitCount);
+      const uid = currentUser?.uid;
+      if (!uid) return;
+      if (limitCountUid !== uid) {
+        limitCountUid = uid;
+        lastKnownLimitCount = count;
+      } else {
+        lastKnownLimitCount =
+          typeof lastKnownLimitCount === "number" ? Math.max(lastKnownLimitCount, count) : count;
+      }
+      writeCachedLimitCount(uid, lastKnownLimitCount);
     }
 
     function isLimitCountReady() {
@@ -6945,16 +6966,27 @@
 
     /** Profile limit display: cache first, then Firestore; never flicker down to 0. */
     function getProfileLimitDisplayCount() {
+      const uid = currentUser?.uid;
+      if (!uid) return null;
+      // Never reuse another account's in-memory counter.
+      if (limitCountUid && limitCountUid !== uid) {
+        lastKnownLimitCount = null;
+        limitCountUid = uid;
+      }
       if (isLimitCountReady()) {
         const n = getTotalTransactionsAdded();
         rememberLimitCount(n);
         return n;
       }
-      const cached = currentUser?.uid ? readCachedLimitCount(currentUser.uid) : null;
-      if (typeof lastKnownLimitCount === "number") {
+      const cached = readCachedLimitCount(uid);
+      if (limitCountUid === uid && typeof lastKnownLimitCount === "number") {
         return Math.max(lastKnownLimitCount, cached ?? 0);
       }
-      if (cached !== null) return cached;
+      if (cached !== null) {
+        limitCountUid = uid;
+        lastKnownLimitCount = cached;
+        return cached;
+      }
       return null;
     }
 
@@ -7956,7 +7988,7 @@
     let currentUser = null;
     let transactions = [];
     let userProfile = {
-      isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
+      isPremium: false,
       totalTransactionsAdded: undefined,
       email: "",
       displayName: "",
@@ -8954,9 +8986,20 @@
     }
 
     function setKeypadEnabled(on) {
-      pinKeypad.querySelectorAll(".pin-key").forEach(k => {
+      pinKeypad?.querySelectorAll(".pin-key").forEach(k => {
         k.disabled = !on;
       });
+      if (on) pinKeypad?.classList.remove("pin-keys-frozen");
+    }
+
+    function freezePinKeysLook() {
+      // Block further taps without greying out the digits.
+      pinKeypad?.classList.add("pin-keys-frozen");
+      pinKeypad?.querySelectorAll(".pin-key").forEach(k => {
+        k.disabled = false;
+        k.blur();
+      });
+      try { document.activeElement?.blur(); } catch (_) { /* ignore */ }
     }
 
     function pinLockoutKey(uid) {
@@ -9459,6 +9502,7 @@
       phoneConfirmationResult = null;
       resetPinBuffer();
       pinChangeCancelBtn?.classList.add("hidden");
+      pinKeypad?.classList.remove("pin-keys-frozen");
       if (lockoutTimer) {
         clearInterval(lockoutTimer);
         lockoutTimer = null;
@@ -9600,6 +9644,7 @@
         if (!(await verifyPinInput(pinBuffer))) {
           pinAttempts++;
           if (currentUser) savePinSecurityState(currentUser.uid);
+          pinKeypad?.classList.remove("pin-keys-frozen");
           setPinDotsFeedback("error");
           pinDots.forEach(d => {
             d.classList.add("shake");
@@ -9612,12 +9657,15 @@
             }, 420);
           } else {
             setPinMsg(t("pin.wrongLeft", { n: MAX_PIN_ATTEMPTS - pinAttempts }), "error");
-            setTimeout(() => resetPinBuffer(), 420);
+            setTimeout(() => {
+              resetPinBuffer();
+              setKeypadEnabled(true);
+            }, 420);
           }
           return;
         }
         setPinDotsFeedback("ok");
-        setKeypadEnabled(false);
+        freezePinKeysLook();
         const enteredPin = pinBuffer;
         const finishUnlock = () => unlockApp();
         if (sessionPinSource === "legacy" && currentUser) {
@@ -9639,6 +9687,7 @@
       if (isLockoutActive()) return;
       if (key === "back") {
         pinBuffer = pinBuffer.slice(0, -1);
+        pinKeypad?.classList.remove("pin-keys-frozen");
         updatePinDots();
         return;
       }
@@ -9646,6 +9695,8 @@
       pinBuffer += key;
       updatePinDots();
       if (pinBuffer.length === PIN_LEN) {
+        // Keep digit buttons at normal color while verifying (no :active darkening).
+        freezePinKeysLook();
         setTimeout(() => onPinComplete(), 120);
       }
     }
@@ -10189,8 +10240,37 @@
       return payload;
     }
 
-    function cachePremiumStatus(isPremium) {
-      localStorage.setItem(PREMIUM_CACHE_KEY, isPremium ? "1" : "0");
+    function premiumCacheKey(uid) {
+      return uid ? `${PREMIUM_CACHE_KEY}_${uid}` : PREMIUM_CACHE_KEY;
+    }
+
+    function readCachedPremium(uid) {
+      if (!uid) return false;
+      try {
+        return localStorage.getItem(premiumCacheKey(uid)) === "1";
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function cachePremiumStatus(isPremium, uid = currentUser?.uid) {
+      if (!uid) return;
+      try {
+        localStorage.setItem(premiumCacheKey(uid), isPremium ? "1" : "0");
+      } catch (_) {}
+    }
+
+    function clearLimitDisplayUi() {
+      lastKnownLimitCount = null;
+      limitCountUid = null;
+      userProfileLimitReady = false;
+      if (txLimitText) txLimitText.textContent = `—/${FREE_TX_LIMIT}`;
+      if (upgradeProgressLabel) {
+        upgradeProgressLabel.textContent = usageProgressLabel(0, FREE_TX_LIMIT);
+      }
+      setUsageProgressFill(upgradeProgressFill, 0, FREE_TX_LIMIT);
+      setUsageProgressFill(statsProgressFill, 0, FREE_TX_LIMIT);
+      setProfileLimitLoading(true);
     }
 
     function isPremiumUser() {
@@ -10289,7 +10369,7 @@
               txCounterSynced = true;
               rememberLimitCount(data.totalTransactionsAdded);
             }
-            cachePremiumStatus(userProfile.isPremium);
+            cachePremiumStatus(userProfile.isPremium, uid);
           } else {
             userProfileLimitReady = true;
             userProfile = {
@@ -10301,7 +10381,7 @@
               avatarType: "",
               avatarData: ""
             };
-            cachePremiumStatus(false);
+            cachePremiumStatus(false, uid);
             rememberLimitCount(0);
           }
           if (userProfile.displayName) {
@@ -10485,10 +10565,7 @@
       const monthStartKey = ref
         ? `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`
         : null;
-      const threeMonthsStart = ref
-        ? new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 12, 0, 0, 0)
-        : null;
-      const threeMonthsStartKey = threeMonthsStart ? getLocalDateKey(threeMonthsStart) : null;
+      const quarterKeys = getCalendarQuarterDateKeys(refDate);
 
       const nets = { today: 0, week: 0, month: 0, "3months": 0 };
 
@@ -10508,7 +10585,7 @@
         if (monthStartKey && txKey >= monthStartKey && txKey <= refKey) {
           nets.month += signed;
         }
-        if (threeMonthsStartKey && txKey >= threeMonthsStartKey && txKey <= refKey) {
+        if (quarterKeys && txKey >= quarterKeys.startKey && txKey <= quarterKeys.endKey) {
           nets["3months"] += signed;
         }
       }
@@ -10674,7 +10751,7 @@
         const snap = await getDoc(userDocRef(currentUser.uid));
         if (snap.exists() && snap.data().isPremium) {
           userProfile.isPremium = true;
-          cachePremiumStatus(true);
+          cachePremiumStatus(true, currentUser.uid);
           updatePremiumUI();
           paymentChecking.textContent = t("premium.activated");
           setTimeout(() => {
@@ -10877,11 +10954,39 @@
     }
 
     /**
+     * Calendar quarter for "3 oy" stats (not a rolling last-90-days window).
+     * Q1: Jan–Mar, Q2: Apr–Jun, Q3: Jul–Sep, Q4: Oct–Dec.
+     * start inclusive, endExclusive = first day of next quarter (exclusive).
+     * Stats end is min(today, last day of quarter) inclusive via date keys.
+     */
+    function getCalendarQuarterBounds(refDate = new Date()) {
+      const ref = normalizeToLocalDay(refDate);
+      if (!ref) return null;
+      const quarterIndex = Math.floor(ref.getMonth() / 3);
+      const start = new Date(ref.getFullYear(), quarterIndex * 3, 1, 0, 0, 0, 0);
+      const endExclusive = new Date(ref.getFullYear(), quarterIndex * 3 + 3, 1, 0, 0, 0, 0);
+      const endInclusive = new Date(ref.getFullYear(), quarterIndex * 3 + 3, 0, 23, 59, 59, 999);
+      return { start, endExclusive, endInclusive, quarterIndex };
+    }
+
+    function getCalendarQuarterDateKeys(refDate = new Date()) {
+      const bounds = getCalendarQuarterBounds(refDate);
+      const refKey = getLocalDateKey(refDate);
+      if (!bounds || !refKey) return null;
+      const startKey = getLocalDateKey(bounds.start);
+      const quarterEndKey = getLocalDateKey(bounds.endInclusive);
+      if (!startKey || !quarterEndKey) return null;
+      // Cap at today when viewing the current quarter; full quarter when ref is past end.
+      const endKey = refKey < quarterEndKey ? refKey : quarterEndKey;
+      return { startKey, endKey, ...bounds };
+    }
+
+    /**
      * Period bounds for dashboard stats (all capped at end of today).
      * today:  same calendar day as refDate
      * week:   Monday 00:00 → refDate 23:59:59
      * month:  1st of month 00:00 → refDate 23:59:59
-     * 3months: refDate minus 3 months → refDate 23:59:59
+     * 3months: current calendar quarter start → min(today, quarter end) inclusive
      */
     function getStatsPeriodBounds(period, refDate = new Date()) {
       const ref = normalizeToLocalDay(refDate);
@@ -10901,8 +11006,10 @@
             end: todayEnd
           };
         case "3months": {
-          const start = new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 0, 0, 0, 0);
-          return { start, end: todayEnd };
+          const q = getCalendarQuarterBounds(ref);
+          if (!q) return null;
+          const end = todayEnd.getTime() <= q.endInclusive.getTime() ? todayEnd : q.endInclusive;
+          return { start: q.start, end };
         }
         default:
           return null;
@@ -10956,11 +11063,8 @@
           return monthStartKey ? txKey >= monthStartKey && txKey <= refKey : false;
         }
         case "3months": {
-          const ref = normalizeToLocalDay(refDate);
-          if (!ref) return false;
-          const start = new Date(ref.getFullYear(), ref.getMonth() - 3, ref.getDate(), 12, 0, 0, 0);
-          const startKey = getLocalDateKey(start);
-          return startKey ? txKey >= startKey && txKey <= refKey : false;
+          const q = getCalendarQuarterDateKeys(refDate);
+          return q ? txKey >= q.startKey && txKey <= q.endKey : false;
         }
         default:
           return false;
@@ -11554,8 +11658,14 @@
 
     onboardingSkip?.addEventListener("click", completeOnboarding);
     onboardingNext?.addEventListener("click", () => nextOnboardingSlide(true));
-    onboardingStart?.addEventListener("click", completeOnboarding);
-    onboardingLogin?.addEventListener("click", completeOnboarding);
+    onboardingStart?.addEventListener("click", () => {
+      setAuthMode("register");
+      completeOnboarding();
+    });
+    onboardingLogin?.addEventListener("click", () => {
+      setAuthMode("login");
+      completeOnboarding();
+    });
 
     onboardingScreen?.addEventListener("touchstart", e => {
       onboardingTouchStartX = e.changedTouches[0].screenX;
@@ -12698,17 +12808,22 @@
         authForm.dataset.bound = "1";
         authForm.addEventListener("submit", async e => {
           e.preventDefault();
-          console.log("[BiznesHisob] Auth form submit:", authMode);
           clearAuthError();
           const email = authEmail.value.trim();
           const password = authPassword.value;
+
+          // Active tab is source of truth — never createUser while "Kirish" is selected.
+          const tabMode = document.querySelector(".auth-tab.active")?.dataset?.mode;
+          const mode = tabMode === "register" || tabMode === "login" ? tabMode : authMode;
+          if (mode !== authMode) setAuthMode(mode);
+          console.log("[BiznesHisob] Auth form submit:", mode);
 
           if (!email || password.length < 6) {
             showAuthError(t("auth.err.credentials"));
             return;
           }
 
-          if (authMode === "register") {
+          if (mode === "register") {
             const confirmPassword = authConfirmPassword?.value || "";
             if (confirmPassword.length < 6) {
               showAuthError(t("auth.err.credentials"));
@@ -12722,7 +12837,7 @@
 
           setBusy(true);
           try {
-            if (authMode === "register") {
+            if (mode === "register") {
               const fullName = authFullName?.value.trim() || "";
               console.log("[BiznesHisob] Register attempt:", email);
               const cred = await createUserWithEmailAndPassword(firebaseAuth, email, password);
@@ -12741,24 +12856,28 @@
                 throw regErr;
               }
             } else {
+              // LOGIN only — never createUserWithEmailAndPassword on this path.
               console.log("[BiznesHisob] Login attempt:", email);
-              hideAuthScreenNow();
               try {
                 await signInWithEmailAndPassword(firebaseAuth, email, password);
                 console.log("[BiznesHisob] Login successful");
+                // Auth screen is dismissed by handleAuthState after successful sign-in.
               } catch (loginErr) {
                 allowAuthScreen();
                 showView("auth");
+                hidePinScreen();
                 throw loginErr;
               }
             }
             authForm.reset();
             resetPasswordToggles();
+            if (mode === "login") setAuthMode("login");
           } catch (err) {
             console.error("[BiznesHisob] Auth error:", err.code || err.message);
             if (!firebaseAuth.currentUser) {
               allowAuthScreen();
               showView("auth");
+              hidePinScreen();
             }
             showAuthError(authErrorMessage(err.code));
           } finally {
@@ -13958,23 +14077,33 @@
         userCurrencies = [];
         currenciesHydrated = false;
         userDocEnsured = false;
-        userProfileLimitReady = false;
+        periodNetsCache = { fingerprint: "", nets: null };
+        chartDataBundleCache = null;
+        lastUiContentFingerprint = "";
+        clearLimitDisplayUi();
+        limitCountUid = user.uid;
         lastKnownLimitCount = readCachedLimitCount(user.uid);
+        userProfileLimitReady = false;
         const cachedName = readCachedDisplayName(user.uid);
         userProfile = {
-          isPremium: localStorage.getItem(PREMIUM_CACHE_KEY) === "1",
-          totalTransactionsAdded: undefined,
+          isPremium: readCachedPremium(user.uid),
+          totalTransactionsAdded: typeof lastKnownLimitCount === "number" ? lastKnownLimitCount : undefined,
           email: user.email || "",
           displayName: cachedName || "",
           avatar: "",
           avatarType: "",
           avatarData: ""
         };
+        // Only treat limit as ready when we have this uid's cached count (never another account).
+        if (typeof lastKnownLimitCount === "number") {
+          userProfileLimitReady = true;
+        }
         txCounterSynced = false;
 
         // Stop black boot screen immediately; PIN gate can start with cached name.
         showSessionBootLoading();
         navigateAfterAuth(user);
+        updatePremiumUI();
 
         void (async () => {
           try {
@@ -13983,7 +14112,6 @@
             console.error("User doc:", err);
           }
           subscribeUserProfile(user.uid);
-          if (typeof lastKnownLimitCount === "number") updatePremiumUI();
           subscribeCurrencies(user.uid);
           switchTab("home");
           render();
@@ -14010,8 +14138,10 @@
         transactions = [];
         userCurrencies = [];
         currenciesHydrated = false;
-        userProfileLimitReady = false;
-        lastKnownLimitCount = null;
+        periodNetsCache = { fingerprint: "", nets: null };
+        chartDataBundleCache = null;
+        lastUiContentFingerprint = "";
+        clearLimitDisplayUi();
         setProfilePullToRefreshLock(false);
         userProfile = {
           isPremium: false,
@@ -14023,7 +14153,6 @@
           avatarData: ""
         };
         txCounterSynced = false;
-        cachePremiumStatus(false);
         appUnlocked = false;
         sessionPinRecord = null;
         sessionPinUid = null;
