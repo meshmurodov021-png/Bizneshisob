@@ -10756,12 +10756,10 @@
         return periodNetsCache.nets;
       }
 
-      const ref = normalizeToLocalDay(refDate);
-      const weekStartKey = getLocalDateKey(getMondayOfWeek(refDate));
-      const monthStartKey = ref
-        ? `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`
-        : null;
-      const quarterKeys = getCalendarQuarterDateKeys(refDate);
+      const todayKeys = getStatsPeriodDateKeys("today", refDate);
+      const weekKeys = getStatsPeriodDateKeys("week", refDate);
+      const monthKeys = getStatsPeriodDateKeys("month", refDate);
+      const threeMonthKeys = getStatsPeriodDateKeys("3months", refDate);
 
       const nets = { today: 0, week: 0, month: 0, "3months": 0 };
 
@@ -10772,16 +10770,16 @@
         const amt = Number(tx.amount) || 0;
         const signed = tx.type === "income" ? amt : -amt;
 
-        if (txKey === refKey) {
+        if (todayKeys && txKey >= todayKeys.startKey && txKey <= todayKeys.endKey) {
           nets.today += signed;
         }
-        if (weekStartKey && txKey >= weekStartKey && txKey <= refKey) {
+        if (weekKeys && txKey >= weekKeys.startKey && txKey <= weekKeys.endKey) {
           nets.week += signed;
         }
-        if (monthStartKey && txKey >= monthStartKey && txKey <= refKey) {
+        if (monthKeys && txKey >= monthKeys.startKey && txKey <= monthKeys.endKey) {
           nets.month += signed;
         }
-        if (quarterKeys && txKey >= quarterKeys.startKey && txKey <= quarterKeys.endKey) {
+        if (threeMonthKeys && txKey >= threeMonthKeys.startKey && txKey <= threeMonthKeys.endKey) {
           nets["3months"] += signed;
         }
       }
@@ -11197,63 +11195,76 @@
       return monday;
     }
 
-    /**
-     * Calendar quarter for "3 oy" stats (not a rolling last-90-days window).
-     * Q1: Jan–Mar, Q2: Apr–Jun, Q3: Jul–Sep, Q4: Oct–Dec.
-     * start inclusive, endExclusive = first day of next quarter (exclusive).
-     * Stats end is min(today, last day of quarter) inclusive via date keys.
-     */
-    function getCalendarQuarterBounds(refDate = new Date()) {
+    function getSundayOfWeek(refDate = new Date()) {
+      const monday = getMondayOfWeek(refDate);
+      if (!monday) return null;
+      return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6, 12, 0, 0, 0);
+    }
+
+    /** First day of the 3-month window that includes the current calendar month (month-2 / 1). */
+    function getLast3MonthsStart(refDate = new Date()) {
       const ref = normalizeToLocalDay(refDate);
       if (!ref) return null;
-      const quarterIndex = Math.floor(ref.getMonth() / 3);
-      const start = new Date(ref.getFullYear(), quarterIndex * 3, 1, 0, 0, 0, 0);
-      const endExclusive = new Date(ref.getFullYear(), quarterIndex * 3 + 3, 1, 0, 0, 0, 0);
-      const endInclusive = new Date(ref.getFullYear(), quarterIndex * 3 + 3, 0, 23, 59, 59, 999);
-      return { start, endExclusive, endInclusive, quarterIndex };
-    }
-
-    function getCalendarQuarterDateKeys(refDate = new Date()) {
-      const bounds = getCalendarQuarterBounds(refDate);
-      const refKey = getLocalDateKey(refDate);
-      if (!bounds || !refKey) return null;
-      const startKey = getLocalDateKey(bounds.start);
-      const quarterEndKey = getLocalDateKey(bounds.endInclusive);
-      if (!startKey || !quarterEndKey) return null;
-      // Cap at today when viewing the current quarter; full quarter when ref is past end.
-      const endKey = refKey < quarterEndKey ? refKey : quarterEndKey;
-      return { startKey, endKey, ...bounds };
+      return new Date(ref.getFullYear(), ref.getMonth() - 2, 1, 0, 0, 0, 0);
     }
 
     /**
-     * Period bounds for dashboard stats (all capped at end of today).
-     * today:  same calendar day as refDate
-     * week:   Monday 00:00 → refDate 23:59:59
-     * month:  1st of month 00:00 → refDate 23:59:59
-     * 3months: current calendar quarter start → min(today, quarter end) inclusive
+     * Inclusive local YYYY-MM-DD keys for stats filters.
+     * today:    this calendar day only
+     * week:     Monday → Sunday of the current week
+     * month:    1st of this month → today (accumulates through month end)
+     * 3months:  first day of (current month − 2) → today
+     */
+    function getStatsPeriodDateKeys(period, refDate = new Date()) {
+      const ref = normalizeToLocalDay(refDate);
+      const refKey = getLocalDateKey(ref);
+      if (!ref || !refKey) return null;
+
+      switch (period) {
+        case "today":
+          return { startKey: refKey, endKey: refKey };
+        case "week": {
+          const startKey = getLocalDateKey(getMondayOfWeek(ref));
+          const endKey = getLocalDateKey(getSundayOfWeek(ref));
+          return startKey && endKey ? { startKey, endKey } : null;
+        }
+        case "month": {
+          const startKey = `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`;
+          return { startKey, endKey: refKey };
+        }
+        case "3months": {
+          const startKey = getLocalDateKey(getLast3MonthsStart(ref));
+          return startKey ? { startKey, endKey: refKey } : null;
+        }
+        default:
+          return null;
+      }
+    }
+
+    /**
+     * Period bounds for dashboard stats (local timezone, no UTC shift).
+     * Date keys are inclusive on both ends.
      */
     function getStatsPeriodBounds(period, refDate = new Date()) {
       const ref = normalizeToLocalDay(refDate);
       if (!ref) return null;
-      const todayEnd = endOfDay(ref);
 
       switch (period) {
         case "today":
-          return { start: startOfDay(ref), end: todayEnd };
+          return { start: startOfDay(ref), end: endOfDay(ref) };
         case "week": {
           const start = getMondayOfWeek(ref);
-          return start ? { start, end: todayEnd } : null;
+          const sunday = getSundayOfWeek(ref);
+          return start && sunday ? { start, end: endOfDay(sunday) } : null;
         }
         case "month":
           return {
             start: new Date(ref.getFullYear(), ref.getMonth(), 1, 0, 0, 0, 0),
-            end: todayEnd
+            end: endOfDay(ref)
           };
         case "3months": {
-          const q = getCalendarQuarterBounds(ref);
-          if (!q) return null;
-          const end = todayEnd.getTime() <= q.endInclusive.getTime() ? todayEnd : q.endInclusive;
-          return { start: q.start, end };
+          const start = getLast3MonthsStart(ref);
+          return start ? { start, end: endOfDay(ref) } : null;
         }
         default:
           return null;
@@ -11288,31 +11299,8 @@
     function isTxInPeriod(tx, period, refDate = new Date()) {
       const txKey = getTxDateKey(tx);
       if (!txKey) return false;
-
-      const refKey = getLocalDateKey(refDate);
-      if (!refKey) return false;
-
-      switch (period) {
-        case "today":
-          return txKey === refKey;
-        case "week": {
-          const weekStartKey = getLocalDateKey(getMondayOfWeek(refDate));
-          return weekStartKey ? txKey >= weekStartKey && txKey <= refKey : false;
-        }
-        case "month": {
-          const ref = normalizeToLocalDay(refDate);
-          const monthStartKey = ref
-            ? `${ref.getFullYear()}-${String(ref.getMonth() + 1).padStart(2, "0")}-01`
-            : null;
-          return monthStartKey ? txKey >= monthStartKey && txKey <= refKey : false;
-        }
-        case "3months": {
-          const q = getCalendarQuarterDateKeys(refDate);
-          return q ? txKey >= q.startKey && txKey <= q.endKey : false;
-        }
-        default:
-          return false;
-      }
+      const keys = getStatsPeriodDateKeys(period, refDate);
+      return !!(keys && txKey >= keys.startKey && txKey <= keys.endKey);
     }
 
     function filterTransactionsByPeriod(period) {
