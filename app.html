@@ -110,6 +110,13 @@
       --currency-symbol-border: rgba(124, 58, 237, 0.25);
       --currency-symbol-active-bg: rgba(255, 255, 255, 0.12);
       --currency-symbol-active-border: rgba(255, 255, 255, 0.2);
+      --update-toast-bg: rgba(15, 23, 42, 0.96);
+      --update-toast-text: #e8eaef;
+      --update-toast-muted: #94a3b8;
+      --update-toast-border: rgba(124, 58, 237, 0.45);
+      --update-toast-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      --update-toast-close: #94a3b8;
+      --update-toast-close-hover: #e8eaef;
     }
 
     /* Lucide icons */
@@ -3863,6 +3870,13 @@
       --currency-symbol-border: rgba(124, 58, 237, 0.22);
       --currency-symbol-active-bg: rgba(124, 58, 237, 0.18);
       --currency-symbol-active-border: rgba(124, 58, 237, 0.4);
+      --update-toast-bg: #ffffff;
+      --update-toast-text: #111827;
+      --update-toast-muted: #6b7280;
+      --update-toast-border: #e5e7eb;
+      --update-toast-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.04);
+      --update-toast-close: #6b7280;
+      --update-toast-close-hover: #111827;
     }
 
     html.light-theme body::before {
@@ -5277,28 +5291,37 @@
       z-index: 520;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       max-width: min(420px, calc(100% - 2rem));
-      padding: 0.7rem 0.85rem 0.7rem 1rem;
-      background: rgba(15, 23, 42, 0.96);
+      padding: 0.7rem 0.7rem 0.7rem 1rem;
+      background: var(--update-toast-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(124, 58, 237, 0.45);
+      border: 1px solid var(--update-toast-border);
       border-radius: 14px;
-      color: var(--text);
+      color: var(--update-toast-text);
       font-size: 0.86rem;
       font-weight: 600;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-      transition: transform 0.4s var(--ease), opacity 0.4s;
+      box-shadow: var(--update-toast-shadow);
+      opacity: 0;
+      transition: transform 0.4s var(--ease), opacity 0.4s, background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
       pointer-events: auto;
     }
 
     .update-toast.visible {
       transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
     .update-toast.hidden {
       display: none;
+    }
+
+    .update-toast-msg {
+      flex: 1;
+      min-width: 0;
+      color: var(--update-toast-text);
+      line-height: 1.35;
     }
 
     .update-toast-btn {
@@ -5314,6 +5337,46 @@
       font-family: inherit;
       cursor: pointer;
       white-space: nowrap;
+    }
+
+    .update-toast-btn:active {
+      transform: scale(0.97);
+    }
+
+    .update-toast-close {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--update-toast-close);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .update-toast-close:hover,
+    .update-toast-close:focus-visible {
+      color: var(--update-toast-close-hover);
+      outline: none;
+    }
+
+    @media (max-width: 380px) {
+      .update-toast {
+        gap: 0.45rem;
+        padding: 0.6rem 0.55rem 0.6rem 0.8rem;
+        font-size: 0.8rem;
+      }
+
+      .update-toast-btn {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.75rem;
+      }
     }
 
     .premium-limit-alert {
@@ -6538,8 +6601,9 @@
 
   <div class="export-toast hidden" id="exportToast" role="status" aria-live="polite"></div>
   <div class="update-toast hidden" id="updateToast" role="status" aria-live="polite">
-    <span id="updateToastText" data-i18n="update.available">Yangi versiya mavjud 🔄</span>
+    <span class="update-toast-msg" id="updateToastText" data-i18n="update.available">Yangi versiya mavjud 🔄</span>
     <button type="button" class="update-toast-btn" id="updateToastReload" data-i18n="update.reload">Yangilash</button>
+    <button type="button" class="update-toast-close" id="updateToastClose" data-i18n-aria="export.closeAria" aria-label="Yopish">×</button>
   </div>
 
   <div class="modal-overlay" id="profileEditModal" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
@@ -10167,6 +10231,7 @@
     const updateToast = document.getElementById("updateToast");
     const updateToastText = document.getElementById("updateToastText");
     const updateToastReload = document.getElementById("updateToastReload");
+    const updateToastClose = document.getElementById("updateToastClose");
     let swUpdateRefreshing = false;
     let swRegistration = null;
 
@@ -10224,6 +10289,7 @@
       });
 
       updateToastReload?.addEventListener("click", applyServiceWorkerUpdate);
+      updateToastClose?.addEventListener("click", hideUpdateToast);
 
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) swRegistration?.update().catch(() => {});
