@@ -2554,6 +2554,25 @@
       background: var(--stat-item-bg);
       border: 1px solid var(--border);
       animation: statFadeUp 0.45s var(--ease) backwards;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+
+    .period-stat-item:focus-visible {
+      outline: 2px solid rgba(124, 58, 237, 0.55);
+      outline-offset: 2px;
+    }
+
+    .period-stat-item.is-selected {
+      border-color: rgba(124, 58, 237, 0.55);
+      box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.28);
+      background: rgba(124, 58, 237, 0.14);
     }
 
     .period-stat-item:nth-child(1) { animation-delay: 0.05s; }
@@ -3927,6 +3946,12 @@
       background: #ffffff;
       border: 1px solid #f0f0f0;
       box-shadow: none;
+    }
+
+    html.light-theme .period-stat-item.is-selected {
+      background: rgba(124, 58, 237, 0.08);
+      border-color: rgba(124, 58, 237, 0.4);
+      box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.18);
     }
 
     html.light-theme .chart-card,
@@ -6244,7 +6269,7 @@
         <p class="section-title" data-i18n="stats.title">Statistika</p>
 
         <div class="card period-stats-card">
-          <div class="period-stats-grid" id="periodStatsGrid"></div>
+          <div class="period-stats-grid" id="periodStatsGrid" role="group" data-i18n-aria="stats.selectPeriodAria"></div>
         </div>
 
         <div class="card chart-card">
@@ -7263,6 +7288,7 @@
         "stats.periodWeek": "Bu hafta",
         "stats.periodMonth": "Bu oy",
         "stats.period3months": "3 oy",
+        "stats.selectPeriodAria": "Grafiklar davri",
         "stats.topExpense": "🔥 Top xarajatlar",
         "stats.topIncome": "💰 Top daromadlar",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -7551,6 +7577,7 @@
         "stats.periodWeek": "Эта неделя",
         "stats.periodMonth": "Этот месяц",
         "stats.period3months": "3 месяца",
+        "stats.selectPeriodAria": "Период графиков",
         "stats.topExpense": "🔥 Топ расходов",
         "stats.topIncome": "💰 Топ доходов",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -7839,6 +7866,7 @@
         "stats.periodWeek": "This week",
         "stats.periodMonth": "This month",
         "stats.period3months": "3 months",
+        "stats.selectPeriodAria": "Charts period",
         "stats.topExpense": "🔥 Top expenses",
         "stats.topIncome": "💰 Top income",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
@@ -8167,6 +8195,13 @@
     let chartsUpdatePending = false;
     let chartDataBundleCache = null;
     let periodNetsCache = { fingerprint: "", nets: null };
+    const STATS_CHART_PERIODS = ["today", "week", "month", "3months"];
+    const STATS_CHART_PERIOD_KEY = "bzh_stats_chart_period";
+    let statsChartPeriod = "month";
+    try {
+      const savedPeriod = localStorage.getItem(STATS_CHART_PERIOD_KEY);
+      if (STATS_CHART_PERIODS.includes(savedPeriod)) statsChartPeriod = savedPeriod;
+    } catch (_) { /* ignore */ }
 
     const onboardingScreen = document.getElementById("onboardingScreen");
     const onboardingTrack = document.getElementById("onboardingTrack");
@@ -10734,8 +10769,32 @@
       periodNetsCache = { fingerprint: "", nets: null };
     }
 
+    function getStatsChartPeriod() {
+      return STATS_CHART_PERIODS.includes(statsChartPeriod) ? statsChartPeriod : "month";
+    }
+
+    function getChartsFingerprint() {
+      return `${getTransactionsFingerprint()}|chartPeriod:${getStatsChartPeriod()}`;
+    }
+
+    function setStatsChartPeriod(period) {
+      if (!STATS_CHART_PERIODS.includes(period) || period === statsChartPeriod) return;
+      statsChartPeriod = period;
+      try {
+        localStorage.setItem(STATS_CHART_PERIOD_KEY, period);
+      } catch (_) { /* ignore */ }
+      renderPeriodStats();
+      chartDataBundleCache = null;
+      lastChartsFingerprint = "";
+      if (currentTab === "home") {
+        scheduleChartsRender({ force: true, deferMs: 40 });
+      } else {
+        chartsUpdatePending = true;
+      }
+    }
+
     function buildChartDataBundle() {
-      const fingerprint = getTransactionsFingerprint();
+      const fingerprint = getChartsFingerprint();
       if (chartDataBundleCache && chartDataBundleCache.fingerprint === fingerprint) {
         return chartDataBundleCache.bundle;
       }
@@ -13526,7 +13585,7 @@
     }
 
     function aggregateCategoryBreakdown(type) {
-      const list = filterTransactionsByPeriod("month");
+      const list = filterTransactionsByPeriod(getStatsChartPeriod());
       const map = new Map();
       list.filter(tx => tx.type === type).forEach(tx => {
         const cat = getCategoryForTx(tx);
@@ -13714,7 +13773,7 @@
     }
 
     async function renderChartsIfNeeded(force = false) {
-      const fingerprint = getTransactionsFingerprint();
+      const fingerprint = getChartsFingerprint();
       if (!force && fingerprint === lastChartsFingerprint && chartsHaveRendered) {
         return;
       }
@@ -13841,6 +13900,7 @@
       if (!periodStatsGrid) return;
 
       const periodNets = computeAllPeriodNets();
+      const selectedPeriod = getStatsChartPeriod();
       const periods = [
         { key: "today", labelKey: "stats.periodToday", className: "period-today" },
         { key: "week", labelKey: "stats.periodWeek", className: "period-week" },
@@ -13848,21 +13908,26 @@
         { key: "3months", labelKey: "stats.period3months", className: "period-quarter" }
       ];
 
+      periodStatsGrid.setAttribute("aria-label", t("stats.selectPeriodAria"));
       periodStatsGrid.innerHTML = periods.map(period => {
         const net = periodNets[period.key] ?? 0;
         const valueClass = net > 0 ? "positive" : net < 0 ? "negative" : "";
         const sign = net > 0 ? "+" : net < 0 ? "−" : "";
         const displayAmount = net === 0 ? formatUZS(0) : `${sign}${formatUZS(Math.abs(net))}`;
+        const selected = period.key === selectedPeriod;
         return `
-          <div class="period-stat-item ${period.className}">
+          <button type="button" class="period-stat-item ${period.className}${selected ? " is-selected" : ""}" data-stats-period="${period.key}" aria-pressed="${selected ? "true" : "false"}">
             <span class="period-dot" aria-hidden="true"></span>
             <div class="period-stat-body">
               <div class="period-label">${escapeHtml(t(period.labelKey))}</div>
               <div class="period-value ${valueClass}">${displayAmount}</div>
             </div>
-          </div>
+          </button>
         `;
       }).join("");
+      periodStatsGrid.querySelectorAll("[data-stats-period]").forEach(btn => {
+        btn.addEventListener("click", () => setStatsChartPeriod(btn.dataset.statsPeriod));
+      });
     }
 
     function setType(type) {
@@ -14215,6 +14280,7 @@
       requestAnimationFrame(() => {
         renderPeriodStats();
         refreshIconsScoped(transactionList);
+        scheduleChartsRender({ force: true, deferMs: 80 });
       });
       pushWidgetSnapshot();
     }
