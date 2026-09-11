@@ -3,15 +3,48 @@
 <head>
   <script>
     (function () {
-      document.documentElement.classList.add("auth-boot");
-      document.documentElement.style.visibility = "hidden";
+      var root = document.documentElement;
+      var skipSplash = false;
+      try {
+        skipSplash = sessionStorage.getItem("bh_splash_played") === "1";
+      } catch (_) {}
+      window.__bhSplashT0 = performance.now();
+      root.style.background = "#0F0F13";
+      if (skipSplash) {
+        root.classList.add("bh-splash-skip");
+        root.style.visibility = "hidden";
+      } else {
+        root.classList.add("bh-splash-pending");
+        root.style.visibility = "visible";
+      }
+      root.classList.add("auth-boot");
       try {
         if (sessionStorage.getItem("bh_auth_dismissed") === "1") {
-          document.documentElement.classList.add("auth-boot-session");
+          root.classList.add("auth-boot-session");
         }
       } catch (_) {}
     })();
   </script>
+  <style>
+    html.bh-splash-pending {
+      background: #0F0F13 !important;
+      visibility: visible !important;
+    }
+    html.bh-splash-pending.auth-boot {
+      visibility: visible !important;
+    }
+    #bh-launch-splash {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483000;
+      background: #0F0F13;
+    }
+    html.bh-splash-skip #bh-launch-splash {
+      display: none !important;
+    }
+  </style>
+  <link rel="stylesheet" href="/splash.css?v=1780673729574">
+  <link rel="preload" href="/splash.js?v=1780673729574" as="script">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <meta name="theme-color" content="#0c0e14">
@@ -32,6 +65,12 @@
     html.auth-boot {
       visibility: hidden !important;
       background: #0c0e14;
+    }
+
+    html.bh-splash-pending.auth-boot,
+    html.bh-splash-done.auth-boot {
+      visibility: visible !important;
+      background: #0F0F13;
     }
 
     html.auth-boot-session #authScreen {
@@ -5988,6 +6027,28 @@
   </style>
 </head>
 <body>
+  <!-- Launch splash: cold-start only, icon motion, then existing auth/app UI -->
+  <div id="bh-launch-splash" class="bh-splash" role="presentation" aria-hidden="true">
+    <div class="bh-splash__stage">
+      <div class="bh-splash__icon">
+        <div class="bh-splash__bars">
+          <span class="bh-splash__bar bh-splash__bar--short"></span>
+          <span class="bh-splash__bar bh-splash__bar--tall"></span>
+          <span class="bh-splash__bar bh-splash__bar--mid"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.__bhSplashT0 = performance.now();
+  </script>
+  <script src="/splash.js?v=1780673729574"></script>
+  <noscript>
+    <style>
+      #bh-launch-splash { display: none !important; }
+      html { visibility: visible !important; }
+    </style>
+  </noscript>
   <div id="recaptcha-container"></div>
 
   <div class="pin-screen" id="pinScreen" aria-hidden="true">
