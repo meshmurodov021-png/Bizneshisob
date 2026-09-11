@@ -1,0 +1,247 @@
+/**
+ * BiznesHisob launch splash — Apple-style icon motion.
+ *
+ * Timeline (tweak --bh-splash-* on .bh-splash):
+ *   0ms                         overlay + dark field
+ *   0 → --bh-splash-in          icon: blur→sharp, spring scale with overshoot
+ *   bar-delay → + --bh-splash-bar
+ *                               bars grow with stretch/overshoot, staggered
+ *   then --bh-splash-hold       brief settle
+ *   then --bh-splash-out        soft scale-up + blur fade into the app
+ *
+ * Total ≈ 2.05s (range 1.8–2.4s). JS reads these vars so exit stays in sync.
+ */
+
+.bh-splash {
+  --bh-splash-bg: #0f0f13;
+  --bh-splash-in: 720ms;
+  --bh-splash-bar: 640ms;
+  --bh-splash-bar-delay: 90ms;
+  --bh-splash-stagger: 75ms;
+  --bh-splash-hold: 560ms;
+  --bh-splash-out: 700ms;
+  --bh-splash-icon-size: clamp(96px, 28vw, 120px);
+  --bh-splash-ease-spring: cubic-bezier(0.22, 1.22, 0.36, 1);
+  --bh-splash-ease-bar: cubic-bezier(0.16, 1.18, 0.32, 1);
+  --bh-splash-ease-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bh-splash-bg);
+  color-scheme: dark;
+  pointer-events: auto;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.bh-splash__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bh-splash-icon-size);
+  height: var(--bh-splash-icon-size);
+}
+
+.bh-splash__icon {
+  position: relative;
+  width: var(--bh-splash-icon-size);
+  height: var(--bh-splash-icon-size);
+  border-radius: 22.5%;
+  background: linear-gradient(
+    152deg,
+    #c4b5fd 0%,
+    #a78bfa 18%,
+    #8b5cf6 42%,
+    #7c3aed 68%,
+    #5b21b6 100%
+  );
+  box-shadow:
+    0 18px 48px rgba(91, 33, 182, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 1px 0 rgba(255, 255, 255, 0.22) inset;
+  overflow: hidden;
+  transform: scale(0.78);
+  filter: blur(18px);
+  opacity: 0.4;
+  will-change: transform, filter, opacity;
+}
+
+.bh-splash__icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.06) 38%,
+    rgba(255, 255, 255, 0) 58%
+  );
+  pointer-events: none;
+}
+
+.bh-splash__bars {
+  position: absolute;
+  left: 50%;
+  bottom: 21%;
+  width: 46%;
+  height: 54%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 11%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.bh-splash__bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.35);
+  transform-origin: center bottom;
+  transform: scaleY(0.14) scaleX(0.88);
+  opacity: 0.45;
+  will-change: transform, opacity;
+}
+
+.bh-splash__bar--short { height: 46%; }
+.bh-splash__bar--tall { height: 100%; }
+.bh-splash__bar--mid { height: 70%; }
+
+html.bh-splash-pending .bh-splash__icon {
+  animation: bh-splash-icon-in var(--bh-splash-in) var(--bh-splash-ease-spring) both;
+}
+
+html.bh-splash-pending .bh-splash__bar--short {
+  animation: bh-splash-bar-in var(--bh-splash-bar) var(--bh-splash-ease-bar) both;
+  animation-delay: var(--bh-splash-bar-delay);
+}
+
+html.bh-splash-pending .bh-splash__bar--tall {
+  animation: bh-splash-bar-in var(--bh-splash-bar) var(--bh-splash-ease-bar) both;
+  animation-delay: calc(var(--bh-splash-bar-delay) + var(--bh-splash-stagger));
+}
+
+html.bh-splash-pending .bh-splash__bar--mid {
+  animation: bh-splash-bar-in var(--bh-splash-bar) var(--bh-splash-ease-bar) both;
+  animation-delay: calc(var(--bh-splash-bar-delay) + (var(--bh-splash-stagger) * 2));
+}
+
+.bh-splash--exit {
+  animation: bh-splash-veil-out var(--bh-splash-out) var(--bh-splash-ease-out) both;
+  pointer-events: none;
+}
+
+.bh-splash--exit .bh-splash__icon {
+  animation: bh-splash-icon-out var(--bh-splash-out) var(--bh-splash-ease-out) both;
+}
+
+.bh-splash--exit .bh-splash__bar {
+  animation: none;
+  transform: scaleY(1) scaleX(1);
+  opacity: 1;
+}
+
+@keyframes bh-splash-icon-in {
+  0% {
+    transform: scale(0.76);
+    filter: blur(20px);
+    opacity: 0.28;
+  }
+  58% {
+    transform: scale(1.055);
+    filter: blur(0);
+    opacity: 1;
+  }
+  78% {
+    transform: scale(0.984);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bh-splash-bar-in {
+  0% {
+    transform: scaleY(0.12) scaleX(0.86);
+    opacity: 0.3;
+  }
+  64% {
+    transform: scaleY(1.14) scaleX(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1) scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bh-splash-icon-out {
+  0% {
+    transform: scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.32);
+    filter: blur(18px);
+    opacity: 0;
+  }
+}
+
+@keyframes bh-splash-veil-out {
+  0% { opacity: 1; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+html.bh-splash-pending,
+html.bh-splash-pending body {
+  overflow: hidden;
+}
+
+html.bh-splash-skip #bh-launch-splash,
+.bh-splash--done {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bh-splash {
+    --bh-splash-in: 1ms;
+    --bh-splash-bar: 1ms;
+    --bh-splash-bar-delay: 0ms;
+    --bh-splash-stagger: 0ms;
+    --bh-splash-hold: 420ms;
+    --bh-splash-out: 380ms;
+  }
+
+  html.bh-splash-pending .bh-splash__icon,
+  html.bh-splash-pending .bh-splash__bar {
+    animation: none;
+    transform: none;
+    filter: none;
+    opacity: 1;
+  }
+
+  .bh-splash--exit .bh-splash__icon {
+    animation: bh-splash-icon-out-reduced var(--bh-splash-out) ease both;
+  }
+}
+
+@keyframes bh-splash-icon-out-reduced {
+  to {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
