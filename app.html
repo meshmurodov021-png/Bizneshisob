@@ -8197,7 +8197,7 @@
     let periodNetsCache = { fingerprint: "", nets: null };
     const STATS_CHART_PERIODS = ["today", "week", "month", "3months"];
     const STATS_CHART_PERIOD_KEY = "bzh_stats_chart_period";
-    let statsChartPeriod = "month";
+    let statsChartPeriod = "";
     try {
       const savedPeriod = localStorage.getItem(STATS_CHART_PERIOD_KEY);
       if (STATS_CHART_PERIODS.includes(savedPeriod)) statsChartPeriod = savedPeriod;
@@ -10774,15 +10774,22 @@
       return STATS_CHART_PERIODS.includes(statsChartPeriod) ? statsChartPeriod : "month";
     }
 
+    function getSelectedStatsChartPeriod() {
+      return STATS_CHART_PERIODS.includes(statsChartPeriod) ? statsChartPeriod : "";
+    }
+
     function getChartsFingerprint() {
       return `${getTransactionsFingerprint()}|chartPeriod:${getStatsChartPeriod()}`;
     }
 
     function setStatsChartPeriod(period) {
-      if (!STATS_CHART_PERIODS.includes(period) || period === statsChartPeriod) return;
-      statsChartPeriod = period;
+      if (!STATS_CHART_PERIODS.includes(period)) return;
+      const next = period === statsChartPeriod ? "" : period;
+      if (next === statsChartPeriod) return;
+      statsChartPeriod = next;
       try {
-        localStorage.setItem(STATS_CHART_PERIOD_KEY, period);
+        if (next) localStorage.setItem(STATS_CHART_PERIOD_KEY, next);
+        else localStorage.removeItem(STATS_CHART_PERIOD_KEY);
       } catch (_) { /* ignore */ }
       renderPeriodStats();
       chartDataBundleCache = null;
@@ -13869,7 +13876,7 @@
       if (!periodStatsGrid) return;
 
       const periodNets = computeAllPeriodNets();
-      const selectedPeriod = getStatsChartPeriod();
+      const selectedPeriod = getSelectedStatsChartPeriod();
       const periods = [
         { key: "today", labelKey: "stats.periodToday", className: "period-today" },
         { key: "week", labelKey: "stats.periodWeek", className: "period-week" },
