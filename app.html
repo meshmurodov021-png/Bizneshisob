@@ -8367,6 +8367,7 @@
     const periodStatsGrid = document.getElementById("periodStatsGrid");
     const proAdsBanner = document.getElementById("proAdsBanner");
     let chartDonut = null;
+    let lastDonutPeriod = "";
     let donutTooltipSegmentIndex = null;
     let chartIncomeBar = null;
     const ptrIndicator = document.getElementById("ptrIndicator");
@@ -10786,6 +10787,8 @@
       renderPeriodStats();
       chartDataBundleCache = null;
       lastChartsFingerprint = "";
+      lastDonutPeriod = "";
+      chartDonut = destroyChartInstance(chartDonut);
       if (currentTab === "home") {
         scheduleChartsRender({ force: true, deferMs: 40 });
       } else {
@@ -10794,18 +10797,33 @@
     }
 
     function buildChartDataBundle() {
+      const period = getStatsChartPeriod();
       const fingerprint = getChartsFingerprint();
       if (chartDataBundleCache && chartDataBundleCache.fingerprint === fingerprint) {
         return chartDataBundleCache.bundle;
       }
 
       const bundle = {
-        expense: aggregateCategoryBreakdown("expense"),
-        income: aggregateCategoryBreakdown("income")
+        expense: aggregateCategoryBreakdown("expense", period),
+        income: aggregateCategoryBreakdown("income", period)
       };
 
       chartDataBundleCache = { fingerprint, bundle };
       return bundle;
+    }
+
+    /** Independent net for one period — full scan of transactions, no shared accumulator. */
+    function sumNetForPeriod(period, refDate = new Date()) {
+      const keys = getStatsPeriodDateKeys(period, refDate);
+      if (!keys) return 0;
+      let net = 0;
+      for (const tx of transactions) {
+        const txKey = getTxDateKey(tx);
+        if (!txKey || txKey < keys.startKey || txKey > keys.endKey) continue;
+        const amt = Number(tx.amount) || 0;
+        net += tx.type === "income" ? amt : -amt;
+      }
+      return net;
     }
 
     function computeAllPeriodNets(refDate = new Date()) {
@@ -10815,33 +10833,12 @@
         return periodNetsCache.nets;
       }
 
-      const todayKeys = getStatsPeriodDateKeys("today", refDate);
-      const weekKeys = getStatsPeriodDateKeys("week", refDate);
-      const monthKeys = getStatsPeriodDateKeys("month", refDate);
-      const threeMonthKeys = getStatsPeriodDateKeys("3months", refDate);
-
-      const nets = { today: 0, week: 0, month: 0, "3months": 0 };
-
-      for (const tx of transactions) {
-        const txKey = getTxDateKey(tx);
-        if (!txKey || !refKey) continue;
-
-        const amt = Number(tx.amount) || 0;
-        const signed = tx.type === "income" ? amt : -amt;
-
-        if (todayKeys && txKey >= todayKeys.startKey && txKey <= todayKeys.endKey) {
-          nets.today += signed;
-        }
-        if (weekKeys && txKey >= weekKeys.startKey && txKey <= weekKeys.endKey) {
-          nets.week += signed;
-        }
-        if (monthKeys && txKey >= monthKeys.startKey && txKey <= monthKeys.endKey) {
-          nets.month += signed;
-        }
-        if (threeMonthKeys && txKey >= threeMonthKeys.startKey && txKey <= threeMonthKeys.endKey) {
-          nets["3months"] += signed;
-        }
-      }
+      const nets = {
+        today: sumNetForPeriod("today", refDate),
+        week: sumNetForPeriod("week", refDate),
+        month: sumNetForPeriod("month", refDate),
+        "3months": sumNetForPeriod("3months", refDate)
+      };
 
       periodNetsCache = { fingerprint, nets };
       return nets;
@@ -11271,7 +11268,7 @@
      * Inclusive local YYYY-MM-DD keys for stats filters.
      * today:    this calendar day only
      * week:     Monday → Sunday of the current week
-     * month:    1st of this month → today (accumulates through month end)
+     * month:    1st of this month → today (this calendar month only)
      * 3months:  first day of (current month − 2) → today
      */
     function getStatsPeriodDateKeys(period, refDate = new Date()) {
@@ -13584,8 +13581,8 @@
       return Math.max(p, 2);
     }
 
-    function aggregateCategoryBreakdown(type) {
-      const list = filterTransactionsByPeriod(getStatsChartPeriod());
+    function aggregateCategoryBreakdown(type, period = getStatsChartPeriod()) {
+      const list = filterTransactionsByPeriod(period);
       const map = new Map();
       list.filter(tx => tx.type === type).forEach(tx => {
         const cat = getCategoryForTx(tx);
@@ -13784,8 +13781,12 @@
       chartsRenderInFlight = true;
       try {
         await renderCharts(force);
-        lastChartsFingerprint = fingerprint;
+        const latestFingerprint = getChartsFingerprint();
+        lastChartsFingerprint = latestFingerprint;
         chartsHaveRendered = true;
+        if (latestFingerprint !== fingerprint) {
+          scheduleChartsRender({ deferMs: 0, force: true });
+        }
       } finally {
         chartsRenderInFlight = false;
       }
@@ -13835,64 +13836,32 @@
       chartIncomeBar = destroyChartInstance(chartIncomeBar);
 
       const donutAnim = animateCharts ? { duration: 400, easing: "easeOutQuart" } : false;
+      lastDonutPeriod = getStatsChartPeriod();
+      chartDonut = destroyChartInstance(chartDonut);
+      donutTooltipSegmentIndex = null;
 
-      if (donutEl) {
-        if (expenseData.items.length) {
-          const donutPayload = {
-            labels: expenseData.labels,
-            datasets: [{
-              data: expenseData.values,
-              backgroundColor: expenseData.colors,
-              borderWidth: 0,
-              hoverBorderWidth: 0,
-              borderColor: expenseData.colors,
-              hoverBorderColor: expenseData.colors,
-              hoverOffset: 0
-            }]
-          };
-          if (
-            !forceRebuild &&
-            chartDonut &&
-            chartDonut.canvas === donutEl &&
-            chartDonut.config.type === "doughnut"
-          ) {
-            chartDonut.data = donutPayload;
-            if (chartDonut.options.datasets?.doughnut) {
-              chartDonut.options.datasets.doughnut.hoverOffset = 0;
-            }
-            if (chartDonut.options.elements?.arc) {
-              chartDonut.options.elements.arc.hoverOffset = 0;
-              chartDonut.options.elements.arc.hoverBorderWidth = 0;
-            }
-            if (chartDonut.options.plugins?.tooltip) {
-              chartDonut.options.plugins.tooltip.enabled = true;
-              chartDonut.options.plugins.tooltip.events = [];
-              chartDonut.options.plugins.tooltip.callbacks = {
-                label(ctx) {
-                  const pct = formatCategoryPercent(ctx.raw, expenseData.total);
-                  return `${ctx.label}: ${formatSumFull(ctx.raw)} (${pct}%)`;
-                }
-              };
-            }
-            hideDonutTooltip(chartDonut);
-            chartDonut.update("none");
-          } else {
-            chartDonut = destroyChartInstance(chartDonut);
-            donutTooltipSegmentIndex = null;
-            ensureDonutClickOutsideDismiss();
-            chartDonut = new Chart(donutEl, {
-              type: "doughnut",
-              data: donutPayload,
-              options: {
-                ...buildExpenseDonutChartOptions(chartTooltipDefaults, expenseData.total),
-                animation: donutAnim
-              }
-            });
+      if (donutEl && expenseData.items.length) {
+        const donutPayload = {
+          labels: expenseData.labels.slice(),
+          datasets: [{
+            data: expenseData.values.slice(),
+            backgroundColor: expenseData.colors.slice(),
+            borderWidth: 0,
+            hoverBorderWidth: 0,
+            borderColor: expenseData.colors.slice(),
+            hoverBorderColor: expenseData.colors.slice(),
+            hoverOffset: 0
+          }]
+        };
+        ensureDonutClickOutsideDismiss();
+        chartDonut = new Chart(donutEl, {
+          type: "doughnut",
+          data: donutPayload,
+          options: {
+            ...buildExpenseDonutChartOptions(chartTooltipDefaults, expenseData.total),
+            animation: donutAnim
           }
-        } else {
-          chartDonut = destroyChartInstance(chartDonut);
-          donutTooltipSegmentIndex = null;
-        }
+        });
       }
     }
 
@@ -14377,6 +14346,8 @@
         userDocEnsured = false;
         periodNetsCache = { fingerprint: "", nets: null };
         chartDataBundleCache = null;
+        lastChartsFingerprint = "";
+        lastDonutPeriod = "";
         lastUiContentFingerprint = "";
         clearLimitDisplayUi();
         limitCountUid = user.uid;
@@ -14438,6 +14409,8 @@
         currenciesHydrated = false;
         periodNetsCache = { fingerprint: "", nets: null };
         chartDataBundleCache = null;
+        lastChartsFingerprint = "";
+        lastDonutPeriod = "";
         lastUiContentFingerprint = "";
         clearLimitDisplayUi();
         setProfilePullToRefreshLock(false);
