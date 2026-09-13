@@ -4,13 +4,14 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- short / tall / mid white bars, splash proportions -->
     <path
-        android:fillColor="#7C3AED"
-        android:pathData="M54,20c-11,0 -20,9 -20,20v28c0,11 9,20 20,20s20,-9 20,-20V40c0,-11 -9,-20 -20,-20z" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M35.6,58.5h12.9c3.6,0 6.5,2.9 6.5,6.5v13.9c0,3.6 -2.9,6.5 -6.5,6.5H35.6c-3.6,0 -6.5,-2.9 -6.5,-6.5V65c0,-3.6 2.9,-6.5 6.5,-6.5z" />
     <path
-        android:fillColor="#38BDF8"
-        android:pathData="M44,48h20v8H44z" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,27h12.9c3.6,0 6.5,2.9 6.5,6.5v45.4c0,3.6 -2.9,6.5 -6.5,6.5H54c-3.6,0 -6.5,-2.9 -6.5,-6.5V33.5c0,-3.6 2.9,-6.5 6.5,-6.5z" />
     <path
-        android:fillColor="#22C55E"
-        android:pathData="M40,62h28v6H40z" />
+        android:fillColor="#FFFFFF"
+        android:pathData="M72.4,44.5h12.9c3.6,0 6.5,2.9 6.5,6.5v27.8c0,3.6 -2.9,6.5 -6.5,6.5H72.4c-3.6,0 -6.5,-2.9 -6.5,-6.5V51c0,-3.6 2.9,-6.5 6.5,-6.5z" />
 </vector>

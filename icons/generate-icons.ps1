@@ -29,56 +29,38 @@ function Draw-Icon {
   $g.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
   $g.Clear([System.Drawing.Color]::FromArgb(0, 0, 0, 0))
 
-  $purple = [System.Drawing.Color]::FromArgb(255, 0x7C, 0x3A, 0xED)
-  $white = [System.Drawing.Color]::White
-  $radius = [float]($Size * 0.2)
-
+  $radius = [float]($Size * 0.225)
   $bgPath = New-RoundedRectPath -x 0 -y 0 -w $Size -h $Size -r $radius
-  $g.FillPath((New-Object System.Drawing.SolidBrush $purple), $bgPath)
-
-  $pad = [float]($Size * 0.22)
-  $chartW = [float]($Size - 2 * $pad)
-  $chartH = [float]($Size - 2 * $pad)
-  $baseY = $pad + $chartH
-
-  $barW = [float]($chartW * 0.14)
-  $gap = [float]($chartW * 0.06)
-  $startX = [float]($pad + $chartW * 0.08)
-  $heights = @(0.32, 0.48, 0.58, 0.72)
-
-  $whiteBrush = New-Object System.Drawing.SolidBrush $white
-  $barIndex = 0
-  foreach ($hRatio in $heights) {
-    $bx = $startX + $barIndex * ($barW + $gap)
-    $bh = $chartH * $hRatio
-    $by = $baseY - $bh
-    $g.FillRectangle($whiteBrush, $bx, $by, $barW, $bh)
-    $barIndex++
-  }
-
-  $penWidth = [float][math]::Max(2, $Size * 0.045)
-  $linePen = New-Object System.Drawing.Pen($white, $penWidth)
-  $linePen.StartCap = [System.Drawing.Drawing2D.LineCap]::Round
-  $linePen.EndCap = [System.Drawing.Drawing2D.LineCap]::Round
-  $linePen.LineJoin = [System.Drawing.Drawing2D.LineJoin]::Round
-
-  $points = @(
-    [System.Drawing.PointF]::new($pad + $chartW * 0.06, $baseY - $chartH * 0.38),
-    [System.Drawing.PointF]::new($pad + $chartW * 0.32, $baseY - $chartH * 0.52),
-    [System.Drawing.PointF]::new($pad + $chartW * 0.52, $baseY - $chartH * 0.62),
-    [System.Drawing.PointF]::new($pad + $chartW * 0.78, $baseY - $chartH * 0.82)
+  $brush = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
+    [System.Drawing.Point]::new(0, 0),
+    [System.Drawing.Point]::new($Size, $Size),
+    [System.Drawing.Color]::FromArgb(255, 0xC4, 0xB0, 0xFF),
+    [System.Drawing.Color]::FromArgb(255, 0x5B, 0x3D, 0xF5)
   )
-  $g.DrawLines($linePen, $points)
+  $g.FillPath($brush, $bgPath)
 
-  $dotR = [float][math]::Max(2, $Size * 0.028)
-  foreach ($pt in $points) {
-    $g.FillEllipse($whiteBrush, $pt.X - $dotR, $pt.Y - $dotR, $dotR * 2, $dotR * 2)
+  $white = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::White)
+  $barW = [float]($Size * 0.1195)
+  $gap = [float]($Size * 0.0506)
+  $startX = [float]($Size * 0.270)
+  $containerTop = [float]($Size * 0.250)
+  $containerH = [float]($Size * 0.540)
+  $rx = [float]($barW / 2)
+
+  $heights = @(0.46, 1.0, 0.70)
+  for ($i = 0; $i -lt 3; $i++) {
+    $bh = [float]($containerH * $heights[$i])
+    $bx = $startX + $i * ($barW + $gap)
+    $by = $containerTop + $containerH - $bh
+    $barPath = New-RoundedRectPath -x $bx -y $by -w $barW -h $bh -r $rx
+    $g.FillPath($white, $barPath)
+    $barPath.Dispose()
   }
 
   $bmp.Save($OutPath, [System.Drawing.Imaging.ImageFormat]::Png)
 
-  $linePen.Dispose()
-  $whiteBrush.Dispose()
+  $white.Dispose()
+  $brush.Dispose()
   $bgPath.Dispose()
   $g.Dispose()
   $bmp.Dispose()
@@ -94,3 +76,5 @@ foreach ($s in $sizes) {
 
 Draw-Icon -Size 180 -OutPath (Join-Path $iconDir "apple-touch-icon.png")
 Write-Host "OK apple-touch-icon.png"
+Draw-Icon -Size 1024 -OutPath (Join-Path $iconDir "icon-source.png")
+Write-Host "OK icon-source.png"

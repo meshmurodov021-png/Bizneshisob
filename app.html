@@ -56,9 +56,9 @@
   <meta name="google-site-verification" content="5V3X3EKkwG8Vcle_OCyu15sa_HuIe8q7zETSGYq32bU" />
   <meta name="app-build-version" content="1780673729574">
   <link rel="manifest" href="/manifest.json?v=1780673729574">
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png?v=1780673729574">
-  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png?v=1780673729574">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png?v=1780673901001">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png?v=1780673901001">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673901001">
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <title>BiznesHisob — Daromad va xarajatlar</title>
   <style>
@@ -6447,7 +6447,7 @@
             </div>
             <p class="upgrade-limit-loading-wrap">
               <span class="tx-limit-loading hidden" id="upgradeLimitLoading" aria-hidden="true"></span>
-              <span class="upgrade-progress-label" id="upgradeProgressLabel">0/50 operatsiya ishlatilgan</span>
+              <span class="upgrade-progress-label" id="upgradeProgressLabel">0/200 operatsiya ishlatilgan</span>
             </p>
             <div class="profile-progress-track">
               <div class="profile-progress-fill" id="upgradeProgressFill"></div>
@@ -6466,7 +6466,7 @@
                 <span class="profile-stat-label" data-i18n="profile.limitLabel">Limit:</span>
                 <span class="profile-stat-value tx-limit-value-wrap">
                   <span class="tx-limit-loading hidden" id="txLimitLoading" aria-hidden="true"></span>
-                  <span id="txLimitText">0/50</span>
+                  <span id="txLimitText">0/200</span>
                 </span>
               </div>
               <div class="profile-progress-track subtle">
@@ -6603,10 +6603,10 @@
     <div class="premium-modal">
       <button type="button" class="modal-close" id="premiumModalClose" data-i18n-aria="export.closeAria">×</button>
       <div class="premium-confetti" id="premiumConfetti" aria-hidden="true"></div>
-      <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
+      <div class="premium-limit-alert hidden" id="premiumLimitAlert" data-i18n="premium.limitAlert">200 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</div>
       <div class="payment-checking hidden" id="paymentChecking" data-i18n="premium.checking">To'lov tekshirilmoqda...</div>
       <h2 id="premiumModalTitle" class="premium-modal-title"><span id="premiumModalTitleText" class="premium-gradient-text">💎 Premium</span></h2>
-      <p class="premium-sub" id="premiumModalSub" data-i18n="premium.sub">50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
+      <p class="premium-sub" id="premiumModalSub" data-i18n="premium.sub">200 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting</p>
       <p class="premium-price" id="premiumModalPrice" data-i18n="premium.price">29 900 so'm / oy</p>
       <ul class="premium-features">
         <li><span class="feat-check"><i data-lucide="check"></i></span> <span data-i18n="premium.f1">Cheksiz operatsiyalar</span></li>
@@ -6954,7 +6954,7 @@
 
     void ensureLucide().then(() => refreshIcons()).catch(() => {});
 
-    const FREE_TX_LIMIT = 50;
+    const FREE_TX_LIMIT = 200;
     const TX_LIMIT_CACHE_PREFIX = "bh-tx-limit-";
     let userProfileLimitReady = false;
     let lastKnownLimitCount = null;
@@ -7482,14 +7482,14 @@
         "nav.addAria": "Qoʻshish",
         "nav.listAria": "Roʻyxat",
         "nav.profileAria": "Profil",
-        "premium.limitAlert": "50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.limitAlert": "200 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.checking": "To'lov tekshirilmoqda...",
         "premium.activated": "Premium faollashtirildi! 🎉",
         "premium.pending": "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.",
         "premium.checkError": "Tekshirishda xatolik. Qayta urinib ko'ring.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium kerak",
-        "premium.sub": "50 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
+        "premium.sub": "200 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.price": "29 900 so'm / oy",
         "premium.goBtn": "✨ Premiumga o'tish",
         "premium.later": "Keyinroq",
@@ -7772,14 +7772,14 @@
         "nav.addAria": "Добавить",
         "nav.listAria": "Список",
         "nav.profileAria": "Профиль",
-        "premium.limitAlert": "Для более 50 операций перейдите на Premium",
+        "premium.limitAlert": "Для более 200 операций перейдите на Premium",
         "premium.checking": "Проверка оплаты...",
         "premium.activated": "Premium активирован! 🎉",
         "premium.pending": "Оплата ещё не подтверждена. Premium включится после проверки.",
         "premium.checkError": "Ошибка проверки. Попробуйте снова.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Нужен Premium",
-        "premium.sub": "Для более 50 операций перейдите на Premium",
+        "premium.sub": "Для более 200 операций перейдите на Premium",
         "premium.price": "29 900 so'm / мес",
         "premium.goBtn": "✨ Перейти на Premium",
         "premium.later": "Позже",
@@ -8062,14 +8062,14 @@
         "nav.addAria": "Add",
         "nav.listAria": "List",
         "nav.profileAria": "Profile",
-        "premium.limitAlert": "Upgrade to Premium for more than 50 transactions",
+        "premium.limitAlert": "Upgrade to Premium for more than 200 transactions",
         "premium.checking": "Verifying payment...",
         "premium.activated": "Premium activated! 🎉",
         "premium.pending": "Payment not confirmed yet. Premium will activate after review.",
         "premium.checkError": "Verification error. Please try again.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium required",
-        "premium.sub": "Upgrade to Premium for more than 50 transactions",
+        "premium.sub": "Upgrade to Premium for more than 200 transactions",
         "premium.price": "29,900 UZS / month",
         "premium.goBtn": "✨ Go Premium",
         "premium.later": "Later",

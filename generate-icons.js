@@ -15,15 +15,17 @@ const SVG_PATH = join(ICONS_DIR, "icon.svg");
 const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
 
 const SVG_INLINE = `<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-<rect width="512" height="512" rx="80" fill="#7C3AED"/>
-<rect x="120" y="320" width="60" height="120" rx="6" fill="#A78BFA"/>
-<rect x="220" y="260" width="60" height="180" rx="6" fill="#C4B5FD"/>
-<rect x="320" y="180" width="60" height="260" rx="6" fill="#EDE9FE"/>
-<polyline points="140,260 240,190 340,130 390,100" fill="none" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="140" cy="260" r="12" fill="white"/>
-<circle cx="240" cy="190" r="12" fill="white"/>
-<circle cx="340" cy="130" r="12" fill="white"/>
-<circle cx="390" cy="100" r="12" fill="white"/>
+  <defs>
+    <linearGradient id="bhMark" x1="18%" y1="0%" x2="82%" y2="100%">
+      <stop offset="0%" stop-color="#C4B0FF"/>
+      <stop offset="38%" stop-color="#9B7CFF"/>
+      <stop offset="100%" stop-color="#5B3DF5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#bhMark)"/>
+  <rect x="138.2" y="277.3" width="61.2" height="127.2" rx="30.6" fill="#fff"/>
+  <rect x="225.4" y="128" width="61.2" height="276.5" rx="30.6" fill="#fff"/>
+  <rect x="312.5" y="210.9" width="61.2" height="193.5" rx="30.6" fill="#fff"/>
 </svg>`;
 
 async function loadSvg() {
@@ -52,7 +54,6 @@ async function generateIcons() {
     console.log(`✓ ${outPath}`);
   }
 
-  // iOS uchun (manifest alohida ishlatishi mumkin)
   const applePath = join(ICONS_DIR, "apple-touch-icon.png");
   await base
     .clone()
@@ -61,7 +62,15 @@ async function generateIcons() {
     .toFile(applePath);
   console.log(`✓ ${applePath}`);
 
-  console.log(`\nTayyor: ${SIZES.length + 1} ta PNG (${ICONS_DIR})`);
+  const sourcePath = join(ICONS_DIR, "icon-source.png");
+  await base
+    .clone()
+    .resize(1024, 1024)
+    .png({ compressionLevel: 9 })
+    .toFile(sourcePath);
+  console.log(`✓ ${sourcePath}`);
+
+  console.log(`\nTayyor: ${SIZES.length + 2} ta PNG (${ICONS_DIR})`);
 }
 
 generateIcons().catch(err => {
