@@ -43,7 +43,7 @@
       display: none !important;
     }
   </style>
-  <link rel="stylesheet" href="/splash.css?v=1780673729574">
+  <link rel="stylesheet" href="/splash.css?v=1780673900001">
   <link rel="preload" href="/splash.js?v=1780673729574" as="script">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
@@ -325,37 +325,9 @@
     }
 
     .onboarding-logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
-
-    .onboarding-logo-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, #7C3AED, #6366f1);
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
-    }
-
-    .onboarding-logo-icon [data-lucide] {
-      width: 22px;
-      height: 22px;
-      stroke: #fff;
-    }
-
-    .onboarding-brand-tagline {
-      margin: 0.55rem 0 0;
-      font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.45);
-      letter-spacing: 0.02em;
     }
 
     .onboarding-viewport {
@@ -580,20 +552,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.85rem;
-      margin: 0 auto 1rem;
-    }
-
-    .auth-header .logo-icon {
-      width: 72px;
-      height: 72px;
-      font-size: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 28px rgba(99, 102, 241, 0.45);
+      gap: 0.7rem;
+      margin: 0 auto 0.85rem;
     }
 
     .auth-header h1 {
-      font-size: 1.75rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       margin: 0;
@@ -985,31 +949,15 @@
       pointer-events: none;
     }
 
-    .app-header .logo-icon {
-      box-shadow: none;
-    }
-
     .app-header .logo {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      min-width: 0;
     }
 
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent), #a855f7);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
-    }
-
-    .logo-icon [data-lucide] {
-      width: 22px;
-      height: 22px;
-      stroke: #fff;
+    .app-header .logo h1 {
+      font-size: 1.05rem;
     }
 
     h1 {
@@ -2770,13 +2718,82 @@
       margin: 0 0 0.75rem;
     }
 
+    .breakdown-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .breakdown-head .chart-card-title {
+      margin: 0;
+    }
+
+    .breakdown-total {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .breakdown-empty {
+      padding: 1.15rem 0.4rem 0.55rem;
+      text-align: center;
+    }
+
+    .breakdown-empty-text {
+      margin: 0;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .breakdown-single-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.15rem 0 0.1rem;
+    }
+
+    .breakdown-single-row .top-cat-left .category-icon-wrap {
+      width: 32px;
+      height: 32px;
+    }
+
+    .breakdown-single-row .top-cat-left .category-icon-wrap [data-lucide] {
+      width: 15px;
+      height: 15px;
+    }
+
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .breakdown-list:empty,
+    .breakdown-list.hidden {
+      display: none;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
     .chart-wrap {
       position: relative;
       height: 200px;
     }
 
     .chart-wrap-donut {
-      height: 220px;
+      width: min(160px, 100%);
+      height: 160px;
+      margin: 0 auto;
     }
 
     .chart-wrap-bar {
@@ -2797,21 +2814,23 @@
       justify-content: center;
       pointer-events: none;
       text-align: center;
-      padding: 0 2.25rem;
-      transform: translateY(5px);
+      padding: 0 1.65rem;
+      transform: translateY(2px);
       animation: chartFadeIn 0.45s var(--ease) both;
     }
 
     .chart-donut-center-value {
-      font-size: clamp(1.05rem, 4.2vw, 1.45rem);
-      font-weight: 800;
+      font-size: clamp(0.72rem, 3.1vw, 0.92rem);
+      font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text);
-      line-height: 1.2;
+      line-height: 1.25;
       max-width: 100%;
-      white-space: nowrap;
+      white-space: normal;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     .chart-donut-center-unit {
@@ -5614,28 +5633,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1.75rem;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .pin-logo-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #7C3AED, #4F46E5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 6px 24px rgba(124, 58, 237, 0.45);
-    }
-
-    .pin-logo-icon [data-lucide] {
-      width: 22px;
-      height: 22px;
-      stroke: #fff;
+      margin-bottom: 1.85rem;
     }
 
     .pin-key.back [data-lucide] {
@@ -5840,8 +5838,10 @@
 
     .pin-cancel.hidden { display: none; }
 
-    html.light-theme .pin-logo-icon {
-      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.22);
+    html.light-theme .pin-logo .bh-mark {
+      box-shadow:
+        0 6px 18px rgba(91, 61, 245, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset;
     }
 
     html.light-theme .pin-dot.filled {
@@ -6054,8 +6054,13 @@
   <div class="pin-screen" id="pinScreen" aria-hidden="true">
     <div class="pin-panel">
       <div class="pin-logo">
-        <div class="pin-logo-icon"><i data-lucide="bar-chart-2"></i></div>
-        <span>BiznesHisob</span>
+        <span class="bh-mark bh-mark--md" role="img" aria-label="BiznesHisob" data-i18n-aria="brand.name">
+          <span class="bh-mark__bars" aria-hidden="true">
+            <span class="bh-mark__bar bh-mark__bar--short"></span>
+            <span class="bh-mark__bar bh-mark__bar--tall"></span>
+            <span class="bh-mark__bar bh-mark__bar--mid"></span>
+          </span>
+        </span>
       </div>
 
       <div class="pin-view" id="pinMainView">
@@ -6149,10 +6154,14 @@
     <button type="button" class="onboarding-skip" id="onboardingSkip" data-i18n="onboarding.skip">O'tkazib yuborish</button>
     <div class="onboarding-header">
       <div class="onboarding-logo">
-        <span class="onboarding-logo-icon"><i data-lucide="bar-chart-2"></i></span>
-        <span>BiznesHisob</span>
+        <span class="bh-mark bh-mark--md" role="img" aria-label="BiznesHisob" data-i18n-aria="brand.name">
+          <span class="bh-mark__bars" aria-hidden="true">
+            <span class="bh-mark__bar bh-mark__bar--short"></span>
+            <span class="bh-mark__bar bh-mark__bar--tall"></span>
+            <span class="bh-mark__bar bh-mark__bar--mid"></span>
+          </span>
+        </span>
       </div>
-      <p class="onboarding-brand-tagline" data-i18n="onboarding.brandTagline">Intelligent finance tracking</p>
     </div>
     <div class="onboarding-viewport" id="onboardingViewport">
       <div class="onboarding-track" id="onboardingTrack">
@@ -6206,7 +6215,13 @@
   <div class="auth-screen hidden" id="authScreen">
     <div class="auth-header">
       <div class="logo">
-        <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
+        <span class="bh-mark bh-mark--lg" aria-hidden="true">
+          <span class="bh-mark__bars">
+            <span class="bh-mark__bar bh-mark__bar--short"></span>
+            <span class="bh-mark__bar bh-mark__bar--tall"></span>
+            <span class="bh-mark__bar bh-mark__bar--mid"></span>
+          </span>
+        </span>
         <h1>BiznesHisob</h1>
       </div>
       <p class="tagline" data-i18n="auth.tagline">Hisobingizga kiring yoki roʻyxatdan oʻting</p>
@@ -6279,7 +6294,13 @@
   <div class="app-shell hidden" id="appScreen">
     <header class="app-header">
       <div class="logo">
-        <div class="logo-icon"><i data-lucide="bar-chart-2"></i></div>
+        <span class="bh-mark bh-mark--sm" aria-hidden="true">
+          <span class="bh-mark__bars">
+            <span class="bh-mark__bar bh-mark__bar--short"></span>
+            <span class="bh-mark__bar bh-mark__bar--tall"></span>
+            <span class="bh-mark__bar bh-mark__bar--mid"></span>
+          </span>
+        </span>
         <h1>BiznesHisob</h1>
       </div>
       <div class="app-header-actions">
@@ -6333,31 +6354,40 @@
           <div class="period-stats-grid" id="periodStatsGrid" role="group" data-i18n-aria="stats.selectPeriodAria"></div>
         </div>
 
-        <div class="card chart-card">
-          <p class="chart-card-title" data-i18n="stats.expenseBreakdown">Xarajatlar boʻyicha</p>
-          <div class="chart-wrap chart-wrap-donut">
+        <div class="card chart-card breakdown-card" id="expenseBreakdownCard">
+          <div class="breakdown-head">
+            <p class="chart-card-title" data-i18n="stats.expenseBreakdown">Xarajatlar</p>
+            <p class="breakdown-total" id="expenseBreakdownTotal">0 soʻm</p>
+          </div>
+          <div class="breakdown-empty hidden" id="expenseBreakdownEmpty">
+            <p class="breakdown-empty-text" data-i18n="stats.noExpense">Xarajatlar yoʻq</p>
+          </div>
+          <div class="breakdown-single hidden" id="expenseBreakdownSingle"></div>
+          <div class="chart-wrap chart-wrap-donut hidden" id="expenseDonutWrap">
             <canvas id="expenseDonutChart" aria-hidden="true"></canvas>
             <div class="chart-donut-center hidden" id="expenseDonutCenter">
               <span class="chart-donut-center-value" id="expenseDonutCenterValue">0</span>
-              <span class="chart-donut-center-unit" id="expenseDonutCenterUnit">so'm</span>
             </div>
           </div>
-          <div class="chart-legend" id="expenseChartLegend"></div>
+          <div class="breakdown-list hidden" id="expenseRankedList"></div>
         </div>
 
-        <div class="card top-cats-card hidden" id="topExpenseCard">
-          <p class="top-cats-title" data-i18n="stats.topExpense">🔥 Top xarajatlar</p>
-          <div class="top-cats-list" id="topExpenseList"></div>
-        </div>
-
-        <div class="card chart-card hidden" id="incomeBreakdownCard">
-          <p class="chart-card-title" data-i18n="stats.incomeBreakdown">Daromadlar boʻyicha</p>
-          <div class="income-breakdown-list" id="incomeBreakdownList"></div>
-        </div>
-
-        <div class="card top-cats-card hidden" id="topIncomeCard">
-          <p class="top-cats-title" data-i18n="stats.topIncome">💰 Top daromadlar</p>
-          <div class="top-cats-list" id="topIncomeList"></div>
+        <div class="card chart-card breakdown-card" id="incomeBreakdownCard">
+          <div class="breakdown-head">
+            <p class="chart-card-title" data-i18n="stats.incomeBreakdown">Daromadlar</p>
+            <p class="breakdown-total" id="incomeBreakdownTotal">0 soʻm</p>
+          </div>
+          <div class="breakdown-empty hidden" id="incomeBreakdownEmpty">
+            <p class="breakdown-empty-text" data-i18n="stats.noIncome">Daromadlar yoʻq</p>
+          </div>
+          <div class="breakdown-single hidden" id="incomeBreakdownSingle"></div>
+          <div class="chart-wrap chart-wrap-donut hidden" id="incomeDonutWrap">
+            <canvas id="incomeDonutChart" aria-hidden="true"></canvas>
+            <div class="chart-donut-center hidden" id="incomeDonutCenter">
+              <span class="chart-donut-center-value" id="incomeDonutCenterValue">0</span>
+            </div>
+          </div>
+          <div class="breakdown-list hidden" id="incomeRankedList"></div>
         </div>
 
         <button type="button" class="pro-ads-banner hidden" id="proAdsBanner" data-i18n="ads.banner">BiznesHisob Pro — reklamsiz ishlang 💎</button>
@@ -7248,6 +7278,7 @@
         "lang.aria": "Til",
         "offline": "Internet yoʻq — saqlangan maʼlumotlar koʻrsatiladi",
         "loading": "Yuklanmoqda...",
+        "brand.name": "BiznesHisob",
         "onboarding.skip": "O'tkazib yuborish",
         "onboarding.brandTagline": "Intelligent finance tracking",
         "onboarding.slide1.card": "Daromad",
@@ -7340,18 +7371,18 @@
         "update.available": "Yangi versiya mavjud 🔄",
         "update.reload": "Yangilash",
         "stats.title": "Statistika",
-        "stats.expenseBreakdown": "Xarajatlar boʻyicha",
-        "stats.incomeBreakdown": "Daromadlar boʻyicha",
-        "stats.noExpense": "Xarajatlar yoʻq",
-        "stats.noIncome": "Daromadlar yoʻq",
+        "stats.expenseBreakdown": "Xarajatlar",
+        "stats.incomeBreakdown": "Daromadlar",
+        "stats.noExpense": "Bu davrda xarajat yoʻq",
+        "stats.noIncome": "Bu davrda daromad yoʻq",
         "stats.total": "Jami",
         "stats.periodToday": "Bugun",
         "stats.periodWeek": "Bu hafta",
         "stats.periodMonth": "Bu oy",
         "stats.period3months": "3 oy",
         "stats.selectPeriodAria": "Grafiklar davri",
-        "stats.topExpense": "🔥 Top xarajatlar",
-        "stats.topIncome": "💰 Top daromadlar",
+        "stats.topExpense": "Xarajatlar",
+        "stats.topIncome": "Daromadlar",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "Yangi operatsiya",
         "add.desc": "Tavsif",
@@ -7537,6 +7568,7 @@
         "lang.aria": "Язык",
         "offline": "Нет интернета — показаны сохранённые данные",
         "loading": "Загрузка...",
+        "brand.name": "BiznesHisob",
         "onboarding.skip": "Пропустить",
         "onboarding.brandTagline": "Intelligent finance tracking",
         "onboarding.slide1.card": "Доход",
@@ -7629,18 +7661,18 @@
         "update.available": "Доступна новая версия 🔄",
         "update.reload": "Обновить",
         "stats.title": "Статистика",
-        "stats.expenseBreakdown": "Расходы по категориям",
-        "stats.incomeBreakdown": "Доходы по категориям",
-        "stats.noExpense": "Нет расходов",
-        "stats.noIncome": "Нет доходов",
+        "stats.expenseBreakdown": "Расходы",
+        "stats.incomeBreakdown": "Доходы",
+        "stats.noExpense": "Нет расходов за этот период",
+        "stats.noIncome": "Нет доходов за этот период",
         "stats.total": "Итого",
         "stats.periodToday": "Сегодня",
         "stats.periodWeek": "Эта неделя",
         "stats.periodMonth": "Этот месяц",
         "stats.period3months": "3 месяца",
         "stats.selectPeriodAria": "Период графиков",
-        "stats.topExpense": "🔥 Топ расходов",
-        "stats.topIncome": "💰 Топ доходов",
+        "stats.topExpense": "Расходы",
+        "stats.topIncome": "Доходы",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "Новая операция",
         "add.desc": "Описание",
@@ -7826,6 +7858,7 @@
         "lang.aria": "Language",
         "offline": "No internet — showing saved data",
         "loading": "Loading...",
+        "brand.name": "BiznesHisob",
         "onboarding.skip": "Skip",
         "onboarding.brandTagline": "Intelligent finance tracking",
         "onboarding.slide1.card": "Income",
@@ -7918,18 +7951,18 @@
         "update.available": "New version available 🔄",
         "update.reload": "Reload",
         "stats.title": "Statistics",
-        "stats.expenseBreakdown": "Expenses by category",
-        "stats.incomeBreakdown": "Income by category",
-        "stats.noExpense": "No expenses",
-        "stats.noIncome": "No income",
+        "stats.expenseBreakdown": "Expenses",
+        "stats.incomeBreakdown": "Income",
+        "stats.noExpense": "No expenses in this period",
+        "stats.noIncome": "No income in this period",
         "stats.total": "Total",
         "stats.periodToday": "Today",
         "stats.periodWeek": "This week",
         "stats.periodMonth": "This month",
         "stats.period3months": "3 months",
         "stats.selectPeriodAria": "Charts period",
-        "stats.topExpense": "🔥 Top expenses",
-        "stats.topIncome": "💰 Top income",
+        "stats.topExpense": "Expenses",
+        "stats.topIncome": "Income",
         "stats.legendLine": "{{name}} — {{amount}} ({{pct}}%)",
         "add.title": "New transaction",
         "add.desc": "Description",
@@ -8427,7 +8460,8 @@
     const syncStatusText = document.getElementById("syncStatusText");
     const periodStatsGrid = document.getElementById("periodStatsGrid");
     const proAdsBanner = document.getElementById("proAdsBanner");
-    let chartDonut = null;
+    let chartExpenseDonut = null;
+    let chartIncomeDonut = null;
     let lastDonutPeriod = "";
     let donutTooltipSegmentIndex = null;
     let chartIncomeBar = null;
@@ -10856,7 +10890,8 @@
       chartDataBundleCache = null;
       lastChartsFingerprint = "";
       lastDonutPeriod = "";
-      chartDonut = destroyChartInstance(chartDonut);
+      chartExpenseDonut = destroyChartInstance(chartExpenseDonut);
+      chartIncomeDonut = destroyChartInstance(chartIncomeDonut);
       if (currentTab === "home") {
         scheduleChartsRender({ force: true, deferMs: 40 });
       } else {
@@ -13550,9 +13585,9 @@
       return null;
     }
 
-    function hideDonutTooltip(chart) {
+    function hideDonutTooltip(chart, options = {}) {
       if (!chart) return;
-      donutTooltipSegmentIndex = null;
+      if (options.clearIndex !== false) donutTooltipSegmentIndex = null;
       chart.setActiveElements([]);
       if (chart.tooltip) {
         chart.tooltip.setActiveElements([], { x: 0, y: 0 });
@@ -13561,6 +13596,8 @@
     }
 
     function handleDonutChartClick(evt, activeElements, chart) {
+      const other = chart === chartExpenseDonut ? chartIncomeDonut : chartExpenseDonut;
+      hideDonutTooltip(other, { clearIndex: false });
       if (!activeElements.length) {
         hideDonutTooltip(chart);
         return;
@@ -13580,10 +13617,9 @@
       if (document.documentElement.dataset.donutOutsideBound === "1") return;
       document.documentElement.dataset.donutOutsideBound = "1";
       document.addEventListener("click", e => {
-        if (!chartDonut?.canvas) return;
-        const wrap = chartDonut.canvas.closest(".chart-wrap-donut");
-        if (wrap && wrap.contains(e.target)) return;
-        hideDonutTooltip(chartDonut);
+        if (e.target.closest?.(".chart-wrap-donut")) return;
+        hideDonutTooltip(chartExpenseDonut);
+        hideDonutTooltip(chartIncomeDonut);
       });
     }
 
@@ -13634,10 +13670,6 @@
       };
     }
 
-    function formatDonutCenterValue(amountUzs) {
-      return formatSum(amountUzs);
-    }
-
     function formatCategoryPercent(amount, total) {
       if (!total || total <= 0) return "0";
       return (Math.round((amount / total) * 1000) / 10).toFixed(1);
@@ -13685,52 +13717,58 @@
       };
     }
 
-    function renderChartLegend(container, data, emptyKey) {
-      if (!container) return;
-      if (!data.items.length) {
-        container.innerHTML = `<p class="chart-legend-empty">${escapeHtml(t(emptyKey))}</p>`;
-        return;
-      }
-      container.innerHTML = data.items.map((item, i) => `
-          <div class="chart-legend-item" style="animation-delay:${i * 0.05}s">
-            <span class="chart-legend-dot" style="background:${item.color};color:${item.color}"></span>
-            <span class="chart-legend-text"><strong>${escapeHtml(item.label)}</strong> — ${escapeHtml(formatSum(item.amount))} (${escapeHtml(item.percent)}%)</span>
-          </div>
-        `).join("");
+    const BREAKDOWN_LIST_LIMIT = 5;
+
+    function formatBreakdownMoney(amountUzs) {
+      return formatMoney(amountUzs);
     }
 
-    function updateDonutCenter(total) {
-      const center = document.getElementById("expenseDonutCenter");
-      const valueEl = document.getElementById("expenseDonutCenterValue");
-      const unitEl = document.getElementById("expenseDonutCenterUnit");
+    function setBreakdownHidden(el, hidden) {
+      if (!el) return;
+      el.classList.toggle("hidden", hidden);
+    }
+
+    function updateDonutCenter(kind, total) {
+      const center = document.getElementById(`${kind}DonutCenter`);
+      const valueEl = document.getElementById(`${kind}DonutCenterValue`);
       if (!center || !valueEl) return;
-      if (unitEl) unitEl.textContent = "";
       if (total <= 0) {
         center.classList.add("hidden");
         return;
       }
       center.classList.remove("hidden");
-      valueEl.textContent = formatDonutCenterValue(total);
+      valueEl.textContent = formatBreakdownMoney(total);
     }
 
-    function renderTopCategoriesList(container, card, data) {
-      if (!container || !card) return;
-      if (!data.items.length) {
-        card.classList.add("hidden");
-        container.innerHTML = "";
-        return;
-      }
-      card.classList.remove("hidden");
-      const top = data.items.slice(0, 3);
+    function renderSingleCategoryRow(container, item) {
+      if (!container) return;
+      container.innerHTML = `
+        <div class="breakdown-single-row">
+          <div class="top-cat-left">
+            ${categoryIconHtml(item, item.color)}
+            <span class="top-cat-name">${escapeHtml(item.label)}</span>
+          </div>
+          <div class="top-cat-right">
+            <div class="top-cat-amount">${escapeHtml(formatBreakdownMoney(item.amount))}</div>
+            <div class="top-cat-pct">${escapeHtml(item.percent)}%</div>
+          </div>
+        </div>
+      `;
+      refreshIconsScoped(container);
+    }
+
+    function renderRankedCategoryList(container, data, limit = BREAKDOWN_LIST_LIMIT) {
+      if (!container) return;
+      const top = data.items.slice(0, limit);
       container.innerHTML = top.map((item, i) => `
-        <div class="top-cat-row" style="animation-delay:${i * 0.08}s">
+        <div class="top-cat-row" style="animation-delay:${i * 0.06}s">
           <div class="top-cat-head">
             <div class="top-cat-left">
               ${categoryIconHtml(item, item.color)}
               <span class="top-cat-name">${escapeHtml(item.label)}</span>
             </div>
             <div class="top-cat-right">
-              <div class="top-cat-amount">${escapeHtml(formatUZS(item.amount))}</div>
+              <div class="top-cat-amount">${escapeHtml(formatBreakdownMoney(item.amount))}</div>
               <div class="top-cat-pct">${escapeHtml(item.percent)}%</div>
             </div>
           </div>
@@ -13747,40 +13785,65 @@
       refreshIconsScoped(container);
     }
 
-    function renderIncomeBreakdownList(container, card, data) {
-      if (!container || !card) return;
-      if (!data.items.length) {
-        card.classList.add("hidden");
-        container.innerHTML = "";
-        return;
+    function renderBreakdownCard(kind, data) {
+      const totalEl = document.getElementById(`${kind}BreakdownTotal`);
+      const emptyEl = document.getElementById(`${kind}BreakdownEmpty`);
+      const singleEl = document.getElementById(`${kind}BreakdownSingle`);
+      const donutWrap = document.getElementById(`${kind}DonutWrap`);
+      const listEl = document.getElementById(`${kind}RankedList`);
+      const items = data?.items || [];
+
+      if (totalEl) totalEl.textContent = formatBreakdownMoney(data?.total || 0);
+
+      setBreakdownHidden(emptyEl, true);
+      setBreakdownHidden(singleEl, true);
+      setBreakdownHidden(donutWrap, true);
+      setBreakdownHidden(listEl, true);
+      if (singleEl) singleEl.innerHTML = "";
+      if (listEl) listEl.innerHTML = "";
+
+      if (!items.length) {
+        setBreakdownHidden(emptyEl, false);
+        updateDonutCenter(kind, 0);
+        return false;
       }
-      card.classList.remove("hidden");
-      container.innerHTML = data.items.map((item, i) => {
-        const barW = incomeProgressBarWidth(item.percent);
-        return `
-        <div class="income-cat-row" style="animation-delay:${i * 0.05}s">
-          <div class="income-cat-head">
-            <div class="income-cat-left">
-              ${categoryIconHtml(item, item.color)}
-              <span class="income-cat-name">${escapeHtml(item.label)}</span>
-            </div>
-            <span class="income-cat-amount">${escapeHtml(formatUZS(item.amount))}</span>
-          </div>
-          <div class="income-cat-bar-row">
-            <div class="income-cat-bar">
-              <div class="income-cat-bar-fill" data-width="${barW}" style="background:${item.color};color:${item.color}"></div>
-            </div>
-            <span class="income-cat-pct">${escapeHtml(item.percent)}%</span>
-          </div>
-        </div>
-      `;
-      }).join("");
-      requestAnimationFrame(() => {
-        container.querySelectorAll(".income-cat-bar-fill").forEach(bar => {
-          bar.style.width = `${bar.dataset.width || 0}%`;
-        });
+
+      if (items.length === 1) {
+        setBreakdownHidden(singleEl, false);
+        renderSingleCategoryRow(singleEl, items[0]);
+        updateDonutCenter(kind, 0);
+        return false;
+      }
+
+      setBreakdownHidden(donutWrap, false);
+      setBreakdownHidden(listEl, false);
+      renderRankedCategoryList(listEl, data);
+      // Header already shows the period total — keep the hole clean for the ring.
+      updateDonutCenter(kind, 0);
+      return true;
+    }
+
+    function createBreakdownDonut(canvas, data, animate, chartTooltipDefaults) {
+      if (!canvas || !data.items.length) return null;
+      return new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels: data.labels.slice(),
+          datasets: [{
+            data: data.values.slice(),
+            backgroundColor: data.colors.slice(),
+            borderWidth: 0,
+            hoverBorderWidth: 0,
+            borderColor: data.colors.slice(),
+            hoverBorderColor: data.colors.slice(),
+            hoverOffset: 0
+          }]
+        },
+        options: {
+          ...buildExpenseDonutChartOptions(chartTooltipDefaults, data.total),
+          animation: animate
+        }
       });
-      refreshIconsScoped(container);
     }
 
     function getLast30DaysTrend() {
@@ -13870,8 +13933,6 @@
       if (typeof Chart === "undefined") return;
 
       const { expense: expenseData, income: incomeData } = buildChartDataBundle();
-      const donutEl = document.getElementById("expenseDonutChart");
-      const expenseLegendEl = document.getElementById("expenseChartLegend");
       const animateCharts = !chartsHaveRendered && !forceRebuild;
       const chartTheme = getChartTheme();
       const chartTooltipDefaults = {
@@ -13883,53 +13944,38 @@
         borderWidth: 1
       };
 
-      updateDonutCenter(expenseData.total);
-      renderChartLegend(expenseLegendEl, expenseData, "stats.noExpense");
-      renderIncomeBreakdownList(
-        document.getElementById("incomeBreakdownList"),
-        document.getElementById("incomeBreakdownCard"),
-        incomeData
-      );
-      renderTopCategoriesList(
-        document.getElementById("topExpenseList"),
-        document.getElementById("topExpenseCard"),
-        expenseData
-      );
-      renderTopCategoriesList(
-        document.getElementById("topIncomeList"),
-        document.getElementById("topIncomeCard"),
-        incomeData
-      );
+      const showExpenseDonut = renderBreakdownCard("expense", expenseData);
+      const showIncomeDonut = renderBreakdownCard("income", incomeData);
 
       chartIncomeBar = destroyChartInstance(chartIncomeBar);
-
       const donutAnim = animateCharts ? { duration: 400, easing: "easeOutQuart" } : false;
       lastDonutPeriod = getStatsChartPeriod();
-      chartDonut = destroyChartInstance(chartDonut);
+      chartExpenseDonut = destroyChartInstance(chartExpenseDonut);
+      chartIncomeDonut = destroyChartInstance(chartIncomeDonut);
       donutTooltipSegmentIndex = null;
 
-      if (donutEl && expenseData.items.length) {
-        const donutPayload = {
-          labels: expenseData.labels.slice(),
-          datasets: [{
-            data: expenseData.values.slice(),
-            backgroundColor: expenseData.colors.slice(),
-            borderWidth: 0,
-            hoverBorderWidth: 0,
-            borderColor: expenseData.colors.slice(),
-            hoverBorderColor: expenseData.colors.slice(),
-            hoverOffset: 0
-          }]
-        };
-        ensureDonutClickOutsideDismiss();
-        chartDonut = new Chart(donutEl, {
-          type: "doughnut",
-          data: donutPayload,
-          options: {
-            ...buildExpenseDonutChartOptions(chartTooltipDefaults, expenseData.total),
-            animation: donutAnim
-          }
-        });
+      ensureDonutClickOutsideDismiss();
+      if (showExpenseDonut) {
+        chartExpenseDonut = createBreakdownDonut(
+          document.getElementById("expenseDonutChart"),
+          expenseData,
+          donutAnim,
+          chartTooltipDefaults
+        );
+        if (!chartExpenseDonut) {
+          document.getElementById("expenseDonutWrap")?.classList.add("hidden");
+        }
+      }
+      if (showIncomeDonut) {
+        chartIncomeDonut = createBreakdownDonut(
+          document.getElementById("incomeDonutChart"),
+          incomeData,
+          donutAnim,
+          chartTooltipDefaults
+        );
+        if (!chartIncomeDonut) {
+          document.getElementById("incomeDonutWrap")?.classList.add("hidden");
+        }
       }
     }
 

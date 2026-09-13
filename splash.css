@@ -10,7 +10,32 @@
  *   then --bh-splash-out        soft scale-up + blur fade into the app
  *
  * Total ≈ 2.05s (range 1.8–2.4s). JS reads these vars so exit stays in sync.
+ *
+ * Shared brand tokens (--bh-brand-*) are used by the static .bh-mark
+ * (PIN / auth / onboarding / header). Splash motion stays on .bh-splash only.
  */
+
+:root {
+  --bh-brand-from: #5b3df5;
+  --bh-brand-mid: #9b7cff;
+  --bh-brand-to: #c4b0ff;
+  /* Same fill as the splash icon so entry screens match cold-start. */
+  --bh-brand-grad: linear-gradient(
+    152deg,
+    #c4b5fd 0%,
+    #a78bfa 18%,
+    #8b5cf6 42%,
+    #7c3aed 68%,
+    #5b21b6 100%
+  );
+  --bh-brand-gloss: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.26) 0%,
+    rgba(255, 255, 255, 0.06) 38%,
+    rgba(255, 255, 255, 0) 58%
+  );
+  --bh-brand-radius: 22.5%;
+}
 
 .bh-splash {
   --bh-splash-bg: #0f0f13;
@@ -51,7 +76,7 @@
   position: relative;
   width: var(--bh-splash-icon-size);
   height: var(--bh-splash-icon-size);
-  border-radius: 22.5%;
+  border-radius: var(--bh-brand-radius);
   background: linear-gradient(
     152deg,
     #c4b5fd 0%,
@@ -76,12 +101,7 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.26) 0%,
-    rgba(255, 255, 255, 0.06) 38%,
-    rgba(255, 255, 255, 0) 58%
-  );
+  background: var(--bh-brand-gloss);
   pointer-events: none;
 }
 
@@ -244,4 +264,75 @@ html.bh-splash-skip #bh-launch-splash,
     opacity: 0;
     transform: scale(1.04);
   }
+}
+
+/* Static brand mark — same squircle + 3 bars as splash, no motion. */
+.bh-mark {
+  --bh-mark-size: 40px;
+  position: relative;
+  display: inline-block;
+  width: var(--bh-mark-size);
+  height: var(--bh-mark-size);
+  flex-shrink: 0;
+  border-radius: var(--bh-brand-radius);
+  background: var(--bh-brand-grad);
+  box-shadow:
+    0 8px 22px rgba(91, 61, 245, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 1px 0 rgba(255, 255, 255, 0.22) inset;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.bh-mark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bh-brand-gloss);
+  pointer-events: none;
+}
+
+.bh-mark__bars {
+  position: absolute;
+  left: 50%;
+  bottom: 21%;
+  width: 46%;
+  height: 54%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 11%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.bh-mark__bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.35);
+}
+
+.bh-mark__bar--short { height: 46%; }
+.bh-mark__bar--tall { height: 100%; }
+.bh-mark__bar--mid { height: 70%; }
+
+.bh-mark--sm { --bh-mark-size: 36px; }
+.bh-mark--md { --bh-mark-size: 56px; }
+.bh-mark--lg { --bh-mark-size: 72px; }
+
+.bh-mark--sm {
+  box-shadow:
+    0 2px 10px rgba(91, 61, 245, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 1px 0 rgba(255, 255, 255, 0.2) inset;
+}
+
+.bh-mark--lg {
+  box-shadow:
+    0 10px 28px rgba(91, 61, 245, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 1px 0 rgba(255, 255, 255, 0.22) inset;
 }
