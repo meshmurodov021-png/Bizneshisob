@@ -13818,7 +13818,8 @@
       setBreakdownHidden(donutWrap, false);
       setBreakdownHidden(listEl, false);
       renderRankedCategoryList(listEl, data);
-      updateDonutCenter(kind, data.total);
+      // Header already shows the period total — keep the hole clean for the ring.
+      updateDonutCenter(kind, 0);
       return true;
     }
 
@@ -13961,6 +13962,9 @@
           donutAnim,
           chartTooltipDefaults
         );
+        if (!chartExpenseDonut) {
+          document.getElementById("expenseDonutWrap")?.classList.add("hidden");
+        }
       }
       if (showIncomeDonut) {
         chartIncomeDonut = createBreakdownDonut(
@@ -13969,6 +13973,9 @@
           donutAnim,
           chartTooltipDefaults
         );
+        if (!chartIncomeDonut) {
+          document.getElementById("incomeDonutWrap")?.classList.add("hidden");
+        }
       }
     }
 
