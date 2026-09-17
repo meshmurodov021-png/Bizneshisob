@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "npm test --prefix functions",
     "build": "node scripts/stamp-version.js"
   },
   "devDependencies": {
