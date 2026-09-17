@@ -6943,7 +6943,9 @@
     });
     const FUNCTIONS_REGION = "us-central1";
     const firebaseFunctions = getFunctions(app, FUNCTIONS_REGION);
-    if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+    const useFunctionsEmulator = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+      && (localStorage.getItem("bh-functions-emu") === "1" || new URLSearchParams(location.search).has("emu"));
+    if (useFunctionsEmulator) {
       try { connectFunctionsEmulator(firebaseFunctions, "127.0.0.1", 5001); } catch (_) { /* already connected */ }
     }
     const requestPinEmailOtpFn = httpsCallable(firebaseFunctions, "requestPinEmailOtp");
