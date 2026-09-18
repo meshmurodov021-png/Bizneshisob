@@ -195,7 +195,7 @@
       left: 0;
       right: 0;
       z-index: 200;
-      padding: 0.7rem 0 0;
+      padding: 0.7rem 0.75rem 0;
       background: transparent;
       border: none;
       pointer-events: none;
@@ -225,13 +225,13 @@
 
     .header.is-compact .header-shell {
       padding: 0.38rem 0.5rem 0.38rem 0.8rem;
-      background: rgba(12, 12, 20, 0.62);
-      backdrop-filter: blur(22px) saturate(1.18);
-      -webkit-backdrop-filter: blur(22px) saturate(1.18);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(10, 10, 16, 0.82);
+      backdrop-filter: blur(24px) saturate(1.35);
+      -webkit-backdrop-filter: blur(24px) saturate(1.35);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.32),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        0 12px 40px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .header.is-compact .logo-mark {
@@ -3395,6 +3395,16 @@
       return i18n[currentLang]?.[key] ?? i18n.uz[key] ?? key;
     }
 
+    function isIOS() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+    function isStandalone() {
+      return window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+    }
+
     function applyI18n() {
       document.documentElement.lang = currentLang;
       document.querySelectorAll(".lang-btn").forEach(btn => {
@@ -3780,6 +3790,14 @@
 
     initScrollReveal();
     initStatsCount();
+    window.setTimeout(() => {
+      document.querySelectorAll(".reveal, .feature-row, .step-item, .testimonial").forEach((el) => {
+        if (getComputedStyle(el).opacity === "0") {
+          el.style.opacity = "1";
+          el.style.transform = "none";
+        }
+      });
+    }, 2800);
 
     /* ── Lang preview switcher ────────────────────────────────────────────── */
     (function initLangCard() {
@@ -3890,16 +3908,6 @@
     const heroIosHint = document.getElementById("heroIosHint");
     const ctaIosHint = document.getElementById("ctaIosHint");
 
-    function isIOS() {
-      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    }
-
-    function isStandalone() {
-      return window.matchMedia("(display-mode: standalone)").matches ||
-        window.navigator.standalone === true;
-    }
-
     function openApp() { window.location.href = APP_URL; }
 
     async function triggerInstall() {
@@ -3913,11 +3921,16 @@
     }
 
     function toggleIosHint(show) {
-      heroIosHint?.classList.toggle("hidden", !show);
-      ctaIosHint?.classList.toggle("hidden", !show);
+      document.getElementById("heroIosHint")?.classList.toggle("hidden", !show);
+      document.getElementById("ctaIosHint")?.classList.toggle("hidden", !show);
     }
 
     function setupInstallUI() {
+      const heroInstallBtn = document.getElementById("heroInstallBtn");
+      const ctaInstallBtn = document.getElementById("ctaInstallBtn");
+      const navInstallBtn = document.getElementById("navInstallBtn");
+      const heroIosBtn = document.getElementById("heroIosBtn");
+      const ctaIosBtn = document.getElementById("ctaIosBtn");
       if (isStandalone()) {
         const label = t("cta.open");
         [heroInstallBtn, ctaInstallBtn, navInstallBtn].forEach((b) => { if (b) b.textContent = label; });
