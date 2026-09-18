@@ -2482,7 +2482,7 @@
       position: relative;
       color-scheme: dark;
       width: min(420px, calc(100vw - 1.5rem));
-      max-height: min(92dvh, 720px);
+      max-height: min(96dvh, 840px);
       margin: auto;
       padding: 0;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2496,6 +2496,11 @@
       overflow: hidden;
     }
 
+    .auth-modal[open] {
+      display: flex;
+      flex-direction: column;
+    }
+
     .auth-modal::backdrop {
       background: rgba(6, 6, 12, 0.72);
       backdrop-filter: blur(14px) saturate(1.1);
@@ -2507,9 +2512,11 @@
     .auth-modal-panel {
       display: flex;
       flex-direction: column;
-      max-height: min(92dvh, 720px);
+      flex: 1 1 auto;
+      min-height: 0;
       overflow: auto;
-      padding: 1.45rem 1.35rem 1.35rem;
+      overscroll-behavior: contain;
+      padding: 1.35rem 1.25rem 1.2rem;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -2542,7 +2549,7 @@
       align-items: center;
       text-align: center;
       gap: 0.55rem;
-      margin: 0.15rem 0 1.15rem;
+      margin: 0.1rem 1.8rem 0.85rem;
     }
 
     .auth-modal-logo {
@@ -2608,7 +2615,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin: 1.05rem 0 1rem;
+      margin: 0.85rem 0 0.75rem;
       color: var(--muted);
       font-size: 0.75rem;
       font-weight: 600;
@@ -2628,7 +2635,7 @@
       display: flex;
       gap: 0.4rem;
       padding: 4px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2686,7 +2693,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.62rem;
     }
 
     .auth-field label {
@@ -2744,6 +2751,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(124, 58, 237, 0.38);
+      flex-shrink: 0;
     }
 
     .auth-submit-btn:hover,
@@ -2786,7 +2794,7 @@
     @media (max-width: 540px) {
       .auth-modal {
         width: calc(100vw - 1rem);
-        max-height: min(94dvh, 100%);
+        max-height: min(96dvh, 100%);
         border-radius: 22px 22px 18px 18px;
         margin: auto 0.5rem max(0.5rem, env(safe-area-inset-bottom));
       }
