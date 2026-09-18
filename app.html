@@ -6071,20 +6071,6 @@
       color: var(--muted);
     }
 
-    .pin-otp-dev-hint {
-      font-size: 0.75rem;
-      color: #fbbf24;
-      text-align: center;
-      line-height: 1.4;
-      margin: 0 0 0.5rem;
-    }
-
-    html.light-theme .pin-otp-dev-hint {
-      color: #b45309;
-    }
-
-    .pin-otp-dev-hint.hidden { display: none; }
-
     #recaptcha-container {
       position: fixed;
       bottom: 0;
@@ -6166,10 +6152,13 @@
         <div class="recovery-glass-card">
           <div class="recovery-icon"><i data-lucide="mail"></i></div>
           <h2 class="pin-title" data-i18n="pin.resetEmail.title">PIN kodni tiklash</h2>
-          <p class="pin-sub" data-i18n="pin.resetEmail.desc">Hisobingiz emailiga 6 raqamli tasdiqlash kodi yuboriladi</p>
+          <p class="pin-sub" data-i18n="pin.resetEmail.desc">Hisobingiz emailiga tasdiqlash havolasi yuboriladi</p>
           <p class="pin-masked-email" id="pinMaskedEmail">—</p>
+          <p class="pin-recovery-success hidden" id="pinEmailSuccess" data-i18n="pin.resetEmail.sent">✅ Email yuborildi!</p>
+          <p class="pin-recovery-hint hidden" id="pinEmailHint" data-i18n="pin.resetEmail.hint">Pochtangizni tekshiring, havolani bosib parolingizni yangilang</p>
           <p class="pin-recovery-error" id="pinEmailError"></p>
-          <button type="button" class="pin-recovery-btn" id="pinEmailSendBtn" data-i18n="pin.resetEmail.send">Kod yuborish</button>
+          <button type="button" class="pin-recovery-btn" id="pinEmailSendBtn" data-i18n="pin.resetEmail.send">Email yuborish</button>
+          <button type="button" class="pin-recovery-btn hidden" id="pinEmailLogoutBtn" data-i18n="pin.resetEmail.logout">Chiqish va qayta kirish</button>
           <button type="button" class="pin-recovery-btn secondary" id="pinEmailCancelBtn" data-i18n="pin.resetEmail.cancel">Bekor qilish</button>
         </div>
       </div>
@@ -6199,7 +6188,6 @@
             <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" data-otp="5" aria-label="Raqam 6">
           </div>
           <p class="pin-recovery-error" id="pinOtpError"></p>
-          <p class="pin-otp-dev-hint hidden" id="pinOtpDevHint" data-i18n="pin.otp.devHint">Dev: kod Functions logiga yozildi — pochtaga yuborilmadi</p>
           <p class="otp-resend" id="pinResendWrap">
             <button type="button" id="pinResendBtn" disabled>Qayta yuborish (60s)</button>
           </p>
@@ -6898,11 +6886,6 @@
       linkWithPhoneNumber
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
     import {
-      getFunctions,
-      httpsCallable,
-      connectFunctionsEmulator
-    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
-    import {
       initializeFirestore,
       persistentLocalCache,
       collection,
@@ -6941,15 +6924,6 @@
     const db = initializeFirestore(app, {
       localCache: persistentLocalCache()
     });
-    const FUNCTIONS_REGION = "us-central1";
-    const firebaseFunctions = getFunctions(app, FUNCTIONS_REGION);
-    const useFunctionsEmulator = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
-      && (localStorage.getItem("bh-functions-emu") === "1" || new URLSearchParams(location.search).has("emu"));
-    if (useFunctionsEmulator) {
-      try { connectFunctionsEmulator(firebaseFunctions, "127.0.0.1", 5001); } catch (_) { /* already connected */ }
-    }
-    const requestPinEmailOtpFn = httpsCallable(firebaseFunctions, "requestPinEmailOtp");
-    const verifyPinEmailOtpFn = httpsCallable(firebaseFunctions, "verifyPinEmailOtp");
 
     const scriptLoadCache = new Map();
     function loadScript(src) {
@@ -7639,31 +7613,21 @@
         "pin.forgot": "PIN kodini unutdim?",
         "pin.cancel": "Bekor qilish",
         "pin.resetEmail.title": "PIN kodni tiklash",
-        "pin.resetEmail.desc": "Hisobingiz emailiga 6 raqamli tasdiqlash kodi yuboriladi",
-        "pin.resetEmail.send": "Kod yuborish",
-        "pin.resetEmail.sending": "Yuborilmoqda...",
+        "pin.resetEmail.desc": "Hisobingiz emailiga tasdiqlash havolasi yuboriladi",
+        "pin.resetEmail.send": "Email yuborish",
         "pin.resetEmail.cancel": "Bekor qilish",
+        "pin.resetEmail.sent": "✅ Email yuborildi!",
+        "pin.resetEmail.hint": "Pochtangizni tekshiring, havolani bosib parolingizni yangilang",
+        "pin.resetEmail.logout": "Chiqish va qayta kirish",
         "pin.resetEmail.noEmail": "Email topilmadi. Qayta kiring.",
         "pin.otp.smsTitle": "SMS kod kiriting",
         "pin.otp.smsHint": "{{phone}} raqamiga yuborildi",
-        "pin.otp.emailTitle": "Email kodini kiriting",
-        "pin.otp.emailHint": "Kod {{email}} manziliga yuborildi",
         "pin.otp.confirm": "Tasdiqlash",
         "pin.otp.back": "Orqaga",
         "pin.otp.resend": "Qayta yuborish",
         "pin.otp.resendIn": "Qayta yuborish ({{n}}s)",
         "pin.otp.needSix": "6 raqamli kodni kiriting",
         "pin.otp.needCode": "Avval kod yuboring",
-        "pin.otp.invalid": "Kod noto‘g‘ri. Qayta urinib ko‘ring.",
-        "pin.otp.expired": "Kod muddati tugagan. Qayta yuboring.",
-        "pin.otp.tooMany": "Juda ko‘p urinish. Yangi kod so‘rang.",
-        "pin.otp.rateLimit": "Biroz kuting ({{n}}s)",
-        "pin.otp.hourlyLimit": "Soatiga juda ko‘p so‘rov. Keyinroq urinib ko‘ring.",
-        "pin.otp.notConfigured": "Email kod hozircha sozlanmagan. Keyinroq urinib ko‘ring.",
-        "pin.otp.sendFailed": "Email yuborilmadi. Keyinroq urinib ko‘ring.",
-        "pin.otp.network": "Internet aloqasini tekshiring.",
-        "pin.otp.unauthenticated": "Avval tizimga kiring.",
-        "pin.otp.devHint": "Dev: kod Functions logiga yozildi — pochtaga yuborilmadi",
         "currency.suffix": " soʻm"
       },
       ru: {
@@ -7947,31 +7911,21 @@
         "pin.forgot": "Забыли PIN?",
         "pin.cancel": "Отмена",
         "pin.resetEmail.title": "Сброс PIN",
-        "pin.resetEmail.desc": "На email аккаунта будет отправлен 6-значный код",
-        "pin.resetEmail.send": "Отправить код",
-        "pin.resetEmail.sending": "Отправка...",
+        "pin.resetEmail.desc": "На email аккаунта будет отправлена ссылка для сброса",
+        "pin.resetEmail.send": "Отправить email",
         "pin.resetEmail.cancel": "Отмена",
+        "pin.resetEmail.sent": "✅ Email отправлен!",
+        "pin.resetEmail.hint": "Проверьте почту, перейдите по ссылке и обновите пароль",
+        "pin.resetEmail.logout": "Выйти и войти снова",
         "pin.resetEmail.noEmail": "Email не найден. Войдите снова.",
         "pin.otp.smsTitle": "Введите SMS-код",
         "pin.otp.smsHint": "Отправлено на {{phone}}",
-        "pin.otp.emailTitle": "Введите код из email",
-        "pin.otp.emailHint": "Код отправлен на {{email}}",
         "pin.otp.confirm": "Подтвердить",
         "pin.otp.back": "Назад",
         "pin.otp.resend": "Отправить снова",
         "pin.otp.resendIn": "Отправить снова ({{n}}с)",
         "pin.otp.needSix": "Введите 6-значный код",
         "pin.otp.needCode": "Сначала запросите код",
-        "pin.otp.invalid": "Неверный код. Попробуйте снова.",
-        "pin.otp.expired": "Срок кода истёк. Запросите новый.",
-        "pin.otp.tooMany": "Слишком много попыток. Запросите новый код.",
-        "pin.otp.rateLimit": "Подождите ({{n}}с)",
-        "pin.otp.hourlyLimit": "Слишком много запросов за час. Попробуйте позже.",
-        "pin.otp.notConfigured": "Email-код ещё не настроен. Попробуйте позже.",
-        "pin.otp.sendFailed": "Не удалось отправить email. Попробуйте позже.",
-        "pin.otp.network": "Проверьте интернет-соединение.",
-        "pin.otp.unauthenticated": "Сначала войдите в аккаунт.",
-        "pin.otp.devHint": "Dev: код записан в лог Functions — письмо не отправлено",
         "currency.suffix": " so'm"
       },
       en: {
@@ -8255,31 +8209,21 @@
         "pin.forgot": "Forgot PIN?",
         "pin.cancel": "Cancel",
         "pin.resetEmail.title": "Reset PIN",
-        "pin.resetEmail.desc": "A 6-digit code will be sent to your account email",
-        "pin.resetEmail.send": "Send code",
-        "pin.resetEmail.sending": "Sending...",
+        "pin.resetEmail.desc": "A verification link will be sent to your account email",
+        "pin.resetEmail.send": "Send email",
         "pin.resetEmail.cancel": "Cancel",
+        "pin.resetEmail.sent": "✅ Email sent!",
+        "pin.resetEmail.hint": "Check your inbox, open the link and update your password",
+        "pin.resetEmail.logout": "Sign out and sign in again",
         "pin.resetEmail.noEmail": "Email not found. Please sign in again.",
         "pin.otp.smsTitle": "Enter SMS code",
         "pin.otp.smsHint": "Sent to {{phone}}",
-        "pin.otp.emailTitle": "Enter email code",
-        "pin.otp.emailHint": "Code sent to {{email}}",
         "pin.otp.confirm": "Confirm",
         "pin.otp.back": "Back",
         "pin.otp.resend": "Resend",
         "pin.otp.resendIn": "Resend ({{n}}s)",
         "pin.otp.needSix": "Enter the 6-digit code",
         "pin.otp.needCode": "Request a code first",
-        "pin.otp.invalid": "Incorrect code. Try again.",
-        "pin.otp.expired": "Code expired. Request a new one.",
-        "pin.otp.tooMany": "Too many attempts. Request a new code.",
-        "pin.otp.rateLimit": "Please wait ({{n}}s)",
-        "pin.otp.hourlyLimit": "Too many requests this hour. Try later.",
-        "pin.otp.notConfigured": "Email codes are not configured yet. Try later.",
-        "pin.otp.sendFailed": "Could not send email. Try later.",
-        "pin.otp.network": "Check your internet connection.",
-        "pin.otp.unauthenticated": "Please sign in first.",
-        "pin.otp.devHint": "Dev: code written to Functions logs — email was not sent",
         "currency.suffix": " UZS"
       }
     };
@@ -8968,14 +8912,16 @@
     const pinPhoneBackBtn = document.getElementById("pinPhoneBackBtn");
     const pinOtpPhoneHint = document.getElementById("pinOtpPhoneHint");
     const pinOtpError = document.getElementById("pinOtpError");
-    const pinOtpDevHint = document.getElementById("pinOtpDevHint");
     const pinResendBtn = document.getElementById("pinResendBtn");
     const pinConfirmOtpBtn = document.getElementById("pinConfirmOtpBtn");
     const pinOtpBackBtn = document.getElementById("pinOtpBackBtn");
     const pinEmailResetView = document.getElementById("pinEmailResetView");
     const pinMaskedEmail = document.getElementById("pinMaskedEmail");
+    const pinEmailSuccess = document.getElementById("pinEmailSuccess");
+    const pinEmailHint = document.getElementById("pinEmailHint");
     const pinEmailError = document.getElementById("pinEmailError");
     const pinEmailSendBtn = document.getElementById("pinEmailSendBtn");
+    const pinEmailLogoutBtn = document.getElementById("pinEmailLogoutBtn");
     const pinEmailCancelBtn = document.getElementById("pinEmailCancelBtn");
     const otpInputs = document.querySelectorAll(".otp-box");
     const changePinBtn = document.getElementById("changePinBtn");
@@ -8985,11 +8931,7 @@
     let resendInterval = null;
     let resendSecondsLeft = 0;
     let pinSubview = "main";
-    /** @type {"sms" | "email"} */
-    let pinOtpChannel = "sms";
     let pinOtpTarget = "";
-    let emailOtpRequested = false;
-    let emailOtpDevChannel = false;
 
     function purgeLegacyBiometricKeys() {
       localStorage.removeItem("bzh_bio_enabled");
@@ -9597,8 +9539,11 @@
     }
 
     function refreshPinRecoveryI18n() {
-      if (pinEmailSendBtn && !pinEmailSendBtn.disabled) {
+      if (pinEmailSendBtn && !pinEmailSendBtn.classList.contains("hidden")) {
         pinEmailSendBtn.textContent = t("pin.resetEmail.send");
+      }
+      if (pinEmailLogoutBtn && !pinEmailLogoutBtn.classList.contains("hidden")) {
+        pinEmailLogoutBtn.textContent = t("pin.resetEmail.logout");
       }
       if (pinSubview === "otp") applyPinOtpCopy();
       if (pinResendBtn && resendSecondsLeft > 0) {
@@ -9609,23 +9554,19 @@
     }
 
     function applyPinOtpCopy() {
-      if (pinOtpTitle) {
-        pinOtpTitle.textContent = pinOtpChannel === "email" ? t("pin.otp.emailTitle") : t("pin.otp.smsTitle");
-      }
+      if (pinOtpTitle) pinOtpTitle.textContent = t("pin.otp.smsTitle");
       if (pinOtpPhoneHint) {
-        pinOtpPhoneHint.textContent = pinOtpChannel === "email"
-          ? t("pin.otp.emailHint", { email: pinOtpTarget || "—" })
-          : (pinOtpTarget ? t("pin.otp.smsHint", { phone: pinOtpTarget }) : "");
+        pinOtpPhoneHint.textContent = pinOtpTarget ? t("pin.otp.smsHint", { phone: pinOtpTarget }) : "";
       }
-      pinOtpDevHint?.classList.toggle("hidden", !(pinOtpChannel === "email" && emailOtpDevChannel));
     }
 
     function resetPinEmailResetUI() {
       setRecoveryError(pinEmailError, "");
-      if (pinEmailSendBtn) {
-        pinEmailSendBtn.disabled = false;
-        pinEmailSendBtn.textContent = t("pin.resetEmail.send");
-      }
+      pinEmailSuccess?.classList.add("hidden");
+      pinEmailHint?.classList.add("hidden");
+      pinEmailSendBtn?.classList.remove("hidden");
+      pinEmailLogoutBtn?.classList.add("hidden");
+      if (pinEmailSendBtn) pinEmailSendBtn.disabled = false;
     }
 
     function showPinEmailReset() {
@@ -9642,105 +9583,42 @@
       refreshIcons();
     }
 
-    function pinEmailOtpErrorMessage(err) {
-      const details = err?.details && typeof err.details === "object" ? err.details : {};
-      const reason = details.reason || err?.message || "";
-      const retry = Number(details.retryAfterSec) || 0;
-      const map = {
-        unauthenticated: t("pin.otp.unauthenticated"),
-        "no-email": t("pin.resetEmail.noEmail"),
-        "email-not-configured": t("pin.otp.notConfigured"),
-        "email-send-failed": t("pin.otp.sendFailed"),
-        cooldown: t("pin.otp.rateLimit", { n: retry || 60 }),
-        "hourly-limit": t("pin.otp.hourlyLimit"),
-        expired: t("pin.otp.expired"),
-        locked: t("pin.otp.tooMany"),
-        mismatch: t("pin.otp.invalid"),
-        "not-found": t("pin.otp.needCode"),
-        "invalid-format": t("pin.otp.needSix")
-      };
-      if (map[reason]) return map[reason];
-      const code = err?.code || "";
-      if (code === "functions/not-found" || code === "functions/unimplemented") return t("pin.otp.notConfigured");
-      if (code === "functions/unauthenticated") return t("pin.otp.unauthenticated");
-      if (code === "functions/unavailable" || code === "functions/deadline-exceeded") return t("pin.otp.network");
-      if (code === "functions/resource-exhausted") return t("pin.otp.rateLimit", { n: retry || 60 });
-      if (!navigator.onLine) return t("pin.otp.network");
-      return err?.message || t("pin.otp.sendFailed");
-    }
-
     async function sendPinEmailReset() {
       const email = firebaseAuth.currentUser?.email || currentUser?.email || "";
       if (!email) {
         setRecoveryError(pinEmailError, t("pin.resetEmail.noEmail"));
         return;
       }
-      if (!currentUser && !firebaseAuth.currentUser) {
-        setRecoveryError(pinEmailError, t("pin.otp.unauthenticated"));
-        return;
-      }
       setRecoveryError(pinEmailError, "");
-      setRecoveryError(pinOtpError, "");
-      if (pinEmailSendBtn) {
-        pinEmailSendBtn.disabled = true;
-        pinEmailSendBtn.textContent = t("pin.resetEmail.sending");
-      }
+      if (pinEmailSendBtn) pinEmailSendBtn.disabled = true;
       try {
-        const result = await requestPinEmailOtpFn({ lang: currentLang || "uz" });
-        const data = result?.data || {};
-        emailOtpRequested = true;
-        emailOtpDevChannel = data.channel === "dev-log";
-        showEmailOtpRecovery(data.maskedEmail || maskEmail(email), Number(data.cooldownSec) || 60);
+        await sendPasswordResetEmail(firebaseAuth, email);
+        pinEmailSuccess?.classList.remove("hidden");
+        pinEmailHint?.classList.remove("hidden");
+        pinEmailSendBtn?.classList.add("hidden");
+        pinEmailLogoutBtn?.classList.remove("hidden");
       } catch (err) {
-        console.error("[BiznesHisob] PIN email OTP send failed:", err);
-        const msg = pinEmailOtpErrorMessage(err);
-        if (pinSubview === "otp" && pinOtpChannel === "email") setRecoveryError(pinOtpError, msg);
-        else setRecoveryError(pinEmailError, msg);
-        const retry = Number(err?.details?.retryAfterSec) || 0;
-        if (retry > 0 && pinSubview === "otp") startResendCountdown(retry);
-      } finally {
-        if (pinEmailSendBtn) {
-          pinEmailSendBtn.disabled = false;
-          pinEmailSendBtn.textContent = t("pin.resetEmail.send");
-        }
+        console.error("[BiznesHisob] PIN email reset failed:", err);
+        setRecoveryError(pinEmailError, passwordResetErrorMessage(err?.code));
+        if (pinEmailSendBtn) pinEmailSendBtn.disabled = false;
       }
     }
 
-    async function confirmPinEmailOtp() {
-      const code = getOtpCode();
-      if (code.length !== 6) {
-        setRecoveryError(pinOtpError, t("pin.otp.needSix"));
-        return;
-      }
-      if (!emailOtpRequested) {
-        setRecoveryError(pinOtpError, t("pin.otp.needCode"));
-        return;
-      }
-      setRecoveryError(pinOtpError, "");
-      pinConfirmOtpBtn.disabled = true;
+    async function pinLogoutAndRelogin() {
+      setBusy(true);
       try {
-        await verifyPinEmailOtpFn({ code });
-        emailOtpRequested = false;
-        emailOtpDevChannel = false;
-        stopResendTimer();
-        pinSetupFirst = "";
-        showPinSubview("main");
-        configurePinUI("reset-setup");
-        pinScreen.classList.add("visible");
-        pinScreen.setAttribute("aria-hidden", "false");
-        refreshIcons();
+        clearPinStorage();
+        appUnlocked = false;
+        await signOut(firebaseAuth);
+        hidePinScreen();
+        allowAuthScreen();
+        showView("auth");
+        showAuthLoginView();
       } catch (err) {
-        console.error("[BiznesHisob] PIN email OTP verify failed:", err);
-        setRecoveryError(pinOtpError, pinEmailOtpErrorMessage(err));
-        clearOtpInputs();
-        otpInputs[0]?.focus();
+        setRecoveryError(pinEmailError, authErrorMessage(err?.code));
       } finally {
-        pinConfirmOtpBtn.disabled = false;
+        setBusy(false);
       }
-    }
-
-    function confirmCurrentOtp() {
-      return pinOtpChannel === "email" ? confirmPinEmailOtp() : confirmPinRecoveryOtp();
     }
 
     function setRecoveryError(el, msg) {
@@ -9856,27 +9734,12 @@
 
     function showOtpRecovery(phone) {
       clearAuthFallbackTimer();
-      pinOtpChannel = "sms";
       pinOtpTarget = phone || "";
-      emailOtpDevChannel = false;
       setRecoveryError(pinOtpError, "");
       clearOtpInputs();
       applyPinOtpCopy();
       showPinSubview("otp");
       startResendCountdown(60);
-      setTimeout(() => otpInputs[0]?.focus(), 300);
-      refreshIcons();
-    }
-
-    function showEmailOtpRecovery(masked, cooldownSec = 60) {
-      clearAuthFallbackTimer();
-      pinOtpChannel = "email";
-      pinOtpTarget = masked || pinMaskedEmail?.textContent || "—";
-      setRecoveryError(pinOtpError, "");
-      clearOtpInputs();
-      applyPinOtpCopy();
-      showPinSubview("otp");
-      startResendCountdown(cooldownSec);
       setTimeout(() => otpInputs[0]?.focus(), 300);
       refreshIcons();
     }
@@ -10042,9 +9905,6 @@
       stopResendTimer();
       clearRecaptcha();
       phoneConfirmationResult = null;
-      emailOtpRequested = false;
-      emailOtpDevChannel = false;
-      pinOtpChannel = "sms";
       pinOtpTarget = "";
       resetPinBuffer();
       pinChangeCancelBtn?.classList.add("hidden");
@@ -10259,6 +10119,7 @@
     });
 
     pinEmailSendBtn?.addEventListener("click", () => sendPinEmailReset());
+    pinEmailLogoutBtn?.addEventListener("click", () => pinLogoutAndRelogin());
     pinEmailCancelBtn?.addEventListener("click", () => {
       resetPinEmailResetUI();
       configurePinUI("unlock");
@@ -10279,23 +10140,16 @@
       pinScreen.classList.add("visible");
     });
 
-    pinConfirmOtpBtn.addEventListener("click", () => confirmCurrentOtp());
+    pinConfirmOtpBtn.addEventListener("click", () => confirmPinRecoveryOtp());
     pinOtpBackBtn.addEventListener("click", () => {
       setRecoveryError(pinOtpError, "");
       stopResendTimer();
-      if (pinOtpChannel === "email") {
-        resetPinEmailResetUI();
-        showPinSubview("email");
-        refreshIcons();
-        return;
-      }
       showPinSubview("phone");
     });
 
     pinResendBtn.addEventListener("click", () => {
       if (pinResendBtn.disabled) return;
-      if (pinOtpChannel === "email") sendPinEmailReset();
-      else sendPinRecoverySms();
+      sendPinRecoverySms();
     });
 
     let otpConfirmInFlight = false;
@@ -10308,7 +10162,7 @@
         if (v && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
         if (getOtpCode().length === 6 && !otpConfirmInFlight) {
           otpConfirmInFlight = true;
-          confirmCurrentOtp().finally(() => {
+          confirmPinRecoveryOtp().finally(() => {
             otpConfirmInFlight = false;
           });
         }
@@ -10327,7 +10181,7 @@
         if (pasted.length > 0) otpInputs[Math.min(pasted.length, 5)]?.focus();
         if (pasted.length === 6 && !otpConfirmInFlight) {
           otpConfirmInFlight = true;
-          confirmCurrentOtp().finally(() => {
+          confirmPinRecoveryOtp().finally(() => {
             otpConfirmInFlight = false;
           });
         }
