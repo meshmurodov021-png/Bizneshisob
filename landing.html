@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1780673729574">
+  <meta name="app-build-version" content="1789750448194">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -21,9 +21,9 @@
   <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
   <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
   <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1780673729574">
-  <link rel="manifest" href="/manifest.json?v=1780673729574">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789750448194">
+  <link rel="manifest" href="/manifest.json?v=1789750448194">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789750448194">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <script type="application/ld+json">
@@ -263,7 +263,7 @@
 
     .header.is-compact .logo { font-size: 1.02rem; }
 
-    a.header-login.btn { display: none; }
+    .header-login { display: none; }
 
     .logo {
       display: flex;
@@ -2431,7 +2431,6 @@
       .nav-links { display: flex; }
       .menu-btn { display: none; }
       .header-login { display: inline-flex; }
-      a.header-login.btn { display: inline-flex; }
       .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 2rem; }
       .hero-phone-stage { max-width: 500px; padding: 0.75rem 0 1.25rem; }
       .float-card--income { left: -8%; top: 8%; }
@@ -2925,7 +2924,7 @@
             <button type="button" class="lang-btn" data-lang="ru">RU</button>
             <button type="button" class="lang-btn" data-lang="en">EN</button>
           </div>
-          <a href="/app" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</a>
+          <button type="button" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</button>
           <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
           <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
         </div>
@@ -2942,7 +2941,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="/app" data-auth-modal data-i18n="nav.login">Kirish</a>
+    <a href="#kirish" data-auth-modal data-i18n="nav.login">Kirish</a>
     <a href="/app" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
@@ -3341,7 +3340,7 @@
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-ghost" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="#kirish" class="btn-pricing-ghost" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.free">Bepul boshlash</a>
           </article>
           <article class="pricing-card pricing-card--featured glass glass-hover reveal">
             <span class="badge-tavsiya" data-i18n="pricing.badge">TAVSIYA</span>
@@ -3356,7 +3355,7 @@
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-premium" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+            <a href="#kirish" class="btn-pricing-premium" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
           </article>
         </div>
       </div>
@@ -3528,6 +3527,7 @@
     </div>
   </footer>
 
+  <span id="kirish" hidden></span>
   <dialog class="auth-modal" id="authModal" aria-labelledby="authModalTitle" aria-modal="true">
     <button type="button" class="auth-modal-close" id="authModalClose" data-i18n-aria="auth.close" aria-label="Yopish">×</button>
     <div class="auth-modal-panel">
@@ -3598,9 +3598,56 @@
         <button type="button" class="auth-back-link" id="authForgotBack" data-i18n="auth.resetBack">← Orqaga</button>
       </div>
 
+      <div id="authSignedInView" class="auth-modal-view hidden">
+        <p class="auth-modal-success is-visible" id="authSignedInNote" data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovani ochish uchun davom eting.</p>
+        <button type="button" class="auth-submit-btn" id="authContinueApp" data-i18n="auth.continueApp">Ilovani ochish</button>
+      </div>
+
       <p class="auth-modal-footnote" data-i18n="auth.footnote">Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.</p>
     </div>
   </dialog>
+
+  <script>
+    /* Capture-phase: never let Kirish / Boshlash follow /app. Open the modal even if later scripts fail. */
+    (function () {
+      function authModeFrom(el) {
+        return el && el.getAttribute("data-auth-mode") === "register" ? "register" : "login";
+      }
+      function openAuthDialog(mode) {
+        const dialog = document.getElementById("authModal");
+        if (!dialog) return;
+        document.body.classList.add("auth-modal-open");
+        try {
+          if (typeof dialog.showModal === "function") {
+            if (!dialog.open) dialog.showModal();
+          } else {
+            dialog.setAttribute("open", "");
+          }
+        } catch (err) {
+          dialog.setAttribute("open", "");
+        }
+        window.__bhAuthPendingMode = mode === "register" ? "register" : "login";
+        if (typeof window.openLandingAuth === "function") {
+          try { window.openLandingAuth({ mode: window.__bhAuthPendingMode }); } catch (_) {}
+        }
+      }
+      window.openLandingAuthEarly = openAuthDialog;
+      window.BHLanding = window.BHLanding || {
+        goToApp() {
+          try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
+          window.location.href = window.location.protocol === "file:"
+            ? new URL("app.html", window.location.href).href
+            : new URL("/app", window.location.origin).href;
+        }
+      };
+      document.addEventListener("click", function (e) {
+        const el = e.target && e.target.closest && e.target.closest("[data-auth-modal]");
+        if (!el) return;
+        e.preventDefault();
+        openAuthDialog(authModeFrom(el));
+      }, true);
+    })();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -3726,6 +3773,9 @@
         "auth.close": "Yopish",
         "auth.busy": "Kutilmoqda…",
         "auth.footnote": "Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.",
+        "auth.signedInTitle": "Siz kirdingiz",
+        "auth.signedInSub": "Hisobingiz ochiq. Ilovani ochish uchun davom eting.",
+        "auth.continueApp": "Ilovani ochish",
         "auth.err.passwordMismatch": "Parollar mos kelmaydi",
         "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
         "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
@@ -3860,6 +3910,9 @@
         "auth.close": "Закрыть",
         "auth.busy": "Подождите…",
         "auth.footnote": "Продолжая, вы используете безопасную аутентификацию Firebase.",
+        "auth.signedInTitle": "Вы вошли",
+        "auth.signedInSub": "Сессия уже открыта. Продолжите, чтобы открыть приложение.",
+        "auth.continueApp": "Открыть приложение",
         "auth.err.passwordMismatch": "Пароли не совпадают",
         "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
         "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
@@ -3994,6 +4047,9 @@
         "auth.close": "Close",
         "auth.busy": "Please wait…",
         "auth.footnote": "By continuing you use secure Firebase authentication.",
+        "auth.signedInTitle": "You're signed in",
+        "auth.signedInSub": "Your account is already open. Continue to enter the app.",
+        "auth.continueApp": "Open app",
         "auth.err.passwordMismatch": "Passwords do not match",
         "auth.err.credentials": "Enter email and password (at least 6 characters).",
         "auth.err.email-already-in-use": "This email is already registered.",
@@ -4481,6 +4537,7 @@
       });
     })();
 
+    try {
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
     let particles = [], w, h;
@@ -4538,6 +4595,9 @@
       drawParticles();
     }
     window.addEventListener("resize", () => { resizeCanvas(); initParticles(); });
+    } catch (err) {
+      console.warn("[BiznesHisob] particles skipped:", err);
+    }
 
     const heroInstallBtn = document.getElementById("heroInstallBtn");
     const ctaInstallBtn = document.getElementById("ctaInstallBtn");
@@ -4614,7 +4674,7 @@
     /* ── Auth modal UI (Firebase wired in the module below) ─────────────── */
     const authModal = document.getElementById("authModal");
     const authMainView = document.getElementById("authMainView");
-    const authForgotView = document.getElementById("authForgotView");
+    const authSignedInView = document.getElementById("authSignedInView");
     const authModalTitle = document.getElementById("authModalTitle");
     const authModalSubmit = document.getElementById("authModalSubmit");
     const authForgotOpen = document.getElementById("authForgotOpen");
@@ -4648,13 +4708,25 @@
 
     function setAuthModalView(view) {
       const forgot = view === "forgot";
-      authMainView?.classList.toggle("hidden", forgot);
+      const signedIn = view === "signedin";
+      authMainView?.classList.toggle("hidden", forgot || signedIn);
       authForgotView?.classList.toggle("hidden", !forgot);
+      authSignedInView?.classList.toggle("hidden", !signedIn);
       if (authModalTitle) {
-        authModalTitle.textContent = forgot ? t("auth.resetTitle") : (authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title"));
+        authModalTitle.textContent = signedIn
+          ? t("auth.signedInTitle")
+          : forgot
+            ? t("auth.resetTitle")
+            : (authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title"));
       }
       const sub = document.getElementById("authModalSub");
-      if (sub) sub.textContent = forgot ? t("auth.resetDesc") : t("auth.modal.sub");
+      if (sub) {
+        sub.textContent = signedIn
+          ? t("auth.signedInSub")
+          : forgot
+            ? t("auth.resetDesc")
+            : t("auth.modal.sub");
+      }
       if (!forgot) {
         authForgotSuccess?.classList.remove("is-visible");
         document.getElementById("authForgotForm")?.classList.remove("hidden");
@@ -4683,7 +4755,13 @@
     }
 
     window.syncLandingAuthCopy = function syncLandingAuthCopy() {
-      if (authModalTitle && authForgotView && !authForgotView.classList.contains("hidden")) {
+      const signedIn = authSignedInView && !authSignedInView.classList.contains("hidden");
+      const forgot = authForgotView && !authForgotView.classList.contains("hidden");
+      if (authModalTitle && signedIn) {
+        authModalTitle.textContent = t("auth.signedInTitle");
+        const sub = document.getElementById("authModalSub");
+        if (sub) sub.textContent = t("auth.signedInSub");
+      } else if (authModalTitle && forgot) {
         authModalTitle.textContent = t("auth.resetTitle");
         const sub = document.getElementById("authModalSub");
         if (sub) sub.textContent = t("auth.resetDesc");
@@ -4733,15 +4811,15 @@
     }
 
     function openAuthModal(opts = {}) {
-      if (window.BHAuth?.currentUser) {
-        window.location.href = APP_URL;
-        return;
-      }
       const trigger = opts.trigger || document.activeElement;
       authModalLastFocus = trigger && trigger.focus ? trigger : document.activeElement;
       const mode = opts.mode === "register" ? "register" : "login";
-      setAuthModalView("main");
-      setAuthModalMode(mode);
+      if (window.BHAuth?.currentUser) {
+        setAuthModalView("signedin");
+      } else {
+        setAuthModalView("main");
+        setAuthModalMode(mode);
+      }
       document.body.classList.add("auth-modal-open");
       document.getElementById("mobileNav")?.classList.remove("open");
       syncHeaderCompact();
@@ -4751,8 +4829,10 @@
         authModal.setAttribute("open", "");
       }
       document.addEventListener("keydown", trapAuthFocus, true);
-      const googleBtn = document.getElementById("authGoogleBtn");
-      window.setTimeout(() => (googleBtn || authModal.querySelector(AUTH_FOCUSABLE))?.focus(), 20);
+      const focusEl = window.BHAuth?.currentUser
+        ? document.getElementById("authContinueApp")
+        : document.getElementById("authGoogleBtn");
+      window.setTimeout(() => (focusEl || authModal.querySelector(AUTH_FOCUSABLE))?.focus(), 20);
     }
 
     window.openLandingAuth = openAuthModal;
@@ -4783,6 +4863,9 @@
     });
     authForgotOpen?.addEventListener("click", () => setAuthModalView("forgot"));
     document.getElementById("authForgotBack")?.addEventListener("click", () => setAuthModalView("main"));
+    document.getElementById("authContinueApp")?.addEventListener("click", () => {
+      window.BHLanding?.goToApp?.();
+    });
 
     document.querySelectorAll("[data-password-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -5227,6 +5310,10 @@
 
     onAuthStateChanged(auth, (user) => {
       window.BHAuth.currentUser = user || null;
+      const dialog = document.getElementById("authModal");
+      if (user && dialog?.open && typeof window.openLandingAuth === "function") {
+        window.openLandingAuth({ mode: window.__bhAuthPendingMode || "login" });
+      }
     });
 
     try {
