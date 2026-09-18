@@ -1,3 +1,9 @@
+/**
+ * PIN email OTP callables — kept for later Blaze + mailer enablement.
+ * Production `app.html` currently uses Firebase Auth `sendPasswordResetEmail`
+ * (Spark-safe password-reset link). Do not wire the client back to these
+ * callables until the project is on Blaze and a mailer is configured.
+ */
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
