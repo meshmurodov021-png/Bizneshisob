@@ -331,6 +331,7 @@
       cursor: pointer;
       border: none;
       text-decoration: none;
+      white-space: nowrap;
       transition: transform 0.3s var(--ease), box-shadow 0.3s;
     }
 
@@ -609,6 +610,12 @@
     @keyframes floatCard {
       0%, 100% { transform: translate3d(0, 0, 0); }
       50% { transform: translate3d(0, -11px, 0); }
+    }
+
+    @media (max-width: 560px) {
+      #navInstallBtn { display: none; }
+      .lang-btn { padding: 0.3rem 0.42rem; font-size: 0.62rem; }
+      .menu-btn { width: 40px; height: 40px; }
     }
 
     @media (max-width: 479px) {
