@@ -3643,7 +3643,7 @@
 
       <div id="authSignedInView" class="auth-modal-view hidden">
         <p class="auth-signed-in-email" id="authSignedInEmail">—</p>
-        <p class="auth-signed-in-note" id="authSignedInNote" data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovaga o'ting yoki boshqa hisob tanlang.</p>
+        <p class="auth-signed-in-note" id="authSignedInNote" hidden data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovaga o'ting yoki boshqa hisob tanlang.</p>
         <button type="button" class="auth-submit-btn" id="authContinueApp" data-i18n="auth.continueApp">Ilovaga o'tish</button>
         <button type="button" class="auth-switch-account" id="authSwitchAccount" data-i18n="auth.switchAccount">Boshqa hisob</button>
       </div>
@@ -4795,12 +4795,13 @@
       }
       const sub = document.getElementById("authModalSub");
       if (sub) {
-        sub.textContent = signedIn
-          ? t("auth.signedInSub")
-          : forgot
-            ? t("auth.resetDesc")
-            : t("auth.modal.sub");
+        sub.hidden = signedIn;
+        if (!signedIn) {
+          sub.textContent = forgot ? t("auth.resetDesc") : t("auth.modal.sub");
+        }
       }
+      const signedNote = document.getElementById("authSignedInNote");
+      if (signedNote) signedNote.hidden = true;
       if (signedIn) fillSignedInEmail(window.BHAuth?.currentUser);
       if (!forgot) {
         authForgotSuccess?.classList.remove("is-visible");
@@ -4835,15 +4836,21 @@
       if (authModalTitle && signedIn) {
         authModalTitle.textContent = t("auth.signedInTitle");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.signedInSub");
+        if (sub) sub.hidden = true;
       } else if (authModalTitle && forgot) {
         authModalTitle.textContent = t("auth.resetTitle");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.resetDesc");
+        if (sub) {
+          sub.hidden = false;
+          sub.textContent = t("auth.resetDesc");
+        }
       } else if (authModalTitle) {
         authModalTitle.textContent = authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.modal.sub");
+        if (sub) {
+          sub.hidden = false;
+          sub.textContent = t("auth.modal.sub");
+        }
       }
       if (authModalSubmit && !authModalBusy) {
         authModalSubmit.textContent = t(authModalMode === "register" ? "auth.register" : "auth.login");
