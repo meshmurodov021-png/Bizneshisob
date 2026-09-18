@@ -18,6 +18,16 @@ service cloud.firestore {
         allow update: if isOwner(userId) && isValidCurrency();
         allow delete: if isOwner(userId);
       }
+
+      // PIN email OTP hashes — Admin SDK only (callable functions).
+      match /security/{docId} {
+        allow read, write: if false;
+      }
+    }
+
+    // Firebase Trigger Email extension queue (optional PIN OTP delivery).
+    match /mail/{mailId} {
+      allow read, write: if false;
     }
 
     function isOwner(userId) {
