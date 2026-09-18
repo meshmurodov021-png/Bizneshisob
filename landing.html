@@ -2473,6 +2473,326 @@
       .contact-btns .phone-ph { flex: 1; max-width: 200px; }
     }
 
+    /* ── Auth modal (landing gate) ───────────────────────────────────────── */
+    body.auth-modal-open {
+      overflow: hidden;
+    }
+
+    .auth-modal {
+      position: relative;
+      color-scheme: dark;
+      width: min(420px, calc(100vw - 1.5rem));
+      max-height: min(92dvh, 720px);
+      margin: auto;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(28, 22, 48, 0.96) 0%, rgba(14, 14, 22, 0.98) 100%);
+      color: var(--text);
+      box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(124, 58, 237, 0.18),
+        0 0 80px rgba(124, 58, 237, 0.16);
+      overflow: hidden;
+    }
+
+    .auth-modal::backdrop {
+      background: rgba(6, 6, 12, 0.72);
+      backdrop-filter: blur(14px) saturate(1.1);
+      -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    }
+
+    .auth-modal:not([open]) { display: none; }
+
+    .auth-modal-panel {
+      display: flex;
+      flex-direction: column;
+      max-height: min(92dvh, 720px);
+      overflow: auto;
+      padding: 1.45rem 1.35rem 1.35rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .auth-modal-close {
+      position: absolute;
+      top: 0.7rem;
+      right: 0.7rem;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .auth-modal-close:hover,
+    .auth-modal-close:focus-visible {
+      background: rgba(124, 58, 237, 0.2);
+      border-color: rgba(167, 139, 250, 0.45);
+      outline: none;
+    }
+
+    .auth-modal-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.55rem;
+      margin: 0.15rem 0 1.15rem;
+    }
+
+    .auth-modal-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+      background: var(--gradient);
+      box-shadow: 0 10px 28px rgba(124, 58, 237, 0.4);
+    }
+
+    .auth-modal-brand h2 {
+      margin: 0;
+      font-size: 1.28rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .auth-modal-brand p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      max-width: 280px;
+    }
+
+    .auth-google-btn {
+      width: 100%;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #fff;
+      color: #1f1f1f;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+
+    .auth-google-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .auth-google-btn:disabled,
+    .auth-submit-btn:disabled,
+    .auth-reset-btn:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-google-btn svg { flex-shrink: 0; }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.05rem 0 1rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .auth-modal-tabs {
+      display: flex;
+      gap: 0.4rem;
+      padding: 4px;
+      margin-bottom: 1rem;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .auth-modal-tab {
+      flex: 1;
+      min-height: 42px;
+      border: none;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .auth-modal-tab.active {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+    }
+
+    .auth-modal-error {
+      display: none;
+      margin-bottom: 0.85rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .auth-modal-error.is-visible { display: block; }
+
+    .auth-modal-success {
+      display: none;
+      margin-bottom: 0.85rem;
+      padding: 0.7rem 0.85rem;
+      border-radius: 12px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .auth-modal-success.is-visible { display: block; }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .auth-field label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #c4b5fd;
+    }
+
+    .auth-field input {
+      width: 100%;
+      min-height: 46px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(8, 8, 14, 0.55);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .auth-field input:focus {
+      border-color: rgba(167, 139, 250, 0.7);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.22);
+    }
+
+    .auth-password-wrap { position: relative; }
+    .auth-password-wrap input { padding-right: 2.8rem; }
+
+    .auth-password-toggle {
+      position: absolute;
+      right: 0.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.05rem;
+      padding: 0.3rem;
+      line-height: 1;
+    }
+
+    .auth-submit-btn,
+    .auth-reset-btn {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 0.25rem;
+      border: none;
+      border-radius: 14px;
+      background: var(--gradient);
+      color: #fff;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.38);
+    }
+
+    .auth-submit-btn:hover,
+    .auth-reset-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .auth-forgot-link,
+    .auth-back-link {
+      display: block;
+      width: 100%;
+      margin-top: 0.85rem;
+      border: none;
+      background: none;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .auth-forgot-link:hover,
+    .auth-back-link:hover { color: #c4b5fd; }
+
+    .auth-modal-view.hidden { display: none !important; }
+
+    .auth-register-only.hidden { display: none !important; }
+
+    .auth-modal-footnote {
+      margin: 1rem 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 540px) {
+      .auth-modal {
+        width: calc(100vw - 1rem);
+        max-height: min(94dvh, 100%);
+        border-radius: 22px 22px 18px 18px;
+        margin: auto 0.5rem max(0.5rem, env(safe-area-inset-bottom));
+      }
+      .auth-modal-panel { padding: 1.25rem 1.1rem 1.15rem; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .reveal, .feature-row, .step-item, .testimonial {
         opacity: 1;
@@ -2507,6 +2827,9 @@
       .pricing-card.glass-hover:hover,
       .pricing-card--featured.glass-hover:hover,
       .cta-banner-inner .btn-white { transform: none; }
+      .auth-google-btn:hover,
+      .auth-submit-btn:hover,
+      .auth-reset-btn:hover { transform: none; }
       .faq-body,
       .faq-answer,
       .faq-chevron { transition: none; }
@@ -2594,7 +2917,7 @@
             <button type="button" class="lang-btn" data-lang="ru">RU</button>
             <button type="button" class="lang-btn" data-lang="en">EN</button>
           </div>
-          <a href="/app" class="btn btn-outline btn-sm header-login" data-i18n="nav.login">Kirish</a>
+          <a href="/app" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</a>
           <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
           <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
         </div>
@@ -2611,7 +2934,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="/app" data-i18n="nav.login">Kirish</a>
+    <a href="/app" data-auth-modal data-i18n="nav.login">Kirish</a>
     <a href="/app" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
@@ -2631,6 +2954,7 @@
           </p>
           <div class="hero-cta">
             <button type="button" class="btn btn-primary" id="heroInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+            <button type="button" class="btn btn-outline" data-auth-modal data-auth-mode="register" data-i18n="cta.start">Bepul boshlash</button>
             <a href="#features" class="btn btn-outline" data-i18n="hero.learn">Batafsil</a>
             <button type="button" class="btn btn-outline hidden" id="heroIosBtn" data-i18n="cta.ios">iPhone uchun</button>
           </div>
@@ -3009,7 +3333,7 @@
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-ghost" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="/app" class="btn-pricing-ghost" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.free">Bepul boshlash</a>
           </article>
           <article class="pricing-card pricing-card--featured glass glass-hover reveal">
             <span class="badge-tavsiya" data-i18n="pricing.badge">TAVSIYA</span>
@@ -3024,7 +3348,7 @@
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-premium" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+            <a href="/app" class="btn-pricing-premium" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
           </article>
         </div>
       </div>
@@ -3130,6 +3454,7 @@
         <p data-i18n="cta.sub">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
         <div class="cta-banner-actions">
           <button type="button" class="btn btn-white" id="ctaInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+          <button type="button" class="btn btn-outline" data-auth-modal data-auth-mode="register" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.start">Bepul boshlash</button>
           <button type="button" class="btn btn-outline hidden" id="ctaIosBtn" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.ios">iPhone uchun</button>
         </div>
         <p class="ios-hint hidden" id="ctaIosHint" style="margin-top:1rem;color:rgba(255,255,255,0.8)" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
@@ -3195,6 +3520,80 @@
     </div>
   </footer>
 
+  <dialog class="auth-modal" id="authModal" aria-labelledby="authModalTitle" aria-modal="true">
+    <button type="button" class="auth-modal-close" id="authModalClose" data-i18n-aria="auth.close" aria-label="Yopish">×</button>
+    <div class="auth-modal-panel">
+      <div class="auth-modal-brand">
+        <div class="auth-modal-logo" aria-hidden="true">📊</div>
+        <h2 id="authModalTitle" data-i18n="auth.modal.title">Hisobingizga kiring</h2>
+        <p id="authModalSub" data-i18n="auth.modal.sub">Google orqali yoki email bilan davom eting</p>
+      </div>
+
+      <div id="authMainView" class="auth-modal-view">
+        <button type="button" class="auth-google-btn" id="authGoogleBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span data-i18n="auth.google">Google orqali davom etish</span>
+        </button>
+
+        <div class="auth-divider"><span data-i18n="auth.orEmail">yoki email</span></div>
+
+        <div class="auth-modal-tabs" role="tablist">
+          <button type="button" class="auth-modal-tab active" role="tab" data-auth-tab="login" aria-selected="true" data-i18n="auth.login">Kirish</button>
+          <button type="button" class="auth-modal-tab" role="tab" data-auth-tab="register" aria-selected="false" data-i18n="auth.register">Roʻyxatdan oʻtish</button>
+        </div>
+
+        <div class="auth-modal-error" id="authModalError" role="alert"></div>
+
+        <form id="authModalForm" novalidate>
+          <div class="auth-field">
+            <label for="authModalEmail" data-i18n="auth.email">Email</label>
+            <input type="email" id="authModalEmail" name="email" inputmode="email" autocomplete="email" placeholder="email@misol.uz" required>
+          </div>
+          <div class="auth-field auth-register-only hidden" id="authModalNameField">
+            <label for="authModalFullName" data-i18n="auth.fullName">Ism Familiya</label>
+            <input type="text" id="authModalFullName" name="name" maxlength="80" autocomplete="name" data-i18n-placeholder="auth.fullNamePh" placeholder="Masalan: Anvar Aliyev">
+          </div>
+          <div class="auth-field">
+            <label for="authModalPassword" data-i18n="auth.password">Parol</label>
+            <div class="auth-password-wrap">
+              <input type="password" id="authModalPassword" name="password" autocomplete="current-password" minlength="6" required data-i18n-placeholder="auth.passwordPh" placeholder="Kamida 6 ta belgi">
+              <button type="button" class="auth-password-toggle" data-password-toggle data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+            </div>
+          </div>
+          <div class="auth-field auth-register-only hidden" id="authModalConfirmField">
+            <label for="authModalConfirm" data-i18n="auth.confirmPassword">Parolni tasdiqlang</label>
+            <div class="auth-password-wrap">
+              <input type="password" id="authModalConfirm" name="confirm" autocomplete="new-password" minlength="6" data-i18n-placeholder="auth.confirmPasswordPh" placeholder="Parolni qayta kiriting">
+              <button type="button" class="auth-password-toggle" data-password-toggle data-i18n-aria="auth.showPassword" aria-label="Parolni ko'rsatish">👁️</button>
+            </div>
+          </div>
+          <button type="submit" class="auth-submit-btn" id="authModalSubmit" data-i18n="auth.login">Kirish</button>
+        </form>
+        <button type="button" class="auth-forgot-link" id="authForgotOpen" data-i18n="auth.forgotPassword">Parolni unutdim?</button>
+      </div>
+
+      <div id="authForgotView" class="auth-modal-view hidden">
+        <div class="auth-modal-error" id="authForgotError" role="alert"></div>
+        <p class="auth-modal-success" id="authForgotSuccess" data-i18n="auth.resetSuccess">Email yuborildi — pochtangizni tekshiring</p>
+        <form id="authForgotForm">
+          <div class="auth-field">
+            <label for="authForgotEmail" data-i18n="auth.email">Email</label>
+            <input type="email" id="authForgotEmail" inputmode="email" autocomplete="email" placeholder="email@misol.uz" required>
+          </div>
+          <button type="submit" class="auth-reset-btn" id="authForgotSubmit" data-i18n="auth.resetSend">Havola yuborish</button>
+        </form>
+        <button type="button" class="auth-back-link" id="authForgotBack" data-i18n="auth.resetBack">← Orqaga</button>
+      </div>
+
+      <p class="auth-modal-footnote" data-i18n="auth.footnote">Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.</p>
+    </div>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script>
@@ -3255,6 +3654,7 @@
         "hero.float.expense": "Xarajat", "hero.float.expenseVal": "−680 000 so'm",
         "hero.float.balance": "Balans", "hero.float.balanceVal": "12 400 000 so'm",
         "cta.download": "Yuklab olish", "cta.ios": "iPhone uchun", "cta.open": "Ilovani ochish",
+        "cta.start": "Bepul boshlash",
         "cta.iosHint": "Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.",
         "cta.title": "Bugun boshlang — bepul!",
         "cta.sub": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
@@ -3292,7 +3692,51 @@
         "pricing.f3": "Kengaytirilgan grafiklar", "pricing.f4": "Cheksiz operatsiyalar",
         "pricing.f5": "Export (PDF / Excel)", "pricing.f6": "Ustuvor qo'llab-quvvatlash",
         "pricing.f7": "Reklamasiz",
-        "pricing.cta.free": "Bepul boshlash", "pricing.cta.premium": "✦ Premiumga o'tish"
+        "pricing.cta.free": "Bepul boshlash", "pricing.cta.premium": "✦ Premiumga o'tish",
+        "auth.modal.title": "Hisobingizga kiring",
+        "auth.modal.titleRegister": "Hisob yarating",
+        "auth.modal.sub": "Google orqali yoki email bilan davom eting",
+        "auth.google": "Google orqali davom etish",
+        "auth.orEmail": "yoki email",
+        "auth.login": "Kirish",
+        "auth.register": "Roʻyxatdan oʻtish",
+        "auth.email": "Email",
+        "auth.password": "Parol",
+        "auth.passwordPh": "Kamida 6 ta belgi",
+        "auth.fullName": "Ism Familiya",
+        "auth.fullNamePh": "Masalan: Anvar Aliyev",
+        "auth.confirmPassword": "Parolni tasdiqlang",
+        "auth.confirmPasswordPh": "Parolni qayta kiriting",
+        "auth.showPassword": "Parolni ko'rsatish",
+        "auth.hidePassword": "Parolni yashirish",
+        "auth.forgotPassword": "Parolni unutdim?",
+        "auth.resetTitle": "Parolni tiklash",
+        "auth.resetDesc": "Email manzilingizga tiklash havolasi yuboramiz",
+        "auth.resetSend": "Havola yuborish",
+        "auth.resetBack": "← Orqaga",
+        "auth.resetSuccess": "Email yuborildi — pochtangizni tekshiring",
+        "auth.close": "Yopish",
+        "auth.busy": "Kutilmoqda…",
+        "auth.footnote": "Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.",
+        "auth.err.passwordMismatch": "Parollar mos kelmaydi",
+        "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
+        "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
+        "auth.err.invalid-email": "Email notoʻgʻri.",
+        "auth.err.weak-password": "Parol juda zaif (kamida 6 belgi).",
+        "auth.err.user-not-found": "Foydalanuvchi topilmadi.",
+        "auth.err.wrong-password": "Parol notoʻgʻri.",
+        "auth.err.invalid-credential": "Email yoki parol notoʻgʻri.",
+        "auth.err.too-many-requests": "Juda koʻp urinish. Biroz kuting.",
+        "auth.err.network-request-failed": "Internet aloqasini tekshiring.",
+        "auth.err.popup-blocked": "Google oynasi bloklandi. Qayta urinib koʻring.",
+        "auth.err.popup-closed-by-user": "Google kirish bekor qilindi.",
+        "auth.err.cancelled-popup-request": "Google kirish bekor qilindi.",
+        "auth.err.operation-not-allowed": "Bu kirish usuli hozircha yoqilmagan.",
+        "auth.err.account-exists-with-different-credential": "Bu email boshqa usul bilan roʻyxatdan oʻtgan.",
+        "auth.err.default": "Xatolik yuz berdi. Qayta urinib koʻring.",
+        "reset.err.user-not-found": "Bu email ro'yxatdan o'tmagan",
+        "reset.err.invalid-email": "Email noto'g'ri kiritilgan",
+        "reset.err.too-many-requests": "Ko'p urinish, keyinroq uring"
       },
       ru: {
         "meta.title": "BiznesHisob — Управляйте финансами бизнеса",
@@ -3344,6 +3788,7 @@
         "hero.float.expense": "Расход", "hero.float.expenseVal": "−680 000 сум",
         "hero.float.balance": "Баланс", "hero.float.balanceVal": "12 400 000 сум",
         "cta.download": "Скачать", "cta.ios": "Для iPhone", "cta.open": "Открыть приложение",
+        "cta.start": "Начать бесплатно",
         "cta.iosHint": "В Safari нажмите «Поделиться» → «На экран Домой».",
         "cta.title": "Начните сегодня — бесплатно!",
         "cta.sub": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
@@ -3381,7 +3826,51 @@
         "pricing.f3": "Расширенные графики", "pricing.f4": "Безлимитные операции",
         "pricing.f5": "Экспорт (PDF / Excel)", "pricing.f6": "Приоритетная поддержка",
         "pricing.f7": "Без рекламы",
-        "pricing.cta.free": "Начать бесплатно", "pricing.cta.premium": "✦ Перейти на Premium"
+        "pricing.cta.free": "Начать бесплатно", "pricing.cta.premium": "✦ Перейти на Premium",
+        "auth.modal.title": "Войдите в аккаунт",
+        "auth.modal.titleRegister": "Создайте аккаунт",
+        "auth.modal.sub": "Продолжите через Google или email",
+        "auth.google": "Продолжить с Google",
+        "auth.orEmail": "или email",
+        "auth.login": "Вход",
+        "auth.register": "Регистрация",
+        "auth.email": "Email",
+        "auth.password": "Пароль",
+        "auth.passwordPh": "Не менее 6 символов",
+        "auth.fullName": "Имя и фамилия",
+        "auth.fullNamePh": "Например: Анвар Алиев",
+        "auth.confirmPassword": "Подтвердите пароль",
+        "auth.confirmPasswordPh": "Повторите пароль",
+        "auth.showPassword": "Показать пароль",
+        "auth.hidePassword": "Скрыть пароль",
+        "auth.forgotPassword": "Забыли пароль?",
+        "auth.resetTitle": "Сброс пароля",
+        "auth.resetDesc": "Отправим ссылку для сброса на ваш email",
+        "auth.resetSend": "Отправить ссылку",
+        "auth.resetBack": "← Назад",
+        "auth.resetSuccess": "Письмо отправлено — проверьте почту",
+        "auth.close": "Закрыть",
+        "auth.busy": "Подождите…",
+        "auth.footnote": "Продолжая, вы используете безопасную аутентификацию Firebase.",
+        "auth.err.passwordMismatch": "Пароли не совпадают",
+        "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
+        "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
+        "auth.err.invalid-email": "Неверный email.",
+        "auth.err.weak-password": "Слабый пароль (минимум 6 символов).",
+        "auth.err.user-not-found": "Пользователь не найден.",
+        "auth.err.wrong-password": "Неверный пароль.",
+        "auth.err.invalid-credential": "Неверный email или пароль.",
+        "auth.err.too-many-requests": "Слишком много попыток. Подождите.",
+        "auth.err.network-request-failed": "Проверьте подключение к интернету.",
+        "auth.err.popup-blocked": "Окно Google заблокировано. Попробуйте ещё раз.",
+        "auth.err.popup-closed-by-user": "Вход через Google отменён.",
+        "auth.err.cancelled-popup-request": "Вход через Google отменён.",
+        "auth.err.operation-not-allowed": "Этот способ входа пока не включён.",
+        "auth.err.account-exists-with-different-credential": "Этот email уже используется другим способом входа.",
+        "auth.err.default": "Ошибка. Попробуйте снова.",
+        "reset.err.user-not-found": "Этот email не зарегистрирован",
+        "reset.err.invalid-email": "Неверный email",
+        "reset.err.too-many-requests": "Слишком много попыток, попробуйте позже"
       },
       en: {
         "meta.title": "BiznesHisob — Manage your business finances",
@@ -3433,6 +3922,7 @@
         "hero.float.expense": "Expense", "hero.float.expenseVal": "−680,000 UZS",
         "hero.float.balance": "Balance", "hero.float.balanceVal": "12,400,000 UZS",
         "cta.download": "Download", "cta.ios": "For iPhone", "cta.open": "Open app",
+        "cta.start": "Start free",
         "cta.iosHint": "In Safari, tap Share → Add to Home Screen.",
         "cta.title": "Start today — it's free!",
         "cta.sub": "Open BiznesHisob now or install on your phone. Sign up takes one minute.",
@@ -3470,7 +3960,51 @@
         "pricing.f3": "Advanced charts", "pricing.f4": "Unlimited transactions",
         "pricing.f5": "Export (PDF / Excel)", "pricing.f6": "Priority support",
         "pricing.f7": "Ad-free",
-        "pricing.cta.free": "Start free", "pricing.cta.premium": "✦ Go Premium"
+        "pricing.cta.free": "Start free", "pricing.cta.premium": "✦ Go Premium",
+        "auth.modal.title": "Sign in to your account",
+        "auth.modal.titleRegister": "Create your account",
+        "auth.modal.sub": "Continue with Google or email",
+        "auth.google": "Continue with Google",
+        "auth.orEmail": "or email",
+        "auth.login": "Sign in",
+        "auth.register": "Sign up",
+        "auth.email": "Email",
+        "auth.password": "Password",
+        "auth.passwordPh": "At least 6 characters",
+        "auth.fullName": "Full name",
+        "auth.fullNamePh": "e.g. Anvar Aliyev",
+        "auth.confirmPassword": "Confirm password",
+        "auth.confirmPasswordPh": "Re-enter your password",
+        "auth.showPassword": "Show password",
+        "auth.hidePassword": "Hide password",
+        "auth.forgotPassword": "Forgot password?",
+        "auth.resetTitle": "Reset password",
+        "auth.resetDesc": "We'll send a reset link to your email",
+        "auth.resetSend": "Send link",
+        "auth.resetBack": "← Back",
+        "auth.resetSuccess": "Email sent — check your inbox",
+        "auth.close": "Close",
+        "auth.busy": "Please wait…",
+        "auth.footnote": "By continuing you use secure Firebase authentication.",
+        "auth.err.passwordMismatch": "Passwords do not match",
+        "auth.err.credentials": "Enter email and password (at least 6 characters).",
+        "auth.err.email-already-in-use": "This email is already registered.",
+        "auth.err.invalid-email": "Invalid email.",
+        "auth.err.weak-password": "Password too weak (min 6 characters).",
+        "auth.err.user-not-found": "User not found.",
+        "auth.err.wrong-password": "Wrong password.",
+        "auth.err.invalid-credential": "Invalid email or password.",
+        "auth.err.too-many-requests": "Too many attempts. Please wait.",
+        "auth.err.network-request-failed": "Check your internet connection.",
+        "auth.err.popup-blocked": "Google sign-in popup was blocked. Try again.",
+        "auth.err.popup-closed-by-user": "Google sign-in was cancelled.",
+        "auth.err.cancelled-popup-request": "Google sign-in was cancelled.",
+        "auth.err.operation-not-allowed": "This sign-in method is not enabled yet.",
+        "auth.err.account-exists-with-different-credential": "This email is already used with another sign-in method.",
+        "auth.err.default": "Something went wrong. Please try again.",
+        "reset.err.user-not-found": "This email is not registered",
+        "reset.err.invalid-email": "Invalid email",
+        "reset.err.too-many-requests": "Too many attempts, try later"
       }
     };
 
@@ -3501,12 +4035,17 @@
         const val = t(el.dataset.i18n);
         if (val) el.textContent = val;
       });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        const val = t(el.dataset.i18nPlaceholder);
+        if (val) el.setAttribute("placeholder", val);
+      });
       document.querySelectorAll("[data-i18n-aria]").forEach(el => {
         const val = t(el.dataset.i18nAria);
         if (val) el.setAttribute("aria-label", val);
       });
       document.title = t("meta.title");
       setupInstallUI();
+      if (typeof window.syncLandingAuthCopy === "function") window.syncLandingAuthCopy();
     }
 
     function setLang(lang) {
@@ -4063,6 +4602,223 @@
     }
 
     setupInstallUI();
+
+    /* ── Auth modal UI (Firebase wired in the module below) ─────────────── */
+    const authModal = document.getElementById("authModal");
+    const authMainView = document.getElementById("authMainView");
+    const authForgotView = document.getElementById("authForgotView");
+    const authModalTitle = document.getElementById("authModalTitle");
+    const authModalSubmit = document.getElementById("authModalSubmit");
+    const authForgotOpen = document.getElementById("authForgotOpen");
+    const authModalError = document.getElementById("authModalError");
+    const authForgotError = document.getElementById("authForgotError");
+    const authForgotSuccess = document.getElementById("authForgotSuccess");
+    const authModalPassword = document.getElementById("authModalPassword");
+    const authModalConfirm = document.getElementById("authModalConfirm");
+    let authModalMode = "login";
+    let authModalLastFocus = null;
+    let authModalBusy = false;
+
+    const AUTH_FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+    function clearAuthModalError() {
+      if (authModalError) {
+        authModalError.textContent = "";
+        authModalError.classList.remove("is-visible");
+      }
+      if (authForgotError) {
+        authForgotError.textContent = "";
+        authForgotError.classList.remove("is-visible");
+      }
+    }
+
+    function showAuthModalError(el, message) {
+      if (!el) return;
+      el.textContent = message || t("auth.err.default");
+      el.classList.toggle("is-visible", !!message);
+    }
+
+    function setAuthModalView(view) {
+      const forgot = view === "forgot";
+      authMainView?.classList.toggle("hidden", forgot);
+      authForgotView?.classList.toggle("hidden", !forgot);
+      if (authModalTitle) {
+        authModalTitle.textContent = forgot ? t("auth.resetTitle") : (authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title"));
+      }
+      const sub = document.getElementById("authModalSub");
+      if (sub) sub.textContent = forgot ? t("auth.resetDesc") : t("auth.modal.sub");
+      if (!forgot) {
+        authForgotSuccess?.classList.remove("is-visible");
+        document.getElementById("authForgotForm")?.classList.remove("hidden");
+      }
+      clearAuthModalError();
+    }
+
+    function setAuthModalMode(mode) {
+      authModalMode = mode === "register" ? "register" : "login";
+      document.querySelectorAll("[data-auth-tab]").forEach((tab) => {
+        const on = tab.dataset.authTab === authModalMode;
+        tab.classList.toggle("active", on);
+        tab.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      document.querySelectorAll(".auth-register-only").forEach((el) => {
+        el.classList.toggle("hidden", authModalMode !== "register");
+      });
+      if (authModalPassword) {
+        authModalPassword.autocomplete = authModalMode === "register" ? "new-password" : "current-password";
+      }
+      if (authModalConfirm) {
+        authModalConfirm.required = authModalMode === "register";
+      }
+      if (authForgotOpen) authForgotOpen.classList.toggle("hidden", authModalMode !== "login");
+      window.syncLandingAuthCopy();
+    }
+
+    window.syncLandingAuthCopy = function syncLandingAuthCopy() {
+      if (authModalTitle && authForgotView && !authForgotView.classList.contains("hidden")) {
+        authModalTitle.textContent = t("auth.resetTitle");
+        const sub = document.getElementById("authModalSub");
+        if (sub) sub.textContent = t("auth.resetDesc");
+      } else if (authModalTitle) {
+        authModalTitle.textContent = authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title");
+        const sub = document.getElementById("authModalSub");
+        if (sub) sub.textContent = t("auth.modal.sub");
+      }
+      if (authModalSubmit && !authModalBusy) {
+        authModalSubmit.textContent = t(authModalMode === "register" ? "auth.register" : "auth.login");
+      }
+    };
+
+    function getAuthFocusables() {
+      if (!authModal) return [];
+      return [...authModal.querySelectorAll(AUTH_FOCUSABLE)].filter((el) => {
+        if (el.closest(".hidden")) return false;
+        return true;
+      });
+    }
+
+    function trapAuthFocus(e) {
+      if (e.key !== "Tab" || !authModal) return;
+      const list = getAuthFocusables();
+      if (!list.length) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+
+    function closeAuthModal() {
+      if (!authModal) return;
+      if (typeof authModal.close === "function" && authModal.open) authModal.close();
+      else authModal.removeAttribute("open");
+      document.body.classList.remove("auth-modal-open");
+      document.removeEventListener("keydown", trapAuthFocus, true);
+      setAuthModalView("main");
+      if (authModalLastFocus && typeof authModalLastFocus.focus === "function") {
+        try { authModalLastFocus.focus(); } catch (_) {}
+      }
+    }
+
+    function openAuthModal(opts = {}) {
+      if (window.BHAuth?.currentUser) {
+        window.location.href = APP_URL;
+        return;
+      }
+      const trigger = opts.trigger || document.activeElement;
+      authModalLastFocus = trigger && trigger.focus ? trigger : document.activeElement;
+      const mode = opts.mode === "register" ? "register" : "login";
+      setAuthModalView("main");
+      setAuthModalMode(mode);
+      document.body.classList.add("auth-modal-open");
+      document.getElementById("mobileNav")?.classList.remove("open");
+      syncHeaderCompact();
+      if (typeof authModal.showModal === "function") {
+        if (!authModal.open) authModal.showModal();
+      } else {
+        authModal.setAttribute("open", "");
+      }
+      document.addEventListener("keydown", trapAuthFocus, true);
+      const googleBtn = document.getElementById("authGoogleBtn");
+      window.setTimeout(() => (googleBtn || authModal.querySelector(AUTH_FOCUSABLE))?.focus(), 20);
+    }
+
+    window.openLandingAuth = openAuthModal;
+    window.closeLandingAuth = closeAuthModal;
+
+    authModal?.addEventListener("cancel", (e) => {
+      if (authModalBusy) {
+        e.preventDefault();
+        return;
+      }
+      document.body.classList.remove("auth-modal-open");
+    });
+    authModal?.addEventListener("close", () => {
+      document.body.classList.remove("auth-modal-open");
+      document.removeEventListener("keydown", trapAuthFocus, true);
+      setAuthModalView("main");
+      if (authModalLastFocus && typeof authModalLastFocus.focus === "function") {
+        try { authModalLastFocus.focus(); } catch (_) {}
+      }
+    });
+    authModal?.addEventListener("click", (e) => {
+      if (e.target === authModal && !authModalBusy) closeAuthModal();
+    });
+    document.getElementById("authModalClose")?.addEventListener("click", () => closeAuthModal());
+
+    document.querySelectorAll("[data-auth-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => setAuthModalMode(tab.dataset.authTab));
+    });
+    authForgotOpen?.addEventListener("click", () => setAuthModalView("forgot"));
+    document.getElementById("authForgotBack")?.addEventListener("click", () => setAuthModalView("main"));
+
+    document.querySelectorAll("[data-password-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const input = btn.parentElement?.querySelector("input");
+        if (!input) return;
+        const visible = input.type === "text";
+        input.type = visible ? "password" : "text";
+        btn.textContent = visible ? "👁️" : "👁️‍🗨️";
+        btn.setAttribute("aria-label", t(visible ? "auth.showPassword" : "auth.hidePassword"));
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      const trigger = e.target.closest("[data-auth-modal]");
+      if (!trigger) return;
+      e.preventDefault();
+      openAuthModal({ trigger, mode: trigger.dataset.authMode });
+    });
+
+    window.BHLanding = {
+      t,
+      get lang() { return currentLang; },
+      appUrl: APP_URL,
+      setBusy(busy) {
+        authModalBusy = !!busy;
+        ["authGoogleBtn", "authModalSubmit", "authForgotSubmit"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.disabled = !!busy;
+        });
+        if (authModalSubmit) {
+          authModalSubmit.textContent = busy ? t("auth.busy") : t(authModalMode === "register" ? "auth.register" : "auth.login");
+        }
+      },
+      get mode() { return authModalMode; },
+      showError(message) { showAuthModalError(authModalError, message); },
+      showForgotError(message) { showAuthModalError(authForgotError, message); },
+      clearError: clearAuthModalError,
+      open: openAuthModal,
+      close: closeAuthModal,
+      goToApp() {
+        try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
+        window.location.href = APP_URL;
+      }
+    };
   </script>
 
   <script type="module">
@@ -4377,6 +5133,215 @@
         mountPhoneFallback();
       }
     }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithRedirect,
+      getRedirectResult,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwn2AcEje5D0LelcocgYS12uHHh2OlZ4I",
+      authDomain: "bizneshisob-886ab.firebaseapp.com",
+      projectId: "bizneshisob-886ab",
+      storageBucket: "bizneshisob-886ab.firebasestorage.app",
+      messagingSenderId: "130443700",
+      appId: "1:130443700:web:65087838b6f0a717b4eae1",
+      measurementId: "G-8Q11YKEZ23"
+    };
+
+    const ui = () => window.BHLanding;
+    const t = (key) => ui()?.t?.(key) || key;
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    auth.languageCode = document.documentElement.lang || "uz";
+    const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: "select_account" });
+
+    window.BHAuth = { currentUser: null };
+
+    function authErrorMessage(code) {
+      const short = String(code || "").replace("auth/", "");
+      const key = `auth.err.${short}`;
+      const translated = t(key);
+      return translated && translated !== key ? translated : t("auth.err.default");
+    }
+
+    function resetErrorMessage(code) {
+      const short = String(code || "").replace("auth/", "");
+      const key = `reset.err.${short}`;
+      const translated = t(key);
+      return translated && translated !== key ? translated : authErrorMessage(code);
+    }
+
+    function isUserCancel(code) {
+      return code === "auth/popup-closed-by-user" ||
+        code === "auth/cancelled-popup-request" ||
+        code === "auth/user-cancelled";
+    }
+
+    function isMobileAuth() {
+      return /iPad|iPhone|iPod|Android/i.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    }
+
+    async function rememberDisplayName(uid, name) {
+      const cleaned = String(name || "").trim();
+      if (!uid || !cleaned) return;
+      try { localStorage.setItem(`bzh_display_name_${uid}`, cleaned); } catch (_) {}
+      try {
+        await setDoc(doc(db, "users", uid), { displayName: cleaned }, { merge: true });
+      } catch (err) {
+        console.warn("[BiznesHisob] displayName save skipped:", err?.code || err);
+      }
+    }
+
+    function enterApp() {
+      ui()?.goToApp?.();
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      window.BHAuth.currentUser = user || null;
+    });
+
+    try {
+      const redirect = await getRedirectResult(auth);
+      if (redirect?.user) {
+        const name = redirect.user.displayName || "";
+        if (name) await rememberDisplayName(redirect.user.uid, name);
+        enterApp();
+      }
+    } catch (err) {
+      console.error("[BiznesHisob] Google redirect:", err);
+      if (!isUserCancel(err?.code)) {
+        ui()?.open?.({ mode: "login" });
+        ui()?.showError?.(authErrorMessage(err?.code));
+      }
+    }
+
+    async function continueWithGoogle() {
+      ui()?.clearError?.();
+      ui()?.setBusy?.(true);
+      auth.languageCode = document.documentElement.lang || "uz";
+      try {
+        if (isMobileAuth()) {
+          await signInWithRedirect(auth, googleProvider);
+          return;
+        }
+        const cred = await signInWithPopup(auth, googleProvider);
+        if (cred?.user?.displayName) {
+          await rememberDisplayName(cred.user.uid, cred.user.displayName);
+        }
+        enterApp();
+      } catch (err) {
+        if (err?.code === "auth/popup-blocked" || err?.code === "auth/operation-not-supported-in-this-environment") {
+          try {
+            await signInWithRedirect(auth, googleProvider);
+            return;
+          } catch (redirectErr) {
+            err = redirectErr;
+          }
+        }
+        if (isUserCancel(err?.code)) return;
+        console.error("[BiznesHisob] Google sign-in:", err);
+        ui()?.showError?.(authErrorMessage(err?.code));
+      } finally {
+        ui()?.setBusy?.(false);
+      }
+    }
+
+    async function submitEmail(event) {
+      event.preventDefault();
+      ui()?.clearError?.();
+      const email = document.getElementById("authModalEmail")?.value.trim() || "";
+      const password = document.getElementById("authModalPassword")?.value || "";
+      const mode = ui()?.mode || "login";
+      if (!email || password.length < 6) {
+        ui()?.showError?.(t("auth.err.credentials"));
+        return;
+      }
+      if (mode === "register") {
+        const confirmPassword = document.getElementById("authModalConfirm")?.value || "";
+        if (confirmPassword.length < 6) {
+          ui()?.showError?.(t("auth.err.credentials"));
+          return;
+        }
+        if (password !== confirmPassword) {
+          ui()?.showError?.(t("auth.err.passwordMismatch"));
+          return;
+        }
+      }
+      ui()?.setBusy?.(true);
+      try {
+        if (mode === "register") {
+          const fullName = document.getElementById("authModalFullName")?.value.trim() || "";
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          if (fullName) {
+            try { await updateProfile(cred.user, { displayName: fullName }); } catch (_) {}
+            await rememberDisplayName(cred.user.uid, fullName);
+          }
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+        enterApp();
+      } catch (err) {
+        console.error("[BiznesHisob] Email auth:", err);
+        ui()?.showError?.(authErrorMessage(err?.code));
+      } finally {
+        ui()?.setBusy?.(false);
+      }
+    }
+
+    async function submitForgot(event) {
+      event.preventDefault();
+      ui()?.showForgotError?.("");
+      const success = document.getElementById("authForgotSuccess");
+      const form = document.getElementById("authForgotForm");
+      success?.classList.remove("is-visible");
+      const email = document.getElementById("authForgotEmail")?.value.trim() || "";
+      if (!email) {
+        ui()?.showForgotError?.(t("reset.err.invalid-email"));
+        return;
+      }
+      ui()?.setBusy?.(true);
+      try {
+        await sendPasswordResetEmail(auth, email);
+        form?.classList.add("hidden");
+        success?.classList.add("is-visible");
+      } catch (err) {
+        console.error("[BiznesHisob] Password reset:", err);
+        ui()?.showForgotError?.(resetErrorMessage(err?.code));
+      } finally {
+        ui()?.setBusy?.(false);
+      }
+    }
+
+    document.getElementById("authGoogleBtn")?.addEventListener("click", () => {
+      void continueWithGoogle();
+    });
+    document.getElementById("authModalForm")?.addEventListener("submit", (e) => {
+      void submitEmail(e);
+    });
+    document.getElementById("authForgotForm")?.addEventListener("submit", (e) => {
+      void submitForgot(e);
+    });
   </script>
 </body>
 </html>
