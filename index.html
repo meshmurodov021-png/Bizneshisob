@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1789837497694">
+  <meta name="app-build-version" content="1789837727219">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -21,9 +21,9 @@
   <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
   <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
   <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789837497694">
-  <link rel="manifest" href="/manifest.json?v=1789837497694">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789837497694">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789837727219">
+  <link rel="manifest" href="/manifest.json?v=1789837727219">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789837727219">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <script type="application/ld+json">
@@ -2058,7 +2058,7 @@
     }
 
     .cta-banner-inner {
-      padding: 5.75rem 2rem;
+      padding: clamp(3.25rem, 8vw, 5.75rem) clamp(1rem, 4vw, 2rem);
       text-align: center;
       background:
         radial-gradient(ellipse 80% 70% at 50% 50%, #16162a 0%, #0a0a12 72%);
@@ -2103,6 +2103,32 @@
       50% { opacity: 1; }
     }
 
+    .cta-banner-glass {
+      position: relative;
+      z-index: 1;
+      isolation: isolate;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: clamp(1.65rem, 4.2vw, 3.15rem) clamp(1.15rem, 4vw, 3rem) clamp(1.5rem, 3.8vw, 2.85rem);
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%),
+        rgba(18, 12, 40, 0.28);
+      backdrop-filter: blur(28px) saturate(1.55);
+      -webkit-backdrop-filter: blur(28px) saturate(1.55);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow:
+        0 28px 70px rgba(6, 4, 18, 0.42),
+        0 0 0 1px rgba(167, 139, 250, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .cta-banner-glass {
+        background: rgba(22, 16, 46, 0.82);
+      }
+    }
+
     .cta-banner-inner .btn-white {
       animation: ctaBtnPulse 2.6s ease-in-out infinite;
     }
@@ -2139,6 +2165,20 @@
       justify-content: center;
       position: relative;
       z-index: 1;
+    }
+
+    @media (max-width: 540px) {
+      .cta-banner-glass {
+        border-radius: 22px;
+        padding: 1.45rem 1.05rem 1.35rem;
+      }
+      .cta-banner-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .cta-banner-actions .btn {
+        width: 100%;
+      }
     }
 
     /* CONTACT */
@@ -3456,15 +3496,17 @@
 
     <!-- 8. CTA BANNER -->
     <section class="cta-banner" id="cta-banner">
-      <div class="cta-banner-inner reveal">
-        <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
-        <p data-i18n="cta.sub">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
-        <div class="cta-banner-actions">
-          <button type="button" class="btn btn-white" id="ctaInstallBtn" data-i18n="cta.download">Yuklab olish</button>
-          <button type="button" class="btn btn-outline" data-auth-modal data-auth-mode="register" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.start">Bepul boshlash</button>
-          <button type="button" class="btn btn-outline hidden" id="ctaIosBtn" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.ios">iPhone uchun</button>
+      <div class="cta-banner-inner">
+        <div class="cta-banner-glass reveal">
+          <h2 data-i18n="cta.title">Bugun boshlang — bepul!</h2>
+          <p data-i18n="cta.sub">BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.</p>
+          <div class="cta-banner-actions">
+            <button type="button" class="btn btn-white" id="ctaInstallBtn" data-i18n="cta.download">Yuklab olish</button>
+            <button type="button" class="btn btn-outline" data-auth-modal data-auth-mode="register" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.start">Bepul boshlash</button>
+            <button type="button" class="btn btn-outline hidden" id="ctaIosBtn" style="border-color:rgba(255,255,255,0.4);color:#fff" data-i18n="cta.ios">iPhone uchun</button>
+          </div>
+          <p class="ios-hint hidden" id="ctaIosHint" style="margin-top:1rem;color:rgba(255,255,255,0.8)" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
         </div>
-        <p class="ios-hint hidden" id="ctaIosHint" style="margin-top:1rem;color:rgba(255,255,255,0.8)" data-i18n="cta.iosHint">Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.</p>
       </div>
     </section>
 
@@ -4440,7 +4482,7 @@
       );
 
       gsap.fromTo(
-        "#cta-banner .cta-banner-inner",
+        "#cta-banner .cta-banner-glass",
         { y: 24, autoAlpha: 0 },
         {
           ...fadeIn,
