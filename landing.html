@@ -208,7 +208,12 @@
         -webkit-backdrop-filter 0.4s var(--ease);
     }
 
-    .header .container { pointer-events: none; }
+    .header .container {
+      pointer-events: none;
+      max-width: none;
+      width: 100%;
+      padding: 0 1.35rem;
+    }
 
     .header-shell {
       display: grid;
