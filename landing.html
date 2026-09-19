@@ -208,13 +208,18 @@
         -webkit-backdrop-filter 0.4s var(--ease);
     }
 
-    .header .container { pointer-events: none; }
+    .header .container {
+      pointer-events: none;
+      max-width: none;
+      width: 100%;
+      padding: 0 1.35rem;
+    }
 
     .header-shell {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       align-items: center;
-      justify-content: space-between;
-      gap: 0.85rem;
+      column-gap: 1rem;
       width: 100%;
       min-height: 56px;
       padding: 0.65rem 0.15rem;
@@ -226,6 +231,21 @@
       transition:
         padding 0.4s var(--ease),
         min-height 0.4s var(--ease);
+    }
+
+    .header-shell > .logo {
+      grid-column: 1;
+      justify-self: start;
+    }
+
+    .header-shell > .nav-links {
+      grid-column: 2;
+      justify-self: center;
+    }
+
+    .header-shell > .header-actions {
+      grid-column: 3;
+      justify-self: end;
     }
 
     .header.is-compact {
@@ -292,6 +312,7 @@
       display: none;
       list-style: none;
       align-items: center;
+      justify-content: center;
       gap: 1.85rem;
     }
 
