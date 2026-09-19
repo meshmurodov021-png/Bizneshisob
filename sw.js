@@ -1,4 +1,4 @@
-const BUILD_VERSION = "1789837497694";
+const BUILD_VERSION = "1789837727219";
 const CACHE_VERSION = `bizneshisob-${BUILD_VERSION}`;
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
