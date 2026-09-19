@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1780673729574">
+  <meta name="app-build-version" content="1789811512766">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -21,9 +21,9 @@
   <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
   <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
   <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1780673729574">
-  <link rel="manifest" href="/manifest.json?v=1780673729574">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1780673729574">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789811512766">
+  <link rel="manifest" href="/manifest.json?v=1789811512766">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789811512766">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <script type="application/ld+json">
@@ -263,7 +263,7 @@
 
     .header.is-compact .logo { font-size: 1.02rem; }
 
-    a.header-login.btn { display: none; }
+    .header-login { display: none; }
 
     .logo {
       display: flex;
@@ -2431,7 +2431,6 @@
       .nav-links { display: flex; }
       .menu-btn { display: none; }
       .header-login { display: inline-flex; }
-      a.header-login.btn { display: inline-flex; }
       .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 2rem; }
       .hero-phone-stage { max-width: 500px; padding: 0.75rem 0 1.25rem; }
       .float-card--income { left: -8%; top: 8%; }
@@ -2482,7 +2481,7 @@
       position: relative;
       color-scheme: dark;
       width: min(420px, calc(100vw - 1.5rem));
-      max-height: min(92dvh, 720px);
+      max-height: min(96dvh, 840px);
       margin: auto;
       padding: 0;
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -2496,6 +2495,11 @@
       overflow: hidden;
     }
 
+    .auth-modal[open] {
+      display: flex;
+      flex-direction: column;
+    }
+
     .auth-modal::backdrop {
       background: rgba(6, 6, 12, 0.72);
       backdrop-filter: blur(14px) saturate(1.1);
@@ -2507,9 +2511,11 @@
     .auth-modal-panel {
       display: flex;
       flex-direction: column;
-      max-height: min(92dvh, 720px);
+      flex: 1 1 auto;
+      min-height: 0;
       overflow: auto;
-      padding: 1.45rem 1.35rem 1.35rem;
+      overscroll-behavior: contain;
+      padding: 1.35rem 1.25rem 1.2rem;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -2542,7 +2548,7 @@
       align-items: center;
       text-align: center;
       gap: 0.55rem;
-      margin: 0.15rem 0 1.15rem;
+      margin: 0.1rem 1.8rem 0.85rem;
     }
 
     .auth-modal-logo {
@@ -2608,7 +2614,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      margin: 1.05rem 0 1rem;
+      margin: 0.85rem 0 0.75rem;
       color: var(--muted);
       font-size: 0.75rem;
       font-weight: 600;
@@ -2628,7 +2634,7 @@
       display: flex;
       gap: 0.4rem;
       padding: 4px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2686,7 +2692,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.62rem;
     }
 
     .auth-field label {
@@ -2744,6 +2750,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(124, 58, 237, 0.38);
+      flex-shrink: 0;
     }
 
     .auth-submit-btn:hover,
@@ -2786,7 +2793,7 @@
     @media (max-width: 540px) {
       .auth-modal {
         width: calc(100vw - 1rem);
-        max-height: min(94dvh, 100%);
+        max-height: min(96dvh, 100%);
         border-radius: 22px 22px 18px 18px;
         margin: auto 0.5rem max(0.5rem, env(safe-area-inset-bottom));
       }
@@ -2917,7 +2924,7 @@
             <button type="button" class="lang-btn" data-lang="ru">RU</button>
             <button type="button" class="lang-btn" data-lang="en">EN</button>
           </div>
-          <a href="/app" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</a>
+          <button type="button" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</button>
           <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
           <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
         </div>
@@ -2934,7 +2941,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="/app" data-auth-modal data-i18n="nav.login">Kirish</a>
+    <a href="#kirish" data-auth-modal data-i18n="nav.login">Kirish</a>
     <a href="/app" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
@@ -3333,7 +3340,7 @@
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li class="muted"><span class="no" aria-hidden="true">✕</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-ghost" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.free">Bepul boshlash</a>
+            <a href="#kirish" class="btn-pricing-ghost" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.free">Bepul boshlash</a>
           </article>
           <article class="pricing-card pricing-card--featured glass glass-hover reveal">
             <span class="badge-tavsiya" data-i18n="pricing.badge">TAVSIYA</span>
@@ -3348,7 +3355,7 @@
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f6">Ustuvor qo'llab-quvvatlash</span></li>
               <li><span class="yes" aria-hidden="true">✓</span> <span data-i18n="pricing.f7">Reklamasiz</span></li>
             </ul>
-            <a href="/app" class="btn-pricing-premium" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
+            <a href="#kirish" class="btn-pricing-premium" data-auth-modal data-auth-mode="register" data-i18n="pricing.cta.premium">✦ Premiumga o'tish</a>
           </article>
         </div>
       </div>
@@ -3520,6 +3527,7 @@
     </div>
   </footer>
 
+  <span id="kirish" hidden></span>
   <dialog class="auth-modal" id="authModal" aria-labelledby="authModalTitle" aria-modal="true">
     <button type="button" class="auth-modal-close" id="authModalClose" data-i18n-aria="auth.close" aria-label="Yopish">×</button>
     <div class="auth-modal-panel">
@@ -3590,9 +3598,56 @@
         <button type="button" class="auth-back-link" id="authForgotBack" data-i18n="auth.resetBack">← Orqaga</button>
       </div>
 
+      <div id="authSignedInView" class="auth-modal-view hidden">
+        <p class="auth-modal-success is-visible" id="authSignedInNote" data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovani ochish uchun davom eting.</p>
+        <button type="button" class="auth-submit-btn" id="authContinueApp" data-i18n="auth.continueApp">Ilovani ochish</button>
+      </div>
+
       <p class="auth-modal-footnote" data-i18n="auth.footnote">Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.</p>
     </div>
   </dialog>
+
+  <script>
+    /* Capture-phase: never let Kirish / Boshlash follow /app. Open the modal even if later scripts fail. */
+    (function () {
+      function authModeFrom(el) {
+        return el && el.getAttribute("data-auth-mode") === "register" ? "register" : "login";
+      }
+      function openAuthDialog(mode) {
+        const dialog = document.getElementById("authModal");
+        if (!dialog) return;
+        document.body.classList.add("auth-modal-open");
+        try {
+          if (typeof dialog.showModal === "function") {
+            if (!dialog.open) dialog.showModal();
+          } else {
+            dialog.setAttribute("open", "");
+          }
+        } catch (err) {
+          dialog.setAttribute("open", "");
+        }
+        window.__bhAuthPendingMode = mode === "register" ? "register" : "login";
+        if (typeof window.openLandingAuth === "function") {
+          try { window.openLandingAuth({ mode: window.__bhAuthPendingMode }); } catch (_) {}
+        }
+      }
+      window.openLandingAuthEarly = openAuthDialog;
+      window.BHLanding = window.BHLanding || {
+        goToApp() {
+          try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
+          window.location.href = window.location.protocol === "file:"
+            ? new URL("app.html", window.location.href).href
+            : new URL("/app", window.location.origin).href;
+        }
+      };
+      document.addEventListener("click", function (e) {
+        const el = e.target && e.target.closest && e.target.closest("[data-auth-modal]");
+        if (!el) return;
+        e.preventDefault();
+        openAuthDialog(authModeFrom(el));
+      }, true);
+    })();
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
@@ -3718,6 +3773,9 @@
         "auth.close": "Yopish",
         "auth.busy": "Kutilmoqda…",
         "auth.footnote": "Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.",
+        "auth.signedInTitle": "Siz kirdingiz",
+        "auth.signedInSub": "Hisobingiz ochiq. Ilovani ochish uchun davom eting.",
+        "auth.continueApp": "Ilovani ochish",
         "auth.err.passwordMismatch": "Parollar mos kelmaydi",
         "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
         "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
@@ -3729,8 +3787,11 @@
         "auth.err.too-many-requests": "Juda koʻp urinish. Biroz kuting.",
         "auth.err.network-request-failed": "Internet aloqasini tekshiring.",
         "auth.err.popup-blocked": "Google oynasi bloklandi. Qayta urinib koʻring.",
+        "auth.err.popup-coop": "Google kirish oynasi ochilmadi. Brauzer uni toʻsgan boʻlishi mumkin — qayta urinib koʻring.",
         "auth.err.popup-closed-by-user": "Google kirish bekor qilindi.",
         "auth.err.cancelled-popup-request": "Google kirish bekor qilindi.",
+        "auth.err.internal-error": "Kirish vaqtincha ishlamadi. Qayta urinib koʻring.",
+        "auth.err.unauthorized-domain": "Bu domen Google kirish uchun ruxsat etilmagan.",
         "auth.err.operation-not-allowed": "Bu kirish usuli hozircha yoqilmagan.",
         "auth.err.account-exists-with-different-credential": "Bu email boshqa usul bilan roʻyxatdan oʻtgan.",
         "auth.err.default": "Xatolik yuz berdi. Qayta urinib koʻring.",
@@ -3852,6 +3913,9 @@
         "auth.close": "Закрыть",
         "auth.busy": "Подождите…",
         "auth.footnote": "Продолжая, вы используете безопасную аутентификацию Firebase.",
+        "auth.signedInTitle": "Вы вошли",
+        "auth.signedInSub": "Сессия уже открыта. Продолжите, чтобы открыть приложение.",
+        "auth.continueApp": "Открыть приложение",
         "auth.err.passwordMismatch": "Пароли не совпадают",
         "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
         "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
@@ -3863,8 +3927,11 @@
         "auth.err.too-many-requests": "Слишком много попыток. Подождите.",
         "auth.err.network-request-failed": "Проверьте подключение к интернету.",
         "auth.err.popup-blocked": "Окно Google заблокировано. Попробуйте ещё раз.",
+        "auth.err.popup-coop": "Окно входа Google не открылось. Браузер мог его заблокировать — попробуйте ещё раз.",
         "auth.err.popup-closed-by-user": "Вход через Google отменён.",
         "auth.err.cancelled-popup-request": "Вход через Google отменён.",
+        "auth.err.internal-error": "Вход временно не сработал. Попробуйте ещё раз.",
+        "auth.err.unauthorized-domain": "Этот домен не разрешён для входа через Google.",
         "auth.err.operation-not-allowed": "Этот способ входа пока не включён.",
         "auth.err.account-exists-with-different-credential": "Этот email уже используется другим способом входа.",
         "auth.err.default": "Ошибка. Попробуйте снова.",
@@ -3986,6 +4053,9 @@
         "auth.close": "Close",
         "auth.busy": "Please wait…",
         "auth.footnote": "By continuing you use secure Firebase authentication.",
+        "auth.signedInTitle": "You're signed in",
+        "auth.signedInSub": "Your account is already open. Continue to enter the app.",
+        "auth.continueApp": "Open app",
         "auth.err.passwordMismatch": "Passwords do not match",
         "auth.err.credentials": "Enter email and password (at least 6 characters).",
         "auth.err.email-already-in-use": "This email is already registered.",
@@ -3997,8 +4067,11 @@
         "auth.err.too-many-requests": "Too many attempts. Please wait.",
         "auth.err.network-request-failed": "Check your internet connection.",
         "auth.err.popup-blocked": "Google sign-in popup was blocked. Try again.",
+        "auth.err.popup-coop": "Google sign-in window did not open. Your browser may have blocked it — try again.",
         "auth.err.popup-closed-by-user": "Google sign-in was cancelled.",
         "auth.err.cancelled-popup-request": "Google sign-in was cancelled.",
+        "auth.err.internal-error": "Sign-in failed temporarily. Please try again.",
+        "auth.err.unauthorized-domain": "This domain is not authorized for Google sign-in.",
         "auth.err.operation-not-allowed": "This sign-in method is not enabled yet.",
         "auth.err.account-exists-with-different-credential": "This email is already used with another sign-in method.",
         "auth.err.default": "Something went wrong. Please try again.",
@@ -4473,6 +4546,7 @@
       });
     })();
 
+    try {
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
     let particles = [], w, h;
@@ -4530,6 +4604,9 @@
       drawParticles();
     }
     window.addEventListener("resize", () => { resizeCanvas(); initParticles(); });
+    } catch (err) {
+      console.warn("[BiznesHisob] particles skipped:", err);
+    }
 
     const heroInstallBtn = document.getElementById("heroInstallBtn");
     const ctaInstallBtn = document.getElementById("ctaInstallBtn");
@@ -4606,7 +4683,7 @@
     /* ── Auth modal UI (Firebase wired in the module below) ─────────────── */
     const authModal = document.getElementById("authModal");
     const authMainView = document.getElementById("authMainView");
-    const authForgotView = document.getElementById("authForgotView");
+    const authSignedInView = document.getElementById("authSignedInView");
     const authModalTitle = document.getElementById("authModalTitle");
     const authModalSubmit = document.getElementById("authModalSubmit");
     const authForgotOpen = document.getElementById("authForgotOpen");
@@ -4640,13 +4717,25 @@
 
     function setAuthModalView(view) {
       const forgot = view === "forgot";
-      authMainView?.classList.toggle("hidden", forgot);
+      const signedIn = view === "signedin";
+      authMainView?.classList.toggle("hidden", forgot || signedIn);
       authForgotView?.classList.toggle("hidden", !forgot);
+      authSignedInView?.classList.toggle("hidden", !signedIn);
       if (authModalTitle) {
-        authModalTitle.textContent = forgot ? t("auth.resetTitle") : (authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title"));
+        authModalTitle.textContent = signedIn
+          ? t("auth.signedInTitle")
+          : forgot
+            ? t("auth.resetTitle")
+            : (authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title"));
       }
       const sub = document.getElementById("authModalSub");
-      if (sub) sub.textContent = forgot ? t("auth.resetDesc") : t("auth.modal.sub");
+      if (sub) {
+        sub.textContent = signedIn
+          ? t("auth.signedInSub")
+          : forgot
+            ? t("auth.resetDesc")
+            : t("auth.modal.sub");
+      }
       if (!forgot) {
         authForgotSuccess?.classList.remove("is-visible");
         document.getElementById("authForgotForm")?.classList.remove("hidden");
@@ -4675,7 +4764,13 @@
     }
 
     window.syncLandingAuthCopy = function syncLandingAuthCopy() {
-      if (authModalTitle && authForgotView && !authForgotView.classList.contains("hidden")) {
+      const signedIn = authSignedInView && !authSignedInView.classList.contains("hidden");
+      const forgot = authForgotView && !authForgotView.classList.contains("hidden");
+      if (authModalTitle && signedIn) {
+        authModalTitle.textContent = t("auth.signedInTitle");
+        const sub = document.getElementById("authModalSub");
+        if (sub) sub.textContent = t("auth.signedInSub");
+      } else if (authModalTitle && forgot) {
         authModalTitle.textContent = t("auth.resetTitle");
         const sub = document.getElementById("authModalSub");
         if (sub) sub.textContent = t("auth.resetDesc");
@@ -4725,15 +4820,15 @@
     }
 
     function openAuthModal(opts = {}) {
-      if (window.BHAuth?.currentUser) {
-        window.location.href = APP_URL;
-        return;
-      }
       const trigger = opts.trigger || document.activeElement;
       authModalLastFocus = trigger && trigger.focus ? trigger : document.activeElement;
       const mode = opts.mode === "register" ? "register" : "login";
-      setAuthModalView("main");
-      setAuthModalMode(mode);
+      if (window.BHAuth?.currentUser) {
+        setAuthModalView("signedin");
+      } else {
+        setAuthModalView("main");
+        setAuthModalMode(mode);
+      }
       document.body.classList.add("auth-modal-open");
       document.getElementById("mobileNav")?.classList.remove("open");
       syncHeaderCompact();
@@ -4743,8 +4838,10 @@
         authModal.setAttribute("open", "");
       }
       document.addEventListener("keydown", trapAuthFocus, true);
-      const googleBtn = document.getElementById("authGoogleBtn");
-      window.setTimeout(() => (googleBtn || authModal.querySelector(AUTH_FOCUSABLE))?.focus(), 20);
+      const focusEl = window.BHAuth?.currentUser
+        ? document.getElementById("authContinueApp")
+        : document.getElementById("authGoogleBtn");
+      window.setTimeout(() => (focusEl || authModal.querySelector(AUTH_FOCUSABLE))?.focus(), 20);
     }
 
     window.openLandingAuth = openAuthModal;
@@ -4775,6 +4872,9 @@
     });
     authForgotOpen?.addEventListener("click", () => setAuthModalView("forgot"));
     document.getElementById("authForgotBack")?.addEventListener("click", () => setAuthModalView("main"));
+    document.getElementById("authContinueApp")?.addEventListener("click", () => {
+      window.BHLanding?.goToApp?.();
+    });
 
     document.querySelectorAll("[data-password-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -5144,7 +5244,6 @@
       sendPasswordResetEmail,
       onAuthStateChanged,
       GoogleAuthProvider,
-      signInWithPopup,
       signInWithRedirect,
       getRedirectResult,
       updateProfile
@@ -5197,9 +5296,40 @@
         code === "auth/user-cancelled";
     }
 
-    function isMobileAuth() {
-      return /iPad|iPhone|iPod|Android/i.test(navigator.userAgent) ||
-        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const GOOGLE_REDIRECT_KEY = "bh_google_redirect";
+
+    function markGoogleRedirect() {
+      try { sessionStorage.setItem(GOOGLE_REDIRECT_KEY, "1"); } catch (_) {}
+    }
+
+    function consumeGoogleRedirect() {
+      try {
+        const pending = sessionStorage.getItem(GOOGLE_REDIRECT_KEY) === "1";
+        sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+        return pending;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function looksLikeCoopOrPopupFailure(err) {
+      const code = String(err?.code || "");
+      const message = String(err?.message || err || "");
+      return code === "auth/popup-blocked" ||
+        code === "auth/operation-not-supported-in-this-environment" ||
+        /window\.closed|Cross-Origin-Opener-Policy|COOP|Unable to establish/i.test(message);
+    }
+
+    function googleAuthErrorMessage(err) {
+      const code = String(err?.code || "");
+      const offline = typeof navigator !== "undefined" && navigator.onLine === false;
+      if (code === "auth/network-request-failed" && !offline) {
+        return authErrorMessage("popup-coop");
+      }
+      if (looksLikeCoopOrPopupFailure(err)) {
+        return authErrorMessage("popup-coop");
+      }
+      return authErrorMessage(code);
     }
 
     async function rememberDisplayName(uid, name) {
@@ -5217,22 +5347,41 @@
       ui()?.goToApp?.();
     }
 
+    let enteredFromGoogle = false;
+    async function enterAppFromGoogle(user) {
+      if (!user || enteredFromGoogle) return;
+      enteredFromGoogle = true;
+      consumeGoogleRedirect();
+      const name = user.displayName || "";
+      if (name) await rememberDisplayName(user.uid, name);
+      enterApp();
+    }
+
     onAuthStateChanged(auth, (user) => {
       window.BHAuth.currentUser = user || null;
+      let pendingGoogle = false;
+      try { pendingGoogle = sessionStorage.getItem(GOOGLE_REDIRECT_KEY) === "1"; } catch (_) {}
+      if (user && pendingGoogle) {
+        void enterAppFromGoogle(user);
+        return;
+      }
+      const dialog = document.getElementById("authModal");
+      if (user && dialog?.open && typeof window.openLandingAuth === "function") {
+        window.openLandingAuth({ mode: window.__bhAuthPendingMode || "login" });
+      }
     });
 
     try {
       const redirect = await getRedirectResult(auth);
       if (redirect?.user) {
-        const name = redirect.user.displayName || "";
-        if (name) await rememberDisplayName(redirect.user.uid, name);
-        enterApp();
+        await enterAppFromGoogle(redirect.user);
       }
     } catch (err) {
+      consumeGoogleRedirect();
       console.error("[BiznesHisob] Google redirect:", err);
       if (!isUserCancel(err?.code)) {
         ui()?.open?.({ mode: "login" });
-        ui()?.showError?.(authErrorMessage(err?.code));
+        ui()?.showError?.(googleAuthErrorMessage(err));
       }
     }
 
@@ -5241,27 +5390,16 @@
       ui()?.setBusy?.(true);
       auth.languageCode = document.documentElement.lang || "uz";
       try {
-        if (isMobileAuth()) {
-          await signInWithRedirect(auth, googleProvider);
-          return;
-        }
-        const cred = await signInWithPopup(auth, googleProvider);
-        if (cred?.user?.displayName) {
-          await rememberDisplayName(cred.user.uid, cred.user.displayName);
-        }
-        enterApp();
+        markGoogleRedirect();
+        // Close <dialog> first: popup + COOP cannot read window.closed from a modal.
+        ui()?.close?.();
+        await signInWithRedirect(auth, googleProvider);
       } catch (err) {
-        if (err?.code === "auth/popup-blocked" || err?.code === "auth/operation-not-supported-in-this-environment") {
-          try {
-            await signInWithRedirect(auth, googleProvider);
-            return;
-          } catch (redirectErr) {
-            err = redirectErr;
-          }
-        }
+        consumeGoogleRedirect();
         if (isUserCancel(err?.code)) return;
         console.error("[BiznesHisob] Google sign-in:", err);
-        ui()?.showError?.(authErrorMessage(err?.code));
+        ui()?.open?.({ mode: ui()?.mode || "login" });
+        ui()?.showError?.(googleAuthErrorMessage(err));
       } finally {
         ui()?.setBusy?.(false);
       }

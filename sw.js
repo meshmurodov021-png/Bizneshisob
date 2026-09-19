@@ -1,11 +1,9 @@
-const BUILD_VERSION = "1780673729574";
+const BUILD_VERSION = "1789811512766";
 const CACHE_VERSION = `bizneshisob-${BUILD_VERSION}`;
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
 const PRECACHE_URLS = [
-  "/",
-  "/index.html",
   "/manifest.json",
   "/splash.css",
   "/splash.js",
@@ -13,6 +11,12 @@ const PRECACHE_URLS = [
   "/icons/icon-512.png",
   "/icons/apple-touch-icon.png"
 ];
+
+function isMarketingDocument(url) {
+  return url.pathname === "/" ||
+    url.pathname === "/index.html" ||
+    url.pathname === "/landing.html";
+}
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -87,10 +91,14 @@ self.addEventListener("fetch", event => {
       return;
     }
     if (isNavigationRequest(request)) {
+      if (isMarketingDocument(url)) {
+        event.respondWith(networkFirstAsset(request, SHELL_CACHE));
+        return;
+      }
       event.respondWith(networkFirstNavigation(request));
       return;
     }
-    if (url.pathname === "/index.html" || url.pathname === "/version.json") {
+    if (isMarketingDocument(url) || url.pathname === "/version.json") {
       event.respondWith(networkFirstAsset(request, SHELL_CACHE));
       return;
     }
