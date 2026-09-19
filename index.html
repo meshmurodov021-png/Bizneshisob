@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1789811512766">
+  <meta name="app-build-version" content="1789837497694">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -21,9 +21,9 @@
   <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
   <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
   <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789811512766">
-  <link rel="manifest" href="/manifest.json?v=1789811512766">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789811512766">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789837497694">
+  <link rel="manifest" href="/manifest.json?v=1789837497694">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789837497694">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <script type="application/ld+json">
@@ -2924,7 +2924,7 @@
             <button type="button" class="lang-btn" data-lang="ru">RU</button>
             <button type="button" class="lang-btn" data-lang="en">EN</button>
           </div>
-          <button type="button" class="btn btn-outline btn-sm header-login" data-auth-modal data-i18n="nav.login">Kirish</button>
+          <a href="#kirish" class="btn btn-outline btn-sm header-login" data-nav-auth-cta data-auth-modal data-i18n="nav.login">Kirish</a>
           <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
           <button type="button" class="menu-btn" id="menuBtn" aria-label="Menyu">☰</button>
         </div>
@@ -2941,7 +2941,7 @@
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="#kirish" data-auth-modal data-i18n="nav.login">Kirish</a>
+    <a href="#kirish" data-nav-auth-cta data-auth-modal data-i18n="nav.login">Kirish</a>
     <a href="/app" data-i18n="cta.download">Yuklab olish</a>
     <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
@@ -3633,17 +3633,32 @@
       }
       window.openLandingAuthEarly = openAuthDialog;
       window.BHLanding = window.BHLanding || {
-        goToApp() {
+        goToApp(tab) {
           try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
-          window.location.href = window.location.protocol === "file:"
+          if (tab) {
+            try { sessionStorage.setItem("bh_open_tab", tab); } catch (_) {}
+          }
+          const base = window.location.protocol === "file:"
             ? new URL("app.html", window.location.href).href
             : new URL("/app", window.location.origin).href;
+          const url = new URL(base, window.location.href);
+          if (tab) url.hash = tab;
+          window.location.href = url.href;
         }
       };
       document.addEventListener("click", function (e) {
         const el = e.target && e.target.closest && e.target.closest("[data-auth-modal]");
         if (!el) return;
         e.preventDefault();
+        if (el.hasAttribute("data-nav-auth-cta") && window.BHAuth && window.BHAuth.currentUser) {
+          e.stopPropagation();
+          if (window.BHLanding && typeof window.BHLanding.goToApp === "function") {
+            window.BHLanding.goToApp("profile");
+          } else {
+            window.location.href = "/app#profile";
+          }
+          return;
+        }
         openAuthDialog(authModeFrom(el));
       }, true);
     })();
@@ -3662,7 +3677,7 @@
       uz: {
         "meta.title": "BiznesHisob — Biznes moliyasini boshqaring",
         "scroll.hint": "Pastga", "scroll.hintAria": "Pastga aylantiring",
-        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar", "nav.login": "Kirish",
+        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar", "nav.login": "Kirish", "nav.profile": "Profil",
         "compare.tag": "Farq",
         "compare.title": "Murakkablikdan <span class=\"gradient-text\">osonlikka</span>",
         "compare.sub": "BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba",
@@ -3802,7 +3817,7 @@
       ru: {
         "meta.title": "BiznesHisob — Управляйте финансами бизнеса",
         "scroll.hint": "Вниз", "scroll.hintAria": "Прокрутить вниз",
-        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы", "nav.login": "Войти",
+        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы", "nav.login": "Войти", "nav.profile": "Профиль",
         "compare.tag": "Сравнение",
         "compare.title": "От сложности <span class=\"gradient-text\">к простоте</span>",
         "compare.sub": "С BiznesHisob управление финансами — совершенно другой опыт",
@@ -3942,7 +3957,7 @@
       en: {
         "meta.title": "BiznesHisob — Manage your business finances",
         "scroll.hint": "Scroll", "scroll.hintAria": "Scroll down",
-        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews", "nav.login": "Sign in",
+        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews", "nav.login": "Sign in", "nav.profile": "Profile",
         "compare.tag": "Compare",
         "compare.title": "From complexity <span class=\"gradient-text\">to simplicity</span>",
         "compare.sub": "With BiznesHisob, financial management is a completely different experience",
@@ -4119,6 +4134,7 @@
       document.title = t("meta.title");
       setupInstallUI();
       if (typeof window.syncLandingAuthCopy === "function") window.syncLandingAuthCopy();
+      if (typeof window.syncNavAuthCta === "function") window.syncNavAuthCta(window.BHAuth?.currentUser);
     }
 
     function setLang(lang) {
@@ -4680,6 +4696,44 @@
 
     setupInstallUI();
 
+    const OPEN_TAB_KEY = "bh_open_tab";
+
+    function appHref(tab) {
+      const base = window.location.protocol === "file:"
+        ? new URL("app.html", window.location.href).href
+        : new URL("/app", window.location.origin).href;
+      const url = new URL(base, window.location.href);
+      if (tab) url.hash = tab;
+      return url.href;
+    }
+
+    function goToApp(tab) {
+      try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
+      if (tab) {
+        try { sessionStorage.setItem(OPEN_TAB_KEY, tab); } catch (_) {}
+      }
+      window.location.href = appHref(tab);
+    }
+
+    function syncNavAuthCta(user) {
+      const signedIn = !!(user || window.BHAuth?.currentUser);
+      const key = signedIn ? "nav.profile" : "nav.login";
+      const label = t(key);
+      document.querySelectorAll("[data-nav-auth-cta]").forEach((el) => {
+        el.dataset.i18n = key;
+        el.textContent = label;
+        el.setAttribute("aria-label", label);
+        if (signedIn) {
+          el.removeAttribute("data-auth-modal");
+          el.setAttribute("href", appHref("profile"));
+        } else {
+          el.setAttribute("data-auth-modal", "");
+          el.setAttribute("href", "#kirish");
+        }
+      });
+    }
+    window.syncNavAuthCta = syncNavAuthCta;
+
     /* ── Auth modal UI (Firebase wired in the module below) ─────────────── */
     const authModal = document.getElementById("authModal");
     const authMainView = document.getElementById("authMainView");
@@ -4888,6 +4942,12 @@
     });
 
     document.addEventListener("click", (e) => {
+      const navCta = e.target.closest("[data-nav-auth-cta]");
+      if (navCta && window.BHAuth?.currentUser) {
+        e.preventDefault();
+        goToApp("profile");
+        return;
+      }
       const trigger = e.target.closest("[data-auth-modal]");
       if (!trigger) return;
       e.preventDefault();
@@ -4914,10 +4974,8 @@
       clearError: clearAuthModalError,
       open: openAuthModal,
       close: closeAuthModal,
-      goToApp() {
-        try { sessionStorage.setItem("bh_auth_dismissed", "1"); } catch (_) {}
-        window.location.href = APP_URL;
-      }
+      goToApp,
+      syncNavAuthCta
     };
   </script>
 
@@ -5359,6 +5417,7 @@
 
     onAuthStateChanged(auth, (user) => {
       window.BHAuth.currentUser = user || null;
+      ui()?.syncNavAuthCta?.(user);
       let pendingGoogle = false;
       try { pendingGoogle = sessionStorage.getItem(GOOGLE_REDIRECT_KEY) === "1"; } catch (_) {}
       if (user && pendingGoogle) {

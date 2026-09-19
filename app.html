@@ -11854,6 +11854,25 @@
     window.addEventListener("focus", handlePaymentReturn);
     document.addEventListener("visibilitychange", handleVisibilityLock);
 
+    function consumeRequestedAppTab() {
+      const allowed = { home: true, list: true, profile: true };
+      let tab = "";
+      try {
+        const hash = String(location.hash || "").replace(/^#/, "").split(/[/?&]/)[0].trim().toLowerCase();
+        if (allowed[hash]) tab = hash;
+        if (!tab) {
+          const queryTab = new URLSearchParams(location.search).get("tab");
+          if (queryTab && allowed[queryTab.toLowerCase()]) tab = queryTab.toLowerCase();
+        }
+        if (!tab) {
+          const stored = sessionStorage.getItem("bh_open_tab");
+          if (stored && allowed[stored]) tab = stored;
+        }
+        sessionStorage.removeItem("bh_open_tab");
+      } catch (_) {}
+      return tab;
+    }
+
     function switchTab(tabName) {
       if (tabName === currentTab) return;
 
@@ -14613,7 +14632,7 @@
           }
           subscribeUserProfile(user.uid);
           subscribeCurrencies(user.uid);
-          switchTab("home");
+          switchTab(consumeRequestedAppTab() || "home");
           render();
           subscribeTransactions(user.uid);
           setupInstallUI();
