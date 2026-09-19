@@ -8,7 +8,7 @@
   <meta name="robots" content="index, follow">
   <meta name="author" content="BiznesHisob">
   <meta name="theme-color" content="#7C3AED">
-  <meta name="app-build-version" content="1789811512766">
+  <meta name="app-build-version" content="1789811966809">
   <link rel="canonical" href="https://bizneshisob.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiznesHisob">
@@ -21,9 +21,9 @@
   <meta name="twitter:title" content="BiznesHisob — Biznes moliyasini boshqaring">
   <meta name="twitter:description" content="Daromad, xarajat va balans — barchasi bitta joyda. Bepul boshlang.">
   <meta name="twitter:image" content="https://bizneshisob.vercel.app/icons/icon-512.png">
-  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789811512766">
-  <link rel="manifest" href="/manifest.json?v=1789811512766">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789811512766">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png?v=1789811966809">
+  <link rel="manifest" href="/manifest.json?v=1789811966809">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=1789811966809">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>BiznesHisob — Biznes moliyasini boshqaring</title>
   <script type="application/ld+json">
@@ -2758,6 +2758,49 @@
       transform: translateY(-1px);
     }
 
+    .auth-signed-in-email {
+      margin: 0.15rem 0 0.4rem;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .auth-signed-in-note {
+      margin: 0 0 1rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+
+    .auth-switch-account {
+      display: block;
+      width: 100%;
+      min-height: 46px;
+      margin-top: 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+
+    .auth-switch-account:hover {
+      border-color: rgba(167, 139, 250, 0.45);
+      background: rgba(124, 58, 237, 0.12);
+    }
+
+    .auth-switch-account:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+    }
+
     .auth-forgot-link,
     .auth-back-link {
       display: block;
@@ -3599,8 +3642,10 @@
       </div>
 
       <div id="authSignedInView" class="auth-modal-view hidden">
-        <p class="auth-modal-success is-visible" id="authSignedInNote" data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovani ochish uchun davom eting.</p>
-        <button type="button" class="auth-submit-btn" id="authContinueApp" data-i18n="auth.continueApp">Ilovani ochish</button>
+        <p class="auth-signed-in-email" id="authSignedInEmail">—</p>
+        <p class="auth-signed-in-note" id="authSignedInNote" hidden data-i18n="auth.signedInSub">Hisobingiz ochiq. Ilovaga o'ting yoki boshqa hisob tanlang.</p>
+        <button type="button" class="auth-submit-btn" id="authContinueApp" data-i18n="auth.continueApp">Ilovaga o'tish</button>
+        <button type="button" class="auth-switch-account" id="authSwitchAccount" data-i18n="auth.switchAccount">Boshqa hisob</button>
       </div>
 
       <p class="auth-modal-footnote" data-i18n="auth.footnote">Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.</p>
@@ -3774,8 +3819,9 @@
         "auth.busy": "Kutilmoqda…",
         "auth.footnote": "Davom etish orqali siz xavfsiz Firebase autentifikatsiyasiga rozilik bildirasiz.",
         "auth.signedInTitle": "Siz kirdingiz",
-        "auth.signedInSub": "Hisobingiz ochiq. Ilovani ochish uchun davom eting.",
-        "auth.continueApp": "Ilovani ochish",
+        "auth.signedInSub": "Hisobingiz ochiq. Ilovaga o'ting yoki boshqa hisob tanlang.",
+        "auth.continueApp": "Ilovaga o'tish",
+        "auth.switchAccount": "Boshqa hisob",
         "auth.err.passwordMismatch": "Parollar mos kelmaydi",
         "auth.err.credentials": "Email va parol (kamida 6 belgi) kiriting.",
         "auth.err.email-already-in-use": "Bu email allaqachon roʻyxatdan oʻtgan.",
@@ -3914,8 +3960,9 @@
         "auth.busy": "Подождите…",
         "auth.footnote": "Продолжая, вы используете безопасную аутентификацию Firebase.",
         "auth.signedInTitle": "Вы вошли",
-        "auth.signedInSub": "Сессия уже открыта. Продолжите, чтобы открыть приложение.",
-        "auth.continueApp": "Открыть приложение",
+        "auth.signedInSub": "Сессия уже открыта. Перейдите в приложение или смените аккаунт.",
+        "auth.continueApp": "Перейти в приложение",
+        "auth.switchAccount": "Другой аккаунт",
         "auth.err.passwordMismatch": "Пароли не совпадают",
         "auth.err.credentials": "Введите email и пароль (минимум 6 символов).",
         "auth.err.email-already-in-use": "Этот email уже зарегистрирован.",
@@ -4054,8 +4101,9 @@
         "auth.busy": "Please wait…",
         "auth.footnote": "By continuing you use secure Firebase authentication.",
         "auth.signedInTitle": "You're signed in",
-        "auth.signedInSub": "Your account is already open. Continue to enter the app.",
-        "auth.continueApp": "Open app",
+        "auth.signedInSub": "Your account is already open. Continue to the app or switch accounts.",
+        "auth.continueApp": "Go to app",
+        "auth.switchAccount": "Use another account",
         "auth.err.passwordMismatch": "Passwords do not match",
         "auth.err.credentials": "Enter email and password (at least 6 characters).",
         "auth.err.email-already-in-use": "This email is already registered.",
@@ -4709,6 +4757,23 @@
       }
     }
 
+    function maskEmail(email) {
+      const raw = String(email || "").trim();
+      const at = raw.indexOf("@");
+      if (at <= 0) return "—";
+      const local = raw.slice(0, at);
+      const domain = raw.slice(at + 1);
+      if (!domain) return "—";
+      const stars = "*".repeat(Math.max(3, Math.min(local.length - 1, 5)));
+      return `${local[0]}${stars}@${domain}`;
+    }
+
+    function fillSignedInEmail(user) {
+      const el = document.getElementById("authSignedInEmail");
+      if (!el) return;
+      el.textContent = maskEmail(user?.email);
+    }
+
     function showAuthModalError(el, message) {
       if (!el) return;
       el.textContent = message || t("auth.err.default");
@@ -4730,12 +4795,14 @@
       }
       const sub = document.getElementById("authModalSub");
       if (sub) {
-        sub.textContent = signedIn
-          ? t("auth.signedInSub")
-          : forgot
-            ? t("auth.resetDesc")
-            : t("auth.modal.sub");
+        sub.hidden = signedIn;
+        if (!signedIn) {
+          sub.textContent = forgot ? t("auth.resetDesc") : t("auth.modal.sub");
+        }
       }
+      const signedNote = document.getElementById("authSignedInNote");
+      if (signedNote) signedNote.hidden = true;
+      if (signedIn) fillSignedInEmail(window.BHAuth?.currentUser);
       if (!forgot) {
         authForgotSuccess?.classList.remove("is-visible");
         document.getElementById("authForgotForm")?.classList.remove("hidden");
@@ -4769,15 +4836,21 @@
       if (authModalTitle && signedIn) {
         authModalTitle.textContent = t("auth.signedInTitle");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.signedInSub");
+        if (sub) sub.hidden = true;
       } else if (authModalTitle && forgot) {
         authModalTitle.textContent = t("auth.resetTitle");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.resetDesc");
+        if (sub) {
+          sub.hidden = false;
+          sub.textContent = t("auth.resetDesc");
+        }
       } else if (authModalTitle) {
         authModalTitle.textContent = authModalMode === "register" ? t("auth.modal.titleRegister") : t("auth.modal.title");
         const sub = document.getElementById("authModalSub");
-        if (sub) sub.textContent = t("auth.modal.sub");
+        if (sub) {
+          sub.hidden = false;
+          sub.textContent = t("auth.modal.sub");
+        }
       }
       if (authModalSubmit && !authModalBusy) {
         authModalSubmit.textContent = t(authModalMode === "register" ? "auth.register" : "auth.login");
@@ -4875,6 +4948,24 @@
     document.getElementById("authContinueApp")?.addEventListener("click", () => {
       window.BHLanding?.goToApp?.();
     });
+    document.getElementById("authSwitchAccount")?.addEventListener("click", async () => {
+      window.BHLanding?.setBusy?.(true);
+      window.__bhSwitchingAccount = true;
+      try {
+        if (window.BHAuth) window.BHAuth.currentUser = null;
+        if (typeof window.BHAuth?.signOut === "function") {
+          await window.BHAuth.signOut();
+        }
+      } catch (err) {
+        console.warn("[BiznesHisob] Switch account sign-out:", err);
+      } finally {
+        window.__bhSwitchingAccount = false;
+        window.BHLanding?.setBusy?.(false);
+        setAuthModalView("main");
+        setAuthModalMode("login");
+        document.getElementById("authGoogleBtn")?.focus();
+      }
+    });
 
     document.querySelectorAll("[data-password-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -4900,7 +4991,7 @@
       appUrl: APP_URL,
       setBusy(busy) {
         authModalBusy = !!busy;
-        ["authGoogleBtn", "authModalSubmit", "authForgotSubmit"].forEach((id) => {
+        ["authGoogleBtn", "authModalSubmit", "authForgotSubmit", "authContinueApp", "authSwitchAccount"].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.disabled = !!busy;
         });
@@ -5246,7 +5337,8 @@
       GoogleAuthProvider,
       signInWithRedirect,
       getRedirectResult,
-      updateProfile
+      updateProfile,
+      signOut
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
     import {
       getFirestore,
@@ -5274,7 +5366,13 @@
     const googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: "select_account" });
 
-    window.BHAuth = { currentUser: null };
+    window.BHAuth = {
+      currentUser: null,
+      async signOut() {
+        await signOut(auth);
+        window.BHAuth.currentUser = null;
+      }
+    };
 
     function authErrorMessage(code) {
       const short = String(code || "").replace("auth/", "");
@@ -5366,7 +5464,7 @@
         return;
       }
       const dialog = document.getElementById("authModal");
-      if (user && dialog?.open && typeof window.openLandingAuth === "function") {
+      if (user && dialog?.open && !window.__bhSwitchingAccount && typeof window.openLandingAuth === "function") {
         window.openLandingAuth({ mode: window.__bhAuthPendingMode || "login" });
       }
     });
