@@ -195,6 +195,7 @@
       left: 0;
       right: 0;
       z-index: 200;
+      overflow: visible;
       padding: env(safe-area-inset-top, 0px) 0 0;
       background: transparent;
       border: none;
@@ -212,7 +213,7 @@
       pointer-events: none;
       max-width: none;
       width: 100%;
-      padding: 0 1.35rem;
+      padding: 0 max(1.75rem, calc(1.35rem + env(safe-area-inset-right, 0px))) 0 max(1.35rem, env(safe-area-inset-left, 0px));
     }
 
     .header-shell {
@@ -246,6 +247,7 @@
     .header-shell > .header-actions {
       grid-column: 3;
       justify-self: end;
+      min-width: max-content;
     }
 
     .header.is-compact {
@@ -330,6 +332,12 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
+      flex-shrink: 0;
+      padding-right: 0.15rem;
+    }
+
+    .header-actions #navInstallBtn {
+      flex-shrink: 0;
     }
 
     .lang-switcher {
@@ -2972,10 +2980,10 @@
           <span>BiznesHisob</span>
         </a>
         <ul class="nav-links">
-          <li><a href="#compare" data-i18n="nav.compare">Farq</a></li>
           <li><a href="#features" data-i18n="nav.features">Imkoniyatlar</a></li>
-          <li><a href="#trust" data-i18n="nav.trust">Xavfsizlik</a></li>
+          <li><a href="#compare" data-i18n="nav.compare">Farq</a></li>
           <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
+          <li><a href="#trust" data-i18n="nav.trust">Xavfsizlik</a></li>
           <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
           <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
         </ul>
@@ -2994,17 +3002,17 @@
   </header>
 
   <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
-    <a href="#compare" data-i18n="nav.compare">Farq</a>
     <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
+    <a href="#compare" data-i18n="nav.compare">Farq</a>
+    <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#trust" data-i18n="nav.trust">Xavfsizlik</a>
+    <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    <a href="#contact" data-i18n="nav.contact">Aloqa</a>
     <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
     <a href="#stats" data-i18n="nav.stats">Statistika</a>
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
-    <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
-    <a href="#faq" data-i18n="nav.faq">FAQ</a>
     <a href="#kirish" data-nav-auth-cta data-auth-modal data-i18n="nav.login">Kirish</a>
     <a href="/app" data-i18n="cta.download">Yuklab olish</a>
-    <a href="#contact" data-i18n="nav.contact">Aloqa</a>
   </nav>
 
   <main>
