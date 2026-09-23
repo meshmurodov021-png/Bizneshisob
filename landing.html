@@ -515,9 +515,13 @@
     .reveal,
     .feature-row,
     .step-item,
-    .testimonial {
+    .t-carousel {
       opacity: 0;
-      transform: translateY(28px);
+      transform: translate3d(0, 36px, 0);
+    }
+
+    .section-head.reveal {
+      transform: translate3d(0, 48px, 0);
     }
 
     /* HERO */
@@ -1270,6 +1274,335 @@
       100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
     }
 
+    /* SCROLL STORY — complexity → ease */
+    .ease-story {
+      position: relative;
+      height: 240vh;
+      margin: 0 auto 3.25rem;
+      max-width: 980px;
+    }
+
+    .ease-story-sticky {
+      position: sticky;
+      top: var(--nav-offset);
+      height: calc(100svh - var(--nav-offset));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.9rem;
+      padding: 0.35rem 0 0.5rem;
+    }
+
+    .ease-stage {
+      position: relative;
+      min-height: 390px;
+      flex: 1 1 auto;
+    }
+
+    .ease-panel {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      align-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translate3d(0, 28px, 0);
+      transition:
+        opacity 0.65s var(--ease),
+        transform 0.65s var(--ease),
+        visibility 0.65s var(--ease);
+      pointer-events: none;
+    }
+
+    .ease-panel.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      pointer-events: auto;
+    }
+
+    .ease-kicker {
+      display: inline-block;
+      margin-bottom: 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a78bfa;
+    }
+
+    .ease-copy h3 {
+      font-size: clamp(1.7rem, 4vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.12;
+      margin-bottom: 0.65rem;
+    }
+
+    .ease-copy p {
+      color: var(--muted);
+      font-size: 1.02rem;
+      max-width: 36ch;
+      line-height: 1.6;
+    }
+
+    .ease-visual {
+      position: relative;
+      height: 230px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background:
+        radial-gradient(ellipse 70% 80% at 50% 100%, rgba(124, 58, 237, 0.16), transparent 60%),
+        rgba(255, 255, 255, 0.025);
+    }
+
+    .ease-visual--mess {
+      background:
+        radial-gradient(ellipse 80% 70% at 20% 80%, rgba(239, 68, 68, 0.14), transparent 55%),
+        rgba(255, 255, 255, 0.02);
+      border-color: rgba(248, 113, 113, 0.22);
+    }
+
+    .mess-chip {
+      position: absolute;
+      padding: 0.45rem 0.7rem;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.35);
+      border: 1px solid rgba(248, 113, 113, 0.28);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .mess-chip--warn {
+      color: #fff;
+      background: rgba(185, 28, 28, 0.55);
+    }
+
+    .mess-chip:nth-child(1) { left: 7%; top: 16%; transform: rotate(-11deg); }
+    .mess-chip:nth-child(2) { right: 8%; top: 12%; transform: rotate(8deg); }
+    .mess-chip:nth-child(3) { left: 18%; top: 46%; transform: rotate(5deg); }
+    .mess-chip:nth-child(4) { right: 12%; top: 42%; transform: rotate(-7deg); }
+    .mess-chip:nth-child(5) { left: 10%; bottom: 14%; transform: rotate(-4deg); }
+    .mess-chip:nth-child(6) { right: 16%; bottom: 16%; transform: rotate(9deg); }
+
+    .ease-panel.is-active .mess-chip {
+      animation: messDrift 6.5s ease-in-out infinite;
+    }
+
+    .mess-chip:nth-child(2n) { animation-delay: -2.2s; }
+    .mess-chip:nth-child(3n) { animation-delay: -4s; }
+
+    @keyframes messDrift {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -6px; }
+    }
+
+    .shift-stack {
+      position: absolute;
+      inset: 18% 12%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.7rem;
+    }
+
+    .shift-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.45rem;
+      transition: transform 0.7s var(--ease), opacity 0.7s var(--ease);
+    }
+
+    .shift-row span {
+      padding: 0.4rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ddd6fe;
+      background: rgba(124, 58, 237, 0.16);
+      border: 1px solid rgba(167, 139, 250, 0.28);
+    }
+
+    .ease-panel.is-active .shift-row--a { transform: translateY(10px); opacity: 0.45; }
+    .ease-panel.is-active .shift-row--c { transform: translateY(-6px); }
+
+    .shift-mark {
+      min-width: 46px;
+      text-align: center;
+      color: #fff !important;
+      background: var(--gradient) !important;
+      border-color: transparent !important;
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+    }
+
+    .calm-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(280px, 86%);
+      padding: 1.15rem 1.2rem 1rem;
+      border-radius: 18px;
+      background: rgba(16, 12, 28, 0.72);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      box-shadow:
+        0 18px 50px rgba(124, 58, 237, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .calm-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c4b5fd;
+    }
+
+    .calm-value {
+      margin: 0.35rem 0 0.85rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #4ade80;
+    }
+
+    .calm-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .calm-meta strong {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--text);
+      font-size: 0.82rem;
+    }
+
+    .ease-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+
+    .ease-tab {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      border-radius: 14px;
+      min-height: 48px;
+      padding: 0.45rem 0.55rem;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.35s var(--ease), background 0.35s var(--ease), color 0.35s var(--ease);
+    }
+
+    .ease-tab-num {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #a78bfa;
+    }
+
+    .ease-tab-label {
+      display: block;
+      margin-top: 0.12rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ease-tab.is-current,
+    .ease-tab[aria-selected="true"] {
+      color: var(--text);
+      border-color: rgba(167, 139, 250, 0.55);
+      background: rgba(124, 58, 237, 0.16);
+    }
+
+    .ease-meter {
+      height: 2px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .ease-progress-fill {
+      display: block;
+      height: 100%;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: left center;
+      background: linear-gradient(90deg, #f87171, #a78bfa 55%, #4ade80);
+    }
+
+    .ease-tab:focus-visible {
+      outline: 2px solid #c4b5fd;
+      outline-offset: 3px;
+    }
+
+    @media (min-width: 768px) {
+      .ease-story { height: 280vh; }
+      .ease-panel {
+        grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+        gap: 2rem;
+        align-items: center;
+      }
+      .ease-stage { min-height: 360px; }
+      .ease-visual { height: 280px; }
+    }
+
+    @media (max-height: 740px) {
+      .ease-stage { min-height: 280px; }
+      .ease-visual { height: 168px; }
+      .ease-copy h3 { font-size: 1.45rem; }
+    }
+
+    .ease-story.is-static {
+      height: auto;
+    }
+
+    .ease-story.is-static .ease-story-sticky {
+      position: static;
+      height: auto;
+      overflow: visible;
+    }
+
+    .ease-story.is-static .ease-stage {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ease-story.is-static .ease-panel {
+      position: relative;
+      inset: auto;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      pointer-events: auto;
+      padding: 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
     /* FEATURES alternating */
     .feature-row {
       display: grid;
@@ -1646,45 +1979,87 @@
       transform: translateY(4px);
     }
 
-    /* HOW IT WORKS */
-    .steps-track {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      position: relative;
-      max-width: 900px;
+    /* HOW IT WORKS — 01–03 journey */
+    .journey {
+      max-width: 980px;
       margin: 0 auto;
     }
 
-    .steps-line {
-      display: none;
+    .journey-meter {
+      height: 2px;
+      margin: 0 0 1.35rem;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .journey-meter-fill {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #7C3AED, #c4b5fd);
+      transition: width 1.05s var(--ease);
+    }
+
+    .journey.is-drawn .journey-meter-fill { width: 100%; }
+
+    .steps-track {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.9rem;
+      position: relative;
     }
 
     .step-item {
-      text-align: center;
-      padding: 2rem 1.5rem;
+      position: relative;
+      text-align: left;
+      padding: 1.35rem 1.3rem 1.4rem;
+      border-color: rgba(167, 139, 250, 0.16);
+      background:
+        linear-gradient(180deg, rgba(124, 58, 237, 0.1), rgba(18, 18, 28, 0.45) 42%),
+        var(--bg-card);
+      overflow: hidden;
     }
 
-    .step-num {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 1.25rem;
-      border-radius: 50%;
-      background: var(--gradient);
-      display: grid;
-      place-items: center;
-      font-size: 1.75rem;
+    .step-item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 1.15rem;
+      right: 1.15rem;
+      height: 2px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #7C3AED, rgba(196, 181, 253, 0.2));
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.8s var(--ease);
+    }
+
+    .journey.is-drawn .step-item::before { transform: scaleX(1); }
+    .journey.is-drawn .step-item:nth-child(2)::before { transition-delay: 0.16s; }
+    .journey.is-drawn .step-item:nth-child(3)::before { transition-delay: 0.32s; }
+
+    .step-index {
+      display: block;
+      margin-bottom: 0.85rem;
+      font-size: clamp(2.15rem, 5vw, 2.85rem);
       font-weight: 800;
-      box-shadow: 0 10px 36px var(--glow);
+      letter-spacing: -0.06em;
+      line-height: 0.9;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .step-item h3 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.02em;
     }
 
-    .step-item p { color: var(--muted); font-size: 0.9rem; }
+    .step-item p { color: var(--muted); font-size: 0.92rem; max-width: 32ch; }
 
     /* STATS */
     .stats-section {
@@ -1760,15 +2135,51 @@
       color: rgba(255, 255, 255, 0.85);
     }
 
-    /* TESTIMONIALS */
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
+    /* TESTIMONIALS carousel */
+    .t-carousel {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .t-note {
+      margin: -1.5rem auto 1.15rem;
+      max-width: 46ch;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .t-viewport {
+      overflow: visible;
+    }
+
+    .t-carousel.is-ready .t-viewport {
+      overflow: hidden;
+      border-radius: var(--radius);
+      touch-action: pan-y;
+    }
+
+    .t-track {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .t-carousel.is-ready .t-track {
+      flex-direction: row;
+      gap: 0;
+      transition: transform 0.7s var(--ease);
+      will-change: transform;
     }
 
     .testimonial {
-      padding: 1.85rem;
+      padding: 1.7rem 1.45rem 1.45rem;
+      min-width: 0;
+    }
+
+    .t-carousel.is-ready .testimonial {
+      flex: 0 0 100%;
     }
 
     .stars {
@@ -1808,19 +2219,90 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .t-avatar svg {
-      width: 100%;
-      height: 100%;
-      display: block;
+    .t-avatar span {
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #fff;
     }
 
     /* unique gradient per avatar */
     .t-avatar--violet { background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #c4b5fd 100%); }
     .t-avatar--teal   { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%); }
     .t-avatar--amber  { background: linear-gradient(135deg, #92400e 0%, #f59e0b 50%, #fde68a 100%); }
+    .t-avatar--rose   { background: linear-gradient(135deg, #9d174d 0%, #e11d48 50%, #fda4af 100%); }
 
     .t-author strong { display: block; font-size: 0.95rem; }
     .t-author span { font-size: 0.8rem; color: var(--muted); }
+
+    .t-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.1rem;
+    }
+
+    .t-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      background: rgba(124, 58, 237, 0.12);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.3s var(--ease), border-color 0.3s var(--ease);
+    }
+
+    .t-btn svg { width: 18px; height: 18px; display: block; }
+
+    .t-btn:hover {
+      background: rgba(124, 58, 237, 0.28);
+      border-color: rgba(196, 181, 253, 0.7);
+    }
+
+    .t-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .t-dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.22);
+      cursor: pointer;
+    }
+
+    .t-dot[aria-selected="true"] {
+      width: 22px;
+      background: #c4b5fd;
+    }
+
+    .t-btn:focus-visible,
+    .t-dot:focus-visible,
+    .t-carousel:focus-visible {
+      outline: 2px solid #c4b5fd;
+      outline-offset: 3px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
 
     /* PRICING */
     .pricing-grid {
@@ -2516,20 +2998,9 @@
       .feature-row { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
       .feature-row.reverse .feature-copy { order: 1; }
       .feature-row.reverse .feature-visual { order: 2; }
-      .steps-track { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-      .steps-line {
-        display: block;
-        position: absolute;
-        top: 36px;
-        left: 18%;
-        right: 18%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), transparent);
-        z-index: 0;
-      }
+      .steps-track { grid-template-columns: repeat(3, 1fr); gap: 1.15rem; }
       .step-item { position: relative; z-index: 1; }
       .stats-grid { grid-template-columns: repeat(4, 1fr); }
-      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
       .trust-grid { grid-template-columns: repeat(3, 1fr); }
       .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
       .contact-btns { flex-direction: row; justify-content: center; }
@@ -2866,11 +3337,39 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .reveal, .feature-row, .step-item, .testimonial {
+      .reveal, .feature-row, .step-item, .t-carousel {
         opacity: 1;
         transform: none;
         transition: none;
       }
+      .section-head.reveal { transform: none; }
+      .ease-story { height: auto; }
+      .ease-story-sticky {
+        position: static;
+        height: auto;
+        overflow: visible;
+      }
+      .ease-stage { min-height: 0; display: flex; flex-direction: column; gap: 1rem; }
+      .ease-panel {
+        position: relative;
+        inset: auto;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+        margin-bottom: 0;
+        padding: 1.15rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .mess-chip,
+      .ease-panel.is-active .mess-chip { animation: none; }
+      .shift-row { transition: none; }
+      .ease-progress-fill { transform: scaleX(1); }
+      .journey-meter-fill { width: 100%; transition: none; }
+      .step-item::before { transform: none; transition: none; }
+      .t-track { transition: none; }
       .phone-aura-base,
       .phone-aura-blob,
       .phone-aura-ring,
@@ -3063,6 +3562,81 @@
           <span class="section-tag" data-i18n="compare.tag">Farq</span>
           <h2 data-i18n-html="compare.title">Murakkablikdan <span class="gradient-text">osonlikka</span></h2>
           <p data-i18n="compare.sub">BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba</p>
+        </div>
+        <div class="ease-story" id="easeStory">
+          <div class="ease-story-sticky">
+            <div class="ease-stage">
+              <article class="ease-panel is-active" data-story-panel="0">
+                <div class="ease-copy">
+                  <span class="ease-kicker" data-i18n="story.k1">01 · Murakkab</span>
+                  <h3 data-i18n="story.t1">Hisob har joyda</h3>
+                  <p data-i18n="story.d1">Daftar, Excel va xabarlar. Balansni topish uchun vaqt ketadi.</p>
+                </div>
+                <div class="ease-visual ease-visual--mess" aria-hidden="true">
+                  <span class="mess-chip" data-i18n="story.chip1">Excel</span>
+                  <span class="mess-chip" data-i18n="story.chip2">Daftar</span>
+                  <span class="mess-chip mess-chip--warn" data-i18n="story.chip3">Qarz?</span>
+                  <span class="mess-chip" data-i18n="story.chip4">−540 000</span>
+                  <span class="mess-chip" data-i18n="story.chip5">Chat</span>
+                  <span class="mess-chip" data-i18n="story.chip6">Qog'oz</span>
+                </div>
+              </article>
+              <article class="ease-panel" data-story-panel="1">
+                <div class="ease-copy">
+                  <span class="ease-kicker" data-i18n="story.k2">02 · O'tish</span>
+                  <h3 data-i18n="story.t2">Hammasi yig'iladi</h3>
+                  <p data-i18n="story.d2">BiznesHisob daromad va xarajatni bitta oqimga soladi.</p>
+                </div>
+                <div class="ease-visual" aria-hidden="true">
+                  <div class="shift-stack">
+                    <div class="shift-row shift-row--a">
+                      <span data-i18n="story.chip1">Excel</span>
+                      <span data-i18n="story.chip2">Daftar</span>
+                      <span data-i18n="story.chip5">Chat</span>
+                    </div>
+                    <div class="shift-row shift-row--b">
+                      <span class="shift-mark">BH</span>
+                    </div>
+                    <div class="shift-row shift-row--c">
+                      <span data-i18n="story.calm.value">12 400 000 so'm</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="ease-panel" data-story-panel="2">
+                <div class="ease-copy">
+                  <span class="ease-kicker" data-i18n="story.k3">03 · Oson</span>
+                  <h3 data-i18n="story.t3">Tinch va aniq</h3>
+                  <p data-i18n="story.d3">Balans bir qarashda. Ortiqcha shovqin yo'q.</p>
+                </div>
+                <div class="ease-visual ease-visual--calm" aria-hidden="true">
+                  <div class="calm-card">
+                    <div class="calm-label" data-i18n="story.calm.label">Joriy balans</div>
+                    <div class="calm-value" data-i18n="story.calm.value">12 400 000 so'm</div>
+                    <div class="calm-meta">
+                      <span><span data-i18n="story.calm.in">Daromad</span><strong data-i18n="story.calm.inVal">+2.4 mln</strong></span>
+                      <span><span data-i18n="story.calm.out">Xarajat</span><strong data-i18n="story.calm.outVal">−680 ming</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+            <div class="ease-tabs" role="tablist" data-i18n-aria="story.tabs" aria-label="Murakkablikdan osonlikka">
+              <button type="button" class="ease-tab is-current" role="tab" aria-selected="true" data-story-go="0">
+                <span class="ease-tab-num">01</span>
+                <span class="ease-tab-label" data-i18n="story.tab1">Murakkab</span>
+              </button>
+              <button type="button" class="ease-tab" role="tab" aria-selected="false" data-story-go="1">
+                <span class="ease-tab-num">02</span>
+                <span class="ease-tab-label" data-i18n="story.tab2">O'tish</span>
+              </button>
+              <button type="button" class="ease-tab" role="tab" aria-selected="false" data-story-go="2">
+                <span class="ease-tab-num">03</span>
+                <span class="ease-tab-label" data-i18n="story.tab3">Oson</span>
+              </button>
+            </div>
+            <div class="ease-meter" aria-hidden="true"><span class="ease-progress-fill"></span></div>
+          </div>
         </div>
         <div class="compare-wrap">
           <article class="compare-card compare-bad glass glass-hover reveal">
@@ -3278,22 +3852,24 @@
           <h2 data-i18n-html="how.title">Qanday <span class="gradient-text">ishlaydi?</span></h2>
           <p data-i18n="how.sub">Uch oddiy qadam — va moliyangiz to'liq nazorat ostida</p>
         </div>
-        <div class="steps-track">
-          <div class="steps-line" aria-hidden="true"></div>
-          <div class="step-item glass glass-hover" data-delay="0">
-            <div class="step-num">1</div>
-            <h3 data-i18n="how.step1.title">Ro'yxatdan o'ting</h3>
-            <p data-i18n="how.step1.desc">Email va parol bilan bepul hisob yarating. Bir daqiqadan kam vaqt ketadi.</p>
-          </div>
-          <div class="step-item glass glass-hover" data-delay="120">
-            <div class="step-num">2</div>
-            <h3 data-i18n="how.step2.title">Operatsiya qo'shing</h3>
-            <p data-i18n="how.step2.desc">Daromad va xarajatlarni kategoriyalar bilan belgilang. Tez va tartibli.</p>
-          </div>
-          <div class="step-item glass glass-hover" data-delay="240">
-            <div class="step-num">3</div>
-            <h3 data-i18n="how.step3.title">Tahlil qiling</h3>
-            <p data-i18n="how.step3.desc">Statistika va grafiklarni ko'ring. Biznesingizni ma'lumot asosida rivojlantiring.</p>
+        <div class="journey" id="journey">
+          <div class="journey-meter" aria-hidden="true"><span class="journey-meter-fill"></span></div>
+          <div class="steps-track">
+            <article class="step-item glass glass-hover">
+              <span class="step-index" aria-hidden="true">01</span>
+              <h3 data-i18n="how.step1.title">Ro'yxatdan o'ting</h3>
+              <p data-i18n="how.step1.desc">Email va parol. Bir daqiqadan kam.</p>
+            </article>
+            <article class="step-item glass glass-hover">
+              <span class="step-index" aria-hidden="true">02</span>
+              <h3 data-i18n="how.step2.title">Operatsiya qo'shing</h3>
+              <p data-i18n="how.step2.desc">Daromad yoki xarajat — kategoriya bilan, bir bosishda.</p>
+            </article>
+            <article class="step-item glass glass-hover">
+              <span class="step-index" aria-hidden="true">03</span>
+              <h3 data-i18n="how.step3.title">Tahlil qiling</h3>
+              <p data-i18n="how.step3.desc">Balans va grafiklar oldingizda. Qaror aniqroq.</p>
+            </article>
           </div>
         </div>
       </div>
@@ -3328,58 +3904,74 @@
       <div class="container">
         <div class="section-head reveal">
           <span class="section-tag" data-i18n="reviews.tag">Sharhlar</span>
-          <h2 data-i18n-html="reviews.title">Foydalanuvchilar <span class="gradient-text">nima deydi</span></h2>
-          <p data-i18n="reviews.sub">Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda</p>
+          <h2 data-i18n-html="reviews.title">Namunaviy <span class="gradient-text">ovozlar</span></h2>
+          <p data-i18n="reviews.sub">Kichik biznes ohangida — taqdimot uchun yozilgan</p>
         </div>
-        <div class="testimonials-grid">
-          <article class="testimonial glass glass-hover" data-delay="0">
-            <div class="stars" aria-label="5 yulduz">★★★★★</div>
-            <q data-i18n="reviews.q1">Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!</q>
-            <div class="testimonial-author">
-              <div class="t-avatar t-avatar--violet" aria-hidden="true">
-                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
-                </svg>
-              </div>
-              <div class="t-author">
-                <strong data-i18n="reviews.n1">Aziza Karimova</strong>
-                <span data-i18n="reviews.r1">Do'kon egasi, Toshkent</span>
-              </div>
+        <div class="t-carousel" id="reviewCarousel" role="region" data-i18n-aria="reviews.carousel" aria-label="Sharhlar karuseli" tabindex="0">
+          <p class="t-note" data-i18n="reviews.note">Namunaviy sharhlar. Haqiqiy mijozlar yoki fotosuratlar emas.</p>
+          <p class="sr-only" id="reviewStatus" aria-live="polite"></p>
+          <div class="t-viewport">
+            <div class="t-track">
+              <article class="testimonial glass" id="review-slide-1" role="group" aria-roledescription="slide" aria-label="1 / 4">
+                <div class="stars" aria-hidden="true">★★★★★</div>
+                <q data-i18n="reviews.q1">Kichik do'konim uchun qulay. Har kuni daromad va xarajatni telefondan yozaman — daftar qolmadi.</q>
+                <div class="testimonial-author">
+                  <div class="t-avatar t-avatar--violet" aria-hidden="true"><span data-i18n="reviews.i1">DK</span></div>
+                  <div class="t-author">
+                    <strong data-i18n="reviews.n1">Do'kon</strong>
+                    <span data-i18n="reviews.r1">Chakana savdo, Toshkent</span>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial glass" id="review-slide-2" role="group" aria-roledescription="slide" aria-label="2 / 4">
+                <div class="stars" aria-hidden="true">★★★★★</div>
+                <q data-i18n="reviews.q2">Oldin Excelda hisob tutardim. Endi hammasi bir joyda — kechqurun besh daqiqa yetadi.</q>
+                <div class="testimonial-author">
+                  <div class="t-avatar t-avatar--teal" aria-hidden="true"><span data-i18n="reviews.i2">IT</span></div>
+                  <div class="t-author">
+                    <strong data-i18n="reviews.n2">Xizmat</strong>
+                    <span data-i18n="reviews.r2">IT xizmatlar, Samarqand</span>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial glass" id="review-slide-3" role="group" aria-roledescription="slide" aria-label="3 / 4">
+                <div class="stars" aria-hidden="true">★★★★★</div>
+                <q data-i18n="reviews.q3">Kafeda oflayn rejim qulay. Smena oxirida balans ochiq — taxmin yo'q.</q>
+                <div class="testimonial-author">
+                  <div class="t-avatar t-avatar--amber" aria-hidden="true"><span data-i18n="reviews.i3">KF</span></div>
+                  <div class="t-author">
+                    <strong data-i18n="reviews.n3">Kafe</strong>
+                    <span data-i18n="reviews.r3">Ovqatlanish, Toshkent</span>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial glass" id="review-slide-4" role="group" aria-roledescription="slide" aria-label="4 / 4">
+                <div class="stars" aria-hidden="true">★★★★★</div>
+                <q data-i18n="reviews.q4">Salon xarajatini kechqurun uch daqiqada yozaman. Ertaga nima qolganini taxmin qilmayman.</q>
+                <div class="testimonial-author">
+                  <div class="t-avatar t-avatar--rose" aria-hidden="true"><span data-i18n="reviews.i4">SL</span></div>
+                  <div class="t-author">
+                    <strong data-i18n="reviews.n4">Salon</strong>
+                    <span data-i18n="reviews.r4">Go'zallik, Andijon</span>
+                  </div>
+                </div>
+              </article>
             </div>
-          </article>
-          <article class="testimonial glass glass-hover" data-delay="100">
-            <div class="stars" aria-label="5 yulduz">★★★★★</div>
-            <q data-i18n="reviews.q2">Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!</q>
-            <div class="testimonial-author">
-              <div class="t-avatar t-avatar--teal" aria-hidden="true">
-                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
-                </svg>
-              </div>
-              <div class="t-author">
-                <strong data-i18n="reviews.n2">Dilshod Rakhimov</strong>
-                <span data-i18n="reviews.r2">IT xizmatlar, Samarqand</span>
-              </div>
+          </div>
+          <div class="t-controls">
+            <button type="button" class="t-btn" data-review-dir="-1" data-i18n-aria="reviews.prev" aria-label="Oldingi sharh">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M11.5 4.5 6.5 9l5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="t-dots" role="tablist" data-i18n-aria="reviews.dots" aria-label="Sharhlar">
+              <button type="button" class="t-dot" role="tab" aria-selected="true" aria-controls="review-slide-1" data-review-go="0"></button>
+              <button type="button" class="t-dot" role="tab" aria-selected="false" aria-controls="review-slide-2" data-review-go="1" tabindex="-1"></button>
+              <button type="button" class="t-dot" role="tab" aria-selected="false" aria-controls="review-slide-3" data-review-go="2" tabindex="-1"></button>
+              <button type="button" class="t-dot" role="tab" aria-selected="false" aria-controls="review-slide-4" data-review-go="3" tabindex="-1"></button>
             </div>
-          </article>
-          <article class="testimonial glass glass-hover" data-delay="200">
-            <div class="stars" aria-label="5 yulduz">★★★★★</div>
-            <q data-i18n="reviews.q3">Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.</q>
-            <div class="testimonial-author">
-              <div class="t-avatar t-avatar--amber" aria-hidden="true">
-                <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="26" cy="19" r="9" fill="rgba(255,255,255,0.9)"/>
-                  <path d="M6 46c0-11.046 8.954-20 20-20s20 8.954 20 20" fill="rgba(255,255,255,0.7)"/>
-                </svg>
-              </div>
-              <div class="t-author">
-                <strong data-i18n="reviews.n3">Sardor Nazarov</strong>
-                <span data-i18n="reviews.r3">Kafe egasi, Toshkent</span>
-              </div>
-            </div>
-          </article>
+            <button type="button" class="t-btn" data-review-dir="1" data-i18n-aria="reviews.next" aria-label="Keyingi sharh">
+              <svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M6.5 4.5 11.5 9l-5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -3754,6 +4346,19 @@
         "compare.good.tag": "BiznesHisob bilan", "compare.good.title": "oson",
         "compare.good.l1": "Barcha operatsiyalar bitta ilovada", "compare.good.l2": "Bir bosish — daromad yoki xarajat",
         "compare.good.l3": "Real vaqtda balans va statistika", "compare.good.l4": "Aniq grafiklar va tahlil",
+        "story.tabs": "Murakkablikdan osonlikka",
+        "story.k1": "01 · Murakkab", "story.t1": "Hisob har joyda",
+        "story.d1": "Daftar, Excel va xabarlar. Balansni topish uchun vaqt ketadi.",
+        "story.k2": "02 · O'tish", "story.t2": "Hammasi yig'iladi",
+        "story.d2": "BiznesHisob daromad va xarajatni bitta oqimga soladi.",
+        "story.k3": "03 · Oson", "story.t3": "Tinch va aniq",
+        "story.d3": "Balans bir qarashda. Ortiqcha shovqin yo'q.",
+        "story.tab1": "Murakkab", "story.tab2": "O'tish", "story.tab3": "Oson",
+        "story.chip1": "Excel", "story.chip2": "Daftar", "story.chip3": "Qarz?",
+        "story.chip4": "−540 000", "story.chip5": "Chat", "story.chip6": "Qog'oz",
+        "story.calm.label": "Joriy balans", "story.calm.value": "12 400 000 so'm",
+        "story.calm.in": "Daromad", "story.calm.inVal": "+2.4 mln",
+        "story.calm.out": "Xarajat", "story.calm.outVal": "−680 ming",
         "features.tag": "Imkoniyatlar",
         "features.title": "Biznesingiz uchun <span class=\"gradient-text\">barcha vositalar</span>",
         "features.sub": "Har bir funksiya — real vazifalar uchun mo'ljallangan",
@@ -3805,20 +4410,25 @@
         "how.tag": "Jarayon",
         "how.title": "Qanday <span class=\"gradient-text\">ishlaydi?</span>",
         "how.sub": "Uch oddiy qadam — va moliyangiz to'liq nazorat ostida",
-        "how.step1.title": "Ro'yxatdan o'ting", "how.step1.desc": "Email va parol bilan bepul hisob yarating. Bir daqiqadan kam vaqt ketadi.",
-        "how.step2.title": "Operatsiya qo'shing", "how.step2.desc": "Daromad va xarajatlarni kategoriyalar bilan belgilang. Tez va tartibli.",
-        "how.step3.title": "Tahlil qiling", "how.step3.desc": "Statistika va grafiklarni ko'ring. Biznesingizni ma'lumot asosida rivojlantiring.",
+        "how.step1.title": "Ro'yxatdan o'ting", "how.step1.desc": "Email va parol. Bir daqiqadan kam.",
+        "how.step2.title": "Operatsiya qo'shing", "how.step2.desc": "Daromad yoki xarajat — kategoriya bilan, bir bosishda.",
+        "how.step3.title": "Tahlil qiling", "how.step3.desc": "Balans va grafiklar oldingizda. Qaror aniqroq.",
         "stats.users": "Faol foydalanuvchilar", "stats.ops": "Operatsiyalar",
         "stats.satisfaction": "Mamnunlik", "stats.support": "Qo'llab-quvvatlash",
         "reviews.tag": "Sharhlar",
-        "reviews.title": "Foydalanuvchilar <span class=\"gradient-text\">nima deydi</span>",
-        "reviews.sub": "Minglab tadbirkorlar allaqachon BiznesHisobdan foydalanmoqda",
-        "reviews.q1": "Kichik do'konim uchun ajoyib ilova. Har kuni daromad va xarajatni telefondan kuzataman. Juda oson va tez!",
-        "reviews.n1": "Aziza Karimova", "reviews.r1": "Do'kon egasi, Toshkent",
-        "reviews.q2": "Oldin Excelda hisob tutardim. Endi hammasi bir joyda — tezroq va qulayroq. Do'stlarimga tavsiya qilaman!",
-        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT xizmatlar, Samarqand",
-        "reviews.q3": "Kafem uchun ajoyib. Oflayn rejim juda qulay. Chiroyli va oddiy interfeys — xodimlar ham tez o'rganishdi.",
-        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Kafe egasi, Toshkent",
+        "reviews.title": "Namunaviy <span class=\"gradient-text\">ovozlar</span>",
+        "reviews.sub": "Kichik biznes ohangida — taqdimot uchun yozilgan",
+        "reviews.note": "Namunaviy sharhlar. Haqiqiy mijozlar yoki fotosuratlar emas.",
+        "reviews.carousel": "Sharhlar karuseli",
+        "reviews.prev": "Oldingi sharh", "reviews.next": "Keyingi sharh", "reviews.dots": "Sharhlar",
+        "reviews.q1": "Kichik do'konim uchun qulay. Har kuni daromad va xarajatni telefondan yozaman — daftar qolmadi.",
+        "reviews.i1": "DK", "reviews.n1": "Do'kon", "reviews.r1": "Chakana savdo, Toshkent",
+        "reviews.q2": "Oldin Excelda hisob tutardim. Endi hammasi bir joyda — kechqurun besh daqiqa yetadi.",
+        "reviews.i2": "IT", "reviews.n2": "Xizmat", "reviews.r2": "IT xizmatlar, Samarqand",
+        "reviews.q3": "Kafeda oflayn rejim qulay. Smena oxirida balans ochiq — taxmin yo'q.",
+        "reviews.i3": "KF", "reviews.n3": "Kafe", "reviews.r3": "Ovqatlanish, Toshkent",
+        "reviews.q4": "Salon xarajatini kechqurun uch daqiqada yozaman. Ertaga nima qolganini taxmin qilmayman.",
+        "reviews.i4": "SL", "reviews.n4": "Salon", "reviews.r4": "Go'zallik, Andijon",
         "pricing.tag": "Narxlar",
         "pricing.title": "Sizga mos <span class=\"gradient-text\">rejani tanlang</span>",
         "pricing.sub": "Bepul boshlang — kerak bo'lsa Premiumga o'ting",
@@ -3894,6 +4504,19 @@
         "compare.good.tag": "С BiznesHisob", "compare.good.title": "легко",
         "compare.good.l1": "Все операции в одном приложении", "compare.good.l2": "Один клик — доход или расход",
         "compare.good.l3": "Баланс и статистика в реальном времени", "compare.good.l4": "Точные графики и анализ",
+        "story.tabs": "От сложности к простоте",
+        "story.k1": "01 · Сложно", "story.t1": "Учёт разбросан",
+        "story.d1": "Тетрадь, Excel и сообщения. На баланс уходит время.",
+        "story.k2": "02 · Сдвиг", "story.t2": "Всё собирается",
+        "story.d2": "BiznesHisob сводит доходы и расходы в один поток.",
+        "story.k3": "03 · Легко", "story.t3": "Спокойно и ясно",
+        "story.d3": "Баланс с одного взгляда. Лишнего шума нет.",
+        "story.tab1": "Сложно", "story.tab2": "Сдвиг", "story.tab3": "Легко",
+        "story.chip1": "Excel", "story.chip2": "Тетрадь", "story.chip3": "Долг?",
+        "story.chip4": "−540 000", "story.chip5": "Чат", "story.chip6": "Бумага",
+        "story.calm.label": "Текущий баланс", "story.calm.value": "12 400 000 сум",
+        "story.calm.in": "Доход", "story.calm.inVal": "+2.4 млн",
+        "story.calm.out": "Расход", "story.calm.outVal": "−680 тыс",
         "features.tag": "Возможности",
         "features.title": "Все инструменты <span class=\"gradient-text\">для вашего бизнеса</span>",
         "features.sub": "Каждая функция создана для реальных задач",
@@ -3945,20 +4568,25 @@
         "how.tag": "Процесс",
         "how.title": "Как это <span class=\"gradient-text\">работает?</span>",
         "how.sub": "Три простых шага — и ваши финансы под полным контролем",
-        "how.step1.title": "Зарегистрируйтесь", "how.step1.desc": "Создайте бесплатный аккаунт по email и паролю. Займёт меньше минуты.",
-        "how.step2.title": "Добавьте операцию", "how.step2.desc": "Отмечайте доходы и расходы по категориям. Быстро и аккуратно.",
-        "how.step3.title": "Анализируйте", "how.step3.desc": "Просматривайте статистику и графики. Развивайте бизнес на основе данных.",
+        "how.step1.title": "Зарегистрируйтесь", "how.step1.desc": "Email и пароль. Меньше минуты.",
+        "how.step2.title": "Добавьте операцию", "how.step2.desc": "Доход или расход — с категорией, в одно нажатие.",
+        "how.step3.title": "Анализируйте", "how.step3.desc": "Баланс и графики перед вами. Решение точнее.",
         "stats.users": "Активных пользователей", "stats.ops": "Операций",
         "stats.satisfaction": "Удовлетворённость", "stats.support": "Поддержка",
         "reviews.tag": "Отзывы",
-        "reviews.title": "Что говорят <span class=\"gradient-text\">пользователи</span>",
-        "reviews.sub": "Тысячи предпринимателей уже используют BiznesHisob",
-        "reviews.q1": "Отличное приложение для моего небольшого магазина. Каждый день отслеживаю доходы и расходы с телефона. Очень легко и быстро!",
-        "reviews.n1": "Aziza Karimova", "reviews.r1": "Владелец магазина, Ташкент",
-        "reviews.q2": "Раньше вёл учёт в Excel. Теперь всё в одном месте — быстрее и удобнее. Рекомендую друзьям!",
-        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT-услуги, Самарканд",
-        "reviews.q3": "Отлично для кафе. Офлайн-режим очень удобен. Красивый и простой интерфейс — сотрудники быстро освоились.",
-        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Владелец кафе, Ташкент",
+        "reviews.title": "Голоса <span class=\"gradient-text\">для примера</span>",
+        "reviews.sub": "В тоне малого бизнеса — написано для презентации",
+        "reviews.note": "Иллюстративные отзывы. Не реальные клиенты и не фотографии.",
+        "reviews.carousel": "Карусель отзывов",
+        "reviews.prev": "Предыдущий отзыв", "reviews.next": "Следующий отзыв", "reviews.dots": "Отзывы",
+        "reviews.q1": "Для небольшой лавки удобно. Каждый день пишу доход и расход с телефона — тетрадь больше не нужна.",
+        "reviews.i1": "ДК", "reviews.n1": "Магазин", "reviews.r1": "Розница, Ташкент",
+        "reviews.q2": "Раньше вёл учёт в Excel. Теперь всё в одном месте — вечером хватает пяти минут.",
+        "reviews.i2": "IT", "reviews.n2": "Услуги", "reviews.r2": "IT-услуги, Самарканд",
+        "reviews.q3": "В кафе удобен офлайн. В конце смены баланс ясен — без догадок.",
+        "reviews.i3": "КФ", "reviews.n3": "Кафе", "reviews.r3": "Общепит, Ташкент",
+        "reviews.q4": "Расход салона записываю вечером за три минуты. Завтра не гадаю, что осталось.",
+        "reviews.i4": "СЛ", "reviews.n4": "Салон", "reviews.r4": "Красота, Андижан",
         "pricing.tag": "Цены",
         "pricing.title": "Выберите <span class=\"gradient-text\">подходящий план</span>",
         "pricing.sub": "Начните бесплатно — переходите на Premium когда нужно",
@@ -4034,6 +4662,19 @@
         "compare.good.tag": "With BiznesHisob", "compare.good.title": "easy",
         "compare.good.l1": "All transactions in one app", "compare.good.l2": "One tap — income or expense",
         "compare.good.l3": "Real-time balance and statistics", "compare.good.l4": "Clear charts and analysis",
+        "story.tabs": "From complexity to ease",
+        "story.k1": "01 · Complex", "story.t1": "Books everywhere",
+        "story.d1": "Notebook, Excel, and chats. Finding the balance takes time.",
+        "story.k2": "02 · Shift", "story.t2": "It comes together",
+        "story.d2": "BiznesHisob pulls income and expenses into one flow.",
+        "story.k3": "03 · Easy", "story.t3": "Calm and clear",
+        "story.d3": "The balance, at a glance. No extra noise.",
+        "story.tab1": "Complex", "story.tab2": "Shift", "story.tab3": "Easy",
+        "story.chip1": "Excel", "story.chip2": "Notebook", "story.chip3": "Debt?",
+        "story.chip4": "−540,000", "story.chip5": "Chat", "story.chip6": "Paper",
+        "story.calm.label": "Current balance", "story.calm.value": "12,400,000 UZS",
+        "story.calm.in": "Income", "story.calm.inVal": "+2.4M",
+        "story.calm.out": "Expense", "story.calm.outVal": "−680K",
         "features.tag": "Features",
         "features.title": "All the tools <span class=\"gradient-text\">your business needs</span>",
         "features.sub": "Every feature is built for real-world tasks",
@@ -4085,20 +4726,25 @@
         "how.tag": "Process",
         "how.title": "How does it <span class=\"gradient-text\">work?</span>",
         "how.sub": "Three simple steps — and your finances are fully under control",
-        "how.step1.title": "Sign up", "how.step1.desc": "Create a free account with email and password. Takes less than a minute.",
-        "how.step2.title": "Add a transaction", "how.step2.desc": "Record income and expenses by category. Fast and organised.",
-        "how.step3.title": "Analyse", "how.step3.desc": "View statistics and charts. Grow your business based on real data.",
+        "how.step1.title": "Sign up", "how.step1.desc": "Email and password. Under a minute.",
+        "how.step2.title": "Add a transaction", "how.step2.desc": "Income or expense, with a category, in one tap.",
+        "how.step3.title": "Analyse", "how.step3.desc": "Balance and charts in front of you. Clearer decisions.",
         "stats.users": "Active users", "stats.ops": "Transactions",
         "stats.satisfaction": "Satisfaction", "stats.support": "Support",
         "reviews.tag": "Reviews",
-        "reviews.title": "What <span class=\"gradient-text\">users say</span>",
-        "reviews.sub": "Thousands of entrepreneurs already use BiznesHisob",
-        "reviews.q1": "Amazing app for my small shop. I track income and expenses from my phone every day. Very easy and fast!",
-        "reviews.n1": "Aziza Karimova", "reviews.r1": "Shop owner, Tashkent",
-        "reviews.q2": "Used to track in Excel. Now everything is in one place — faster and more convenient. Recommending to friends!",
-        "reviews.n2": "Dilshod Rakhimov", "reviews.r2": "IT services, Samarkand",
-        "reviews.q3": "Great for my café. Offline mode is very handy. Beautiful and simple interface — staff learnt it quickly.",
-        "reviews.n3": "Sardor Nazarov", "reviews.r3": "Café owner, Tashkent",
+        "reviews.title": "Sample <span class=\"gradient-text\">voices</span>",
+        "reviews.sub": "Small-business tone — written for the product story",
+        "reviews.note": "Illustrative quotes. Not real customers or photographs.",
+        "reviews.carousel": "Testimonial carousel",
+        "reviews.prev": "Previous quote", "reviews.next": "Next quote", "reviews.dots": "Quotes",
+        "reviews.q1": "Handy for a small shop. I log income and expenses from my phone — the notebook is gone.",
+        "reviews.i1": "DK", "reviews.n1": "Shop", "reviews.r1": "Retail, Tashkent",
+        "reviews.q2": "I used to keep books in Excel. Now it's one place — five minutes in the evening is enough.",
+        "reviews.i2": "IT", "reviews.n2": "Service", "reviews.r2": "IT services, Samarkand",
+        "reviews.q3": "Offline mode works in the café. End of shift, the balance is clear — no guessing.",
+        "reviews.i3": "KF", "reviews.n3": "Café", "reviews.r3": "Food service, Tashkent",
+        "reviews.q4": "I log the salon's spending in three minutes at night. I don't guess what's left tomorrow.",
+        "reviews.i4": "SL", "reviews.n4": "Salon", "reviews.r4": "Beauty, Andijan",
         "pricing.tag": "Pricing",
         "pricing.title": "Choose the plan <span class=\"gradient-text\">that fits you</span>",
         "pricing.sub": "Start free — upgrade to Premium when you need it",
@@ -4320,15 +4966,16 @@
     }
 
     function showScrollTargetsFallback() {
-      document.querySelectorAll(".reveal, .feature-row, .step-item, .testimonial").forEach((el) => {
+      document.querySelectorAll(".reveal, .feature-row, .step-item, .t-carousel").forEach((el) => {
         el.style.opacity = "1";
         el.style.transform = "none";
       });
       document.querySelector("#pricing .pricing-card--featured")?.classList.add("is-focused");
+      document.getElementById("journey")?.classList.add("is-drawn");
     }
 
     function initScrollReveal() {
-      const scrollTargets = ".reveal, .feature-row, .step-item, .testimonial";
+      const scrollTargets = ".reveal, .feature-row, .step-item, .t-carousel";
 
       if (typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
         showScrollTargetsFallback();
@@ -4340,6 +4987,7 @@
       if (reducedMotion) {
         gsap.set(scrollTargets, { autoAlpha: 1, y: 0, clearProps: "transform" });
         gsap.set(".compare-bad", { autoAlpha: 0.58 });
+        document.getElementById("journey")?.classList.add("is-drawn");
         document.querySelector(".fm-chart")?.classList.add("fm-chart--visible");
         document.querySelector("#pricing .pricing-card--featured")?.classList.add("is-focused");
         document.querySelectorAll(".stat-value").forEach((el) => {
@@ -4367,19 +5015,19 @@
       gsap.utils.toArray("main .section-head").forEach((head) => {
         gsap.fromTo(
           head,
-          { y: 24, autoAlpha: 0 },
+          { y: 48, autoAlpha: 0 },
           {
             ...fadeIn,
-            duration: 0.72,
-            ease: fadeEase,
-            scrollTrigger: { trigger: head, start: "top 88%", once: true }
+            duration: 1.05,
+            ease: "power3.out",
+            scrollTrigger: { trigger: head, start: "top 92%", once: true }
           }
         );
       });
 
-      // VS section: bad card dims in subtly; good card rockets up with neon glow
+      // VS cards animate when the comparison itself enters, after the scroll story
       ScrollTrigger.create({
-        trigger: "#compare",
+        trigger: "#compare .compare-wrap",
         start: "top 84%",
         once: true,
         onEnter: () => {
@@ -4431,25 +5079,26 @@
       gsap.utils.toArray("#features .feature-row").forEach((row) => {
         gsap.fromTo(
           row,
-          { y: 32, autoAlpha: 0 },
+          { y: 46, autoAlpha: 0 },
           {
             ...fadeIn,
-            duration: 0.82,
-            ease: fadeEase,
-            scrollTrigger: { trigger: row, start: "top 89%", once: true }
+            duration: 0.95,
+            ease: "power3.out",
+            scrollTrigger: { trigger: row, start: "top 90%", once: true }
           }
         );
       });
 
       ScrollTrigger.batch("#how .step-item", {
-        start: "top 88%",
+        start: "top 86%",
         once: true,
         onEnter: (batch) => {
           gsap.fromTo(
             batch,
-            { y: 26, autoAlpha: 0 },
-            { ...fadeIn, duration: 0.75, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
+            { y: 42, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.88, ease: "power3.out", stagger: 0.16, overwrite: "auto" }
           );
+          document.getElementById("journey")?.classList.add("is-drawn");
         }
       });
 
@@ -4460,8 +5109,8 @@
         onEnter: () => {
           gsap.fromTo(
             "#stats .stat-box",
-            { y: 22, autoAlpha: 0 },
-            { ...fadeIn, duration: 0.7, ease: fadeEase, stagger: 0.08, overwrite: "auto" }
+            { y: 36, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.82, ease: "power3.out", stagger: 0.12, overwrite: "auto" }
           );
           document.querySelectorAll("#stats .stat-value").forEach((el) => {
             if (!el.dataset.done) {
@@ -4472,26 +5121,25 @@
         }
       });
 
-      ScrollTrigger.batch("#reviews .testimonial", {
-        start: "top 88%",
-        once: true,
-        onEnter: (batch) => {
-          gsap.fromTo(
-            batch,
-            { y: 26, autoAlpha: 0 },
-            { ...fadeIn, duration: 0.76, ease: fadeEase, stagger: 0.1, overwrite: "auto" }
-          );
+      gsap.fromTo(
+        "#reviews .t-carousel",
+        { y: 42, autoAlpha: 0 },
+        {
+          ...fadeIn,
+          duration: 0.95,
+          ease: "power3.out",
+          scrollTrigger: { trigger: "#reviews .t-carousel", start: "top 88%", once: true }
         }
-      });
+      );
 
       gsap.fromTo(
         "#pricing .pricing-card",
-        { y: 28, autoAlpha: 0 },
+        { y: 42, autoAlpha: 0 },
         {
           ...fadeIn,
-          duration: 0.8,
-          ease: fadeEase,
-          stagger: 0.12,
+          duration: 0.92,
+          ease: "power3.out",
+          stagger: 0.16,
           scrollTrigger: {
             trigger: "#pricing .pricing-grid",
             start: "top 88%",
@@ -4508,12 +5156,12 @@
 
       gsap.fromTo(
         "#cta-banner .cta-banner-glass",
-        { y: 24, autoAlpha: 0 },
+        { y: 40, autoAlpha: 0 },
         {
           ...fadeIn,
-          duration: 0.75,
-          ease: fadeEase,
-          scrollTrigger: { trigger: "#cta-banner", start: "top 86%", once: true }
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: { trigger: "#cta-banner", start: "top 88%", once: true }
         }
       );
 
@@ -4523,41 +5171,41 @@
         onEnter: (batch) => {
           gsap.fromTo(
             batch,
-            { y: 26, autoAlpha: 0 },
-            { ...fadeIn, duration: 0.75, ease: fadeEase, stagger: 0.08, overwrite: "auto" }
+            { y: 38, autoAlpha: 0 },
+            { ...fadeIn, duration: 0.86, ease: "power3.out", stagger: 0.12, overwrite: "auto" }
           );
         }
       });
 
       gsap.fromTo(
         "#trust .trust-badge-strip",
-        { y: 18, autoAlpha: 0 },
+        { y: 28, autoAlpha: 0 },
         {
           ...fadeIn,
-          duration: 0.65,
-          ease: fadeEase,
+          duration: 0.8,
+          ease: "power3.out",
           scrollTrigger: { trigger: "#trust .trust-badge-strip", start: "top 90%", once: true }
         }
       );
 
       gsap.fromTo(
         "#faq .faq-list",
-        { y: 24, autoAlpha: 0 },
+        { y: 36, autoAlpha: 0 },
         {
           ...fadeIn,
-          duration: 0.8,
-          ease: fadeEase,
+          duration: 0.9,
+          ease: "power3.out",
           scrollTrigger: { trigger: "#faq .faq-list", start: "top 88%", once: true }
         }
       );
 
       gsap.fromTo(
         "#contact .contact-card",
-        { y: 26, autoAlpha: 0 },
+        { y: 40, autoAlpha: 0 },
         {
           ...fadeIn,
-          duration: 0.78,
-          ease: fadeEase,
+          duration: 0.9,
+          ease: "power3.out",
           scrollTrigger: { trigger: "#contact .contact-card", start: "top 88%", once: true }
         }
       );
@@ -4583,8 +5231,189 @@
       });
     }
 
+    function initEaseStory() {
+      const root = document.getElementById("easeStory");
+      if (!root) return;
+      const panels = [...root.querySelectorAll("[data-story-panel]")];
+      const tabs = [...root.querySelectorAll("[data-story-go]")];
+      const fill = root.querySelector(".ease-progress-fill");
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function paint(step, progress) {
+        panels.forEach((panel, i) => {
+          const on = reduced || i === step;
+          panel.classList.toggle("is-active", on);
+          panel.setAttribute("aria-hidden", on ? "false" : "true");
+        });
+        tabs.forEach((tab, i) => {
+          const on = i === step;
+          tab.classList.toggle("is-current", on);
+          tab.setAttribute("aria-selected", on ? "true" : "false");
+          tab.tabIndex = on ? 0 : -1;
+        });
+        if (fill) fill.style.transform = `scaleX(${reduced ? 1 : progress})`;
+      }
+
+      if (reduced) {
+        root.classList.add("is-static");
+        paint(0, 1);
+        tabs.forEach((tab, i) => {
+          tab.addEventListener("click", () => {
+            panels[i]?.scrollIntoView({ behavior: "auto", block: "nearest" });
+            paint(i, 1);
+          });
+        });
+        root.querySelector(".ease-tabs")?.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+          const current = tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+          const dir = event.key === "ArrowRight" ? 1 : -1;
+          const next = (current + dir + tabs.length) % tabs.length;
+          event.preventDefault();
+          tabs[next].click();
+          tabs[next].focus();
+        });
+        return;
+      }
+
+      const onScroll = () => {
+        const rect = root.getBoundingClientRect();
+        const travel = Math.max(root.offsetHeight - window.innerHeight, 1);
+        const progress = Math.min(1, Math.max(0, -rect.top / travel));
+        const step = Math.min(panels.length - 1, Math.floor(progress * panels.length * 0.999));
+        paint(step, progress);
+      };
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener("click", () => {
+          const travel = Math.max(root.offsetHeight - window.innerHeight, 1);
+          const top = root.getBoundingClientRect().top + window.scrollY;
+          const target = top + travel * ((i + 0.45) / panels.length);
+          window.scrollTo({ top: target, behavior: "smooth" });
+        });
+      });
+      root.querySelector(".ease-tabs")?.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        const current = tabs.findIndex((tab) => tab.getAttribute("aria-selected") === "true");
+        const dir = event.key === "ArrowRight" ? 1 : -1;
+        const next = (current + dir + tabs.length) % tabs.length;
+        event.preventDefault();
+        tabs[next].click();
+        tabs[next].focus();
+      });
+
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+    }
+
+    function initReviewCarousel() {
+      const root = document.getElementById("reviewCarousel");
+      if (!root) return;
+      const track = root.querySelector(".t-track");
+      const slides = [...root.querySelectorAll(".testimonial")];
+      const dots = [...root.querySelectorAll("[data-review-go]")];
+      const status = document.getElementById("reviewStatus");
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let index = 0;
+      let timer = null;
+      let pointer = null;
+
+      root.classList.add("is-ready");
+      if (reduced) track.style.transition = "none";
+
+      function announce() {
+        const quote = slides[index]?.querySelector("q")?.textContent?.trim() || "";
+        const who = slides[index]?.querySelector(".t-author strong")?.textContent?.trim() || "";
+        if (status) status.textContent = who ? `${who}. ${quote}` : quote;
+      }
+
+      function render(userInitiated) {
+        track.style.transform = `translate3d(${-index * 100}%, 0, 0)`;
+        slides.forEach((slide, i) => {
+          slide.setAttribute("aria-hidden", i === index ? "false" : "true");
+        });
+        dots.forEach((dot, i) => {
+          const on = i === index;
+          dot.setAttribute("aria-selected", on ? "true" : "false");
+          dot.tabIndex = on ? 0 : -1;
+          const who = slides[i]?.querySelector(".t-author strong")?.textContent?.trim();
+          if (who) dot.setAttribute("aria-label", who);
+        });
+        if (userInitiated) announce();
+      }
+
+      function go(next, userInitiated) {
+        index = (next + slides.length) % slides.length;
+        render(userInitiated);
+      }
+
+      function stop() {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+      }
+
+      function play() {
+        stop();
+        if (reduced || slides.length < 2) return;
+        timer = window.setInterval(() => go(index + 1, false), 5600);
+      }
+
+      root.querySelector("[data-review-dir='-1']")?.addEventListener("click", () => {
+        go(index - 1, true);
+        play();
+      });
+      root.querySelector("[data-review-dir='1']")?.addEventListener("click", () => {
+        go(index + 1, true);
+        play();
+      });
+      dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+          go(i, true);
+          play();
+        });
+      });
+      root.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        go(index + (event.key === "ArrowRight" ? 1 : -1), true);
+        play();
+      });
+      root.addEventListener("mouseenter", stop);
+      root.addEventListener("mouseleave", play);
+      root.addEventListener("focusin", stop);
+      root.addEventListener("focusout", (event) => {
+        if (!root.contains(event.relatedTarget)) play();
+      });
+      root.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("button, a")) return;
+        pointer = { x: event.clientX, y: event.clientY };
+      });
+      root.addEventListener("pointerup", (event) => {
+        if (!pointer) return;
+        const dx = event.clientX - pointer.x;
+        const dy = event.clientY - pointer.y;
+        pointer = null;
+        if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+        go(index + (dx < 0 ? 1 : -1), true);
+        play();
+      });
+      root.addEventListener("pointercancel", () => { pointer = null; });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stop();
+        else play();
+      });
+      document.querySelectorAll(".lang-btn").forEach((btn) => {
+        btn.addEventListener("click", () => render(false));
+      });
+
+      render(false);
+      play();
+    }
+
     initScrollReveal();
     initStatsCount();
+    initEaseStory();
+    initReviewCarousel();
 
     /* ── Lang preview switcher ────────────────────────────────────────────── */
     (function initLangCard() {
