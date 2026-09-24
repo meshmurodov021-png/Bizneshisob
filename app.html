@@ -798,9 +798,9 @@
     }
 
     html.light-theme .recovery-glass-card {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
 
     .recovery-icon {
@@ -3891,28 +3891,33 @@
       margin-top: 0.5rem;
     }
 
+    /* Light theme: Apple-style grouped surfaces (lavender page, white raised cards). */
     html.light-theme {
       color-scheme: light;
-      --bg: #f5f5f7;
+      --bg: #EEEAF6;
       --surface: #ffffff;
-      --surface-2: #ffffff;
-      --surface-3: #e5e7eb;
-      --border: #f0f0f0;
+      --surface-2: #F4F0FA;
+      --surface-3: #E3DDEC;
+      --border: rgba(40, 24, 72, 0.08);
       --text: #111827;
       --muted: #6b7280;
       --income-dim: rgba(22, 163, 74, 0.12);
       --expense-dim: rgba(220, 38, 38, 0.1);
       --accent-hover: #4f46e5;
-      --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --shadow:
+        0 1px 2px rgba(28, 16, 56, 0.05),
+        0 10px 28px rgba(76, 48, 128, 0.10);
       --icon-inactive: #9ca3af;
       --icon-active: #6366f1;
       --glass-card: #ffffff;
-      --glass-border: #f0f0f0;
-      --glass-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      --glass-border: rgba(40, 24, 72, 0.08);
+      --glass-shadow:
+        0 1px 2px rgba(28, 16, 56, 0.05),
+        0 10px 28px rgba(76, 48, 128, 0.10);
       --bar-track: rgba(0, 0, 0, 0.06);
       --panel-header: #ffffff;
-      --panel-nav: #ffffff;
-      --stat-item-bg: #ffffff;
+      --panel-nav: rgba(255, 255, 255, 0.90);
+      --stat-item-bg: #F4F0FA;
       --settings-surface: #ffffff;
       --chart-axis: #6b7280;
       --chart-grid: rgba(0, 0, 0, 0.06);
@@ -3930,7 +3935,7 @@
       --scrollbar-thumb-3: #cbd5e1;
       --scrollbar-thumb-hover-1: #cbd5e1;
       --scrollbar-thumb-hover-2: #a1a1aa;
-      --pin-bg: #f5f5f7;
+      --pin-bg: #EEEAF6;
       --pin-glow: transparent;
       --pin-key-bg: #ffffff;
       --pin-dot-empty: #e5e7eb;
@@ -3962,47 +3967,45 @@
 
     html.light-theme .app-header,
     html.light-theme .settings-topbar {
-      background: #ffffff;
+      background: var(--panel-header);
       border-top: none;
       border-left: none;
       border-right: none;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 10px rgba(76, 48, 128, 0.06);
     }
 
     html.light-theme .app-header::before,
     html.light-theme .settings-topbar::before {
-      background: #ffffff;
+      background: var(--panel-header);
     }
 
     html.light-theme .bottom-nav {
-      background: #ffffff;
-      border-top: 1px solid #e5e7eb;
+      background: var(--panel-nav);
+      border-top: 1px solid rgba(40, 24, 72, 0.12);
       border-bottom: none;
-      box-shadow: none;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 -10px 32px rgba(76, 48, 128, 0.10);
+      backdrop-filter: saturate(1.5) blur(20px);
+      -webkit-backdrop-filter: saturate(1.5) blur(20px);
     }
 
     html.light-theme .card,
     html.light-theme .stat-card,
-    html.light-theme .settings-card {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
-    html.light-theme .hero-card {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
-
+    html.light-theme .settings-card,
+    html.light-theme .hero-card,
     html.light-theme .chart-card,
     html.light-theme .top-cats-card,
+    html.light-theme .ptr-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
     html.light-theme .period-stat-item {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
+      background: var(--stat-item-bg);
+      border: 1px solid var(--border);
       box-shadow: none;
     }
 
@@ -4010,11 +4013,6 @@
       background: rgba(124, 58, 237, 0.08);
       border-color: rgba(124, 58, 237, 0.4);
       box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.18);
-    }
-
-    html.light-theme .chart-card,
-    html.light-theme .top-cats-card {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     html.light-theme .lg-toggle-track {
@@ -4037,12 +4035,6 @@
 
     html.light-theme .category-option.active .category-icon-wrap {
       box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--category-active-ring);
-    }
-
-    html.light-theme .ptr-pill {
-      background: #ffffff;
-      border: 1px solid #f0f0f0;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .plan-badge [data-lucide] {
@@ -9191,7 +9183,10 @@
       localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
       if (settingsThemeToggle) settingsThemeToggle.checked = isDark;
       const metaTheme = document.querySelector('meta[name="theme-color"]');
-      if (metaTheme) metaTheme.setAttribute("content", isDark ? "#0c0e14" : "#f5f5f7");
+      if (metaTheme) {
+        const pageBg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+        metaTheme.setAttribute("content", pageBg || (isDark ? "#0c0e14" : "#EEEAF6"));
+      }
       refreshCategoryThemeColors();
       invalidateChartDataCache();
       lastChartsFingerprint = "";
