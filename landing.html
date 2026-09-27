@@ -384,6 +384,9 @@
       letter-spacing: 0.04em;
       line-height: 1;
       cursor: pointer;
+      transition:
+        background 200ms var(--ease),
+        border-color 200ms var(--ease);
     }
 
     .lang-select-btn[aria-expanded="true"] {
@@ -401,7 +404,7 @@
       font-size: 0.62rem;
       line-height: 1;
       opacity: 0.85;
-      transition: transform 0.2s var(--ease);
+      transition: transform 200ms var(--ease);
     }
 
     .lang-select-btn[aria-expanded="true"] .lang-select-chevron {
@@ -426,6 +429,20 @@
       backdrop-filter: blur(18px) saturate(1.4);
       -webkit-backdrop-filter: blur(18px) saturate(1.4);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+      transform-origin: top right;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+      pointer-events: none;
+      transition:
+        opacity 150ms var(--ease),
+        transform 150ms var(--ease);
+    }
+
+    .lang-select-menu.is-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      transition-duration: 200ms, 200ms;
     }
 
     .lang-select-menu[hidden] {
@@ -448,7 +465,20 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       cursor: pointer;
+      transform: translateY(5px);
+      transition:
+        transform 180ms var(--ease),
+        background 0.2s var(--ease),
+        color 0.2s var(--ease);
     }
+
+    .lang-select-menu.is-open .lang-btn {
+      transform: none;
+    }
+
+    .lang-select-menu.is-open li:nth-child(1) .lang-btn { transition-delay: 24ms; }
+    .lang-select-menu.is-open li:nth-child(2) .lang-btn { transition-delay: 48ms; }
+    .lang-select-menu.is-open li:nth-child(3) .lang-btn { transition-delay: 72ms; }
 
     .lang-select-menu .lang-btn:hover,
     .lang-select-menu .lang-btn:focus-visible {
@@ -473,12 +503,40 @@
       position: static;
       width: max-content;
       min-width: 4.75rem;
-      margin-top: 0.4rem;
+      margin-top: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      max-height: 0;
+      overflow: hidden;
       box-shadow: none;
+      border-color: transparent;
+      transform-origin: top left;
+      transition:
+        opacity 150ms var(--ease),
+        transform 150ms var(--ease),
+        max-height 150ms var(--ease),
+        margin-top 150ms var(--ease),
+        padding 150ms var(--ease),
+        border-color 150ms var(--ease);
+    }
+
+    .mobile-nav .lang-select-menu.is-open {
+      max-height: 11rem;
+      margin-top: 0.4rem;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      border-color: rgba(255, 255, 255, 0.12);
+      transition-duration: 200ms, 200ms, 200ms, 200ms, 200ms, 200ms;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .lang-select-chevron { transition: none; }
+      .lang-select-btn,
+      .lang-select-chevron,
+      .lang-select-menu,
+      .lang-select-menu .lang-btn,
+      .mobile-nav .lang-select-menu {
+        transition: none !important;
+      }
     }
 
     .btn {
@@ -3699,7 +3757,7 @@
               <span class="lang-select-value">UZ</span>
               <span class="lang-select-chevron" aria-hidden="true">▾</span>
             </button>
-            <ul class="lang-select-menu" id="langMenuHeader" role="listbox" aria-label="Language" hidden>
+            <ul class="lang-select-menu" id="langMenuHeader" role="listbox" aria-label="Language" aria-hidden="true" hidden>
               <li role="none"><button type="button" class="lang-btn lang-select-option active" role="option" data-lang="uz" aria-selected="true">UZ</button></li>
               <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="ru" aria-selected="false">RU</button></li>
               <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="en" aria-selected="false">EN</button></li>
@@ -3719,7 +3777,7 @@
         <span class="lang-select-value">UZ</span>
         <span class="lang-select-chevron" aria-hidden="true">▾</span>
       </button>
-      <ul class="lang-select-menu" id="langMenuMobile" role="listbox" aria-label="Language" hidden>
+      <ul class="lang-select-menu" id="langMenuMobile" role="listbox" aria-label="Language" aria-hidden="true" hidden>
         <li role="none"><button type="button" class="lang-btn lang-select-option active" role="option" data-lang="uz" aria-selected="true">UZ</button></li>
         <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="ru" aria-selected="false">RU</button></li>
         <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="en" aria-selected="false">EN</button></li>
@@ -5080,14 +5138,32 @@
       });
     }
 
+    function langMotionReduced() {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
     function closeLangSelect(widget, returnFocus) {
       if (!widget) return;
       const toggle = widget.querySelector(".lang-select-btn");
       const menu = widget.querySelector(".lang-select-menu");
-      if (!toggle || !menu || menu.hidden) return;
-      menu.hidden = true;
+      if (!toggle || !menu || !menu.classList.contains("is-open")) return;
       toggle.setAttribute("aria-expanded", "false");
-      if (returnFocus) toggle.focus();
+      menu.classList.remove("is-open");
+      menu.setAttribute("aria-hidden", "true");
+      if (menu.contains(document.activeElement)) {
+        if (returnFocus) toggle.focus();
+        else document.activeElement.blur();
+      } else if (returnFocus) {
+        toggle.focus();
+      }
+      window.clearTimeout(widget._langHideTimer);
+      if (langMotionReduced()) {
+        menu.hidden = true;
+        return;
+      }
+      widget._langHideTimer = window.setTimeout(() => {
+        if (!menu.classList.contains("is-open")) menu.hidden = true;
+      }, 180);
     }
 
     function closeLangSelects(returnFocus) {
@@ -5112,8 +5188,19 @@
       const toggle = widget.querySelector(".lang-select-btn");
       const menu = widget.querySelector(".lang-select-menu");
       if (!toggle || !menu) return;
+      window.clearTimeout(widget._langHideTimer);
+      const wasOpen = menu.classList.contains("is-open");
       menu.hidden = false;
+      menu.setAttribute("aria-hidden", "false");
       toggle.setAttribute("aria-expanded", "true");
+      if (!wasOpen) {
+        if (langMotionReduced()) menu.classList.add("is-open");
+        else {
+          menu.classList.remove("is-open");
+          void menu.offsetWidth;
+          menu.classList.add("is-open");
+        }
+      }
       if (focusOption) focusOption.focus();
     }
 
@@ -5125,8 +5212,8 @@
         if (!toggle || !menu) return;
 
         toggle.addEventListener("click", () => {
-          if (menu.hidden) openLangSelect(widget, null);
-          else closeLangSelect(widget, false);
+          if (menu.classList.contains("is-open")) closeLangSelect(widget, false);
+          else openLangSelect(widget, null);
         });
 
         toggle.addEventListener("keydown", (event) => {
@@ -5134,8 +5221,8 @@
           const selected = opts.find((opt) => opt.getAttribute("aria-selected") === "true") || opts[0];
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            if (menu.hidden) openLangSelect(widget, null);
-            else closeLangSelect(widget, false);
+            if (menu.classList.contains("is-open")) closeLangSelect(widget, false);
+            else openLangSelect(widget, null);
           } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
             event.preventDefault();
             const target = event.key === "ArrowUp" ? opts[opts.length - 1] : selected;
