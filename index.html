@@ -239,6 +239,29 @@
       justify-self: start;
     }
 
+    @media (max-width: 767px) {
+      .header-shell {
+        grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+        column-gap: 0.75rem;
+      }
+
+      .header-shell > .logo {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .logo > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .header-shell > .header-actions {
+        grid-column: 2;
+      }
+    }
+
     .header-shell > .nav-links {
       grid-column: 2;
       justify-self: center;
@@ -285,7 +308,7 @@
 
     .header.is-compact .logo { font-size: 1.02rem; }
 
-    .header-login { display: none; }
+    .header-actions > .header-login { display: none; }
 
     .logo {
       display: flex;
@@ -340,31 +363,122 @@
       flex-shrink: 0;
     }
 
-    .lang-switcher {
-      display: inline-flex;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 2px;
+    .lang-select {
+      position: relative;
+      flex-shrink: 0;
     }
 
-    .lang-btn {
-      padding: 0.35rem 0.55rem;
-      border: none;
-      background: transparent;
-      color: var(--muted);
+    .lang-select-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.28rem;
+      min-height: 32px;
+      padding: 0.32rem 0.55rem 0.32rem 0.62rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-family: inherit;
       font-size: 0.68rem;
       font-weight: 700;
-      font-family: inherit;
-      border-radius: 7px;
+      letter-spacing: 0.04em;
+      line-height: 1;
       cursor: pointer;
-      transition: all 0.25s var(--ease);
     }
 
-    .lang-btn.active {
+    .lang-select-btn[aria-expanded="true"] {
+      border-color: rgba(167, 139, 250, 0.65);
+      background: rgba(124, 58, 237, 0.22);
+    }
+
+    .lang-select-btn:focus-visible {
+      outline: 2px solid #c4b5fd;
+      outline-offset: 2px;
+    }
+
+    .lang-select-chevron {
+      display: inline-block;
+      font-size: 0.62rem;
+      line-height: 1;
+      opacity: 0.85;
+      transition: transform 0.2s var(--ease);
+    }
+
+    .lang-select-btn[aria-expanded="true"] .lang-select-chevron {
+      transform: rotate(180deg);
+    }
+
+    .lang-select-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      z-index: 5;
+      min-width: max(100%, 4.75rem);
+      margin: 0;
+      padding: 4px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(16, 12, 28, 0.96);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+    }
+
+    .lang-select-menu[hidden] {
+      display: none !important;
+    }
+
+    .lang-select-menu .lang-btn {
+      display: flex;
+      width: 100%;
+      justify-content: flex-start;
+      min-height: 36px;
+      align-items: center;
+      padding: 0.5rem 0.8rem;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
+    .lang-select-menu .lang-btn:hover,
+    .lang-select-menu .lang-btn:focus-visible {
+      color: #fff;
+      background: rgba(124, 58, 237, 0.35);
+      outline: none;
+    }
+
+    .lang-select-menu .lang-btn.active {
       background: var(--gradient);
       color: #fff;
+    }
+
+    .mobile-nav .lang-select {
+      align-self: flex-start;
+      padding-bottom: 0.85rem;
+      margin-bottom: 0.15rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-nav .lang-select-menu {
+      position: static;
+      width: max-content;
+      min-width: 4.75rem;
+      margin-top: 0.4rem;
+      box-shadow: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lang-select-chevron { transition: none; }
     }
 
     .btn {
@@ -737,7 +851,6 @@
 
     @media (max-width: 560px) {
       #navInstallBtn { display: none; }
-      .lang-btn { padding: 0.3rem 0.42rem; font-size: 0.62rem; }
       .menu-btn { width: 40px; height: 40px; }
     }
 
@@ -3052,7 +3165,7 @@
     @media (min-width: 768px) {
       .nav-links { display: flex; }
       .menu-btn { display: none; }
-      .header-login { display: inline-flex; }
+      .header-actions > .header-login { display: inline-flex; }
       .hero-grid { grid-template-columns: 1.05fr 0.95fr; gap: 2rem; }
       .hero-phone-stage { max-width: 500px; padding: 0.75rem 0 1.25rem; }
       .float-card--income { left: -8%; top: 8%; }
@@ -3581,10 +3694,16 @@
           <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
         </ul>
         <div class="header-actions">
-          <div class="lang-switcher" role="group" aria-label="Language">
-            <button type="button" class="lang-btn active" data-lang="uz">UZ</button>
-            <button type="button" class="lang-btn" data-lang="ru">RU</button>
-            <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <div class="lang-select" data-lang-select>
+            <button type="button" class="lang-select-btn" id="langToggleHeader" aria-haspopup="listbox" aria-expanded="false" aria-controls="langMenuHeader" aria-label="Language, UZ">
+              <span class="lang-select-value">UZ</span>
+              <span class="lang-select-chevron" aria-hidden="true">▾</span>
+            </button>
+            <ul class="lang-select-menu" id="langMenuHeader" role="listbox" aria-label="Language" hidden>
+              <li role="none"><button type="button" class="lang-btn lang-select-option active" role="option" data-lang="uz" aria-selected="true">UZ</button></li>
+              <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="ru" aria-selected="false">RU</button></li>
+              <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="en" aria-selected="false">EN</button></li>
+            </ul>
           </div>
           <a href="#kirish" class="btn btn-outline btn-sm header-login" data-nav-auth-cta data-auth-modal data-i18n="nav.login">Kirish</a>
           <button type="button" class="btn btn-primary btn-sm" id="navInstallBtn" data-i18n="cta.download">Yuklab olish</button>
@@ -3595,6 +3714,17 @@
   </header>
 
   <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <div class="lang-select" data-lang-select>
+      <button type="button" class="lang-select-btn" id="langToggleMobile" tabindex="-1" aria-haspopup="listbox" aria-expanded="false" aria-controls="langMenuMobile" aria-label="Language, UZ">
+        <span class="lang-select-value">UZ</span>
+        <span class="lang-select-chevron" aria-hidden="true">▾</span>
+      </button>
+      <ul class="lang-select-menu" id="langMenuMobile" role="listbox" aria-label="Language" hidden>
+        <li role="none"><button type="button" class="lang-btn lang-select-option active" role="option" data-lang="uz" aria-selected="true">UZ</button></li>
+        <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="ru" aria-selected="false">RU</button></li>
+        <li role="none"><button type="button" class="lang-btn lang-select-option" role="option" data-lang="en" aria-selected="false">EN</button></li>
+      </ul>
+    </div>
     <a href="#features" data-i18n="nav.features">Imkoniyatlar</a>
     <a href="#compare" data-i18n="nav.compare">Farq</a>
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
@@ -4932,6 +5062,121 @@
       setupInstallUI();
       if (typeof window.syncLandingAuthCopy === "function") window.syncLandingAuthCopy();
       if (typeof window.syncNavAuthCta === "function") window.syncNavAuthCta(window.BHAuth?.currentUser);
+      syncLangSelects();
+    }
+
+    function syncLangSelects() {
+      const code = String(currentLang || "uz").toUpperCase();
+      document.querySelectorAll("[data-lang-select]").forEach((widget) => {
+        const value = widget.querySelector(".lang-select-value");
+        if (value) value.textContent = code;
+        const toggle = widget.querySelector(".lang-select-btn");
+        if (toggle) toggle.setAttribute("aria-label", `Language, ${code}`);
+        widget.querySelectorAll(".lang-select-option").forEach((opt) => {
+          const on = opt.dataset.lang === currentLang;
+          opt.classList.toggle("active", on);
+          opt.setAttribute("aria-selected", on ? "true" : "false");
+        });
+      });
+    }
+
+    function closeLangSelect(widget, returnFocus) {
+      if (!widget) return;
+      const toggle = widget.querySelector(".lang-select-btn");
+      const menu = widget.querySelector(".lang-select-menu");
+      if (!toggle || !menu || menu.hidden) return;
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+      if (returnFocus) toggle.focus();
+    }
+
+    function closeLangSelects(returnFocus) {
+      document.querySelectorAll("[data-lang-select]").forEach((widget) => closeLangSelect(widget, returnFocus));
+    }
+
+    function langSelectOptions(widget) {
+      return [...widget.querySelectorAll(".lang-select-option")];
+    }
+
+    function openLangSelect(widget, focusOption) {
+      const mobileNav = document.getElementById("mobileNav");
+      if (mobileNav?.classList.contains("open") && !mobileNav.contains(widget)) {
+        mobileNav.classList.remove("open");
+        mobileNav.setAttribute("aria-hidden", "true");
+        syncMobileLangTab();
+        syncHeaderCompact();
+      }
+      document.querySelectorAll("[data-lang-select]").forEach((other) => {
+        if (other !== widget) closeLangSelect(other, false);
+      });
+      const toggle = widget.querySelector(".lang-select-btn");
+      const menu = widget.querySelector(".lang-select-menu");
+      if (!toggle || !menu) return;
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+      if (focusOption) focusOption.focus();
+    }
+
+    function initLangSelects() {
+      const widgets = [...document.querySelectorAll("[data-lang-select]")];
+      widgets.forEach((widget) => {
+        const toggle = widget.querySelector(".lang-select-btn");
+        const menu = widget.querySelector(".lang-select-menu");
+        if (!toggle || !menu) return;
+
+        toggle.addEventListener("click", () => {
+          if (menu.hidden) openLangSelect(widget, null);
+          else closeLangSelect(widget, false);
+        });
+
+        toggle.addEventListener("keydown", (event) => {
+          const opts = langSelectOptions(widget);
+          const selected = opts.find((opt) => opt.getAttribute("aria-selected") === "true") || opts[0];
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            if (menu.hidden) openLangSelect(widget, null);
+            else closeLangSelect(widget, false);
+          } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            const target = event.key === "ArrowUp" ? opts[opts.length - 1] : selected;
+            openLangSelect(widget, target || opts[0]);
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            closeLangSelect(widget, true);
+          }
+        });
+
+        menu.addEventListener("keydown", (event) => {
+          const opts = langSelectOptions(widget);
+          const index = opts.indexOf(document.activeElement);
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            const dir = event.key === "ArrowDown" ? 1 : -1;
+            const next = opts[(index + dir + opts.length) % opts.length] || opts[0];
+            next?.focus();
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            opts[0]?.focus();
+          } else if (event.key === "End") {
+            event.preventDefault();
+            opts[opts.length - 1]?.focus();
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            closeLangSelect(widget, true);
+          } else if (event.key === "Tab") {
+            closeLangSelect(widget, false);
+          }
+        });
+
+        langSelectOptions(widget).forEach((opt) => {
+          opt.addEventListener("click", () => closeLangSelect(widget, true));
+        });
+      });
+
+      document.addEventListener("pointerdown", (event) => {
+        if (event.target.closest("[data-lang-select]")) return;
+        closeLangSelects(false);
+      });
     }
 
     function setLang(lang) {
@@ -4945,7 +5190,15 @@
       btn.addEventListener("click", () => setLang(btn.dataset.lang));
     });
 
+    initLangSelects();
     applyI18n();
+
+    function syncMobileLangTab() {
+      const nav = document.getElementById("mobileNav");
+      const toggle = nav?.querySelector(".lang-select-btn");
+      if (!toggle || !nav) return;
+      toggle.tabIndex = nav.classList.contains("open") ? 0 : -1;
+    }
 
     const footerSiteLink = document.getElementById("footerSiteLink");
     if (footerSiteLink) {
@@ -4958,12 +5211,18 @@
     document.getElementById("menuBtn").addEventListener("click", () => {
       const nav = document.getElementById("mobileNav");
       const open = nav.classList.toggle("open");
-      nav.setAttribute("aria-hidden", !open);
+      nav.setAttribute("aria-hidden", String(!open));
+      closeLangSelects(false);
+      syncMobileLangTab();
       syncHeaderCompact();
     });
     document.querySelectorAll("#mobileNav a").forEach((a) => {
       a.addEventListener("click", () => {
-        document.getElementById("mobileNav").classList.remove("open");
+        const nav = document.getElementById("mobileNav");
+        nav.classList.remove("open");
+        nav.setAttribute("aria-hidden", "true");
+        closeLangSelects(false);
+        syncMobileLangTab();
         syncHeaderCompact();
       });
     });
