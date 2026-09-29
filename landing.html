@@ -906,19 +906,110 @@
       .menu-btn { width: 40px; height: 40px; }
     }
 
-    @media (max-width: 479px) {
-      .float-card {
-        min-width: 148px;
-        padding: 0.7rem 0.82rem 0.7rem 0.9rem;
+    /* Narrow viewports: keep the sum cards in flow around the phone so they
+       cannot cover the dashboard. Desktop float offsets stay at min-width 768px. */
+    @media (max-width: 767px) {
+      .hero-grid { gap: 2.25rem; }
+
+      .hero-phone-stage {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+          "income expense"
+          "phone phone"
+          "balance balance";
+        align-items: start;
+        column-gap: 0.6rem;
+        row-gap: 2.15rem;
+        max-width: 420px;
+        padding: 0.15rem 0 0.25rem;
       }
-      .float-card-value { font-size: 0.92rem; }
-      .float-card--income { top: 0; left: 0; }
-      .float-card--expense { top: 36%; right: 0; }
-      .float-card--balance { bottom: 2%; left: 2%; }
+
+      #heroPhoneMount {
+        grid-area: phone;
+        display: flex;
+        justify-content: center;
+        min-width: 0;
+        position: relative;
+        z-index: 1;
+      }
+
+      .float-card {
+        position: relative;
+        inset: auto;
+        z-index: 2;
+        min-width: 0;
+        width: auto;
+        max-width: 100%;
+        padding: 0.5rem 0.66rem 0.52rem 0.74rem;
+        border-radius: 14px;
+      }
+
+      .float-card-label {
+        font-size: 0.62rem;
+        letter-spacing: 0.07em;
+        margin-bottom: 0.05rem;
+      }
+
+      .float-card-value {
+        font-size: clamp(0.68rem, 3.05vw, 0.84rem);
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .float-card--income {
+        grid-area: income;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        justify-self: stretch;
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.42),
+          0 0 20px rgba(74, 222, 128, 0.22);
+      }
+
+      .float-card--expense {
+        grid-area: expense;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        justify-self: stretch;
+        margin-top: 0.7rem;
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.42),
+          0 0 20px rgba(248, 113, 113, 0.22);
+      }
+
+      .float-card--balance {
+        grid-area: balance;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        justify-self: start;
+        width: calc((100% - 0.6rem) / 2);
+        max-width: 100%;
+        box-shadow:
+          0 12px 28px rgba(0, 0, 0, 0.42),
+          0 0 20px rgba(34, 211, 238, 0.22);
+      }
+
       @keyframes floatCard {
         0%, 100% { transform: translate3d(0, 0, 0); }
-        50% { transform: translate3d(0, -14px, 0); }
+        50% { transform: translate3d(0, -5px, 0); }
       }
+    }
+
+    @media (max-width: 360px) {
+      .float-card {
+        padding: 0.42rem 0.46rem 0.44rem 0.56rem;
+        border-radius: 12px;
+      }
+      .float-card-label { font-size: 0.56rem; letter-spacing: 0.06em; }
+      .float-card-value { font-size: 0.64rem; }
     }
 
     .phone-tilt {
