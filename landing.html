@@ -591,12 +591,6 @@
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
     }
 
-    .btn-telegram {
-      background: linear-gradient(135deg, #2AABEE, #229ED9);
-      color: #fff;
-      box-shadow: 0 6px 24px rgba(34, 158, 217, 0.35);
-    }
-
     .menu-btn {
       width: 44px;
       height: 44px;
@@ -2951,51 +2945,6 @@
       }
     }
 
-    /* CONTACT */
-    .contact-card {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 2.75rem 2rem;
-      text-align: center;
-    }
-
-    .contact-card h3 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-
-    .contact-card > p {
-      color: var(--muted);
-      margin-bottom: 1.75rem;
-    }
-
-    .contact-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .phone-ph {
-      display: block;
-      text-align: center;
-      text-decoration: none;
-      padding: 0.85rem;
-      border-radius: 14px;
-      border: 1px dashed var(--border);
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      .phone-ph:hover {
-        color: var(--text);
-        border-color: rgba(124, 58, 237, 0.4);
-      }
-    }
-
     /* ═══════════════════════════════════════════
        TRUST / SECURITY SECTION
     ═══════════════════════════════════════════ */
@@ -3282,9 +3231,6 @@
       .stats-grid { grid-template-columns: repeat(4, 1fr); }
       .trust-grid { grid-template-columns: repeat(3, 1fr); }
       .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
-      .contact-btns { flex-direction: row; justify-content: center; }
-      .contact-btns .btn,
-      .contact-btns .phone-ph { flex: 1; max-width: 200px; }
     }
 
     /* ── Auth modal (landing gate) ───────────────────────────────────────── */
@@ -3767,7 +3713,6 @@
           <li><a href="#pricing" data-i18n="nav.pricing">Narxlar</a></li>
           <li><a href="#trust" data-i18n="nav.trust">Xavfsizlik</a></li>
           <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
-          <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
         </ul>
         <div class="header-actions">
           <div class="lang-select" data-lang-select>
@@ -3806,7 +3751,6 @@
     <a href="#pricing" data-i18n="nav.pricing">Narxlar</a>
     <a href="#trust" data-i18n="nav.trust">Xavfsizlik</a>
     <a href="#faq" data-i18n="nav.faq">FAQ</a>
-    <a href="#contact" data-i18n="nav.contact">Aloqa</a>
     <a href="#how" data-i18n="nav.how">Qanday ishlaydi</a>
     <a href="#stats" data-i18n="nav.stats">Statistika</a>
     <a href="#reviews" data-i18n="nav.reviews">Sharhlar</a>
@@ -4413,20 +4357,6 @@
       </div>
     </section>
 
-    <!-- 9. CONTACT -->
-    <section id="contact">
-      <div class="container">
-        <div class="contact-card glass glass-hover reveal">
-          <span class="section-tag" data-i18n="contact.tag">Aloqa</span>
-          <h3 data-i18n="contact.title">Savollaringiz bormi?</h3>
-          <p data-i18n="contact.sub">Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.</p>
-          <div class="contact-btns">
-            <a href="https://t.me/+998940262101" class="btn btn-telegram" target="_blank" rel="noopener" data-i18n="contact.telegram">✈ Telegram orqali yozish</a>
-            <a href="tel:+998940262101" class="phone-ph" aria-label="+998 94 026 21 01">📞 +998 94 026 21 01</a>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- 10. FOOTER -->
@@ -4453,7 +4383,6 @@
           <h4 data-i18n="footer.col2">Kompaniya</h4>
           <ul>
             <li><a href="#compare" data-i18n="footer.about">Biz haqimizda</a></li>
-            <li><a href="#contact" data-i18n="nav.contact">Aloqa</a></li>
             <li><a href="#trust" data-i18n="footer.privacy">Maxfiylik</a></li>
           </ul>
         </div>
@@ -4622,7 +4551,7 @@
       uz: {
         "meta.title": "BiznesHisob — Biznes moliyasini boshqaring",
         "scroll.hint": "Pastga", "scroll.hintAria": "Pastga aylantiring",
-        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.contact": "Aloqa", "nav.stats": "Statistika", "nav.reviews": "Sharhlar", "nav.login": "Kirish", "nav.profile": "Profil",
+        "nav.compare": "Farq", "nav.features": "Imkoniyatlar", "nav.trust": "Xavfsizlik", "nav.how": "Qanday ishlaydi", "nav.pricing": "Narxlar", "nav.faq": "FAQ", "nav.stats": "Statistika", "nav.reviews": "Sharhlar", "nav.login": "Kirish", "nav.profile": "Profil",
         "compare.tag": "Farq",
         "compare.title": "Murakkablikdan <span class=\"gradient-text\">osonlikka</span>",
         "compare.sub": "BiznesHisob bilan moliyaviy boshqaruv butunlay boshqa tajriba",
@@ -4687,9 +4616,6 @@
         "cta.iosHint": "Safarida «Ulashish» → «Bosh ekranga qoʻshish» ni tanlang.",
         "cta.title": "Bugun boshlang — bepul!",
         "cta.sub": "BiznesHisobni hoziroq oching yoki telefoningizga o'rnating. Ro'yxatdan o'tish bir daqiqa.",
-        "contact.tag": "Aloqa", "contact.title": "Savollaringiz bormi?",
-        "contact.sub": "Jamoamiz sizga yordam berishga tayyor. Telegram orqali yozing yoki qo'ng'iroq qiling.",
-        "contact.telegram": "✈ Telegram orqali yozish",
         "footer.desc": "Biznes daromad va xarajatlarini boshqarish uchun zamonaviy mobil ilova. O'zbekiston tadbirkorlari uchun yaratilgan.",
         "footer.col1": "Mahsulot", "footer.col2": "Kompaniya", "footer.col3": "Yordam",
         "footer.about": "Biz haqimizda", "footer.privacy": "Maxfiylik",
@@ -4781,7 +4707,7 @@
       ru: {
         "meta.title": "BiznesHisob — Управляйте финансами бизнеса",
         "scroll.hint": "Вниз", "scroll.hintAria": "Прокрутить вниз",
-        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.contact": "Контакты", "nav.stats": "Статистика", "nav.reviews": "Отзывы", "nav.login": "Войти", "nav.profile": "Профиль",
+        "nav.compare": "Сравнение", "nav.features": "Возможности", "nav.trust": "Безопасность", "nav.how": "Как работает", "nav.pricing": "Цены", "nav.faq": "FAQ", "nav.stats": "Статистика", "nav.reviews": "Отзывы", "nav.login": "Войти", "nav.profile": "Профиль",
         "compare.tag": "Сравнение",
         "compare.title": "От сложности <span class=\"gradient-text\">к простоте</span>",
         "compare.sub": "С BiznesHisob управление финансами — совершенно другой опыт",
@@ -4846,9 +4772,6 @@
         "cta.iosHint": "В Safari нажмите «Поделиться» → «На экран Домой».",
         "cta.title": "Начните сегодня — бесплатно!",
         "cta.sub": "Откройте BiznesHisob сейчас или установите на телефон. Регистрация за минуту.",
-        "contact.tag": "Контакты", "contact.title": "Есть вопросы?",
-        "contact.sub": "Наша команда готова помочь. Напишите в Telegram или позвоните.",
-        "contact.telegram": "✈ Написать в Telegram",
         "footer.desc": "Современное мобильное приложение для учёта доходов и расходов бизнеса. Создано для предпринимателей Узбекистана.",
         "footer.col1": "Продукт", "footer.col2": "Компания", "footer.col3": "Помощь",
         "footer.about": "О нас", "footer.privacy": "Конфиденциальность",
@@ -4940,7 +4863,7 @@
       en: {
         "meta.title": "BiznesHisob — Manage your business finances",
         "scroll.hint": "Scroll", "scroll.hintAria": "Scroll down",
-        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.contact": "Contact", "nav.stats": "Statistics", "nav.reviews": "Reviews", "nav.login": "Sign in", "nav.profile": "Profile",
+        "nav.compare": "Compare", "nav.features": "Features", "nav.trust": "Security", "nav.how": "How it works", "nav.pricing": "Pricing", "nav.faq": "FAQ", "nav.stats": "Statistics", "nav.reviews": "Reviews", "nav.login": "Sign in", "nav.profile": "Profile",
         "compare.tag": "Compare",
         "compare.title": "From complexity <span class=\"gradient-text\">to simplicity</span>",
         "compare.sub": "With BiznesHisob, financial management is a completely different experience",
@@ -5005,9 +4928,6 @@
         "cta.iosHint": "In Safari, tap Share → Add to Home Screen.",
         "cta.title": "Start today — it's free!",
         "cta.sub": "Open BiznesHisob now or install on your phone. Sign up takes one minute.",
-        "contact.tag": "Contact", "contact.title": "Have questions?",
-        "contact.sub": "Our team is ready to help. Message us on Telegram or call.",
-        "contact.telegram": "✈ Message on Telegram",
         "footer.desc": "A modern mobile app for managing business income and expenses. Built for entrepreneurs in Uzbekistan.",
         "footer.col1": "Product", "footer.col2": "Company", "footer.col3": "Help",
         "footer.about": "About us", "footer.privacy": "Privacy",
@@ -5623,17 +5543,6 @@
         }
       );
 
-      gsap.fromTo(
-        "#contact .contact-card",
-        { y: 40, autoAlpha: 0 },
-        {
-          ...fadeIn,
-          duration: 0.9,
-          ease: "power3.out",
-          scrollTrigger: { trigger: "#contact .contact-card", start: "top 88%", once: true }
-        }
-      );
-
       // ── Chart bars: fire animation only when card enters viewport ────────
       const chartEl = document.querySelector(".fm-chart");
       if (chartEl) {
@@ -5754,8 +5663,7 @@
         how: "rgba(167, 139, 250, 0.22)",
         reviews: "rgba(251, 191, 36, 0.14)",
         pricing: "rgba(124, 58, 237, 0.26)",
-        faq: "rgba(99, 102, 241, 0.18)",
-        contact: "rgba(167, 139, 250, 0.16)"
+        faq: "rgba(99, 102, 241, 0.18)"
       };
       let metrics = [];
       let lastCount = "";
