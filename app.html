@@ -2750,22 +2750,41 @@
       color: var(--muted);
     }
 
+    .breakdown-card.is-single-category .breakdown-head {
+      margin-bottom: 0.55rem;
+    }
+
     .breakdown-single-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding: 0.15rem 0 0.1rem;
+      padding: 0.05rem 0 0.15rem;
     }
 
-    .breakdown-single-row .top-cat-left .category-icon-wrap {
-      width: 32px;
-      height: 32px;
+    /* One category is the whole total. Show it as a label, not a second amount + 100%. */
+    .breakdown-single-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      max-width: 100%;
+      min-width: 0;
+      padding: 0.2rem 0.85rem 0.2rem 0.2rem;
+      border-radius: 999px;
+      background: var(--stat-item-bg);
+      border: 1px solid var(--border);
     }
 
-    .breakdown-single-row .top-cat-left .category-icon-wrap [data-lucide] {
-      width: 15px;
-      height: 15px;
+    .breakdown-single-chip .category-icon-wrap {
+      width: 28px;
+      height: 28px;
+    }
+
+    .breakdown-single-chip .category-icon-wrap [data-lucide] {
+      width: 14px;
+      height: 14px;
+    }
+
+    .breakdown-single-chip .top-cat-name {
+      font-size: 0.8rem;
     }
 
     .breakdown-list {
@@ -13876,17 +13895,20 @@
       valueEl.textContent = formatBreakdownMoney(total);
     }
 
+    /** A share is only a comparison. One category is always 100% of the header total. */
+    function breakdownShareIsMeaningful(categoryCount, percent) {
+      if (!categoryCount || categoryCount < 2) return false;
+      const share = parseFloat(percent);
+      return Number.isFinite(share) && share < 100;
+    }
+
     function renderSingleCategoryRow(container, item) {
       if (!container) return;
       container.innerHTML = `
         <div class="breakdown-single-row">
-          <div class="top-cat-left">
+          <div class="breakdown-single-chip">
             ${categoryIconHtml(item, item.color)}
             <span class="top-cat-name">${escapeHtml(item.label)}</span>
-          </div>
-          <div class="top-cat-right">
-            <div class="top-cat-amount">${escapeHtml(formatBreakdownMoney(item.amount))}</div>
-            <div class="top-cat-pct">${escapeHtml(item.percent)}%</div>
           </div>
         </div>
       `;
@@ -13896,7 +13918,12 @@
     function renderRankedCategoryList(container, data, limit = BREAKDOWN_LIST_LIMIT) {
       if (!container) return;
       const top = data.items.slice(0, limit);
-      container.innerHTML = top.map((item, i) => `
+      const categoryCount = data.items.length;
+      container.innerHTML = top.map((item, i) => {
+        const share = breakdownShareIsMeaningful(categoryCount, item.percent)
+          ? `<div class="top-cat-pct">${escapeHtml(item.percent)}%</div>`
+          : "";
+        return `
         <div class="top-cat-row" style="animation-delay:${i * 0.06}s">
           <div class="top-cat-head">
             <div class="top-cat-left">
@@ -13905,14 +13932,15 @@
             </div>
             <div class="top-cat-right">
               <div class="top-cat-amount">${escapeHtml(formatBreakdownMoney(item.amount))}</div>
-              <div class="top-cat-pct">${escapeHtml(item.percent)}%</div>
+              ${share}
             </div>
           </div>
           <div class="top-cat-bar">
             <div class="top-cat-bar-fill" data-width="${item.percent}" style="background:${item.color};color:${item.color}"></div>
           </div>
         </div>
-      `).join("");
+      `;
+      }).join("");
       requestAnimationFrame(() => {
         container.querySelectorAll(".top-cat-bar-fill").forEach(bar => {
           bar.style.width = `${bar.dataset.width || 0}%`;
@@ -13922,6 +13950,7 @@
     }
 
     function renderBreakdownCard(kind, data) {
+      const card = document.getElementById(`${kind}BreakdownCard`);
       const totalEl = document.getElementById(`${kind}BreakdownTotal`);
       const emptyEl = document.getElementById(`${kind}BreakdownEmpty`);
       const singleEl = document.getElementById(`${kind}BreakdownSingle`);
@@ -13929,6 +13958,7 @@
       const listEl = document.getElementById(`${kind}RankedList`);
       const items = data?.items || [];
 
+      if (card) card.classList.toggle("is-single-category", items.length === 1);
       if (totalEl) totalEl.textContent = formatBreakdownMoney(data?.total || 0);
 
       setBreakdownHidden(emptyEl, true);
