@@ -2311,6 +2311,7 @@
       transform-origin: top center;
       background: linear-gradient(180deg, #7C3AED, #e9d5ff);
       box-shadow: 0 0 14px rgba(167, 139, 250, 0.85);
+      will-change: transform;
     }
 
     .steps-track {
@@ -5762,6 +5763,8 @@
       let frame = 0;
       let fillShown = null;
       let fillStamp = 0;
+      let journeyShown = null;
+      let journeyStamp = 0;
 
       function measure() {
         if (!visual) return;
@@ -5828,15 +5831,31 @@
         paintAmount(progress);
       }
 
-      function paintJourney(progress) {
+      function paintJourney(progress, now) {
+        let shown = progress;
+        let catching = false;
+        if (journeyShown == null) {
+          journeyShown = progress;
+          journeyStamp = now;
+        } else {
+          const dt = Math.min(0.05, Math.max(0, (now - journeyStamp) / 1000));
+          journeyStamp = now;
+          // Same short ease-out trail as the Farq bar (paintFill).
+          const blend = 1 - Math.exp(-dt / 0.12);
+          journeyShown += (progress - journeyShown) * blend;
+          if (Math.abs(progress - journeyShown) < 0.0012) journeyShown = progress;
+          catching = Math.abs(progress - journeyShown) > 0.0008;
+        }
+        shown = journeyShown;
         if (rail) {
-          rail.style.transform = wide.matches ? `scaleX(${progress})` : `scaleY(${progress})`;
+          rail.style.transform = wide.matches ? `scaleX(${shown})` : `scaleY(${shown})`;
         }
         steps.forEach((step, i) => {
-          const local = smooth(clamp((progress - i * 0.28) / 0.36, 0, 1));
+          const local = smooth(clamp((shown - i * 0.28) / 0.36, 0, 1));
           step.style.opacity = String(lerp(0.28, 1, local));
           step.classList.toggle("is-lit", local > 0.72);
         });
+        return catching;
       }
 
       function paintGlow() {
@@ -5945,10 +5964,11 @@
         frame = 0;
         const progress = storyProgress();
         paintStory(progress);
-        const catching = paintFill(progress, now || performance.now());
-        paintJourney(journeyProgress());
+        const stamp = now || performance.now();
+        const catching = paintFill(progress, stamp);
+        const journeyCatching = paintJourney(journeyProgress(), stamp);
         paintGlow();
-        if (catching) requestTick();
+        if (catching || journeyCatching) requestTick();
       }
       function requestTick() {
         if (frame) return;
