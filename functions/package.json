@@ -7,7 +7,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "node --test pinEmailOtp.test.js",
+    "test": "node --test pinEmailOtp.test.js premiumPayments.test.js",
     "serve": "firebase emulators:start --only functions"
   },
   "dependencies": {

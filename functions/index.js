@@ -4,7 +4,7 @@
  * (Spark-safe password-reset link). Do not wire the client back to these
  * callables until the project is on Blaze and a mailer is configured.
  */
-import { initializeApp } from "firebase-admin/app";
+import { getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { onCall, HttpsError } from "firebase-functions/v2/https";
@@ -19,7 +19,7 @@ import {
   RESEND_COOLDOWN_MS
 } from "./pinEmailOtp.js";
 
-initializeApp();
+if (!getApps().length) initializeApp();
 const db = getFirestore();
 
 const REGION = "us-central1";
@@ -194,3 +194,5 @@ export const verifyPinEmailOtp = onCall(
     return { ok: true };
   }
 );
+
+export { createPremiumCheckout, paymeMerchant, clickMerchant } from "./premiumPaymentApi.js";

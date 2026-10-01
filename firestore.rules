@@ -4,7 +4,9 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /users/{userId} {
       allow read: if isOwner(userId);
-      allow write: if isOwner(userId) && pinFieldOk();
+      allow create: if isOwner(userId) && pinFieldOk() && premiumCreateSafe();
+      allow update: if isOwner(userId) && pinFieldOk() && premiumFieldsUnchanged();
+      allow delete: if isOwner(userId);
 
       match /transactions/{transactionId} {
         allow read: if isOwner(userId);
@@ -30,8 +32,29 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Premium orders. Written only by Payme/Click Cloud Functions (Admin SDK).
+    match /payments/{orderId} {
+      allow read, write: if false;
+    }
+
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Clients may create a free profile. Only the payment webhook can grant Premium.
+    function premiumCreateSafe() {
+      return request.resource.data.get('isPremium', false) == false
+        && !request.resource.data.keys().hasAny([
+          'premiumUntil', 'premiumSource', 'premiumOrderId', 'premiumActivatedAt'
+        ]);
+    }
+
+    function premiumFieldsUnchanged() {
+      return request.resource.data.get('isPremium', false) == resource.data.get('isPremium', false)
+        && request.resource.data.get('premiumUntil', '') == resource.data.get('premiumUntil', '')
+        && request.resource.data.get('premiumSource', '') == resource.data.get('premiumSource', '')
+        && request.resource.data.get('premiumOrderId', '') == resource.data.get('premiumOrderId', '')
+        && request.resource.data.get('premiumActivatedAt', '') == resource.data.get('premiumActivatedAt', '');
     }
 
     // PIN must be PBKDF2 metadata only (never plaintext). Absent pin is allowed.

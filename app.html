@@ -6921,6 +6921,7 @@
       query,
       orderBy
     } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-functions.js";
 
     const PREMIUM_CACHE_KEY = "bzh_premium";
     const CURRENCY_KEY = "bzh_currency";
@@ -6939,6 +6940,8 @@
 
     const app = initializeApp(firebaseConfig);
     const firebaseAuth = getAuth(app);
+    const premiumFunctions = getFunctions(app, "us-central1");
+    const createPremiumCheckoutFn = httpsCallable(premiumFunctions, "createPremiumCheckout");
     firebaseAuth.languageCode = "uz";
     const db = initializeFirestore(app, {
       localCache: persistentLocalCache()
@@ -7562,8 +7565,9 @@
         "premium.limitAlert": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
         "premium.checking": "To'lov tekshirilmoqda...",
         "premium.activated": "Premium faollashtirildi! 🎉",
-        "premium.pending": "To'lov hali tasdiqlanmadi. Admin tasdiqlagach, Premium yoqiladi.",
+        "premium.pending": "To'lov hali tasdiqlanmadi. Tasdiqlangach Premium avtomatik yoqiladi.",
         "premium.checkError": "Tekshirishda xatolik. Qayta urinib ko'ring.",
+        "premium.notConfigured": "To'lov tizimi hozircha sozlanmagan. Iltimos, keyinroq urinib ko'ring.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium kerak",
         "premium.sub": "100 tadan ortiq operatsiya qo'shish uchun Premium ga o'ting",
@@ -7860,8 +7864,9 @@
         "premium.limitAlert": "Для более 100 операций перейдите на Premium",
         "premium.checking": "Проверка оплаты...",
         "premium.activated": "Premium активирован! 🎉",
-        "premium.pending": "Оплата ещё не подтверждена. Premium включится после проверки.",
+        "premium.pending": "Оплата ещё не подтверждена. Premium включится автоматически после подтверждения.",
         "premium.checkError": "Ошибка проверки. Попробуйте снова.",
+        "premium.notConfigured": "Платёжная система пока не настроена. Попробуйте позже.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Нужен Premium",
         "premium.sub": "Для более 100 операций перейдите на Premium",
@@ -8158,8 +8163,9 @@
         "premium.limitAlert": "Upgrade to Premium for more than 100 transactions",
         "premium.checking": "Verifying payment...",
         "premium.activated": "Premium activated! 🎉",
-        "premium.pending": "Payment not confirmed yet. Premium will activate after review.",
+        "premium.pending": "Payment not confirmed yet. Premium turns on automatically once it is confirmed.",
         "premium.checkError": "Verification error. Please try again.",
+        "premium.notConfigured": "Payments are not set up yet. Please try again later.",
         "premium.title": "💎 Premium",
         "premium.requiredTitle": "💎 Premium required",
         "premium.sub": "Upgrade to Premium for more than 100 transactions",
@@ -8305,8 +8311,6 @@
     function getPeriodLabel(period) {
       return t(`export.${period}`);
     }
-    const PAYME_URL = "https://payme.uz/checkout/bizneshisob";
-    const CLICK_URL = "https://my.click.uz/services/bizneshisob";
     const NOTIF_KEY = "bh-notifications";
     const THEME_KEY = "bh-theme";
     const BASE_CURRENCY_ID = "UZS";
@@ -8367,6 +8371,7 @@
     let transactions = [];
     let userProfile = {
       isPremium: false,
+      premiumUntil: null,
       totalTransactionsAdded: undefined,
       email: "",
       displayName: "",
@@ -8717,6 +8722,7 @@
           email: data.email || "",
           createdAt: data.createdAt || null,
           isPremium: !!data.isPremium,
+          premiumUntil: data.premiumUntil || null,
           totalTransactionsAdded: totalAdded,
           displayName: String(data.displayName || "").trim() || userProfile.displayName || "",
           avatar: data.avatar || data.avatarType || "",
@@ -10733,8 +10739,15 @@
       setProfileLimitLoading(true);
     }
 
+    function premiumStillActive(until, nowMs = Date.now()) {
+      if (!until) return true;
+      const ms = Date.parse(until);
+      if (!Number.isFinite(ms)) return true;
+      return ms > nowMs;
+    }
+
     function isPremiumUser() {
-      return !!userProfile.isPremium;
+      return !!userProfile.isPremium && premiumStillActive(userProfile.premiumUntil);
     }
 
     function canAddTransaction() {
@@ -10816,6 +10829,7 @@
               email: data.email || "",
               createdAt: data.createdAt || null,
               isPremium: !!data.isPremium,
+              premiumUntil: data.premiumUntil || null,
               totalTransactionsAdded: typeof data.totalTransactionsAdded === "number"
                 ? data.totalTransactionsAdded
                 : undefined,
@@ -10832,11 +10846,15 @@
               txCounterSynced = true;
               rememberLimitCount(data.totalTransactionsAdded);
             }
-            cachePremiumStatus(userProfile.isPremium, uid);
+            cachePremiumStatus(isPremiumUser(), uid);
+            if (sessionStorage.getItem("bh_payment_pending") && isPremiumUser()) {
+              showPremiumActivated();
+            }
           } else {
             userProfileLimitReady = true;
             userProfile = {
               isPremium: false,
+              premiumUntil: null,
               totalTransactionsAdded: 0,
               email: "",
               displayName: readCachedDisplayName(uid) || userProfile.displayName || "",
@@ -11224,40 +11242,148 @@
       if (premiumConfetti) premiumConfetti.innerHTML = "";
     }
 
-    function openPayment(url) {
-      sessionStorage.setItem("bh_payment_pending", "1");
-      window.open(url, "_blank", "noopener,noreferrer");
-      paymentChecking.classList.remove("hidden");
+    let paymentWatchTimer = null;
+    let premiumActivatedTimer = null;
+    let premiumCheckoutBusy = false;
+
+    function stopPaymentWatch() {
+      if (paymentWatchTimer) {
+        clearInterval(paymentWatchTimer);
+        paymentWatchTimer = null;
+      }
     }
 
-    async function handlePaymentReturn() {
-      if (!sessionStorage.getItem("bh_payment_pending") || !currentUser) return;
-      sessionStorage.removeItem("bh_payment_pending");
-      paymentChecking.classList.remove("hidden");
-      premiumModal.classList.add("open");
-      updateBodyScrollLock();
+    function premiumCheckoutErrorText(err) {
+      const code = String(err?.code || "");
+      const message = String(err?.message || "");
+      const reason = err?.details?.reason;
+      if (reason === "payments-not-configured" || message.includes("payments-not-configured")) {
+        return t("premium.notConfigured");
+      }
+      if (code.endsWith("unauthenticated")) return t("alert.notAuth");
+      return t("premium.checkError");
+    }
 
+    function notePaymentReturnQuery() {
       try {
-        const snap = await getDoc(userDocRef(currentUser.uid));
-        if (snap.exists() && snap.data().isPremium) {
+        const params = new URLSearchParams(location.search);
+        if (params.get("payment") !== "return") return false;
+        sessionStorage.setItem("bh_payment_pending", "1");
+        params.delete("payment");
+        const qs = params.toString();
+        history.replaceState(null, "", `${location.pathname}${qs ? `?${qs}` : ""}${location.hash}`);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function showPremiumActivated() {
+      if (!sessionStorage.getItem("bh_payment_pending")) return;
+      sessionStorage.removeItem("bh_payment_pending");
+      sessionStorage.removeItem("bh_payment_order");
+      stopPaymentWatch();
+      cachePremiumStatus(true, currentUser?.uid);
+      updatePremiumUI();
+      if (!premiumModal.classList.contains("open")) {
+        premiumModal.classList.add("open");
+        updateBodyScrollLock();
+        refreshIcons();
+      }
+      paymentChecking.textContent = t("premium.activated");
+      paymentChecking.classList.remove("hidden");
+      spawnPremiumConfetti();
+      if (premiumActivatedTimer) clearTimeout(premiumActivatedTimer);
+      premiumActivatedTimer = setTimeout(() => {
+        paymentChecking.classList.add("hidden");
+        closePremiumModal();
+      }, 2500);
+    }
+
+    async function pollPremiumPayment(tick = 0) {
+      if (!currentUser || !sessionStorage.getItem("bh_payment_pending")) return;
+      try {
+        const snap = await getDocFromServer(userDocRef(currentUser.uid));
+        if (!sessionStorage.getItem("bh_payment_pending")) return;
+        const data = snap.exists() ? snap.data() : null;
+        if (data && data.isPremium && premiumStillActive(data.premiumUntil)) {
           userProfile.isPremium = true;
-          cachePremiumStatus(true, currentUser.uid);
-          updatePremiumUI();
-          paymentChecking.textContent = t("premium.activated");
-          setTimeout(() => {
-            paymentChecking.classList.add("hidden");
-            closePremiumModal();
-          }, 2500);
-        } else {
-          paymentChecking.textContent = t("premium.checking");
-          setTimeout(() => {
-            paymentChecking.textContent = t("premium.pending");
-          }, 4000);
+          userProfile.premiumUntil = data.premiumUntil || null;
+          showPremiumActivated();
+          return;
+        }
+        if (tick >= 3 && paymentChecking) {
+          paymentChecking.textContent = t("premium.pending");
         }
       } catch (err) {
         console.error(err);
-        paymentChecking.textContent = t("premium.checkError");
+        if (paymentChecking) paymentChecking.textContent = t("premium.checkError");
       }
+    }
+
+    function ensurePaymentWatch() {
+      if (paymentWatchTimer) return;
+      let ticks = 0;
+      paymentWatchTimer = setInterval(() => {
+        ticks += 1;
+        if (!sessionStorage.getItem("bh_payment_pending") || !currentUser) {
+          stopPaymentWatch();
+          return;
+        }
+        void pollPremiumPayment(ticks);
+        if (ticks >= 15) stopPaymentWatch();
+      }, 2000);
+    }
+
+    async function startPremiumCheckout(provider) {
+      if (premiumCheckoutBusy) return;
+      if (!currentUser) {
+        paymentChecking.textContent = t("alert.notAuth");
+        paymentChecking.classList.remove("hidden");
+        return;
+      }
+      premiumCheckoutBusy = true;
+      if (paymeBtn) paymeBtn.disabled = true;
+      if (clickBtn) clickBtn.disabled = true;
+      paymentChecking.textContent = t("premium.checking");
+      paymentChecking.classList.remove("hidden");
+      try {
+        const response = await createPremiumCheckoutFn({ provider, lang: currentLang });
+        const checkoutUrl = response?.data?.checkoutUrl;
+        if (!checkoutUrl) throw new Error("missing-url");
+        sessionStorage.setItem("bh_payment_pending", "1");
+        if (response.data.orderId) sessionStorage.setItem("bh_payment_order", response.data.orderId);
+        // noopener makes some browsers return null even when the tab opened.
+        const popup = window.open(checkoutUrl, "_blank");
+        if (popup) popup.opener = null;
+        else window.location.assign(checkoutUrl);
+        ensurePaymentWatch();
+      } catch (err) {
+        console.error(err);
+        sessionStorage.removeItem("bh_payment_pending");
+        paymentChecking.textContent = premiumCheckoutErrorText(err);
+        paymentChecking.classList.remove("hidden");
+      } finally {
+        premiumCheckoutBusy = false;
+        if (paymeBtn) paymeBtn.disabled = false;
+        if (clickBtn) clickBtn.disabled = false;
+      }
+    }
+
+    async function handlePaymentReturn() {
+      const fromProvider = notePaymentReturnQuery();
+      if (!sessionStorage.getItem("bh_payment_pending") || !currentUser) return;
+      if (fromProvider || premiumModal.classList.contains("open")) {
+        paymentChecking.textContent = t("premium.checking");
+        paymentChecking.classList.remove("hidden");
+        if (!premiumModal.classList.contains("open")) {
+          premiumModal.classList.add("open");
+          updateBodyScrollLock();
+          refreshIcons();
+        }
+      }
+      ensurePaymentWatch();
+      await pollPremiumPayment(0);
     }
 
     premiumModalClose.addEventListener("click", closePremiumModal);
@@ -11271,8 +11397,8 @@
     });
     premiumLaterBtn?.addEventListener("click", closePremiumModal);
     proAdsBanner?.addEventListener("click", () => showPremiumModal({ reason: "feature" }));
-    paymeBtn.addEventListener("click", () => openPayment(PAYME_URL));
-    clickBtn.addEventListener("click", () => openPayment(CLICK_URL));
+    paymeBtn.addEventListener("click", () => { void startPremiumCheckout("payme"); });
+    clickBtn.addEventListener("click", () => { void startPremiumCheckout("click"); });
 
     function closeAllProfileModals() {
       pendingDeleteTxId = null;
@@ -14636,6 +14762,7 @@
         const cachedName = readCachedDisplayName(user.uid);
         userProfile = {
           isPremium: readCachedPremium(user.uid),
+          premiumUntil: null,
           totalTransactionsAdded: typeof lastKnownLimitCount === "number" ? lastKnownLimitCount : undefined,
           email: user.email || "",
           displayName: cachedName || "",
@@ -14694,8 +14821,12 @@
         lastUiContentFingerprint = "";
         clearLimitDisplayUi();
         setProfilePullToRefreshLock(false);
+        sessionStorage.removeItem("bh_payment_pending");
+        sessionStorage.removeItem("bh_payment_order");
+        stopPaymentWatch();
         userProfile = {
           isPremium: false,
+          premiumUntil: null,
           totalTransactionsAdded: undefined,
           email: "",
           displayName: "",
