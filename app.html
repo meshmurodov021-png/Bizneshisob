@@ -3290,11 +3290,28 @@
     .transaction-info {
       flex: 1;
       min-width: 0;
+      color: var(--text);
+    }
+
+    .transaction-desc,
+    .transaction-note {
+      color: var(--text);
+      -webkit-text-fill-color: currentColor;
     }
 
     .transaction-desc {
       font-weight: 600;
       font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .transaction-note {
+      font-size: 0.84rem;
+      font-weight: 500;
+      line-height: 1.35;
+      margin-top: 0.12rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -5441,13 +5458,6 @@
       color: var(--muted);
       line-height: 1.5;
       margin: 0 0 1rem;
-    }
-
-    .transaction-items-line {
-      font-size: 0.78rem;
-      color: var(--muted);
-      line-height: 1.35;
-      margin-top: 0.15rem;
     }
 
     @media (max-height: 700px) {
@@ -14703,12 +14713,9 @@
       const cat = getCategoryForTx(tx);
       const sign = isIncome ? "+" : "−";
       const isPending = String(tx.id).startsWith("pending_");
-      const items = getTransactionItems(tx);
       const listDesc = escapeHtml(getTransactionListDescription(tx));
-      const noteLine = tx.note ? `<div class="transaction-items-line">${escapeHtml(tx.note)}</div>` : "";
-      const primaryLine = items && items.length > 1
-        ? `<div class="transaction-items-line">${listDesc}</div>`
-        : `<div class="transaction-desc">${listDesc}</div>`;
+      const noteLine = tx.note ? `<div class="transaction-note">${escapeHtml(tx.note)}</div>` : "";
+      const primaryLine = listDesc ? `<div class="transaction-desc">${listDesc}</div>` : "";
       return `
           <li class="transaction-item${isPending ? " is-pending" : ""}">
             <div class="tx-icon tx-cat-icon">${categoryIconHtml(cat)}</div>
